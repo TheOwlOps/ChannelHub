@@ -1,0 +1,20 @@
+{
+  "name": "zalohub",
+  "version": "1.0.0",
+  "description": "ZaloHub - Modular Automation for Zalo Personal (zca-js) & Zalo OA",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "login:personal": "bun run scripts/login_personal.ts",
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "zca-js": "^2.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "bun-types": "latest"
+  }
+}

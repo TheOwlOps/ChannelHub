@@ -1,4 +1,3 @@
-// Public SDK entrypoint — import this in Hermes, OpenClaw, or any project
 export { ZaloPersonalBot } from "./personal/client.js";
 export { ZaloOABot } from "./oa/client.js";
 export { initPersonalBot } from "./personal/index.js";

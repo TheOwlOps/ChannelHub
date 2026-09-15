@@ -1,11 +1,89 @@
 # ZaloHub 🚀
 
-> Bộ công cụ tự động hóa Zalo mã nguồn mở — hỗ trợ **168+ thao tác** trên **Tài khoản Cá Nhân** lẫn **Zalo Official Account**.  
-> Runtime: **Bun** (TypeScript native, không cần build thủ công).
+> Unified Zalo Automation SDK — **168+ thao tác** cho cả **Tài khoản Cá Nhân** và **Zalo OA**.  
+> Cài 1 lệnh. Import 1 dòng. Tương thích **Hermes Agent**, **OpenClaw**, hoặc bất kỳ dự án Node/Bun/Deno nào.
 
 ---
 
-## ⚡ Cài đặt nhanh (1 bước)
+## ⚡ Cài đặt
+
+```bash
+# npm
+npm install zalohub
+
+# bun
+bun add zalohub
+
+# yarn
+yarn add zalohub
+```
+
+---
+
+## 🔌 Tích hợp với Hermes Agent / OpenClaw
+
+### Dùng như SDK (import vào code)
+
+```ts
+import { ZaloPersonalBot, ZaloOABot, initPersonalBot } from "zalohub";
+
+// 1. Khởi tạo Bot Cá Nhân (cần credentials.json đã login trước)
+const { bot, listenEvents } = await initPersonalBot();
+await bot.sendText("group_id", "Hello from ZaloHub!", [], true);
+await bot.addReaction("group_id", "msgId", "cliMsgId", "❤️");
+
+// 2. Khởi tạo Bot OA
+const oa = new ZaloOABot();
+await oa.sendConsultantText("user_id", "Xin chào từ OA!");
+```
+
+### Tích hợp Hermes Plugin
+
+```ts
+// Trong file plugin Hermes
+import { ZaloPersonalBot, initPersonalBot } from "zalohub";
+
+export default async function myPlugin(hermes) {
+  const { bot } = await initPersonalBot();
+
+  hermes.on("message", async (msg) => {
+    await bot.sendText(msg.threadId, "Bot phản hồi!", [], msg.isGroup);
+  });
+}
+```
+
+### Tích hợp OpenClaw
+
+```ts
+// Trong tool handler của OpenClaw
+import { ZaloPersonalBot } from "zalohub";
+
+export const zaloSendTool = {
+  name: "zalo_send",
+  description: "Gửi tin nhắn Zalo",
+  execute: async (params, ctx) => {
+    const bot = new ZaloPersonalBot(ctx.zaloApi);
+    await bot.sendText(params.threadId, params.message, [], params.isGroup);
+    return { success: true };
+  }
+};
+```
+
+---
+
+## 🖥️ Dùng CLI (standalone)
+
+```bash
+# Đăng nhập quét QR
+npx zalohub login
+
+# Chạy bot service
+npx zalohub start
+```
+
+---
+
+## 🚀 Clone & chạy từ source
 
 ### Windows
 ```bat
@@ -21,104 +99,82 @@ cd ZaloHub
 chmod +x setup.sh && ./setup.sh
 ```
 
-> Script tự động kiểm tra và cài Bun, cài dependencies, tạo file `.env`, sau đó mở menu quản lý.
-
----
-
-## 🔧 Yêu cầu hệ thống
-
-| | |
-|---|---|
-| Runtime | [Bun](https://bun.sh) ≥ 1.3 (tự cài nếu chưa có) |
-| Node.js | Không cần |
-| OS | Windows 10+, macOS, Linux |
-
 ---
 
 ## 📋 Cấu hình `.env`
 
-Sau khi clone, sửa file `.env` (được tạo tự động từ `.env.example`):
-
 ```env
-# Chỉ cần điền nếu dùng Zalo OA
+# Zalo OA (lấy từ https://developers.zalo.me)
 ZALO_OA_APP_ID=
 ZALO_OA_APP_SECRET=
 ZALO_OA_ACCESS_TOKEN=
 ZALO_OA_REFRESH_TOKEN=
 
-# Đường dẫn lưu session cá nhân (mặc định: ./credentials.json)
+# Bot Cá Nhân
 ZALO_CRED_PATH=./credentials.json
 ```
 
 ---
 
-## 🚀 Chạy thủ công (nếu không dùng script)
-
-```bash
-# Cài thư viện
-bun install
-
-# Đăng nhập tài khoản Zalo cá nhân (quét QR 1 lần)
-bun run login:personal
-
-# Chạy bot (hot-reload khi phát triển)
-bun run dev
-
-# Chạy production (bundle tối ưu)
-bun run build && bun run start:prod
-```
-
----
-
-## 🗂 Cấu trúc dự án
+## 🗂 Cấu trúc
 
 ```
 ZaloHub/
 ├── src/
-│   ├── config/             # Biến môi trường & hằng số
-│   ├── personal/           # Bot Zalo Cá Nhân — 157 thao tác (zca-js)
-│   ├── oa/                 # Zalo Official Account — 11 thao tác (OpenAPI v3)
-│   ├── commands/           # Command Router + các module lệnh
-│   │   └── modules/        # general.ts, group.ts, reaction.ts,...
-│   └── index.ts            # Entrypoint tổng
+│   ├── config/             # Environment config
+│   ├── personal/           # Zalo Personal SDK — 157 thao tác
+│   │   ├── client.ts       # ZaloPersonalBot class
+│   │   └── index.ts
+│   ├── oa/                 # Zalo OA SDK — 11 thao tác
+│   │   ├── client.ts       # ZaloOABot class
+│   │   └── index.ts
+│   ├── commands/           # Command Router (extensible)
+│   │   ├── router.ts
+│   │   └── modules/
+│   └── index.ts            # Main export
+├── dist/                   # Built output (ESM + CJS + .d.ts)
+├── bin/cli.ts              # CLI entrypoint
 ├── scripts/
-│   └── login_personal.ts   # Script quét QR
-├── dist/                   # Output build (bun build)
-├── .env.example
-├── setup.bat               # Cài & chạy 1 click — Windows
-├── setup.sh                # Cài & chạy 1 click — macOS/Linux
-└── tsconfig.json
+├── setup.bat / setup.sh    # 1-click installer
+└── package.json
 ```
 
 ---
 
-## ✨ Thao tác hỗ trợ (168+)
+## ✨ 168+ Thao tác
 
-### Zalo Cá Nhân (157 thao tác)
-- 📩 **Tin nhắn & Media**: gửi text, ảnh, video, voice, link, card, chuyển tiếp, thu hồi, xóa tin
-- 😄 **Thả Emoji / Reaction**: `❤️ 👍 😂 😮 😡 💩 😘 🌹 👎 😍 🤔 😉 🎂 💣 👌 ✌️ 🙏 👏 😎 👋 😴`
-- 🎭 **Sticker**: tìm kiếm, gửi sticker theo category
-- 👥 **Quản trị nhóm**: kick, add, chặn, phân quyền phó, đổi avatar/tên, giải tán, rời nhóm, tạo link mời
-- 📊 **Poll / Bình chọn**: tạo, vote, thêm phương án, khóa poll
-- 🔔 **Nhắc hẹn & Ghi chú**: reminder, note board
-- 👤 **Bạn bè & Profile**: kết bạn, hủy bạn, chặn, tra SĐT/username, đổi biệt danh, avatar
-- 💬 **Hội thoại nâng cao**: tin nhắn tự xóa (TTL), ghim/ẩn/lưu trữ chat
-- 🤖 **Tự động hóa**: tin nhắn nhanh (Quick Reply), Auto Reply
+### Zalo Cá Nhân (157)
+| Nhóm | Số lượng | Ví dụ |
+|---|---|---|
+| Tin nhắn & Media | 14 | `sendText`, `sendImage`, `sendVideo`, `forwardMessage`, `recallMessage` |
+| Emoji / Reaction | 7 | `addReaction("❤️")`, `sendSeenEvent`, `sendTypingEvent` |
+| Sticker & File | 6 | `sendSticker`, `searchSticker`, `uploadAttachment` |
+| Quản trị nhóm | 26 | `createGroup`, `kickMember`, `addDeputy`, `changeGroupAvatar` |
+| Poll / Bình chọn | 6 | `createPoll`, `votePoll`, `lockPoll` |
+| Bạn bè & Profile | 34 | `findUserByPhone`, `sendFriendRequest`, `blockUser` |
+| Hội thoại | 13 | `setPinnedConversations`, `setMute`, `updateAutoDeleteChat` |
+| Quick Reply & Auto | 8 | `addQuickMessage`, `createAutoReply` |
+| Shop & Catalog | 10 | `createCatalog`, `createProductCatalog` |
+| Hệ thống | 12 | `getSettings`, `keepAlive`, `getQR` |
 
-### Zalo OA (11 thao tác)
-- Gửi tin CS (text/ảnh), tin giao dịch/khuyến mãi theo template
-- Quản lý follower, gán nhãn phân khúc khách hàng
-- Upload media, refresh OAuth2 token tự động
+### Zalo OA (11)
+| Nhóm | Ví dụ |
+|---|---|
+| Tin CS | `sendConsultantText`, `sendConsultantImage` |
+| Transaction/Promotion | `sendTransactionMessage`, `sendPromotionMessage` |
+| User Management | `getProfile`, `getFollowers` |
+| Tags | `getTags`, `tagUser`, `removeTag` |
+| Media & Auth | `uploadImage`, `refreshAccessToken` |
 
 ---
 
-## ⚠️ Lưu ý bảo mật
+## ⚠️ Bảo mật
 
-- File `credentials.json` (session cá nhân) và `.env` **KHÔNG được commit lên git** — đã có trong `.gitignore`.
-- Đây là **reverse API** không chính thức (zca-js) — dùng tài khoản phụ để tránh rủi ro bị hạn chế.
+- `credentials.json` và `.env` đã nằm trong `.gitignore` — **KHÔNG commit lên git**.
+- Zalo Personal dùng **reverse API** (không chính thức) — nên dùng tài khoản phụ.
 
 ---
 
 ## 📄 License
 
-MIT License
+MIT — [TheOwlOps](https://github.com/TheOwlOps)

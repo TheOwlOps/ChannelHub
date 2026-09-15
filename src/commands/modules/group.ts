@@ -12,7 +12,7 @@ export const kickCommand: Command = {
 
     for (const target of msg.mentions) {
       console.log(`[Mod] Kicking UID: ${target.uid} from group ${threadId}`);
-      await bot.kickMember(threadId, target.uid);
+      await bot.removeUserFromGroup(threadId, target.uid);
     }
     await bot.sendText(threadId, "Đã xử lý kick thành viên vi phạm.", [], true);
   }

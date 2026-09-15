@@ -1,18 +1,65 @@
 {
   "name": "zalohub",
   "version": "1.0.0",
-  "description": "ZaloHub - Modular Automation for Zalo Personal & OA (Bun Runtime)",
-  "module": "src/index.ts",
+  "description": "ZaloHub SDK - Unified Zalo automation toolkit for Personal & OA. Works with Hermes Agent, OpenClaw, and any Node/Bun/Deno project.",
+  "module": "dist/index.js",
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "bin": {
+    "zalohub": "bin/cli.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./personal": {
+      "import": "./dist/personal/index.js",
+      "types": "./dist/personal/index.d.ts"
+    },
+    "./oa": {
+      "import": "./dist/oa/index.js",
+      "types": "./dist/oa/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "login:personal": "bun run scripts/login_personal.ts",
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
-    "build": "bun build src/index.ts --outdir ./dist --target bun --minify",
-    "build:login": "bun build scripts/login_personal.ts --outdir ./dist --target bun --minify",
-    "start:prod": "bun run dist/index.js",
-    "typecheck": "bun x tsc --noEmit"
+    "build": "bun run scripts/build.ts",
+    "build:check": "bun x tsc --noEmit",
+    "prepublishOnly": "bun run build"
   },
+  "keywords": [
+    "zalo",
+    "zalo-bot",
+    "zalo-oa",
+    "zca-js",
+    "hermes",
+    "hermes-agent",
+    "openclaw",
+    "chatbot",
+    "automation",
+    "messaging",
+    "sdk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheOwlOps/ZaloHub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheOwlOps/ZaloHub/issues"
+  },
+  "homepage": "https://github.com/TheOwlOps/ZaloHub#readme",
+  "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.7",
     "zca-js": "^2.2.0"
@@ -21,5 +68,8 @@
     "@types/node": "^22.0.0",
     "bun-types": "latest",
     "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

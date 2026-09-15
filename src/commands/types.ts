@@ -1,4 +1,4 @@
-import type { ZaloPersonalBot } from "../../personal/client.js";
+import type { ZaloPersonalBot } from "../personal/client.js";
 
 export interface CommandContext {
   bot: ZaloPersonalBot;

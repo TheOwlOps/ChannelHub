@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" fill="none">
+  <defs>
+    <!-- Background Gradients -->
+    <radialGradient id="bgGlow" cx="70%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#0068FF" stop-opacity="0.32" />
+      <stop offset="45%" stop-color="#0B132B" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#050811" stop-opacity="1" />
+    </radialGradient>
+    <radialGradient id="cyanGlow" cx="20%" cy="80%" r="50%">
+      <stop offset="0%" stop-color="#00D2FF" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="purpleGlow" cx="85%" cy="75%" r="45%">
+      <stop offset="0%" stop-color="#7928CA" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Linear Gradients -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+
+    <linearGradient id="zaloGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="50%" stop-color="#0068FF" />
+      <stop offset="100%" stop-color="#0043A8" />
+    </linearGradient>
+
+    <linearGradient id="hubGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="100%" stop-color="#38EF7D" />
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.4" />
+    </linearGradient>
+
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#1E293B" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#0068FF" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Drop Shadows / Glows -->
+    <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <filter id="badgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="0.75" stroke-opacity="0.25" />
+    </pattern>
+  </defs>
+
+  <style>
+    .font-mono { font-family: 'SF Mono', Consolas, 'Fira Code', Menlo, Monaco, monospace; }
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  </style>
+
+  <!-- Background Layer -->
+  <rect width="1280" height="400" fill="#060913" />
+  <rect width="1280" height="400" fill="url(#bgGlow)" />
+  <rect width="1280" height="400" fill="url(#cyanGlow)" />
+  <rect width="1280" height="400" fill="url(#purpleGlow)" />
+  <rect width="1280" height="400" fill="url(#grid)" />
+
+  <!-- Abstract Network Nodes / Constellation -->
+  <g opacity="0.35">
+    <circle cx="950" cy="110" r="3" fill="#00D2FF" />
+    <circle cx="1180" cy="150" r="2.5" fill="#38EF7D" />
+    <circle cx="1060" cy="220" r="3.5" fill="#7928CA" />
+    <circle cx="890" cy="300" r="2" fill="#0068FF" />
+    <circle cx="1210" cy="310" r="3" fill="#00D2FF" />
+    <line x1="950" y1="110" x2="1060" y2="220" stroke="#00D2FF" stroke-width="1" stroke-dasharray="4 4" />
+    <line x1="1060" y1="220" x2="1180" y2="150" stroke="#38EF7D" stroke-width="1" stroke-dasharray="4 4" />
+    <line x1="1060" y1="220" x2="1210" y2="310" stroke="#7928CA" stroke-width="1" />
+    <line x1="890" y1="300" x2="1060" y2="220" stroke="#0068FF" stroke-width="1" />
+  </g>
+
+  <!-- ================= LEFT SIDE: BRAND & HERO CONTENT ================= -->
+
+  <!-- Pill Badge: Status / Release -->
+  <g transform="translate(80, 50)">
+    <rect width="320" height="32" rx="16" fill="#0F172A" fill-opacity="0.85" stroke="url(#borderGrad)" stroke-width="1.2" />
+    <circle cx="16" cy="16" r="4.5" fill="#10B981" filter="url(#badgeGlow)" />
+    <text x="32" y="21" fill="#94A3B8" class="font-sans" font-size="12" font-weight="600" letter-spacing="0.5">
+      v1.0.0 RELEASE <tspan fill="#38BDF8">|</tspan> <tspan fill="#F8FAFC">UNIFIED AUTOMATION SDK</tspan>
+    </text>
+  </g>
+
+  <!-- Main Logo & Title -->
+  <g transform="translate(80, 150)">
+    <!-- Icon Container / Badge -->
+    <g transform="translate(0, -50)" filter="url(#logoGlow)">
+      <!-- Outer Hexagon/Rounded Squircle -->
+      <rect width="68" height="68" rx="20" fill="url(#zaloGrad)" />
+      <!-- Stylized Z Symbol with Chat Dots -->
+      <path d="M22 22 H46 L27 46 H46" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <circle cx="44" cy="22" r="3.5" fill="#38EF7D" />
+    </g>
+
+    <!-- Title Typography -->
+    <text x="88" y="-1" class="font-sans" font-size="54" font-weight="800" letter-spacing="-1.5">
+      <tspan fill="url(#textGrad)">Zalo</tspan><tspan fill="url(#hubGrad)">Hub</tspan>
+    </text>
+
+    <!-- Subtitle / Tagline -->
+    <text x="0" y="38" class="font-sans" font-size="20" font-weight="500" fill="#E2E8F0" letter-spacing="-0.2">
+      The Ultimate Zalo Automation Toolkit &amp; Bot Framework
+    </text>
+    <text x="0" y="66" class="font-sans" font-size="14.5" font-weight="400" fill="#94A3B8">
+      Seamlessly orchestrating <tspan fill="#38BDF8" font-weight="600">Personal (157 APIs)</tspan> &amp; <tspan fill="#38EF7D" font-weight="600">Official Accounts (11 APIs)</tspan>
+    </text>
+  </g>
+
+  <!-- Tech Tags & Integrations -->
+  <g transform="translate(80, 290)">
+    <!-- Tag 1: Hermes Agent -->
+    <g transform="translate(0, 0)">
+      <rect width="138" height="34" rx="8" fill="#1E293B" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="14" y="21.5" class="font-sans" font-size="12.5" font-weight="600" fill="#F59E0B">⚡ Hermes Agent</text>
+    </g>
+
+    <!-- Tag 2: OpenClaw -->
+    <g transform="translate(148, 0)">
+      <rect width="112" height="34" rx="8" fill="#1E293B" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="14" y="21.5" class="font-sans" font-size="12.5" font-weight="600" fill="#A855F7">🦅 OpenClaw</text>
+    </g>
+
+    <!-- Tag 3: Bun & TypeScript -->
+    <g transform="translate(270, 0)">
+      <rect width="144" height="34" rx="8" fill="#1E293B" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="14" y="21.5" class="font-sans" font-size="12.5" font-weight="600" fill="#38BDF8">🥟 Bun &amp; TypeScript</text>
+    </g>
+
+    <!-- Tag 4: NPM Badge -->
+    <g transform="translate(424, 0)">
+      <rect width="168" height="34" rx="8" fill="#1E293B" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+      <text x="14" y="21.5" class="font-sans" font-size="12.5" font-weight="600" fill="#EF4444">📦 @theowlops/zalohub</text>
+    </g>
+  </g>
+
+
+  <!-- ================= RIGHT SIDE: CODE CARD / VISUAL HUD ================= -->
+
+  <g transform="translate(730, 48)">
+    <!-- Glassmorphic Card Container -->
+    <rect width="470" height="304" rx="16" fill="url(#cardGrad)" stroke="url(#borderGrad)" stroke-width="1.5" />
+
+    <!-- macOS Terminal Header -->
+    <g transform="translate(20, 18)">
+      <circle cx="0" cy="0" r="5.5" fill="#EF4444" />
+      <circle cx="18" cy="0" r="5.5" fill="#F59E0B" />
+      <circle cx="36" cy="0" r="5.5" fill="#10B981" />
+      <text x="64" y="4" class="font-mono" font-size="11.5" fill="#64748B">quickstart.ts</text>
+      
+      <!-- Action count pill badge inside window -->
+      <g transform="translate(320, -10)">
+        <rect width="90" height="20" rx="10" fill="#0068FF" fill-opacity="0.25" stroke="#00D2FF" stroke-width="0.8" />
+        <text x="12" y="14" class="font-mono" font-size="10.5" font-weight="600" fill="#38BDF8">168+ APIs</text>
+      </g>
+    </g>
+
+    <line x1="0" y1="36" x2="470" y2="36" stroke="#334155" stroke-opacity="0.5" stroke-width="1" />
+
+    <!-- Code Block Content -->
+    <g transform="translate(24, 66)" class="font-mono" font-size="12.5" xml:space="preserve">
+      <!-- Line 1: import -->
+      <text y="0">
+        <tspan fill="#F43F5E">import</tspan> <tspan fill="#CBD5E1">{ initPersonalBot }</tspan> <tspan fill="#F43F5E">from</tspan> <tspan fill="#38EF7D">"@theowlops/zalohub"</tspan><tspan fill="#94A3B8">;</tspan>
+      </text>
+
+      <!-- Line 2: init -->
+      <text y="28">
+        <tspan fill="#F43F5E">const</tspan> <tspan fill="#CBD5E1">{ bot, listenEvents }</tspan> <tspan fill="#38BDF8">=</tspan> <tspan fill="#F43F5E">await</tspan> <tspan fill="#60A5FA">initPersonalBot</tspan><tspan fill="#CBD5E1">();</tspan>
+      </text>
+
+      <!-- Line 3: event listener -->
+      <text y="64">
+        <tspan fill="#CBD5E1">listenEvents.</tspan><tspan fill="#60A5FA">on</tspan><tspan fill="#CBD5E1">(</tspan><tspan fill="#38EF7D">"message"</tspan><tspan fill="#CBD5E1">, </tspan><tspan fill="#F43F5E">async</tspan> <tspan fill="#CBD5E1">(msg) </tspan><tspan fill="#38BDF8">=&gt;</tspan> <tspan fill="#CBD5E1">{</tspan>
+      </text>
+
+      <!-- Line 4: auto reaction with emoji -->
+      <text y="92">
+        <tspan fill="#64748B">  // 1. Drop native emoji reaction</tspan>
+      </text>
+      <text y="112">
+        <tspan fill="#F43F5E">  await</tspan> <tspan fill="#CBD5E1">bot.</tspan><tspan fill="#60A5FA">addReaction</tspan><tspan fill="#CBD5E1">(msg.threadId, msg.id, </tspan><tspan fill="#F43F5E">"❤️"</tspan><tspan fill="#CBD5E1">);</tspan>
+      </text>
+
+      <!-- Line 5: AI agent reasoning reply -->
+      <text y="146">
+        <tspan fill="#64748B">  // 2. Deliver AI Agent response</tspan>
+      </text>
+      <text y="166">
+        <tspan fill="#F43F5E">  await</tspan> <tspan fill="#CBD5E1">bot.</tspan><tspan fill="#60A5FA">sendText</tspan><tspan fill="#CBD5E1">(msg.threadId, </tspan><tspan fill="#38EF7D">"✨ Handled by AI"</tspan><tspan fill="#CBD5E1">);</tspan>
+      </text>
+
+      <!-- Line 6: closing -->
+      <text y="196">
+        <tspan fill="#CBD5E1">});</tspan>
+      </text>
+    </g>
+
+    <!-- Bottom Status Bar inside Card -->
+    <g transform="translate(24, 275)">
+      <circle cx="4" cy="4" r="3.5" fill="#38EF7D" />
+      <text x="14" y="8" class="font-mono" font-size="11" fill="#64748B">Active session: <tspan fill="#94A3B8">chat-api.zalo.me:443</tspan></text>
+      <text x="340" y="8" class="font-mono" font-size="11" fill="#38BDF8">Latency 18ms</text>
+    </g>
+  </g>
+</svg>

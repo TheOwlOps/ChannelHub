@@ -1,8 +1,9 @@
 <div align="center">
 
-# ZaloHub
+<img src="./assets/banner.svg" alt="ZaloHub Banner" width="100%" />
 
-**Production-grade, modular Zalo automation SDK & bot framework for Personal & Official Accounts.**
+<br/>
+<br/>
 
 [![npm version](https://img.shields.io/npm/v/@theowlops/zalohub?color=blue&style=flat-square)](https://www.npmjs.com/package/@theowlops/zalohub)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)

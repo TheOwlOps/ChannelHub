@@ -1,82 +1,124 @@
-# ZaloHub - Modular Toolkit & SDK Automation (>160 Thao tác)
+# ZaloHub 🚀
 
-Bộ công cụ tự động hóa toàn diện hệ sinh thái Zalo chạy trên **Bun runtime**, chia làm 2 phân hệ rõ ràng:
-1. **Personal Bot (`zca-js` v2.2.0)**: **157 thao tác** (reverse web API).
-2. **Official Account (`Zalo OA API v3`)**: **11 thao tác** (Open API chính thức).
-
-Tổng cộng: **168 thao tác** được đóng gói dạng method TypeScript chuẩn type.
+> Bộ công cụ tự động hóa Zalo mã nguồn mở — hỗ trợ **168+ thao tác** trên **Tài khoản Cá Nhân** lẫn **Zalo Official Account**.  
+> Runtime: **Bun** (TypeScript native, không cần build thủ công).
 
 ---
 
-## 1. Cấu trúc thư mục
+## ⚡ Cài đặt nhanh (1 bước)
 
+### Windows
+```bat
+git clone https://github.com/TheOwlOps/ZaloHub.git
+cd ZaloHub
+setup.bat
 ```
-D:\zalohub/
-├── src/
-│   ├── config/             # Biến môi trường (.env) & hằng số hệ thống
-│   │   └── env.ts
-│   ├── personal/           # Phân hệ Zalo Cá Nhân (157 methods)
-│   │   ├── client.ts       # ZaloPersonalBot class
-│   │   └── index.ts        # Lifecycle init
-│   ├── oa/                 # Phân hệ Zalo OA (11 methods)
-│   │   ├── client.ts       # ZaloOABot class
-│   │   └── index.ts
-│   ├── commands/           # Bộ Router lệnh điều khiển độc lập
-│   │   ├── types.ts        # Command interface
-│   │   ├── router.ts       # Điều phối lệnh theo prefix (!ping, !kick,...)
-│   │   └── modules/        # Module lệnh mở rộng
-│   │       ├── general.ts
-│   │       └── group.ts
-│   └── index.ts            # Entrypoint tích hợp
-├── scripts/
-│   └── login_personal.ts   # Quét QR đăng nhập tài khoản cá nhân
-├── .env.example
-└── package.json
+
+### macOS / Linux
+```bash
+git clone https://github.com/TheOwlOps/ZaloHub.git
+cd ZaloHub
+chmod +x setup.sh && ./setup.sh
+```
+
+> Script tự động kiểm tra và cài Bun, cài dependencies, tạo file `.env`, sau đó mở menu quản lý.
+
+---
+
+## 🔧 Yêu cầu hệ thống
+
+| | |
+|---|---|
+| Runtime | [Bun](https://bun.sh) ≥ 1.3 (tự cài nếu chưa có) |
+| Node.js | Không cần |
+| OS | Windows 10+, macOS, Linux |
+
+---
+
+## 📋 Cấu hình `.env`
+
+Sau khi clone, sửa file `.env` (được tạo tự động từ `.env.example`):
+
+```env
+# Chỉ cần điền nếu dùng Zalo OA
+ZALO_OA_APP_ID=
+ZALO_OA_APP_SECRET=
+ZALO_OA_ACCESS_TOKEN=
+ZALO_OA_REFRESH_TOKEN=
+
+# Đường dẫn lưu session cá nhân (mặc định: ./credentials.json)
+ZALO_CRED_PATH=./credentials.json
 ```
 
 ---
 
-## 2. Hướng dẫn sử dụng
+## 🚀 Chạy thủ công (nếu không dùng script)
 
 ```bash
-cd D:\zalohub
+# Cài thư viện
 bun install
-```
 
-### Đăng nhập Zalo cá nhân (quét QR 1 lần):
-```bash
+# Đăng nhập tài khoản Zalo cá nhân (quét QR 1 lần)
 bun run login:personal
-```
 
-### Khởi chạy hệ thống:
-```bash
-bun run start       # Chạy thường
-bun run dev         # Chạy hot-reload (tự restart khi đổi code)
+# Chạy bot (hot-reload khi phát triển)
+bun run dev
+
+# Chạy production (bundle tối ưu)
+bun run build && bun run start:prod
 ```
 
 ---
 
-## 3. Tổng hợp 168 thao tác có sẵn
+## 🗂 Cấu trúc dự án
 
-### A. Zalo Cá Nhân (`src/personal/client.ts` - 157 thao tác)
-- **Tin nhắn & Media (14)**: `sendMessage`, `sendText`, `sendImage`, `sendVideo`, `sendVoice`, `sendLink`, `sendCard`, `sendBankCard`, `forwardMessage`, `recallMessage`, `deleteMessage`, `deleteChat`, `parseLink`, `scanURL`.
-- **Reaction & Tương tác (7)**: `addReaction` (tim/like/haha/sad...), `sendTypingEvent`, `sendSeenEvent`, `sendDeliveredEvent`, `addUnreadMark`, `removeUnreadMark`, `getUnreadMark`.
-- **Stickers & File đính kèm (6)**: `sendSticker`, `getStickers`, `searchSticker`, `getStickersDetail`, `getStickerCategoryDetail`, `uploadAttachment`.
-- **Quản trị nhóm & Link mời (26)**: `createGroup`, `disperseGroup`, `leaveGroup`, `changeGroupName`, `changeGroupAvatar`, `changeGroupOwner`, `addGroupDeputy`, `removeGroupDeputy`, `addUserToGroup`, `removeUserFromGroup` (kick), `addGroupBlockedMember`, `removeGroupBlockedMember`, `getGroupBlockedMember`, `getGroupInfo`, `getAllGroups`, `getGroupMembersInfo`, `getPendingGroupMembers`, `reviewPendingMemberRequest`, `updateGroupSettings`, `upgradeGroupToCommunity`, `inviteUserToGroups`, `getGroupLinkInfo`, `getGroupLinkDetail`, `enableGroupLink`, `disableGroupLink`, `joinGroupLink`, `getGroupInviteBoxList`, `getGroupInviteBoxInfo`, `joinGroupInviteBox`, `deleteGroupInviteBox`.
-- **Bình chọn - Polls (6)**: `createPoll`, `votePoll`, `addPollOptions`, `lockPoll`, `sharePoll`, `getPollDetail`.
-- **Bảng tin, Nhắc hẹn & Ghi chú (10)**: `createNote`, `editNote`, `getListBoard`, `getFriendBoardList`, `createReminder`, `editReminder`, `removeReminder`, `getReminder`, `getListReminder`, `getReminderResponses`.
-- **Bạn bè & Kết bạn (18)**: `getAllFriends`, `getCloseFriends`, `getFriendOnlines`, `getFriendRecommendations`, `getRelatedFriendGroup`, `sendFriendRequest`, `acceptFriendRequest`, `rejectFriendRequest`, `undoFriendRequest`, `getSentFriendRequest`, `getFriendRequestStatus`, `removeFriend`, `changeFriendAlias`, `removeFriendAlias`, `getAliasList`, `blockUser`, `unblockUser`, `blockViewFeed`.
-- **Profile & Tìm kiếm người dùng (16)**: `findUserByPhone`, `findUserByUsername`, `getMultiUsersByPhones`, `getUserInfo`, `getOwnId`, `fetchAccountInfo`, `getBizAccount`, `lastOnline`, `updateProfile`, `updateProfileBio`, `changeAccountAvatar`, `deleteAvatar`, `reuseAvatar`, `getAvatarList`, `getFullAvatar`, `getAvatarUrlProfile`.
-- **Cài đặt hội thoại (13)**: `getGroupChatHistory`, `setMute`, `getMute`, `setPinnedConversations`, `getPinConversations`, `setHiddenConversations`, `getHiddenConversations`, `updateHiddenConversPin`, `resetHiddenConversPin`, `updateAutoDeleteChat`, `getAutoDeleteChat`, `updateArchivedChatList`, `getArchivedChatList`.
-- **Tin nhắn nhanh & Tự trả lời (8)**: `addQuickMessage`, `updateQuickMessage`, `removeQuickMessage`, `getQuickMessageList`, `createAutoReply`, `updateAutoReply`, `deleteAutoReply`, `getAutoReplyList`.
-- **Nhãn & Khách hàng (2)**: `getLabels`, `updateLabels`.
-- **Danh mục sản phẩm & Shop (10)**: `createCatalog`, `updateCatalog`, `deleteCatalog`, `getCatalogList`, `registerCatalog`, `createProductCatalog`, `updateProductCatalog`, `deleteProductCatalog`, `getProductCatalogList`, `uploadProductPhoto`.
-- **Tài khoản ngân hàng Zalo (5)**: `createBankAccount`, `updateBankAccount`, `deleteBankAccount`, `getListBank`, `getListBankAccount`.
-- **Hệ thống & Session (12)**: `getSettings`, `updateSettings`, `updateActiveStatus`, `updateLang`, `getListDevice`, `getQR`, `getCookie`, `getContext`, `keepAlive`, `lostFocus`, `sendReport`, `custom`.
+```
+ZaloHub/
+├── src/
+│   ├── config/             # Biến môi trường & hằng số
+│   ├── personal/           # Bot Zalo Cá Nhân — 157 thao tác (zca-js)
+│   ├── oa/                 # Zalo Official Account — 11 thao tác (OpenAPI v3)
+│   ├── commands/           # Command Router + các module lệnh
+│   │   └── modules/        # general.ts, group.ts, reaction.ts,...
+│   └── index.ts            # Entrypoint tổng
+├── scripts/
+│   └── login_personal.ts   # Script quét QR
+├── dist/                   # Output build (bun build)
+├── .env.example
+├── setup.bat               # Cài & chạy 1 click — Windows
+├── setup.sh                # Cài & chạy 1 click — macOS/Linux
+└── tsconfig.json
+```
 
-### B. Zalo Official Account (`src/oa/client.ts` - 11 thao tác)
-- **Tư vấn (CS)**: `sendConsultantText`, `sendConsultantImage`.
-- **Thông báo & Giao dịch**: `sendTransactionMessage`, `sendPromotionMessage`.
-- **Quản lý khách**: `getProfile`, `getFollowers`.
-- **Nhãn phân loại OA**: `getTags`, `tagUser`, `removeTag`.
-- **Media & Xác thực**: `uploadImage`, `refreshAccessToken` (OAuth2).
+---
+
+## ✨ Thao tác hỗ trợ (168+)
+
+### Zalo Cá Nhân (157 thao tác)
+- 📩 **Tin nhắn & Media**: gửi text, ảnh, video, voice, link, card, chuyển tiếp, thu hồi, xóa tin
+- 😄 **Thả Emoji / Reaction**: `❤️ 👍 😂 😮 😡 💩 😘 🌹 👎 😍 🤔 😉 🎂 💣 👌 ✌️ 🙏 👏 😎 👋 😴`
+- 🎭 **Sticker**: tìm kiếm, gửi sticker theo category
+- 👥 **Quản trị nhóm**: kick, add, chặn, phân quyền phó, đổi avatar/tên, giải tán, rời nhóm, tạo link mời
+- 📊 **Poll / Bình chọn**: tạo, vote, thêm phương án, khóa poll
+- 🔔 **Nhắc hẹn & Ghi chú**: reminder, note board
+- 👤 **Bạn bè & Profile**: kết bạn, hủy bạn, chặn, tra SĐT/username, đổi biệt danh, avatar
+- 💬 **Hội thoại nâng cao**: tin nhắn tự xóa (TTL), ghim/ẩn/lưu trữ chat
+- 🤖 **Tự động hóa**: tin nhắn nhanh (Quick Reply), Auto Reply
+
+### Zalo OA (11 thao tác)
+- Gửi tin CS (text/ảnh), tin giao dịch/khuyến mãi theo template
+- Quản lý follower, gán nhãn phân khúc khách hàng
+- Upload media, refresh OAuth2 token tự động
+
+---
+
+## ⚠️ Lưu ý bảo mật
+
+- File `credentials.json` (session cá nhân) và `.env` **KHÔNG được commit lên git** — đã có trong `.gitignore`.
+- Đây là **reverse API** không chính thức (zca-js) — dùng tài khoản phụ để tránh rủi ro bị hạn chế.
+
+---
+
+## 📄 License
+
+MIT License

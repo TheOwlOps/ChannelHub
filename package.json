@@ -1,5 +1,5 @@
 {
-  "name": "zalohub",
+  "name": "@theowlops/zalohub",
   "version": "1.0.0",
   "description": "ZaloHub SDK - Unified Zalo automation toolkit for Personal & OA. Works with Hermes Agent, OpenClaw, and any Node/Bun/Deno project.",
   "module": "dist/index.js",

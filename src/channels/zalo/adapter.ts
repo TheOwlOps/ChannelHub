@@ -332,4 +332,14 @@ export class ZaloChannelAdapter extends BaseChannel {
       await this.api.addReaction(chatId, messageId, cliMsgId, reactionCode, threadType);
     });
   }
+
+  async sendTyping(chatId: string): Promise<void> {
+    if (!this.api?.sendTypingEvent) return;
+    const threadType = this.resolveThreadType(chatId);
+    try {
+      await this.api.sendTypingEvent(chatId, true, threadType);
+    } catch {
+      // ignore typing errors
+    }
+  }
 }

@@ -20519,9 +20519,9 @@ var require_websocket_server = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/wrapper.mjs
-var import_stream, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
+var import_stream2, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
 var init_wrapper = __esm(() => {
-  import_stream = __toESM(require_stream(), 1);
+  import_stream2 = __toESM(require_stream(), 1);
   import_extension = __toESM(require_extension(), 1);
   import_permessage_deflate = __toESM(require_permessage_deflate(), 1);
   import_receiver = __toESM(require_receiver(), 1);
@@ -37499,6 +37499,126 @@ class ChannelEventBus extends EventEmitter2 {
     return this.emit("status", status);
   }
 }
+// src/core/stream.ts
+class SmartStreamer {
+  adapter;
+  options;
+  constructor(adapter, options = {}) {
+    this.adapter = adapter;
+    this.options = {
+      editDebounceMs: 1000,
+      typingIntervalMs: 4000,
+      chunkMode: "sentence",
+      minSentenceLength: 60,
+      initialPlaceholder: "...",
+      ...options
+    };
+  }
+  async stream(chatId, tokenStream, sendOptions) {
+    let typingActive = true;
+    const triggerTyping = async () => {
+      if (this.adapter.sendTyping) {
+        try {
+          await this.adapter.sendTyping(chatId);
+        } catch {}
+      }
+    };
+    await triggerTyping();
+    const typingTimer = setInterval(() => {
+      if (typingActive)
+        triggerTyping();
+    }, this.options.typingIntervalMs);
+    try {
+      if (typeof this.adapter.editText === "function") {
+        return await this.streamWithEdit(chatId, tokenStream, sendOptions);
+      } else {
+        return await this.streamWithoutEdit(chatId, tokenStream, sendOptions);
+      }
+    } finally {
+      typingActive = false;
+      clearInterval(typingTimer);
+    }
+  }
+  async streamWithEdit(chatId, tokenStream, sendOptions) {
+    let accumulated = "";
+    let sentMsg = null;
+    let lastEditTime = 0;
+    let pendingEditTimeout = null;
+    const performEdit = async (text) => {
+      if (sentMsg && this.adapter.editText) {
+        await this.adapter.editText(chatId, sentMsg.messageId, text);
+        lastEditTime = Date.now();
+      }
+    };
+    for await (const chunk of tokenStream) {
+      accumulated += chunk;
+      if (!sentMsg) {
+        sentMsg = await this.adapter.sendText(chatId, accumulated.trim() || this.options.initialPlaceholder, sendOptions);
+        lastEditTime = Date.now();
+        continue;
+      }
+      const now = Date.now();
+      const elapsed = now - lastEditTime;
+      if (elapsed >= this.options.editDebounceMs) {
+        if (pendingEditTimeout) {
+          clearTimeout(pendingEditTimeout);
+          pendingEditTimeout = null;
+        }
+        await performEdit(accumulated);
+      } else if (!pendingEditTimeout) {
+        pendingEditTimeout = setTimeout(async () => {
+          pendingEditTimeout = null;
+          await performEdit(accumulated);
+        }, this.options.editDebounceMs - elapsed);
+      }
+    }
+    if (pendingEditTimeout) {
+      clearTimeout(pendingEditTimeout);
+      pendingEditTimeout = null;
+    }
+    if (sentMsg && accumulated) {
+      await performEdit(accumulated);
+      return [sentMsg];
+    } else if (!sentMsg && accumulated) {
+      const res = await this.adapter.sendText(chatId, accumulated, sendOptions);
+      return [res];
+    }
+    return sentMsg ? [sentMsg] : [];
+  }
+  async streamWithoutEdit(chatId, tokenStream, sendOptions) {
+    const results = [];
+    if (this.options.chunkMode === "accumulate") {
+      let accumulated = "";
+      for await (const chunk of tokenStream) {
+        accumulated += chunk;
+      }
+      if (accumulated.trim()) {
+        const res = await this.adapter.sendText(chatId, accumulated, sendOptions);
+        results.push(res);
+      }
+      return results;
+    }
+    let buffer = "";
+    const sentenceEndRegex = /[.?!;\n]\s*$/;
+    for await (const chunk of tokenStream) {
+      buffer += chunk;
+      if (buffer.length >= this.options.minSentenceLength && sentenceEndRegex.test(buffer.trimEnd())) {
+        const textToSend = buffer.trim();
+        if (textToSend) {
+          const res = await this.adapter.sendText(chatId, textToSend, sendOptions);
+          results.push(res);
+          buffer = "";
+        }
+      }
+    }
+    if (buffer.trim()) {
+      const res = await this.adapter.sendText(chatId, buffer.trim(), sendOptions);
+      results.push(res);
+    }
+    return results;
+  }
+}
+
 // src/core/context.ts
 function createMessageContext(message, channel) {
   return {
@@ -37516,6 +37636,17 @@ function createMessageContext(message, channel) {
       if (channel.addReaction) {
         await channel.addReaction(message.chat.id, message.id, emoji);
       }
+    },
+    sendTyping: async () => {
+      if (channel.sendTyping) {
+        await channel.sendTyping(message.chat.id);
+      }
+    },
+    stream: async (tokenStream, options) => {
+      const streamer = new SmartStreamer(channel, options);
+      return await streamer.stream(message.chat.id, tokenStream, {
+        replyToId: message.id
+      });
     }
   };
 }
@@ -37812,6 +37943,14 @@ class ZaloChannelAdapter extends BaseChannel {
     await this.enqueueSend(async () => {
       await this.api.addReaction(chatId, messageId, cliMsgId, reactionCode, threadType);
     });
+  }
+  async sendTyping(chatId) {
+    if (!this.api?.sendTypingEvent)
+      return;
+    const threadType = this.resolveThreadType(chatId);
+    try {
+      await this.api.sendTypingEvent(chatId, true, threadType);
+    } catch {}
   }
 }
 // src/personal/client.ts
@@ -38689,6 +38828,24 @@ class TelegramChannelAdapter extends BaseChannel {
       reaction: [{ type: "emoji", emoji }]
     });
   }
+  async sendTyping(chatId) {
+    await this.callApi("sendChatAction", {
+      chat_id: chatId,
+      action: "typing"
+    });
+  }
+  async editText(chatId, messageId, text) {
+    const res = await this.callApi("editMessageText", {
+      chat_id: chatId,
+      message_id: Number(messageId),
+      text
+    });
+    return {
+      messageId: String(res.message_id || messageId),
+      chatId,
+      timestamp: Date.now()
+    };
+  }
 }
 // src/channels/discord/adapter.ts
 class DiscordChannelAdapter extends BaseChannel {
@@ -38799,6 +38956,19 @@ class DiscordChannelAdapter extends BaseChannel {
     const encoded = encodeURIComponent(emoji);
     await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
   }
+  async sendTyping(chatId) {
+    await this.callApi("POST", `/channels/${chatId}/typing`, {});
+  }
+  async editText(chatId, messageId, text) {
+    const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
+      content: text
+    });
+    return {
+      messageId: String(res.id || messageId),
+      chatId,
+      timestamp: Date.now()
+    };
+  }
 }
 // src/channels/slack/adapter.ts
 class SlackChannelAdapter extends BaseChannel {
@@ -38900,6 +39070,19 @@ class SlackChannelAdapter extends BaseChannel {
       timestamp: messageId,
       name: cleanName
     });
+  }
+  async sendTyping(chatId) {}
+  async editText(chatId, messageId, text) {
+    const res = await this.callApi("chat.update", {
+      channel: chatId,
+      ts: messageId,
+      text
+    });
+    return {
+      messageId: String(res.ts || messageId),
+      chatId,
+      timestamp: Date.now()
+    };
   }
 }
 // src/bridges/mcp/index.ts
@@ -39305,6 +39488,7 @@ export {
   CommandRouter,
   DiscordChannelAdapter,
   SlackChannelAdapter,
+  SmartStreamer,
   TelegramChannelAdapter,
   WebhookBridge,
   Zalo,

@@ -124,6 +124,19 @@ class DiscordChannelAdapter extends BaseChannel {
     const encoded = encodeURIComponent(emoji);
     await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
   }
+  async sendTyping(chatId) {
+    await this.callApi("POST", `/channels/${chatId}/typing`, {});
+  }
+  async editText(chatId, messageId, text) {
+    const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
+      content: text
+    });
+    return {
+      messageId: String(res.id || messageId),
+      chatId,
+      timestamp: Date.now()
+    };
+  }
 }
 export {
   DiscordChannelAdapter

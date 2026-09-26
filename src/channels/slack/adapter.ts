@@ -130,4 +130,21 @@ export class SlackChannelAdapter extends BaseChannel {
       name: cleanName,
     });
   }
+
+  async sendTyping(chatId: string): Promise<void> {
+    // Slack doesn't have a dedicated typing API for bots; no-op for now.
+  }
+
+  async editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult> {
+    const res = await this.callApi("chat.update", {
+      channel: chatId,
+      ts: messageId,
+      text,
+    });
+    return {
+      messageId: String(res.ts || messageId),
+      chatId,
+      timestamp: Date.now(),
+    };
+  }
 }

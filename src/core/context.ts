@@ -5,6 +5,7 @@ import type {
   SentMessageResult,
   UnifiedMessage,
 } from "./types";
+import { SmartStreamer, type StreamOptions } from "./stream";
 
 export interface MessageContext {
   message: UnifiedMessage;
@@ -12,6 +13,11 @@ export interface MessageContext {
   reply: (text: string, options?: SendOptions) => Promise<SentMessageResult>;
   replyMedia: (media: MediaPayload, options?: SendOptions) => Promise<SentMessageResult>;
   react: (emoji: string) => Promise<void>;
+  sendTyping: () => Promise<void>;
+  stream: (
+    tokenStream: AsyncIterable<string>,
+    options?: StreamOptions,
+  ) => Promise<SentMessageResult[]>;
 }
 
 export function createMessageContext(
@@ -35,6 +41,17 @@ export function createMessageContext(
       if (channel.addReaction) {
         await channel.addReaction(message.chat.id, message.id, emoji);
       }
+    },
+    sendTyping: async () => {
+      if (channel.sendTyping) {
+        await channel.sendTyping(message.chat.id);
+      }
+    },
+    stream: async (tokenStream: AsyncIterable<string>, options?: StreamOptions) => {
+      const streamer = new SmartStreamer(channel, options);
+      return await streamer.stream(message.chat.id, tokenStream, {
+        replyToId: message.id,
+      });
     },
   };
 }

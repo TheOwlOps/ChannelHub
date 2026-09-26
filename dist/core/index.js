@@ -28,6 +28,126 @@ class ChannelEventBus extends EventEmitter2 {
     return this.emit("status", status);
   }
 }
+// src/core/stream.ts
+class SmartStreamer {
+  adapter;
+  options;
+  constructor(adapter, options = {}) {
+    this.adapter = adapter;
+    this.options = {
+      editDebounceMs: 1000,
+      typingIntervalMs: 4000,
+      chunkMode: "sentence",
+      minSentenceLength: 60,
+      initialPlaceholder: "...",
+      ...options
+    };
+  }
+  async stream(chatId, tokenStream, sendOptions) {
+    let typingActive = true;
+    const triggerTyping = async () => {
+      if (this.adapter.sendTyping) {
+        try {
+          await this.adapter.sendTyping(chatId);
+        } catch {}
+      }
+    };
+    await triggerTyping();
+    const typingTimer = setInterval(() => {
+      if (typingActive)
+        triggerTyping();
+    }, this.options.typingIntervalMs);
+    try {
+      if (typeof this.adapter.editText === "function") {
+        return await this.streamWithEdit(chatId, tokenStream, sendOptions);
+      } else {
+        return await this.streamWithoutEdit(chatId, tokenStream, sendOptions);
+      }
+    } finally {
+      typingActive = false;
+      clearInterval(typingTimer);
+    }
+  }
+  async streamWithEdit(chatId, tokenStream, sendOptions) {
+    let accumulated = "";
+    let sentMsg = null;
+    let lastEditTime = 0;
+    let pendingEditTimeout = null;
+    const performEdit = async (text) => {
+      if (sentMsg && this.adapter.editText) {
+        await this.adapter.editText(chatId, sentMsg.messageId, text);
+        lastEditTime = Date.now();
+      }
+    };
+    for await (const chunk of tokenStream) {
+      accumulated += chunk;
+      if (!sentMsg) {
+        sentMsg = await this.adapter.sendText(chatId, accumulated.trim() || this.options.initialPlaceholder, sendOptions);
+        lastEditTime = Date.now();
+        continue;
+      }
+      const now = Date.now();
+      const elapsed = now - lastEditTime;
+      if (elapsed >= this.options.editDebounceMs) {
+        if (pendingEditTimeout) {
+          clearTimeout(pendingEditTimeout);
+          pendingEditTimeout = null;
+        }
+        await performEdit(accumulated);
+      } else if (!pendingEditTimeout) {
+        pendingEditTimeout = setTimeout(async () => {
+          pendingEditTimeout = null;
+          await performEdit(accumulated);
+        }, this.options.editDebounceMs - elapsed);
+      }
+    }
+    if (pendingEditTimeout) {
+      clearTimeout(pendingEditTimeout);
+      pendingEditTimeout = null;
+    }
+    if (sentMsg && accumulated) {
+      await performEdit(accumulated);
+      return [sentMsg];
+    } else if (!sentMsg && accumulated) {
+      const res = await this.adapter.sendText(chatId, accumulated, sendOptions);
+      return [res];
+    }
+    return sentMsg ? [sentMsg] : [];
+  }
+  async streamWithoutEdit(chatId, tokenStream, sendOptions) {
+    const results = [];
+    if (this.options.chunkMode === "accumulate") {
+      let accumulated = "";
+      for await (const chunk of tokenStream) {
+        accumulated += chunk;
+      }
+      if (accumulated.trim()) {
+        const res = await this.adapter.sendText(chatId, accumulated, sendOptions);
+        results.push(res);
+      }
+      return results;
+    }
+    let buffer = "";
+    const sentenceEndRegex = /[.?!;\n]\s*$/;
+    for await (const chunk of tokenStream) {
+      buffer += chunk;
+      if (buffer.length >= this.options.minSentenceLength && sentenceEndRegex.test(buffer.trimEnd())) {
+        const textToSend = buffer.trim();
+        if (textToSend) {
+          const res = await this.adapter.sendText(chatId, textToSend, sendOptions);
+          results.push(res);
+          buffer = "";
+        }
+      }
+    }
+    if (buffer.trim()) {
+      const res = await this.adapter.sendText(chatId, buffer.trim(), sendOptions);
+      results.push(res);
+    }
+    return results;
+  }
+}
+
 // src/core/context.ts
 function createMessageContext(message, channel) {
   return {
@@ -45,6 +165,17 @@ function createMessageContext(message, channel) {
       if (channel.addReaction) {
         await channel.addReaction(message.chat.id, message.id, emoji);
       }
+    },
+    sendTyping: async () => {
+      if (channel.sendTyping) {
+        await channel.sendTyping(message.chat.id);
+      }
+    },
+    stream: async (tokenStream, options) => {
+      const streamer = new SmartStreamer(channel, options);
+      return await streamer.stream(message.chat.id, tokenStream, {
+        replyToId: message.id
+      });
     }
   };
 }
@@ -95,5 +226,6 @@ export {
   BaseChannel,
   ChannelEventBus,
   ChannelHub,
+  SmartStreamer,
   createMessageContext
 };

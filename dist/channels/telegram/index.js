@@ -173,6 +173,24 @@ class TelegramChannelAdapter extends BaseChannel {
       reaction: [{ type: "emoji", emoji }]
     });
   }
+  async sendTyping(chatId) {
+    await this.callApi("sendChatAction", {
+      chat_id: chatId,
+      action: "typing"
+    });
+  }
+  async editText(chatId, messageId, text) {
+    const res = await this.callApi("editMessageText", {
+      chat_id: chatId,
+      message_id: Number(messageId),
+      text
+    });
+    return {
+      messageId: String(res.message_id || messageId),
+      chatId,
+      timestamp: Date.now()
+    };
+  }
 }
 export {
   TelegramChannelAdapter

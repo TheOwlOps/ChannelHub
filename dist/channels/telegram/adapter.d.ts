@@ -18,4 +18,6 @@ export declare class TelegramChannelAdapter extends BaseChannel {
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
     addReaction(chatId: string, messageId: string, emoji: string): Promise<void>;
+    sendTyping(chatId: string): Promise<void>;
+    editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult>;
 }

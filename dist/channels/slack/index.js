@@ -116,6 +116,19 @@ class SlackChannelAdapter extends BaseChannel {
       name: cleanName
     });
   }
+  async sendTyping(chatId) {}
+  async editText(chatId, messageId, text) {
+    const res = await this.callApi("chat.update", {
+      channel: chatId,
+      ts: messageId,
+      text
+    });
+    return {
+      messageId: String(res.ts || messageId),
+      chatId,
+      timestamp: Date.now()
+    };
+  }
 }
 export {
   SlackChannelAdapter

@@ -151,4 +151,19 @@ export class DiscordChannelAdapter extends BaseChannel {
       `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`,
     );
   }
+
+  async sendTyping(chatId: string): Promise<void> {
+    await this.callApi("POST", `/channels/${chatId}/typing`, {});
+  }
+
+  async editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult> {
+    const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
+      content: text,
+    });
+    return {
+      messageId: String(res.id || messageId),
+      chatId,
+      timestamp: Date.now(),
+    };
+  }
 }

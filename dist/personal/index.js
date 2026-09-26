@@ -1,8 +1,8 @@
+import { createRequire } from "node:module";
 var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 function __accessProp(key) {
   return this[key];
@@ -31,684 +31,13 @@ var __toESM = (mod, isNodeMode, target) => {
     cache.set(mod, to);
   return to;
 };
-var __toCommonJS = (from) => {
-  var entry = (__moduleCache ??= new WeakMap).get(from), desc;
-  if (entry)
-    return entry;
-  entry = __defProp({}, "__esModule", { value: true });
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (var key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(entry, key))
-        __defProp(entry, key, {
-          get: __accessProp.bind(from, key),
-          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
-        });
-  }
-  __moduleCache.set(from, entry);
-  return entry;
-};
-var __moduleCache;
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
-var __returnValue = (v) => v;
-function __exportSetter(name, newValue) {
-  this[name] = __returnValue.bind(null, newValue);
-}
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, {
-      get: all[name],
-      enumerable: true,
-      configurable: true,
-      set: __exportSetter.bind(all, name)
-    });
-};
-var __esm = (fn, res, err) => () => {
-  if (fn)
-    try {
-      res = fn(fn = 0);
-    } catch (e) {
-      err = [e];
-    }
-  if (err)
-    throw err[0];
-  return res;
-};
-
-// node_modules/zca-js/dist/Errors/ZaloApiError.js
-var ZaloApiError;
-var init_ZaloApiError = __esm(() => {
-  ZaloApiError = class ZaloApiError extends Error {
-    constructor(message, code) {
-      super(message);
-      this.name = "ZcaApiError";
-      this.code = code || null;
-    }
-  };
-});
-
-// node_modules/zca-js/dist/Errors/ZaloApiMissingImageMetadataGetter.js
-var ZaloApiMissingImageMetadataGetter;
-var init_ZaloApiMissingImageMetadataGetter = __esm(() => {
-  init_ZaloApiError();
-  ZaloApiMissingImageMetadataGetter = class ZaloApiMissingImageMetadataGetter extends ZaloApiError {
-    constructor() {
-      super("Missing `imageMetadataGetter`. Please provide it in the Zalo object options.");
-      this.name = "ZaloApiMissingImageMetadataGetter";
-    }
-  };
-});
-
-// node_modules/zca-js/dist/Errors/ZaloApiLoginQRAborted.js
-var ZaloApiLoginQRAborted;
-var init_ZaloApiLoginQRAborted = __esm(() => {
-  init_ZaloApiError();
-  ZaloApiLoginQRAborted = class ZaloApiLoginQRAborted extends ZaloApiError {
-    constructor(message = "Operation aborted") {
-      super(message);
-      this.name = "ZaloApiLoginQRAborted";
-    }
-  };
-});
-
-// node_modules/zca-js/dist/Errors/ZaloApiLoginQRDeclined.js
-var ZaloApiLoginQRDeclined;
-var init_ZaloApiLoginQRDeclined = __esm(() => {
-  init_ZaloApiError();
-  ZaloApiLoginQRDeclined = class ZaloApiLoginQRDeclined extends ZaloApiError {
-    constructor(message = "Login QR request declined") {
-      super(message);
-      this.name = "ZaloApiLoginQRDeclined";
-    }
-  };
-});
-
-// node_modules/zca-js/dist/Errors/index.js
-var init_Errors = __esm(() => {
-  init_ZaloApiError();
-  init_ZaloApiMissingImageMetadataGetter();
-  init_ZaloApiLoginQRAborted();
-  init_ZaloApiLoginQRDeclined();
-});
-
-// node_modules/zca-js/dist/models/Attachment.js
-var init_Attachment = () => {};
-
-// node_modules/zca-js/dist/models/AutoReply.js
-var AutoReplyScope;
-var init_AutoReply = __esm(() => {
-  (function(AutoReplyScope) {
-    AutoReplyScope[AutoReplyScope["Everyone"] = 0] = "Everyone";
-    AutoReplyScope[AutoReplyScope["Stranger"] = 1] = "Stranger";
-    AutoReplyScope[AutoReplyScope["SpecificFriends"] = 2] = "SpecificFriends";
-    AutoReplyScope[AutoReplyScope["FriendsExcept"] = 3] = "FriendsExcept";
-  })(AutoReplyScope || (AutoReplyScope = {}));
-});
-
-// node_modules/zca-js/dist/models/Bank.js
-var BinBankCard;
-var init_Bank = __esm(() => {
-  (function(BinBankCard) {
-    BinBankCard[BinBankCard["ABBank"] = 970425] = "ABBank";
-    BinBankCard[BinBankCard["ACB"] = 970416] = "ACB";
-    BinBankCard[BinBankCard["Agribank"] = 970405] = "Agribank";
-    BinBankCard[BinBankCard["BIDV"] = 970418] = "BIDV";
-    BinBankCard[BinBankCard["BNP_Paribas_HCM"] = 963666] = "BNP_Paribas_HCM";
-    BinBankCard[BinBankCard["BNP_Paribas_HN"] = 963668] = "BNP_Paribas_HN";
-    BinBankCard[BinBankCard["BVBank"] = 970454] = "BVBank";
-    BinBankCard[BinBankCard["BacA_Bank"] = 970409] = "BacA_Bank";
-    BinBankCard[BinBankCard["BaoViet_Bank"] = 970438] = "BaoViet_Bank";
-    BinBankCard[BinBankCard["CAKE"] = 546034] = "CAKE";
-    BinBankCard[BinBankCard["Cathay_United_HCM"] = 168999] = "Cathay_United_HCM";
-    BinBankCard[BinBankCard["VCBNeo"] = 970444] = "VCBNeo";
-    BinBankCard[BinBankCard["CIMB_Bank"] = 422589] = "CIMB_Bank";
-    BinBankCard[BinBankCard["Coop_Bank"] = 970446] = "Coop_Bank";
-    BinBankCard[BinBankCard["DBS_Bank"] = 796500] = "DBS_Bank";
-    BinBankCard[BinBankCard["DongA_Bank"] = 970406] = "DongA_Bank";
-    BinBankCard[BinBankCard["Eximbank"] = 970431] = "Eximbank";
-    BinBankCard[BinBankCard["Citibank"] = 533948] = "Citibank";
-    BinBankCard[BinBankCard["GPBank"] = 970408] = "GPBank";
-    BinBankCard[BinBankCard["HDBank"] = 970437] = "HDBank";
-    BinBankCard[BinBankCard["HSBC"] = 458761] = "HSBC";
-    BinBankCard[BinBankCard["HongLeong_Bank"] = 970442] = "HongLeong_Bank";
-    BinBankCard[BinBankCard["IBK_HCM"] = 970456] = "IBK_HCM";
-    BinBankCard[BinBankCard["IBK_HN"] = 970455] = "IBK_HN";
-    BinBankCard[BinBankCard["Indovina_Bank"] = 970434] = "Indovina_Bank";
-    BinBankCard[BinBankCard["KBank"] = 668888] = "KBank";
-    BinBankCard[BinBankCard["KienlongBank"] = 970452] = "KienlongBank";
-    BinBankCard[BinBankCard["Kookmin_Bank_HCM"] = 970463] = "Kookmin_Bank_HCM";
-    BinBankCard[BinBankCard["Kookmin_Bank_HN"] = 970462] = "Kookmin_Bank_HN";
-    BinBankCard[BinBankCard["Liobank"] = 963369] = "Liobank";
-    BinBankCard[BinBankCard["LPBank"] = 970449] = "LPBank";
-    BinBankCard[BinBankCard["MB_Bank"] = 970422] = "MB_Bank";
-    BinBankCard[BinBankCard["MSB"] = 970426] = "MSB";
-    BinBankCard[BinBankCard["MoMo"] = 971025] = "MoMo";
-    BinBankCard[BinBankCard["NCB"] = 970419] = "NCB";
-    BinBankCard[BinBankCard["Nam_A_Bank"] = 970428] = "Nam_A_Bank";
-    BinBankCard[BinBankCard["NongHyup_Bank"] = 801011] = "NongHyup_Bank";
-    BinBankCard[BinBankCard["OCB"] = 970448] = "OCB";
-    BinBankCard[BinBankCard["Ocean_Bank"] = 970414] = "Ocean_Bank";
-    BinBankCard[BinBankCard["PGBank"] = 970430] = "PGBank";
-    BinBankCard[BinBankCard["PVcomBank"] = 970412] = "PVcomBank";
-    BinBankCard[BinBankCard["Public_Bank_Vietnam"] = 970439] = "Public_Bank_Vietnam";
-    BinBankCard[BinBankCard["SCB"] = 970429] = "SCB";
-    BinBankCard[BinBankCard["SHB"] = 970443] = "SHB";
-    BinBankCard[BinBankCard["Sacombank"] = 970403] = "Sacombank";
-    BinBankCard[BinBankCard["Saigon_Bank"] = 970400] = "Saigon_Bank";
-    BinBankCard[BinBankCard["SeABank"] = 970440] = "SeABank";
-    BinBankCard[BinBankCard["Shinhan_Bank"] = 970424] = "Shinhan_Bank";
-    BinBankCard[BinBankCard["Standard_Chartered_Vietnam"] = 970410] = "Standard_Chartered_Vietnam";
-    BinBankCard[BinBankCard["TNEX"] = 963326] = "TNEX";
-    BinBankCard[BinBankCard["TPBank"] = 970423] = "TPBank";
-    BinBankCard[BinBankCard["Techcombank"] = 970407] = "Techcombank";
-    BinBankCard[BinBankCard["Timo"] = 963388] = "Timo";
-    BinBankCard[BinBankCard["UBank"] = 546035] = "UBank";
-    BinBankCard[BinBankCard["United_Overseas_Bank_Vietnam"] = 970458] = "United_Overseas_Bank_Vietnam";
-    BinBankCard[BinBankCard["VIB"] = 970441] = "VIB";
-    BinBankCard[BinBankCard["VPBank"] = 970432] = "VPBank";
-    BinBankCard[BinBankCard["VRB"] = 970421] = "VRB";
-    BinBankCard[BinBankCard["VietABank"] = 970427] = "VietABank";
-    BinBankCard[BinBankCard["VietBank"] = 970433] = "VietBank";
-    BinBankCard[BinBankCard["Vietcombank"] = 970436] = "Vietcombank";
-    BinBankCard[BinBankCard["VietinBank"] = 970415] = "VietinBank";
-    BinBankCard[BinBankCard["Woori_Bank"] = 970457] = "Woori_Bank";
-  })(BinBankCard || (BinBankCard = {}));
-});
-
-// node_modules/zca-js/dist/models/Board.js
-var BoardType;
-var init_Board = __esm(() => {
-  (function(BoardType) {
-    BoardType[BoardType["Note"] = 1] = "Note";
-    BoardType[BoardType["PinnedMessage"] = 2] = "PinnedMessage";
-    BoardType[BoardType["Poll"] = 3] = "Poll";
-  })(BoardType || (BoardType = {}));
-});
-
-// node_modules/zca-js/dist/models/Catalog.js
-var init_Catalog = () => {};
-
-// node_modules/zca-js/dist/models/Enum.js
-var ThreadType, DestType, Gender, AvatarSize;
-var init_Enum = __esm(() => {
-  (function(ThreadType) {
-    ThreadType[ThreadType["User"] = 0] = "User";
-    ThreadType[ThreadType["Group"] = 1] = "Group";
-  })(ThreadType || (ThreadType = {}));
-  (function(DestType) {
-    DestType[DestType["Group"] = 1] = "Group";
-    DestType[DestType["User"] = 3] = "User";
-    DestType[DestType["Page"] = 5] = "Page";
-  })(DestType || (DestType = {}));
-  (function(Gender) {
-    Gender[Gender["Male"] = 0] = "Male";
-    Gender[Gender["Female"] = 1] = "Female";
-  })(Gender || (Gender = {}));
-  (function(AvatarSize) {
-    AvatarSize[AvatarSize["Small"] = 120] = "Small";
-    AvatarSize[AvatarSize["Medium"] = 180] = "Medium";
-    AvatarSize[AvatarSize["Large"] = 240] = "Large";
-    AvatarSize[AvatarSize["ExtraLarge"] = 360] = "ExtraLarge";
-  })(AvatarSize || (AvatarSize = {}));
-});
-
-// node_modules/zca-js/dist/models/DeliveredMessage.js
-class UserDeliveredMessage {
-  constructor(data) {
-    this.type = ThreadType.User;
-    this.data = data;
-    this.threadId = data.deliveredUids[0];
-    this.isSelf = false;
-  }
-}
-
-class GroupDeliveredMessage {
-  constructor(uid, data) {
-    this.type = ThreadType.Group;
-    this.data = data;
-    this.threadId = data.groupId;
-    this.isSelf = data.deliveredUids.includes(uid);
-  }
-}
-var init_DeliveredMessage = __esm(() => {
-  init_Enum();
-});
-
-// node_modules/zca-js/dist/models/FriendEvent.js
-function initializeFriendEvent(uid, data, type) {
-  if (type == FriendEventType.ADD || type == FriendEventType.REMOVE || type == FriendEventType.BLOCK || type == FriendEventType.UNBLOCK || type == FriendEventType.BLOCK_CALL || type == FriendEventType.UNBLOCK_CALL) {
-    return {
-      type,
-      data,
-      threadId: data,
-      isSelf: ![FriendEventType.ADD, FriendEventType.REMOVE].includes(type)
-    };
-  } else if (type == FriendEventType.REJECT_REQUEST || type == FriendEventType.UNDO_REQUEST) {
-    const threadId = data.toUid;
-    return {
-      type,
-      data,
-      threadId,
-      isSelf: data.fromUid == uid
-    };
-  } else if (type == FriendEventType.REQUEST) {
-    const threadId = data.toUid;
-    return {
-      type,
-      data,
-      threadId,
-      isSelf: data.fromUid == uid
-    };
-  } else if (type == FriendEventType.SEEN_FRIEND_REQUEST) {
-    return {
-      type,
-      data,
-      threadId: uid,
-      isSelf: true
-    };
-  } else if (type == FriendEventType.PIN_CREATE) {
-    const threadId = data.conversationId;
-    return {
-      type,
-      data,
-      threadId,
-      isSelf: data.actorId == uid
-    };
-  } else if (type == FriendEventType.PIN_UNPIN) {
-    const threadId = data.conversationId;
-    return {
-      type,
-      data,
-      threadId,
-      isSelf: data.actorId == uid
-    };
-  } else {
-    return {
-      type: FriendEventType.UNKNOWN,
-      data: JSON.stringify(data),
-      threadId: "",
-      isSelf: false
-    };
-  }
-}
-var FriendEventType;
-var init_FriendEvent = __esm(() => {
-  (function(FriendEventType) {
-    FriendEventType[FriendEventType["ADD"] = 0] = "ADD";
-    FriendEventType[FriendEventType["REMOVE"] = 1] = "REMOVE";
-    FriendEventType[FriendEventType["REQUEST"] = 2] = "REQUEST";
-    FriendEventType[FriendEventType["UNDO_REQUEST"] = 3] = "UNDO_REQUEST";
-    FriendEventType[FriendEventType["REJECT_REQUEST"] = 4] = "REJECT_REQUEST";
-    FriendEventType[FriendEventType["SEEN_FRIEND_REQUEST"] = 5] = "SEEN_FRIEND_REQUEST";
-    FriendEventType[FriendEventType["BLOCK"] = 6] = "BLOCK";
-    FriendEventType[FriendEventType["UNBLOCK"] = 7] = "UNBLOCK";
-    FriendEventType[FriendEventType["BLOCK_CALL"] = 8] = "BLOCK_CALL";
-    FriendEventType[FriendEventType["UNBLOCK_CALL"] = 9] = "UNBLOCK_CALL";
-    FriendEventType[FriendEventType["PIN_UNPIN"] = 10] = "PIN_UNPIN";
-    FriendEventType[FriendEventType["PIN_CREATE"] = 11] = "PIN_CREATE";
-    FriendEventType[FriendEventType["UNKNOWN"] = 12] = "UNKNOWN";
-  })(FriendEventType || (FriendEventType = {}));
-});
-
-// node_modules/zca-js/dist/models/Group.js
-var GroupTopicType, GroupType;
-var init_Group = __esm(() => {
-  (function(GroupTopicType) {
-    GroupTopicType[GroupTopicType["Note"] = 0] = "Note";
-    GroupTopicType[GroupTopicType["Message"] = 2] = "Message";
-    GroupTopicType[GroupTopicType["Poll"] = 3] = "Poll";
-  })(GroupTopicType || (GroupTopicType = {}));
-  (function(GroupType) {
-    GroupType[GroupType["Group"] = 1] = "Group";
-    GroupType[GroupType["Community"] = 2] = "Community";
-  })(GroupType || (GroupType = {}));
-});
-
-// node_modules/zca-js/dist/models/GroupEvent.js
-function initializeGroupEvent(uid, data, type, act) {
-  var _a;
-  const threadId = "group_id" in data ? data.group_id : data.groupId;
-  if (type == GroupEventType.JOIN_REQUEST) {
-    return { type, act, data, threadId, isSelf: false };
-  } else if (type == GroupEventType.NEW_PIN_TOPIC || type == GroupEventType.UNPIN_TOPIC || type == GroupEventType.UPDATE_PIN_TOPIC) {
-    return {
-      type,
-      act,
-      data,
-      threadId,
-      isSelf: data.actorId == uid
-    };
-  } else if (type == GroupEventType.REORDER_PIN_TOPIC) {
-    return {
-      type,
-      act,
-      data,
-      threadId,
-      isSelf: data.actorId == uid
-    };
-  } else if (type == GroupEventType.UPDATE_BOARD || type == GroupEventType.REMOVE_BOARD) {
-    return {
-      type,
-      act,
-      data,
-      threadId,
-      isSelf: data.sourceId == uid
-    };
-  } else if (type == GroupEventType.ACCEPT_REMIND || type == GroupEventType.REJECT_REMIND) {
-    return {
-      type,
-      act,
-      data,
-      threadId,
-      isSelf: data.updateMembers.some((memberId) => memberId == uid)
-    };
-  } else if (type == GroupEventType.REMIND_TOPIC) {
-    return {
-      type,
-      act,
-      data,
-      threadId,
-      isSelf: data.creatorId == uid
-    };
-  } else {
-    const baseData = data;
-    return {
-      type,
-      act,
-      data: baseData,
-      threadId,
-      isSelf: ((_a = baseData.updateMembers) === null || _a === undefined ? undefined : _a.some((member) => member.id == uid)) || baseData.sourceId == uid
-    };
-  }
-}
-var GroupEventType;
-var init_GroupEvent = __esm(() => {
-  (function(GroupEventType) {
-    GroupEventType["JOIN_REQUEST"] = "join_request";
-    GroupEventType["JOIN"] = "join";
-    GroupEventType["LEAVE"] = "leave";
-    GroupEventType["REMOVE_MEMBER"] = "remove_member";
-    GroupEventType["BLOCK_MEMBER"] = "block_member";
-    GroupEventType["UPDATE_SETTING"] = "update_setting";
-    GroupEventType["UPDATE"] = "update";
-    GroupEventType["NEW_LINK"] = "new_link";
-    GroupEventType["ADD_ADMIN"] = "add_admin";
-    GroupEventType["REMOVE_ADMIN"] = "remove_admin";
-    GroupEventType["NEW_PIN_TOPIC"] = "new_pin_topic";
-    GroupEventType["UPDATE_PIN_TOPIC"] = "update_pin_topic";
-    GroupEventType["REORDER_PIN_TOPIC"] = "reorder_pin_topic";
-    GroupEventType["UPDATE_BOARD"] = "update_board";
-    GroupEventType["REMOVE_BOARD"] = "remove_board";
-    GroupEventType["UPDATE_TOPIC"] = "update_topic";
-    GroupEventType["UNPIN_TOPIC"] = "unpin_topic";
-    GroupEventType["REMOVE_TOPIC"] = "remove_topic";
-    GroupEventType["ACCEPT_REMIND"] = "accept_remind";
-    GroupEventType["REJECT_REMIND"] = "reject_remind";
-    GroupEventType["REMIND_TOPIC"] = "remind_topic";
-    GroupEventType["UPDATE_AVATAR"] = "update_avatar";
-    GroupEventType["UNKNOWN"] = "unknown";
-  })(GroupEventType || (GroupEventType = {}));
-});
-
-// node_modules/zca-js/dist/models/Message.js
-class UserMessage {
-  constructor(uid, data) {
-    this.type = ThreadType.User;
-    this.data = data;
-    this.threadId = data.uidFrom == "0" ? data.idTo : data.uidFrom;
-    this.isSelf = data.uidFrom == "0";
-    if (data.idTo == "0")
-      data.idTo = uid;
-    if (data.uidFrom == "0")
-      data.uidFrom = uid;
-    if (data.quote) {
-      data.quote.ownerId = String(data.quote.ownerId);
-    }
-  }
-}
-
-class GroupMessage {
-  constructor(uid, data) {
-    this.type = ThreadType.Group;
-    this.data = data;
-    this.threadId = data.idTo;
-    this.isSelf = data.uidFrom == "0";
-    if (data.uidFrom == "0")
-      data.uidFrom = uid;
-    if (data.quote) {
-      data.quote.ownerId = String(data.quote.ownerId);
-    }
-  }
-}
-var init_Message = __esm(() => {
-  init_Enum();
-});
-
-// node_modules/zca-js/dist/models/ProductCatalog.js
-var init_ProductCatalog = () => {};
-
-// node_modules/zca-js/dist/models/QuickMessage.js
-var init_QuickMessage = () => {};
-
-// node_modules/zca-js/dist/models/Reaction.js
-class Reaction {
-  constructor(uid, data, isGroup) {
-    this.data = data;
-    this.threadId = isGroup || data.uidFrom == "0" ? data.idTo : data.uidFrom;
-    this.isSelf = data.uidFrom == "0";
-    this.isGroup = isGroup;
-    if (data.idTo == "0")
-      data.idTo = uid;
-    if (data.uidFrom == "0")
-      data.uidFrom = uid;
-  }
-}
-var Reactions;
-var init_Reaction = __esm(() => {
-  (function(Reactions) {
-    Reactions["HEART"] = "/-heart";
-    Reactions["LIKE"] = "/-strong";
-    Reactions["HAHA"] = ":>";
-    Reactions["WOW"] = ":o";
-    Reactions["CRY"] = ":-((";
-    Reactions["ANGRY"] = ":-h";
-    Reactions["KISS"] = ":-*";
-    Reactions["TEARS_OF_JOY"] = ":')";
-    Reactions["SHIT"] = "/-shit";
-    Reactions["ROSE"] = "/-rose";
-    Reactions["BROKEN_HEART"] = "/-break";
-    Reactions["DISLIKE"] = "/-weak";
-    Reactions["LOVE"] = ";xx";
-    Reactions["CONFUSED"] = ";-/";
-    Reactions["WINK"] = ";-)";
-    Reactions["FADE"] = "/-fade";
-    Reactions["SUN"] = "/-li";
-    Reactions["BIRTHDAY"] = "/-bd";
-    Reactions["BOMB"] = "/-bome";
-    Reactions["OK"] = "/-ok";
-    Reactions["PEACE"] = "/-v";
-    Reactions["THANKS"] = "/-thanks";
-    Reactions["PUNCH"] = "/-punch";
-    Reactions["SHARE"] = "/-share";
-    Reactions["PRAY"] = "_()_";
-    Reactions["NO"] = "/-no";
-    Reactions["BAD"] = "/-bad";
-    Reactions["LOVE_YOU"] = "/-loveu";
-    Reactions["SAD"] = "--b";
-    Reactions["VERY_SAD"] = ":((";
-    Reactions["COOL"] = "x-)";
-    Reactions["NERD"] = "8-)";
-    Reactions["BIG_SMILE"] = ";-d";
-    Reactions["SUNGLASSES"] = "b-)";
-    Reactions["NEUTRAL"] = ":--|";
-    Reactions["SAD_FACE"] = "p-(";
-    Reactions["BYE"] = ":-bye";
-    Reactions["SLEEPY"] = "|-)";
-    Reactions["WIPE"] = ":wipe";
-    Reactions["DIG"] = ":-dig";
-    Reactions["ANGUISH"] = "&-(";
-    Reactions["HANDCLAP"] = ":handclap";
-    Reactions["ANGRY_FACE"] = ">-|";
-    Reactions["F_CHAIR"] = ":-f";
-    Reactions["L_CHAIR"] = ":-l";
-    Reactions["R_CHAIR"] = ":-r";
-    Reactions["SILENT"] = ";-x";
-    Reactions["SURPRISE"] = ":-o";
-    Reactions["EMBARRASSED"] = ";-s";
-    Reactions["AFRAID"] = ";-a";
-    Reactions["SAD2"] = ":-<";
-    Reactions["BIG_LAUGH"] = ":))";
-    Reactions["RICH"] = "$-)";
-    Reactions["BEER"] = "/-beer";
-    Reactions["NONE"] = "";
-  })(Reactions || (Reactions = {}));
-});
-
-// node_modules/zca-js/dist/models/Reminder.js
-var ReminderRepeatMode;
-var init_Reminder = __esm(() => {
-  (function(ReminderRepeatMode) {
-    ReminderRepeatMode[ReminderRepeatMode["None"] = 0] = "None";
-    ReminderRepeatMode[ReminderRepeatMode["Daily"] = 1] = "Daily";
-    ReminderRepeatMode[ReminderRepeatMode["Weekly"] = 2] = "Weekly";
-    ReminderRepeatMode[ReminderRepeatMode["Monthly"] = 3] = "Monthly";
-  })(ReminderRepeatMode || (ReminderRepeatMode = {}));
-});
-
-// node_modules/zca-js/dist/models/SeenMessage.js
-class UserSeenMessage {
-  constructor(data) {
-    this.type = ThreadType.User;
-    this.data = data;
-    this.threadId = data.idTo;
-    this.isSelf = false;
-  }
-}
-
-class GroupSeenMessage {
-  constructor(uid, data) {
-    this.type = ThreadType.Group;
-    this.data = data;
-    this.threadId = data.groupId;
-    this.isSelf = data.seenUids.includes(uid);
-  }
-}
-var init_SeenMessage = __esm(() => {
-  init_Enum();
-});
-
-// node_modules/zca-js/dist/models/Typing.js
-class UserTyping {
-  constructor(data) {
-    this.type = ThreadType.User;
-    this.data = data;
-    this.threadId = data.uid;
-    this.isSelf = false;
-  }
-}
-
-class GroupTyping {
-  constructor(data) {
-    this.type = ThreadType.Group;
-    this.data = data;
-    this.threadId = data.gid;
-    this.isSelf = false;
-  }
-}
-var init_Typing = __esm(() => {
-  init_Enum();
-});
-
-// node_modules/zca-js/dist/models/Undo.js
-class Undo {
-  constructor(uid, data, isGroup) {
-    this.data = data;
-    this.threadId = isGroup || data.uidFrom == "0" ? data.idTo : data.uidFrom;
-    this.isSelf = data.uidFrom == "0";
-    this.isGroup = isGroup;
-    if (data.idTo == "0")
-      data.idTo = uid;
-    if (data.uidFrom == "0")
-      data.uidFrom = uid;
-  }
-}
-
-// node_modules/zca-js/dist/models/User.js
-var init_User = () => {};
-
-// node_modules/zca-js/dist/models/ZBusiness.js
-var BusinessCategory, BusinessCategoryName;
-var init_ZBusiness = __esm(() => {
-  (function(BusinessCategory) {
-    BusinessCategory[BusinessCategory["Other"] = 0] = "Other";
-    BusinessCategory[BusinessCategory["RealEstate"] = 1] = "RealEstate";
-    BusinessCategory[BusinessCategory["TechnologyAndDevices"] = 2] = "TechnologyAndDevices";
-    BusinessCategory[BusinessCategory["TravelAndHospitality"] = 3] = "TravelAndHospitality";
-    BusinessCategory[BusinessCategory["EducationAndTraining"] = 4] = "EducationAndTraining";
-    BusinessCategory[BusinessCategory["ShoppingAndRetail"] = 5] = "ShoppingAndRetail";
-    BusinessCategory[BusinessCategory["CosmeticsAndBeauty"] = 6] = "CosmeticsAndBeauty";
-    BusinessCategory[BusinessCategory["RestaurantAndCafe"] = 7] = "RestaurantAndCafe";
-    BusinessCategory[BusinessCategory["AutoAndMotorbike"] = 8] = "AutoAndMotorbike";
-    BusinessCategory[BusinessCategory["FashionAndApparel"] = 9] = "FashionAndApparel";
-    BusinessCategory[BusinessCategory["FoodAndBeverage"] = 10] = "FoodAndBeverage";
-    BusinessCategory[BusinessCategory["MediaAndEntertainment"] = 11] = "MediaAndEntertainment";
-    BusinessCategory[BusinessCategory["InternalCommunications"] = 12] = "InternalCommunications";
-    BusinessCategory[BusinessCategory["Transportation"] = 13] = "Transportation";
-    BusinessCategory[BusinessCategory["Telecommunications"] = 14] = "Telecommunications";
-  })(BusinessCategory || (BusinessCategory = {}));
-  BusinessCategoryName = {
-    [BusinessCategory.Other]: "Dịch vụ khác (Không hiển thị)",
-    [BusinessCategory.RealEstate]: "Bất động sản",
-    [BusinessCategory.TechnologyAndDevices]: "Công nghệ & Thiết bị",
-    [BusinessCategory.TravelAndHospitality]: "Du lịch & Lưu trú",
-    [BusinessCategory.EducationAndTraining]: "Giáo dục & Đào tạo",
-    [BusinessCategory.ShoppingAndRetail]: "Mua sắm & Bán lẻ",
-    [BusinessCategory.CosmeticsAndBeauty]: "Mỹ phẩm & Làm đẹp",
-    [BusinessCategory.RestaurantAndCafe]: "Nhà hàng & Quán",
-    [BusinessCategory.AutoAndMotorbike]: "Ô tô & Xe máy",
-    [BusinessCategory.FashionAndApparel]: "Thời trang & May mặc",
-    [BusinessCategory.FoodAndBeverage]: "Thực phẩm & Đồ uống",
-    [BusinessCategory.MediaAndEntertainment]: "Truyền thông & Giải trí",
-    [BusinessCategory.InternalCommunications]: "Truyền thông nội bộ",
-    [BusinessCategory.Transportation]: "Vận tải",
-    [BusinessCategory.Telecommunications]: "Viễn thông"
-  };
-});
-
-// node_modules/zca-js/dist/models/Label.js
-var init_Label = () => {};
-
-// node_modules/zca-js/dist/models/Sticker.js
-var init_Sticker = () => {};
-
-// node_modules/zca-js/dist/models/index.js
-var init_models = __esm(() => {
-  init_Attachment();
-  init_AutoReply();
-  init_Bank();
-  init_Board();
-  init_Catalog();
-  init_DeliveredMessage();
-  init_Enum();
-  init_FriendEvent();
-  init_Group();
-  init_GroupEvent();
-  init_Message();
-  init_ProductCatalog();
-  init_QuickMessage();
-  init_Reaction();
-  init_Reminder();
-  init_SeenMessage();
-  init_Typing();
-  init_User();
-  init_ZBusiness();
-  init_Label();
-  init_Sticker();
-});
+var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
 // node_modules/tough-cookie/dist/pathMatch.js
-var require_pathMatch = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.pathMatch = pathMatch;
+var require_pathMatch = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.pathMatch = pathMatch;
   function pathMatch(reqPath, cookiePath) {
     if (cookiePath === reqPath) {
       return true;
@@ -727,7 +56,7 @@ var require_pathMatch = __commonJS(function(exports2) {
 });
 
 // node_modules/tldts/dist/cjs/index.js
-var require_cjs = __commonJS(function(exports2) {
+var require_cjs = __commonJS(function(exports) {
   function shareSameDomainSuffix(hostname, vhost) {
     if (hostname.endsWith(vhost)) {
       return hostname.length === vhost.length || hostname[hostname.length - vhost.length - 1] === ".";
@@ -1131,18 +460,18 @@ var require_cjs = __commonJS(function(exports2) {
     resetResult(RESULT);
     return parseImpl(url, 5, suffixLookup, options, RESULT).domainWithoutSuffix;
   }
-  exports2.getDomain = getDomain;
-  exports2.getDomainWithoutSuffix = getDomainWithoutSuffix;
-  exports2.getHostname = getHostname;
-  exports2.getPublicSuffix = getPublicSuffix;
-  exports2.getSubdomain = getSubdomain;
-  exports2.parse = parse;
+  exports.getDomain = getDomain;
+  exports.getDomainWithoutSuffix = getDomainWithoutSuffix;
+  exports.getHostname = getHostname;
+  exports.getPublicSuffix = getPublicSuffix;
+  exports.getSubdomain = getSubdomain;
+  exports.parse = parse;
 });
 
 // node_modules/tough-cookie/dist/getPublicSuffix.js
-var require_getPublicSuffix = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.getPublicSuffix = getPublicSuffix;
+var require_getPublicSuffix = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.getPublicSuffix = getPublicSuffix;
   var tldts_1 = require_cjs();
   var SPECIAL_USE_DOMAINS = ["local", "example", "invalid", "localhost", "test"];
   var SPECIAL_TREATMENT_DOMAINS = ["localhost", "invalid"];
@@ -1177,9 +506,9 @@ var require_getPublicSuffix = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/permuteDomain.js
-var require_permuteDomain = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.permuteDomain = permuteDomain;
+var require_permuteDomain = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.permuteDomain = permuteDomain;
   var getPublicSuffix_1 = require_getPublicSuffix();
   function permuteDomain(domain, allowSpecialUseDomain) {
     const pubSuf = (0, getPublicSuffix_1.getPublicSuffix)(domain, {
@@ -1208,9 +537,9 @@ var require_permuteDomain = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/store.js
-var require_store = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.Store = undefined;
+var require_store = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.Store = undefined;
 
   class Store {
     constructor() {
@@ -1241,20 +570,20 @@ var require_store = __commonJS(function(exports2) {
       throw new Error("getAllCookies is not implemented (therefore jar cannot be serialized)");
     }
   }
-  exports2.Store = Store;
+  exports.Store = Store;
 });
 
 // node_modules/tough-cookie/dist/utils.js
-var require_utils = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.safeToString = exports2.objectToString = undefined;
-  exports2.createPromiseCallback = createPromiseCallback;
-  exports2.inOperator = inOperator;
+var require_utils = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.safeToString = exports.objectToString = undefined;
+  exports.createPromiseCallback = createPromiseCallback;
+  exports.inOperator = inOperator;
   var objectToString = (obj) => Object.prototype.toString.call(obj);
-  exports2.objectToString = objectToString;
+  exports.objectToString = objectToString;
   var safeArrayToString = (arr, seenArrays) => {
     if (typeof arr.join !== "function")
-      return (0, exports2.objectToString)(arr);
+      return (0, exports.objectToString)(arr);
     seenArrays.add(arr);
     const mapped = arr.map((val) => val === null || val === undefined || seenArrays.has(val) ? "" : safeToStringImpl(val, seenArrays));
     return mapped.join();
@@ -1265,11 +594,11 @@ var require_utils = __commonJS(function(exports2) {
     } else if (typeof val.toString === "function") {
       return Array.isArray(val) ? safeArrayToString(val, seenArrays) : String(val);
     } else {
-      return (0, exports2.objectToString)(val);
+      return (0, exports.objectToString)(val);
     }
   };
   var safeToString = (val) => safeToStringImpl(val);
-  exports2.safeToString = safeToString;
+  exports.safeToString = safeToString;
   function createPromiseCallback(cb) {
     let callback;
     let resolve;
@@ -1320,9 +649,9 @@ var require_utils = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/memstore.js
-var require_memstore = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.MemoryCookieStore = undefined;
+var require_memstore = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.MemoryCookieStore = undefined;
   var pathMatch_1 = require_pathMatch();
   var permuteDomain_1 = require_permuteDomain();
   var store_1 = require_store();
@@ -1457,20 +786,20 @@ var require_memstore = __commonJS(function(exports2) {
       return promiseCallback.resolve(cookies);
     }
   }
-  exports2.MemoryCookieStore = MemoryCookieStore;
+  exports.MemoryCookieStore = MemoryCookieStore;
 });
 
 // node_modules/tough-cookie/dist/validators.js
-var require_validators = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.ParameterError = undefined;
-  exports2.isNonEmptyString = isNonEmptyString;
-  exports2.isDate = isDate;
-  exports2.isEmptyString = isEmptyString;
-  exports2.isString = isString;
-  exports2.isObject = isObject;
-  exports2.isInteger = isInteger;
-  exports2.validate = validate;
+var require_validators = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.ParameterError = undefined;
+  exports.isNonEmptyString = isNonEmptyString;
+  exports.isDate = isDate;
+  exports.isEmptyString = isEmptyString;
+  exports.isString = isString;
+  exports.isObject = isObject;
+  exports.isInteger = isInteger;
+  exports.validate = validate;
   var utils_1 = require_utils();
   function isNonEmptyString(data) {
     return isString(data) && data !== "";
@@ -1506,26 +835,26 @@ var require_validators = __commonJS(function(exports2) {
 
   class ParameterError extends Error {
   }
-  exports2.ParameterError = ParameterError;
+  exports.ParameterError = ParameterError;
 });
 
 // node_modules/tough-cookie/dist/version.js
-var require_version = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.version = undefined;
-  exports2.version = "5.1.2";
+var require_version = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.version = undefined;
+  exports.version = "5.1.2";
 });
 
 // node_modules/tough-cookie/dist/cookie/constants.js
-var require_constants = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.IP_V6_REGEX_OBJECT = exports2.PrefixSecurityEnum = undefined;
-  exports2.PrefixSecurityEnum = {
+var require_constants = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.IP_V6_REGEX_OBJECT = exports.PrefixSecurityEnum = undefined;
+  exports.PrefixSecurityEnum = {
     SILENT: "silent",
     STRICT: "strict",
     DISABLED: "unsafe-disabled"
   };
-  Object.freeze(exports2.PrefixSecurityEnum);
+  Object.freeze(exports.PrefixSecurityEnum);
   var IP_V6_REGEX = `
 \\[?(?:
 (?:[a-fA-F\\d]{1,4}:){7}(?:[a-fA-F\\d]{1,4}|:)|
@@ -1538,13 +867,13 @@ var require_constants = __commonJS(function(exports2) {
 (?::(?:(?::[a-fA-F\\d]{1,4}){0,5}:(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}|(?::[a-fA-F\\d]{1,4}){1,7}|:))
 )(?:%[0-9a-zA-Z]{1,})?\\]?
 `.replace(/\s*\/\/.*$/gm, "").replace(/\n/g, "").trim();
-  exports2.IP_V6_REGEX_OBJECT = new RegExp(`^${IP_V6_REGEX}$`);
+  exports.IP_V6_REGEX_OBJECT = new RegExp(`^${IP_V6_REGEX}$`);
 });
 
 // node_modules/tough-cookie/dist/cookie/canonicalDomain.js
-var require_canonicalDomain = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.canonicalDomain = canonicalDomain;
+var require_canonicalDomain = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.canonicalDomain = canonicalDomain;
   var constants_1 = require_constants();
   function domainToASCII(domain) {
     return new URL(`http://${domain}`).hostname;
@@ -1571,18 +900,18 @@ var require_canonicalDomain = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/formatDate.js
-var require_formatDate = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.formatDate = formatDate;
+var require_formatDate = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.formatDate = formatDate;
   function formatDate(date) {
     return date.toUTCString();
   }
 });
 
 // node_modules/tough-cookie/dist/cookie/parseDate.js
-var require_parseDate = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.parseDate = parseDate;
+var require_parseDate = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.parseDate = parseDate;
   var DATE_DELIM = /[\x09\x20-\x2F\x3B-\x40\x5B-\x60\x7B-\x7E]/;
   var MONTH_TO_NUM = {
     jan: 0,
@@ -1725,8 +1054,8 @@ var require_parseDate = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/cookie.js
-var require_cookie = __commonJS(function(exports2) {
-  var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+var require_cookie = __commonJS(function(exports) {
+  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
     if (k2 === undefined)
       k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -1741,12 +1070,12 @@ var require_cookie = __commonJS(function(exports2) {
       k2 = k;
     o[k2] = m[k];
   });
-  var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
   } : function(o, v) {
     o["default"] = v;
   });
-  var __importStar = exports2 && exports2.__importStar || function(mod) {
+  var __importStar = exports && exports.__importStar || function(mod) {
     if (mod && mod.__esModule)
       return mod;
     var result = {};
@@ -1758,8 +1087,8 @@ var require_cookie = __commonJS(function(exports2) {
     __setModuleDefault(result, mod);
     return result;
   };
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.Cookie = undefined;
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.Cookie = undefined;
   /*!
    * Copyright (c) 2015-2020, Salesforce.com, Inc.
    * All rights reserved.
@@ -2256,7 +1585,7 @@ var require_cookie = __commonJS(function(exports2) {
       return fromJSON(str);
     }
   }
-  exports2.Cookie = Cookie;
+  exports.Cookie = Cookie;
   Cookie.cookiesCreated = 0;
   Cookie.sameSiteLevel = {
     strict: 3,
@@ -2286,9 +1615,9 @@ var require_cookie = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/cookieCompare.js
-var require_cookieCompare = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.cookieCompare = cookieCompare;
+var require_cookieCompare = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.cookieCompare = cookieCompare;
   var MAX_TIME = 2147483647000;
   function cookieCompare(a, b) {
     let cmp;
@@ -2310,9 +1639,9 @@ var require_cookieCompare = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/defaultPath.js
-var require_defaultPath = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.defaultPath = defaultPath;
+var require_defaultPath = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.defaultPath = defaultPath;
   function defaultPath(path) {
     if (!path || path.slice(0, 1) !== "/") {
       return "/";
@@ -2329,9 +1658,9 @@ var require_defaultPath = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/domainMatch.js
-var require_domainMatch = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.domainMatch = domainMatch;
+var require_domainMatch = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.domainMatch = domainMatch;
   var canonicalDomain_1 = require_canonicalDomain();
   var IP_REGEX_LOWERCASE = /(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$)|(?:^(?:(?:[a-f\d]{1,4}:){7}(?:[a-f\d]{1,4}|:)|(?:[a-f\d]{1,4}:){6}(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|:[a-f\d]{1,4}|:)|(?:[a-f\d]{1,4}:){5}(?::(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,2}|:)|(?:[a-f\d]{1,4}:){4}(?:(?::[a-f\d]{1,4}){0,1}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,3}|:)|(?:[a-f\d]{1,4}:){3}(?:(?::[a-f\d]{1,4}){0,2}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,4}|:)|(?:[a-f\d]{1,4}:){2}(?:(?::[a-f\d]{1,4}){0,3}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,5}|:)|(?:[a-f\d]{1,4}:){1}(?:(?::[a-f\d]{1,4}){0,4}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,6}|:)|(?::(?:(?::[a-f\d]{1,4}){0,5}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,7}|:)))$)/;
   function domainMatch(domain, cookieDomain, canonicalize) {
@@ -2368,8 +1697,8 @@ var require_domainMatch = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/cookieJar.js
-var require_cookieJar = __commonJS(function(exports2) {
-  var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+var require_cookieJar = __commonJS(function(exports) {
+  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
     if (k2 === undefined)
       k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -2384,12 +1713,12 @@ var require_cookieJar = __commonJS(function(exports2) {
       k2 = k;
     o[k2] = m[k];
   });
-  var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
   } : function(o, v) {
     o["default"] = v;
   });
-  var __importStar = exports2 && exports2.__importStar || function(mod) {
+  var __importStar = exports && exports.__importStar || function(mod) {
     if (mod && mod.__esModule)
       return mod;
     var result = {};
@@ -2401,8 +1730,8 @@ var require_cookieJar = __commonJS(function(exports2) {
     __setModuleDefault(result, mod);
     return result;
   };
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.CookieJar = undefined;
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.CookieJar = undefined;
   var getPublicSuffix_1 = require_getPublicSuffix();
   var validators = __importStar(require_validators());
   var validators_1 = require_validators();
@@ -3030,13 +2359,13 @@ var require_cookieJar = __commonJS(function(exports2) {
       return CookieJar.deserializeSync(jsonString, store);
     }
   }
-  exports2.CookieJar = CookieJar;
+  exports.CookieJar = CookieJar;
 });
 
 // node_modules/tough-cookie/dist/cookie/permutePath.js
-var require_permutePath = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.permutePath = permutePath;
+var require_permutePath = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.permutePath = permutePath;
   function permutePath(path) {
     if (path === "/") {
       return ["/"];
@@ -3056,77 +2385,77 @@ var require_permutePath = __commonJS(function(exports2) {
 });
 
 // node_modules/tough-cookie/dist/cookie/index.js
-var require_cookie2 = __commonJS(function(exports2) {
-  Object.defineProperty(exports2, "__esModule", { value: true });
-  exports2.permutePath = exports2.parseDate = exports2.formatDate = exports2.domainMatch = exports2.defaultPath = exports2.CookieJar = exports2.cookieCompare = exports2.Cookie = exports2.PrefixSecurityEnum = exports2.canonicalDomain = exports2.version = exports2.ParameterError = exports2.Store = exports2.getPublicSuffix = exports2.permuteDomain = exports2.pathMatch = exports2.MemoryCookieStore = undefined;
-  exports2.parse = parse;
-  exports2.fromJSON = fromJSON;
+var require_cookie2 = __commonJS(function(exports) {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.permutePath = exports.parseDate = exports.formatDate = exports.domainMatch = exports.defaultPath = exports.CookieJar = exports.cookieCompare = exports.Cookie = exports.PrefixSecurityEnum = exports.canonicalDomain = exports.version = exports.ParameterError = exports.Store = exports.getPublicSuffix = exports.permuteDomain = exports.pathMatch = exports.MemoryCookieStore = undefined;
+  exports.parse = parse;
+  exports.fromJSON = fromJSON;
   var memstore_1 = require_memstore();
-  Object.defineProperty(exports2, "MemoryCookieStore", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "MemoryCookieStore", { enumerable: true, get: function() {
     return memstore_1.MemoryCookieStore;
   } });
   var pathMatch_1 = require_pathMatch();
-  Object.defineProperty(exports2, "pathMatch", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "pathMatch", { enumerable: true, get: function() {
     return pathMatch_1.pathMatch;
   } });
   var permuteDomain_1 = require_permuteDomain();
-  Object.defineProperty(exports2, "permuteDomain", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "permuteDomain", { enumerable: true, get: function() {
     return permuteDomain_1.permuteDomain;
   } });
   var getPublicSuffix_1 = require_getPublicSuffix();
-  Object.defineProperty(exports2, "getPublicSuffix", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "getPublicSuffix", { enumerable: true, get: function() {
     return getPublicSuffix_1.getPublicSuffix;
   } });
   var store_1 = require_store();
-  Object.defineProperty(exports2, "Store", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "Store", { enumerable: true, get: function() {
     return store_1.Store;
   } });
   var validators_1 = require_validators();
-  Object.defineProperty(exports2, "ParameterError", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "ParameterError", { enumerable: true, get: function() {
     return validators_1.ParameterError;
   } });
   var version_1 = require_version();
-  Object.defineProperty(exports2, "version", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "version", { enumerable: true, get: function() {
     return version_1.version;
   } });
   var canonicalDomain_1 = require_canonicalDomain();
-  Object.defineProperty(exports2, "canonicalDomain", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "canonicalDomain", { enumerable: true, get: function() {
     return canonicalDomain_1.canonicalDomain;
   } });
   var constants_1 = require_constants();
-  Object.defineProperty(exports2, "PrefixSecurityEnum", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "PrefixSecurityEnum", { enumerable: true, get: function() {
     return constants_1.PrefixSecurityEnum;
   } });
   var cookie_1 = require_cookie();
-  Object.defineProperty(exports2, "Cookie", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "Cookie", { enumerable: true, get: function() {
     return cookie_1.Cookie;
   } });
   var cookieCompare_1 = require_cookieCompare();
-  Object.defineProperty(exports2, "cookieCompare", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "cookieCompare", { enumerable: true, get: function() {
     return cookieCompare_1.cookieCompare;
   } });
   var cookieJar_1 = require_cookieJar();
-  Object.defineProperty(exports2, "CookieJar", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "CookieJar", { enumerable: true, get: function() {
     return cookieJar_1.CookieJar;
   } });
   var defaultPath_1 = require_defaultPath();
-  Object.defineProperty(exports2, "defaultPath", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "defaultPath", { enumerable: true, get: function() {
     return defaultPath_1.defaultPath;
   } });
   var domainMatch_1 = require_domainMatch();
-  Object.defineProperty(exports2, "domainMatch", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "domainMatch", { enumerable: true, get: function() {
     return domainMatch_1.domainMatch;
   } });
   var formatDate_1 = require_formatDate();
-  Object.defineProperty(exports2, "formatDate", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "formatDate", { enumerable: true, get: function() {
     return formatDate_1.formatDate;
   } });
   var parseDate_1 = require_parseDate();
-  Object.defineProperty(exports2, "parseDate", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "parseDate", { enumerable: true, get: function() {
     return parseDate_1.parseDate;
   } });
   var permutePath_1 = require_permutePath();
-  Object.defineProperty(exports2, "permutePath", { enumerable: true, get: function() {
+  Object.defineProperty(exports, "permutePath", { enumerable: true, get: function() {
     return permutePath_1.permutePath;
   } });
   var cookie_2 = require_cookie();
@@ -3139,16 +2468,16 @@ var require_cookie2 = __commonJS(function(exports2) {
 });
 
 // node_modules/crypto-js/core.js
-var require_core = __commonJS(function(exports2, module2) {
+var require_core = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory();
+    if (typeof exports === "object") {
+      module.exports = exports = factory();
     } else if (typeof define === "function" && define.amd) {
       define([], factory);
     } else {
       root.CryptoJS = factory();
     }
-  })(exports2, function() {
+  })(exports, function() {
     var CryptoJS = CryptoJS || function(Math2, undefined2) {
       var crypto2;
       if (typeof window !== "undefined" && window.crypto) {
@@ -3168,7 +2497,7 @@ var require_core = __commonJS(function(exports2, module2) {
       }
       if (!crypto2 && true) {
         try {
-          crypto2 = require("crypto");
+          crypto2 = __require("crypto");
         } catch (err) {}
       }
       var cryptoSecureRandomInt = function() {
@@ -3424,16 +2753,16 @@ var require_core = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/x64-core.js
-var require_x64_core = __commonJS(function(exports2, module2) {
+var require_x64_core = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function(undefined2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3482,16 +2811,16 @@ var require_x64_core = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/lib-typedarrays.js
-var require_lib_typedarrays = __commonJS(function(exports2, module2) {
+var require_lib_typedarrays = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       if (typeof ArrayBuffer != "function") {
         return;
@@ -3525,16 +2854,16 @@ var require_lib_typedarrays = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/enc-utf16.js
-var require_enc_utf16 = __commonJS(function(exports2, module2) {
+var require_enc_utf16 = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3589,16 +2918,16 @@ var require_enc_utf16 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/enc-base64.js
-var require_enc_base64 = __commonJS(function(exports2, module2) {
+var require_enc_base64 = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3669,16 +2998,16 @@ var require_enc_base64 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/enc-base64url.js
-var require_enc_base64url = __commonJS(function(exports2, module2) {
+var require_enc_base64url = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3756,16 +3085,16 @@ var require_enc_base64url = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/md5.js
-var require_md5 = __commonJS(function(exports2, module2) {
+var require_md5 = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3933,16 +3262,16 @@ var require_md5 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/sha1.js
-var require_sha1 = __commonJS(function(exports2, module2) {
+var require_sha1 = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4022,16 +3351,16 @@ var require_sha1 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/sha256.js
-var require_sha256 = __commonJS(function(exports2, module2) {
+var require_sha256 = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4141,16 +3470,16 @@ var require_sha256 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/sha224.js
-var require_sha224 = __commonJS(function(exports2, module2) {
+var require_sha224 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_sha256());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_sha256());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./sha256"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4184,16 +3513,16 @@ var require_sha224 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/sha512.js
-var require_sha512 = __commonJS(function(exports2, module2) {
+var require_sha512 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_x64_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_x64_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4464,16 +3793,16 @@ var require_sha512 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/sha384.js
-var require_sha384 = __commonJS(function(exports2, module2) {
+var require_sha384 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_x64_core(), require_sha512());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_x64_core(), require_sha512());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core", "./sha512"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_x64 = C.x64;
@@ -4508,16 +3837,16 @@ var require_sha384 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/sha3.js
-var require_sha3 = __commonJS(function(exports2, module2) {
+var require_sha3 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_x64_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_x64_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4700,16 +4029,16 @@ var require_sha3 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/ripemd160.js
-var require_ripemd160 = __commonJS(function(exports2, module2) {
+var require_ripemd160 = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5169,16 +4498,16 @@ var require_ripemd160 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/hmac.js
-var require_hmac = __commonJS(function(exports2, module2) {
+var require_hmac = __commonJS(function(exports, module) {
   (function(root, factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5231,16 +4560,16 @@ var require_hmac = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/pbkdf2.js
-var require_pbkdf2 = __commonJS(function(exports2, module2) {
+var require_pbkdf2 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_sha256(), require_hmac());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_sha256(), require_hmac());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./sha256", "./hmac"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5297,16 +4626,16 @@ var require_pbkdf2 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/evpkdf.js
-var require_evpkdf = __commonJS(function(exports2, module2) {
+var require_evpkdf = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_sha1(), require_hmac());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_sha1(), require_hmac());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./sha1", "./hmac"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5356,16 +4685,16 @@ var require_evpkdf = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/cipher-core.js
-var require_cipher_core = __commonJS(function(exports2, module2) {
+var require_cipher_core = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_evpkdf());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_evpkdf());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./evpkdf"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.lib.Cipher || function(undefined2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5654,16 +4983,16 @@ var require_cipher_core = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/mode-cfb.js
-var require_mode_cfb = __commonJS(function(exports2, module2) {
+var require_mode_cfb = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.mode.CFB = function() {
       var CFB = CryptoJS.lib.BlockCipherMode.extend();
       CFB.Encryptor = CFB.extend({
@@ -5704,16 +5033,16 @@ var require_mode_cfb = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/mode-ctr.js
-var require_mode_ctr = __commonJS(function(exports2, module2) {
+var require_mode_ctr = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.mode.CTR = function() {
       var CTR = CryptoJS.lib.BlockCipherMode.extend();
       var Encryptor = CTR.Encryptor = CTR.extend({
@@ -5742,16 +5071,16 @@ var require_mode_ctr = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/mode-ctr-gladman.js
-var require_mode_ctr_gladman = __commonJS(function(exports2, module2) {
+var require_mode_ctr_gladman = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.mode.CTRGladman = function() {
       var CTRGladman = CryptoJS.lib.BlockCipherMode.extend();
       function incWord(word) {
@@ -5815,16 +5144,16 @@ var require_mode_ctr_gladman = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/mode-ofb.js
-var require_mode_ofb = __commonJS(function(exports2, module2) {
+var require_mode_ofb = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.mode.OFB = function() {
       var OFB = CryptoJS.lib.BlockCipherMode.extend();
       var Encryptor = OFB.Encryptor = OFB.extend({
@@ -5851,16 +5180,16 @@ var require_mode_ofb = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/mode-ecb.js
-var require_mode_ecb = __commonJS(function(exports2, module2) {
+var require_mode_ecb = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.mode.ECB = function() {
       var ECB = CryptoJS.lib.BlockCipherMode.extend();
       ECB.Encryptor = ECB.extend({
@@ -5880,16 +5209,16 @@ var require_mode_ecb = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/pad-ansix923.js
-var require_pad_ansix923 = __commonJS(function(exports2, module2) {
+var require_pad_ansix923 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.pad.AnsiX923 = {
       pad: function(data, blockSize) {
         var dataSigBytes = data.sigBytes;
@@ -5910,16 +5239,16 @@ var require_pad_ansix923 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/pad-iso10126.js
-var require_pad_iso10126 = __commonJS(function(exports2, module2) {
+var require_pad_iso10126 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.pad.Iso10126 = {
       pad: function(data, blockSize) {
         var blockSizeBytes = blockSize * 4;
@@ -5936,16 +5265,16 @@ var require_pad_iso10126 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/pad-iso97971.js
-var require_pad_iso97971 = __commonJS(function(exports2, module2) {
+var require_pad_iso97971 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.pad.Iso97971 = {
       pad: function(data, blockSize) {
         data.concat(CryptoJS.lib.WordArray.create([2147483648], 1));
@@ -5961,16 +5290,16 @@ var require_pad_iso97971 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/pad-zeropadding.js
-var require_pad_zeropadding = __commonJS(function(exports2, module2) {
+var require_pad_zeropadding = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.pad.ZeroPadding = {
       pad: function(data, blockSize) {
         var blockSizeBytes = blockSize * 4;
@@ -5993,16 +5322,16 @@ var require_pad_zeropadding = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/pad-nopadding.js
-var require_pad_nopadding = __commonJS(function(exports2, module2) {
+var require_pad_nopadding = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     CryptoJS.pad.NoPadding = {
       pad: function() {},
       unpad: function() {}
@@ -6012,16 +5341,16 @@ var require_pad_nopadding = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/format-hex.js
-var require_format_hex = __commonJS(function(exports2, module2) {
+var require_format_hex = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function(undefined2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -6044,16 +5373,16 @@ var require_format_hex = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/aes.js
-var require_aes = __commonJS(function(exports2, module2) {
+var require_aes = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -6196,16 +5525,16 @@ var require_aes = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/tripledes.js
-var require_tripledes = __commonJS(function(exports2, module2) {
+var require_tripledes = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -6975,16 +6304,16 @@ var require_tripledes = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/rc4.js
-var require_rc4 = __commonJS(function(exports2, module2) {
+var require_rc4 = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -7051,16 +6380,16 @@ var require_rc4 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/rabbit.js
-var require_rabbit = __commonJS(function(exports2, module2) {
+var require_rabbit = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -7178,16 +6507,16 @@ var require_rabbit = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/rabbit-legacy.js
-var require_rabbit_legacy = __commonJS(function(exports2, module2) {
+var require_rabbit_legacy = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -7302,16 +6631,16 @@ var require_rabbit_legacy = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/blowfish.js
-var require_blowfish = __commonJS(function(exports2, module2) {
+var require_blowfish = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -8489,3956 +7818,25 @@ var require_blowfish = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/crypto-js/index.js
-var require_crypto_js = __commonJS(function(exports2, module2) {
+var require_crypto_js = __commonJS(function(exports, module) {
   (function(root, factory, undef) {
-    if (typeof exports2 === "object") {
-      module2.exports = exports2 = factory(require_core(), require_x64_core(), require_lib_typedarrays(), require_enc_utf16(), require_enc_base64(), require_enc_base64url(), require_md5(), require_sha1(), require_sha256(), require_sha224(), require_sha512(), require_sha384(), require_sha3(), require_ripemd160(), require_hmac(), require_pbkdf2(), require_evpkdf(), require_cipher_core(), require_mode_cfb(), require_mode_ctr(), require_mode_ctr_gladman(), require_mode_ofb(), require_mode_ecb(), require_pad_ansix923(), require_pad_iso10126(), require_pad_iso97971(), require_pad_zeropadding(), require_pad_nopadding(), require_format_hex(), require_aes(), require_tripledes(), require_rc4(), require_rabbit(), require_rabbit_legacy(), require_blowfish());
+    if (typeof exports === "object") {
+      module.exports = exports = factory(require_core(), require_x64_core(), require_lib_typedarrays(), require_enc_utf16(), require_enc_base64(), require_enc_base64url(), require_md5(), require_sha1(), require_sha256(), require_sha224(), require_sha512(), require_sha384(), require_sha3(), require_ripemd160(), require_hmac(), require_pbkdf2(), require_evpkdf(), require_cipher_core(), require_mode_cfb(), require_mode_ctr(), require_mode_ctr_gladman(), require_mode_ofb(), require_mode_ecb(), require_pad_ansix923(), require_pad_iso10126(), require_pad_iso97971(), require_pad_zeropadding(), require_pad_nopadding(), require_format_hex(), require_aes(), require_tripledes(), require_rc4(), require_rabbit(), require_rabbit_legacy(), require_blowfish());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core", "./lib-typedarrays", "./enc-utf16", "./enc-base64", "./enc-base64url", "./md5", "./sha1", "./sha256", "./sha224", "./sha512", "./sha384", "./sha3", "./ripemd160", "./hmac", "./pbkdf2", "./evpkdf", "./cipher-core", "./mode-cfb", "./mode-ctr", "./mode-ctr-gladman", "./mode-ofb", "./mode-ecb", "./pad-ansix923", "./pad-iso10126", "./pad-iso97971", "./pad-zeropadding", "./pad-nopadding", "./format-hex", "./aes", "./tripledes", "./rc4", "./rabbit", "./rabbit-legacy", "./blowfish"], factory);
     } else {
       root.CryptoJS = factory(root.CryptoJS);
     }
-  })(exports2, function(CryptoJS) {
+  })(exports, function(CryptoJS) {
     return CryptoJS;
   });
 });
 
-// node_modules/pako/dist/pako.esm.mjs
-function zero$1(buf) {
-  let len = buf.length;
-  while (--len >= 0) {
-    buf[len] = 0;
-  }
-}
-function StaticTreeDesc(static_tree, extra_bits, extra_base, elems, max_length) {
-  this.static_tree = static_tree;
-  this.extra_bits = extra_bits;
-  this.extra_base = extra_base;
-  this.elems = elems;
-  this.max_length = max_length;
-  this.has_stree = static_tree && static_tree.length;
-}
-function TreeDesc(dyn_tree, stat_desc) {
-  this.dyn_tree = dyn_tree;
-  this.max_code = 0;
-  this.stat_desc = stat_desc;
-}
-function Config(good_length, max_lazy, nice_length, max_chain, func) {
-  this.good_length = good_length;
-  this.max_lazy = max_lazy;
-  this.nice_length = nice_length;
-  this.max_chain = max_chain;
-  this.func = func;
-}
-function DeflateState() {
-  this.strm = null;
-  this.status = 0;
-  this.pending_buf = null;
-  this.pending_buf_size = 0;
-  this.pending_out = 0;
-  this.pending = 0;
-  this.wrap = 0;
-  this.gzhead = null;
-  this.gzindex = 0;
-  this.method = Z_DEFLATED$2;
-  this.last_flush = -1;
-  this.w_size = 0;
-  this.w_bits = 0;
-  this.w_mask = 0;
-  this.window = null;
-  this.window_size = 0;
-  this.prev = null;
-  this.head = null;
-  this.ins_h = 0;
-  this.legacy_hash = 0;
-  this.hash_size = 0;
-  this.hash_bits = 0;
-  this.hash_mask = 0;
-  this.hash_shift = 0;
-  this.block_start = 0;
-  this.match_length = 0;
-  this.prev_match = 0;
-  this.match_available = 0;
-  this.strstart = 0;
-  this.match_start = 0;
-  this.lookahead = 0;
-  this.prev_length = 0;
-  this.max_chain_length = 0;
-  this.max_lazy_match = 0;
-  this.level = 0;
-  this.strategy = 0;
-  this.good_match = 0;
-  this.nice_match = 0;
-  this.dyn_ltree = new Uint16Array(HEAP_SIZE * 2);
-  this.dyn_dtree = new Uint16Array((2 * D_CODES + 1) * 2);
-  this.bl_tree = new Uint16Array((2 * BL_CODES + 1) * 2);
-  zero(this.dyn_ltree);
-  zero(this.dyn_dtree);
-  zero(this.bl_tree);
-  this.l_desc = null;
-  this.d_desc = null;
-  this.bl_desc = null;
-  this.bl_count = new Uint16Array(MAX_BITS + 1);
-  this.heap = new Uint16Array(2 * L_CODES + 1);
-  zero(this.heap);
-  this.heap_len = 0;
-  this.heap_max = 0;
-  this.depth = new Uint16Array(2 * L_CODES + 1);
-  zero(this.depth);
-  this.sym_buf = 0;
-  this.lit_bufsize = 0;
-  this.sym_next = 0;
-  this.sym_end = 0;
-  this.opt_len = 0;
-  this.static_len = 0;
-  this.matches = 0;
-  this.insert = 0;
-  this.bi_buf = 0;
-  this.bi_valid = 0;
-}
-function ZStream() {
-  this.input = null;
-  this.next_in = 0;
-  this.avail_in = 0;
-  this.total_in = 0;
-  this.output = null;
-  this.next_out = 0;
-  this.avail_out = 0;
-  this.total_out = 0;
-  this.msg = "";
-  this.state = null;
-  this.data_type = 2;
-  this.adler = 0;
-}
-function Deflate$1(options) {
-  this.options = common.assign({}, defaultOptions$1, options || {});
-  let opt = this.options;
-  if (opt.raw && opt.windowBits > 0) {
-    opt.windowBits = -opt.windowBits;
-  } else if (opt.gzip && opt.windowBits > 0 && opt.windowBits < 16) {
-    opt.windowBits += 16;
-  }
-  this.err = 0;
-  this.msg = "";
-  this.ended = false;
-  this.chunks = [];
-  this.strm = new zstream;
-  this.strm.avail_out = 0;
-  let status = deflate_1$2.deflateInit2(this.strm, opt.level, opt.method, opt.windowBits, opt.memLevel, opt.strategy, opt.legacyHash);
-  if (status !== Z_OK$2) {
-    throw new Error(messages[status]);
-  }
-  if (opt.header) {
-    deflate_1$2.deflateSetHeader(this.strm, opt.header);
-  }
-  if (opt.dictionary) {
-    let dict;
-    if (typeof opt.dictionary === "string") {
-      dict = strings.string2buf(opt.dictionary);
-    } else if (toString$1.call(opt.dictionary) === "[object ArrayBuffer]") {
-      dict = new Uint8Array(opt.dictionary);
-    } else {
-      dict = opt.dictionary;
-    }
-    status = deflate_1$2.deflateSetDictionary(this.strm, dict);
-    if (status !== Z_OK$2) {
-      throw new Error(messages[status]);
-    }
-    this._dict_set = true;
-  }
-}
-function deflate$1(input, options) {
-  const deflator = new Deflate$1(options);
-  deflator.push(input, true);
-  if (deflator.err) {
-    throw deflator.msg || messages[deflator.err];
-  }
-  return deflator.result;
-}
-function deflateRaw$1(input, options) {
-  options = options || {};
-  options.raw = true;
-  return deflate$1(input, options);
-}
-function gzip$1(input, options) {
-  options = options || {};
-  options.gzip = true;
-  return deflate$1(input, options);
-}
-function InflateState() {
-  this.strm = null;
-  this.mode = 0;
-  this.last = false;
-  this.wrap = 0;
-  this.havedict = false;
-  this.flags = 0;
-  this.dmax = 0;
-  this.check = 0;
-  this.total = 0;
-  this.head = null;
-  this.wbits = 0;
-  this.wsize = 0;
-  this.whave = 0;
-  this.wnext = 0;
-  this.window = null;
-  this.hold = 0;
-  this.bits = 0;
-  this.length = 0;
-  this.offset = 0;
-  this.extra = 0;
-  this.lencode = null;
-  this.distcode = null;
-  this.lenbits = 0;
-  this.distbits = 0;
-  this.ncode = 0;
-  this.nlen = 0;
-  this.ndist = 0;
-  this.have = 0;
-  this.next = null;
-  this.lens = new Uint16Array(320);
-  this.work = new Uint16Array(288);
-  this.lendyn = null;
-  this.distdyn = null;
-  this.sane = 0;
-  this.back = 0;
-  this.was = 0;
-}
-function GZheader() {
-  this.text = 0;
-  this.time = 0;
-  this.xflags = 0;
-  this.os = 0;
-  this.extra = null;
-  this.extra_len = 0;
-  this.name = "";
-  this.comment = "";
-  this.hcrc = 0;
-  this.done = false;
-}
-function Inflate$1(options) {
-  this.options = common.assign({}, defaultOptions, options || {});
-  const opt = this.options;
-  if (opt.raw && opt.windowBits >= 0 && opt.windowBits < 16) {
-    opt.windowBits = -opt.windowBits;
-    if (opt.windowBits === 0) {
-      opt.windowBits = -15;
-    }
-  }
-  if (opt.windowBits >= 0 && opt.windowBits < 16 && !(options && options.windowBits)) {
-    opt.windowBits += 32;
-  }
-  if (opt.windowBits > 15 && opt.windowBits < 48) {
-    if ((opt.windowBits & 15) === 0) {
-      opt.windowBits |= 15;
-    }
-  }
-  this.err = 0;
-  this.msg = "";
-  this.ended = false;
-  this.chunks = [];
-  this.strm = new zstream;
-  this.strm.avail_out = 0;
-  let status = inflate_1$2.inflateInit2(this.strm, opt.windowBits);
-  if (status !== Z_OK) {
-    throw new Error(messages[status]);
-  }
-  this.header = new gzheader;
-  inflate_1$2.inflateGetHeader(this.strm, this.header);
-  if (opt.dictionary) {
-    if (typeof opt.dictionary === "string") {
-      opt.dictionary = strings.string2buf(opt.dictionary);
-    } else if (toString.call(opt.dictionary) === "[object ArrayBuffer]") {
-      opt.dictionary = new Uint8Array(opt.dictionary);
-    }
-    if (opt.raw) {
-      status = inflate_1$2.inflateSetDictionary(this.strm, opt.dictionary);
-      if (status !== Z_OK) {
-        throw new Error(messages[status]);
-      }
-    }
-  }
-}
-function inflate$1(input, options) {
-  const inflator = new Inflate$1(options);
-  inflator.push(input, true);
-  if (inflator.err)
-    throw inflator.msg || messages[inflator.err];
-  return inflator.result;
-}
-function inflateRaw$1(input, options) {
-  options = options || {};
-  options.raw = true;
-  return inflate$1(input, options);
-}
-var Z_FIXED$1 = 4, Z_BINARY = 0, Z_TEXT = 1, Z_UNKNOWN$1 = 2, STORED_BLOCK = 0, STATIC_TREES = 1, DYN_TREES = 2, MIN_MATCH$1 = 3, MAX_MATCH$1 = 258, LENGTH_CODES$1 = 29, LITERALS$1 = 256, L_CODES$1, D_CODES$1 = 30, BL_CODES$1 = 19, HEAP_SIZE$1, MAX_BITS$1 = 15, Buf_size = 16, MAX_BL_BITS = 7, END_BLOCK = 256, REP_3_6 = 16, REPZ_3_10 = 17, REPZ_11_138 = 18, extra_lbits, extra_dbits, extra_blbits, bl_order, DIST_CODE_LEN = 512, static_ltree, static_dtree, _dist_code, _length_code, base_length, base_dist, static_l_desc, static_d_desc, static_bl_desc, d_code = (dist) => {
-  return dist < 256 ? _dist_code[dist] : _dist_code[256 + (dist >>> 7)];
-}, put_short = (s, w) => {
-  s.pending_buf[s.pending++] = w & 255;
-  s.pending_buf[s.pending++] = w >>> 8 & 255;
-}, send_bits = (s, value, length) => {
-  if (s.bi_valid > Buf_size - length) {
-    s.bi_buf |= value << s.bi_valid & 65535;
-    put_short(s, s.bi_buf);
-    s.bi_buf = value >> Buf_size - s.bi_valid;
-    s.bi_valid += length - Buf_size;
-  } else {
-    s.bi_buf |= value << s.bi_valid & 65535;
-    s.bi_valid += length;
-  }
-}, send_code = (s, c, tree) => {
-  send_bits(s, tree[c * 2], tree[c * 2 + 1]);
-}, bi_reverse = (code, len) => {
-  let res = 0;
-  do {
-    res |= code & 1;
-    code >>>= 1;
-    res <<= 1;
-  } while (--len > 0);
-  return res >>> 1;
-}, bi_flush = (s) => {
-  if (s.bi_valid === 16) {
-    put_short(s, s.bi_buf);
-    s.bi_buf = 0;
-    s.bi_valid = 0;
-  } else if (s.bi_valid >= 8) {
-    s.pending_buf[s.pending++] = s.bi_buf & 255;
-    s.bi_buf >>= 8;
-    s.bi_valid -= 8;
-  }
-}, gen_bitlen = (s, desc) => {
-  const tree = desc.dyn_tree;
-  const max_code = desc.max_code;
-  const stree = desc.stat_desc.static_tree;
-  const has_stree = desc.stat_desc.has_stree;
-  const extra = desc.stat_desc.extra_bits;
-  const base = desc.stat_desc.extra_base;
-  const max_length = desc.stat_desc.max_length;
-  let h;
-  let n, m;
-  let bits;
-  let xbits;
-  let f;
-  let overflow = 0;
-  for (bits = 0;bits <= MAX_BITS$1; bits++) {
-    s.bl_count[bits] = 0;
-  }
-  tree[s.heap[s.heap_max] * 2 + 1] = 0;
-  for (h = s.heap_max + 1;h < HEAP_SIZE$1; h++) {
-    n = s.heap[h];
-    bits = tree[tree[n * 2 + 1] * 2 + 1] + 1;
-    if (bits > max_length) {
-      bits = max_length;
-      overflow++;
-    }
-    tree[n * 2 + 1] = bits;
-    if (n > max_code) {
-      continue;
-    }
-    s.bl_count[bits]++;
-    xbits = 0;
-    if (n >= base) {
-      xbits = extra[n - base];
-    }
-    f = tree[n * 2];
-    s.opt_len += f * (bits + xbits);
-    if (has_stree) {
-      s.static_len += f * (stree[n * 2 + 1] + xbits);
-    }
-  }
-  if (overflow === 0) {
-    return;
-  }
-  do {
-    bits = max_length - 1;
-    while (s.bl_count[bits] === 0) {
-      bits--;
-    }
-    s.bl_count[bits]--;
-    s.bl_count[bits + 1] += 2;
-    s.bl_count[max_length]--;
-    overflow -= 2;
-  } while (overflow > 0);
-  for (bits = max_length;bits !== 0; bits--) {
-    n = s.bl_count[bits];
-    while (n !== 0) {
-      m = s.heap[--h];
-      if (m > max_code) {
-        continue;
-      }
-      if (tree[m * 2 + 1] !== bits) {
-        s.opt_len += (bits - tree[m * 2 + 1]) * tree[m * 2];
-        tree[m * 2 + 1] = bits;
-      }
-      n--;
-    }
-  }
-}, gen_codes = (tree, max_code, bl_count) => {
-  const next_code = new Array(MAX_BITS$1 + 1);
-  let code = 0;
-  let bits;
-  let n;
-  for (bits = 1;bits <= MAX_BITS$1; bits++) {
-    code = code + bl_count[bits - 1] << 1;
-    next_code[bits] = code;
-  }
-  for (n = 0;n <= max_code; n++) {
-    let len = tree[n * 2 + 1];
-    if (len === 0) {
-      continue;
-    }
-    tree[n * 2] = bi_reverse(next_code[len]++, len);
-  }
-}, tr_static_init = () => {
-  let n;
-  let bits;
-  let length;
-  let code;
-  let dist;
-  const bl_count = new Array(MAX_BITS$1 + 1);
-  length = 0;
-  for (code = 0;code < LENGTH_CODES$1 - 1; code++) {
-    base_length[code] = length;
-    for (n = 0;n < 1 << extra_lbits[code]; n++) {
-      _length_code[length++] = code;
-    }
-  }
-  _length_code[length - 1] = code;
-  dist = 0;
-  for (code = 0;code < 16; code++) {
-    base_dist[code] = dist;
-    for (n = 0;n < 1 << extra_dbits[code]; n++) {
-      _dist_code[dist++] = code;
-    }
-  }
-  dist >>= 7;
-  for (;code < D_CODES$1; code++) {
-    base_dist[code] = dist << 7;
-    for (n = 0;n < 1 << extra_dbits[code] - 7; n++) {
-      _dist_code[256 + dist++] = code;
-    }
-  }
-  for (bits = 0;bits <= MAX_BITS$1; bits++) {
-    bl_count[bits] = 0;
-  }
-  n = 0;
-  while (n <= 143) {
-    static_ltree[n * 2 + 1] = 8;
-    n++;
-    bl_count[8]++;
-  }
-  while (n <= 255) {
-    static_ltree[n * 2 + 1] = 9;
-    n++;
-    bl_count[9]++;
-  }
-  while (n <= 279) {
-    static_ltree[n * 2 + 1] = 7;
-    n++;
-    bl_count[7]++;
-  }
-  while (n <= 287) {
-    static_ltree[n * 2 + 1] = 8;
-    n++;
-    bl_count[8]++;
-  }
-  gen_codes(static_ltree, L_CODES$1 + 1, bl_count);
-  for (n = 0;n < D_CODES$1; n++) {
-    static_dtree[n * 2 + 1] = 5;
-    static_dtree[n * 2] = bi_reverse(n, 5);
-  }
-  static_l_desc = new StaticTreeDesc(static_ltree, extra_lbits, LITERALS$1 + 1, L_CODES$1, MAX_BITS$1);
-  static_d_desc = new StaticTreeDesc(static_dtree, extra_dbits, 0, D_CODES$1, MAX_BITS$1);
-  static_bl_desc = new StaticTreeDesc(new Array(0), extra_blbits, 0, BL_CODES$1, MAX_BL_BITS);
-}, init_block = (s) => {
-  let n;
-  for (n = 0;n < L_CODES$1; n++) {
-    s.dyn_ltree[n * 2] = 0;
-  }
-  for (n = 0;n < D_CODES$1; n++) {
-    s.dyn_dtree[n * 2] = 0;
-  }
-  for (n = 0;n < BL_CODES$1; n++) {
-    s.bl_tree[n * 2] = 0;
-  }
-  s.dyn_ltree[END_BLOCK * 2] = 1;
-  s.opt_len = s.static_len = 0;
-  s.sym_next = s.matches = 0;
-}, bi_windup = (s) => {
-  if (s.bi_valid > 8) {
-    put_short(s, s.bi_buf);
-  } else if (s.bi_valid > 0) {
-    s.pending_buf[s.pending++] = s.bi_buf;
-  }
-  s.bi_buf = 0;
-  s.bi_valid = 0;
-}, smaller = (tree, n, m, depth) => {
-  const _n2 = n * 2;
-  const _m2 = m * 2;
-  return tree[_n2] < tree[_m2] || tree[_n2] === tree[_m2] && depth[n] <= depth[m];
-}, pqdownheap = (s, tree, k) => {
-  const v = s.heap[k];
-  let j = k << 1;
-  while (j <= s.heap_len) {
-    if (j < s.heap_len && smaller(tree, s.heap[j + 1], s.heap[j], s.depth)) {
-      j++;
-    }
-    if (smaller(tree, v, s.heap[j], s.depth)) {
-      break;
-    }
-    s.heap[k] = s.heap[j];
-    k = j;
-    j <<= 1;
-  }
-  s.heap[k] = v;
-}, compress_block = (s, ltree, dtree) => {
-  let dist;
-  let lc;
-  let sx = 0;
-  let code;
-  let extra;
-  if (s.sym_next !== 0) {
-    do {
-      dist = s.pending_buf[s.sym_buf + sx++] & 255;
-      dist += (s.pending_buf[s.sym_buf + sx++] & 255) << 8;
-      lc = s.pending_buf[s.sym_buf + sx++];
-      if (dist === 0) {
-        send_code(s, lc, ltree);
-      } else {
-        code = _length_code[lc];
-        send_code(s, code + LITERALS$1 + 1, ltree);
-        extra = extra_lbits[code];
-        if (extra !== 0) {
-          lc -= base_length[code];
-          send_bits(s, lc, extra);
-        }
-        dist--;
-        code = d_code(dist);
-        send_code(s, code, dtree);
-        extra = extra_dbits[code];
-        if (extra !== 0) {
-          dist -= base_dist[code];
-          send_bits(s, dist, extra);
-        }
-      }
-    } while (sx < s.sym_next);
-  }
-  send_code(s, END_BLOCK, ltree);
-}, build_tree = (s, desc) => {
-  const tree = desc.dyn_tree;
-  const stree = desc.stat_desc.static_tree;
-  const has_stree = desc.stat_desc.has_stree;
-  const elems = desc.stat_desc.elems;
-  let n, m;
-  let max_code = -1;
-  let node;
-  s.heap_len = 0;
-  s.heap_max = HEAP_SIZE$1;
-  for (n = 0;n < elems; n++) {
-    if (tree[n * 2] !== 0) {
-      s.heap[++s.heap_len] = max_code = n;
-      s.depth[n] = 0;
-    } else {
-      tree[n * 2 + 1] = 0;
-    }
-  }
-  while (s.heap_len < 2) {
-    node = s.heap[++s.heap_len] = max_code < 2 ? ++max_code : 0;
-    tree[node * 2] = 1;
-    s.depth[node] = 0;
-    s.opt_len--;
-    if (has_stree) {
-      s.static_len -= stree[node * 2 + 1];
-    }
-  }
-  desc.max_code = max_code;
-  for (n = s.heap_len >> 1;n >= 1; n--) {
-    pqdownheap(s, tree, n);
-  }
-  node = elems;
-  do {
-    n = s.heap[1];
-    s.heap[1] = s.heap[s.heap_len--];
-    pqdownheap(s, tree, 1);
-    m = s.heap[1];
-    s.heap[--s.heap_max] = n;
-    s.heap[--s.heap_max] = m;
-    tree[node * 2] = tree[n * 2] + tree[m * 2];
-    s.depth[node] = (s.depth[n] >= s.depth[m] ? s.depth[n] : s.depth[m]) + 1;
-    tree[n * 2 + 1] = tree[m * 2 + 1] = node;
-    s.heap[1] = node++;
-    pqdownheap(s, tree, 1);
-  } while (s.heap_len >= 2);
-  s.heap[--s.heap_max] = s.heap[1];
-  gen_bitlen(s, desc);
-  gen_codes(tree, max_code, s.bl_count);
-}, scan_tree = (s, tree, max_code) => {
-  let n;
-  let prevlen = -1;
-  let curlen;
-  let nextlen = tree[0 * 2 + 1];
-  let count = 0;
-  let max_count = 7;
-  let min_count = 4;
-  if (nextlen === 0) {
-    max_count = 138;
-    min_count = 3;
-  }
-  tree[(max_code + 1) * 2 + 1] = 65535;
-  for (n = 0;n <= max_code; n++) {
-    curlen = nextlen;
-    nextlen = tree[(n + 1) * 2 + 1];
-    if (++count < max_count && curlen === nextlen) {
-      continue;
-    } else if (count < min_count) {
-      s.bl_tree[curlen * 2] += count;
-    } else if (curlen !== 0) {
-      if (curlen !== prevlen) {
-        s.bl_tree[curlen * 2]++;
-      }
-      s.bl_tree[REP_3_6 * 2]++;
-    } else if (count <= 10) {
-      s.bl_tree[REPZ_3_10 * 2]++;
-    } else {
-      s.bl_tree[REPZ_11_138 * 2]++;
-    }
-    count = 0;
-    prevlen = curlen;
-    if (nextlen === 0) {
-      max_count = 138;
-      min_count = 3;
-    } else if (curlen === nextlen) {
-      max_count = 6;
-      min_count = 3;
-    } else {
-      max_count = 7;
-      min_count = 4;
-    }
-  }
-}, send_tree = (s, tree, max_code) => {
-  let n;
-  let prevlen = -1;
-  let curlen;
-  let nextlen = tree[0 * 2 + 1];
-  let count = 0;
-  let max_count = 7;
-  let min_count = 4;
-  if (nextlen === 0) {
-    max_count = 138;
-    min_count = 3;
-  }
-  for (n = 0;n <= max_code; n++) {
-    curlen = nextlen;
-    nextlen = tree[(n + 1) * 2 + 1];
-    if (++count < max_count && curlen === nextlen) {
-      continue;
-    } else if (count < min_count) {
-      do {
-        send_code(s, curlen, s.bl_tree);
-      } while (--count !== 0);
-    } else if (curlen !== 0) {
-      if (curlen !== prevlen) {
-        send_code(s, curlen, s.bl_tree);
-        count--;
-      }
-      send_code(s, REP_3_6, s.bl_tree);
-      send_bits(s, count - 3, 2);
-    } else if (count <= 10) {
-      send_code(s, REPZ_3_10, s.bl_tree);
-      send_bits(s, count - 3, 3);
-    } else {
-      send_code(s, REPZ_11_138, s.bl_tree);
-      send_bits(s, count - 11, 7);
-    }
-    count = 0;
-    prevlen = curlen;
-    if (nextlen === 0) {
-      max_count = 138;
-      min_count = 3;
-    } else if (curlen === nextlen) {
-      max_count = 6;
-      min_count = 3;
-    } else {
-      max_count = 7;
-      min_count = 4;
-    }
-  }
-}, build_bl_tree = (s) => {
-  let max_blindex;
-  scan_tree(s, s.dyn_ltree, s.l_desc.max_code);
-  scan_tree(s, s.dyn_dtree, s.d_desc.max_code);
-  build_tree(s, s.bl_desc);
-  for (max_blindex = BL_CODES$1 - 1;max_blindex >= 3; max_blindex--) {
-    if (s.bl_tree[bl_order[max_blindex] * 2 + 1] !== 0) {
-      break;
-    }
-  }
-  s.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
-  return max_blindex;
-}, send_all_trees = (s, lcodes, dcodes, blcodes) => {
-  let rank;
-  send_bits(s, lcodes - 257, 5);
-  send_bits(s, dcodes - 1, 5);
-  send_bits(s, blcodes - 4, 4);
-  for (rank = 0;rank < blcodes; rank++) {
-    send_bits(s, s.bl_tree[bl_order[rank] * 2 + 1], 3);
-  }
-  send_tree(s, s.dyn_ltree, lcodes - 1);
-  send_tree(s, s.dyn_dtree, dcodes - 1);
-}, detect_data_type = (s) => {
-  let block_mask = 4093624447;
-  let n;
-  for (n = 0;n <= 31; n++, block_mask >>>= 1) {
-    if (block_mask & 1 && s.dyn_ltree[n * 2] !== 0) {
-      return Z_BINARY;
-    }
-  }
-  if (s.dyn_ltree[9 * 2] !== 0 || s.dyn_ltree[10 * 2] !== 0 || s.dyn_ltree[13 * 2] !== 0) {
-    return Z_TEXT;
-  }
-  for (n = 32;n < LITERALS$1; n++) {
-    if (s.dyn_ltree[n * 2] !== 0) {
-      return Z_TEXT;
-    }
-  }
-  return Z_BINARY;
-}, static_init_done = false, _tr_init$1 = (s) => {
-  if (!static_init_done) {
-    tr_static_init();
-    static_init_done = true;
-  }
-  s.l_desc = new TreeDesc(s.dyn_ltree, static_l_desc);
-  s.d_desc = new TreeDesc(s.dyn_dtree, static_d_desc);
-  s.bl_desc = new TreeDesc(s.bl_tree, static_bl_desc);
-  s.bi_buf = 0;
-  s.bi_valid = 0;
-  init_block(s);
-}, _tr_stored_block$1 = (s, buf, stored_len, last) => {
-  send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);
-  bi_windup(s);
-  put_short(s, stored_len);
-  put_short(s, ~stored_len);
-  if (stored_len) {
-    s.pending_buf.set(s.window.subarray(buf, buf + stored_len), s.pending);
-  }
-  s.pending += stored_len;
-}, _tr_align$1 = (s) => {
-  send_bits(s, STATIC_TREES << 1, 3);
-  send_code(s, END_BLOCK, static_ltree);
-  bi_flush(s);
-}, _tr_flush_block$1 = (s, buf, stored_len, last) => {
-  let opt_lenb, static_lenb;
-  let max_blindex = 0;
-  if (s.level > 0) {
-    if (s.strm.data_type === Z_UNKNOWN$1) {
-      s.strm.data_type = detect_data_type(s);
-    }
-    build_tree(s, s.l_desc);
-    build_tree(s, s.d_desc);
-    max_blindex = build_bl_tree(s);
-    opt_lenb = s.opt_len + 3 + 7 >>> 3;
-    static_lenb = s.static_len + 3 + 7 >>> 3;
-    if (static_lenb <= opt_lenb) {
-      opt_lenb = static_lenb;
-    }
-  } else {
-    opt_lenb = static_lenb = stored_len + 5;
-  }
-  if (stored_len + 4 <= opt_lenb && buf !== -1) {
-    _tr_stored_block$1(s, buf, stored_len, last);
-  } else if (s.strategy === Z_FIXED$1 || static_lenb === opt_lenb) {
-    send_bits(s, (STATIC_TREES << 1) + (last ? 1 : 0), 3);
-    compress_block(s, static_ltree, static_dtree);
-  } else {
-    send_bits(s, (DYN_TREES << 1) + (last ? 1 : 0), 3);
-    send_all_trees(s, s.l_desc.max_code + 1, s.d_desc.max_code + 1, max_blindex + 1);
-    compress_block(s, s.dyn_ltree, s.dyn_dtree);
-  }
-  init_block(s);
-  if (last) {
-    bi_windup(s);
-  }
-}, _tr_tally$1 = (s, dist, lc) => {
-  s.pending_buf[s.sym_buf + s.sym_next++] = dist;
-  s.pending_buf[s.sym_buf + s.sym_next++] = dist >> 8;
-  s.pending_buf[s.sym_buf + s.sym_next++] = lc;
-  if (dist === 0) {
-    s.dyn_ltree[lc * 2]++;
-  } else {
-    s.matches++;
-    dist--;
-    s.dyn_ltree[(_length_code[lc] + LITERALS$1 + 1) * 2]++;
-    s.dyn_dtree[d_code(dist) * 2]++;
-  }
-  return s.sym_next === s.sym_end;
-}, _tr_init_1, _tr_stored_block_1, _tr_flush_block_1, _tr_tally_1, _tr_align_1, trees, adler32 = (adler, buf, len, pos) => {
-  let s1 = adler & 65535 | 0, s2 = adler >>> 16 & 65535 | 0, n = 0;
-  while (len !== 0) {
-    n = len > 2000 ? 2000 : len;
-    len -= n;
-    do {
-      s1 = s1 + buf[pos++] | 0;
-      s2 = s2 + s1 | 0;
-    } while (--n);
-    s1 %= 65521;
-    s2 %= 65521;
-  }
-  return s1 | s2 << 16 | 0;
-}, adler32_1, makeTable = () => {
-  let c, table = [];
-  for (var n = 0;n < 256; n++) {
-    c = n;
-    for (var k = 0;k < 8; k++) {
-      c = c & 1 ? 3988292384 ^ c >>> 1 : c >>> 1;
-    }
-    table[n] = c;
-  }
-  return table;
-}, crcTable, crc32 = (crc, buf, len, pos) => {
-  const t = crcTable;
-  const end = pos + len;
-  crc ^= -1;
-  for (let i = pos;i < end; i++) {
-    crc = crc >>> 8 ^ t[(crc ^ buf[i]) & 255];
-  }
-  return crc ^ -1;
-}, crc32_1, messages, constants$2, _tr_init, _tr_stored_block, _tr_flush_block, _tr_tally, _tr_align, Z_NO_FLUSH$2, Z_PARTIAL_FLUSH, Z_FULL_FLUSH$1, Z_FINISH$3, Z_BLOCK$1, Z_OK$3, Z_STREAM_END$3, Z_STREAM_ERROR$2, Z_DATA_ERROR$2, Z_BUF_ERROR$2, Z_DEFAULT_COMPRESSION$1, Z_FILTERED, Z_HUFFMAN_ONLY, Z_RLE, Z_FIXED, Z_DEFAULT_STRATEGY$1, Z_UNKNOWN, Z_DEFLATED$2, MAX_MEM_LEVEL = 9, MAX_WBITS$1 = 15, DEF_MEM_LEVEL = 8, LENGTH_CODES = 29, LITERALS = 256, L_CODES, D_CODES = 30, BL_CODES = 19, HEAP_SIZE, MAX_BITS = 15, MIN_MATCH = 3, MAX_MATCH = 258, MIN_LOOKAHEAD, PRESET_DICT = 32, INIT_STATE = 42, GZIP_STATE = 57, EXTRA_STATE = 69, NAME_STATE = 73, COMMENT_STATE = 91, HCRC_STATE = 103, BUSY_STATE = 113, FINISH_STATE = 666, BS_NEED_MORE = 1, BS_BLOCK_DONE = 2, BS_FINISH_STARTED = 3, BS_FINISH_DONE = 4, OS_CODE = 3, err = (strm, errorCode) => {
-  strm.msg = messages[errorCode];
-  return errorCode;
-}, rank = (f) => {
-  return f * 2 - (f > 4 ? 9 : 0);
-}, zero = (buf) => {
-  let len = buf.length;
-  while (--len >= 0) {
-    buf[len] = 0;
-  }
-}, slide_hash = (s) => {
-  let n, m;
-  let p;
-  let wsize = s.w_size;
-  n = s.hash_size;
-  p = n;
-  do {
-    m = s.head[--p];
-    s.head[p] = m >= wsize ? m - wsize : 0;
-  } while (--n);
-  n = wsize;
-  p = n;
-  do {
-    m = s.prev[--p];
-    s.prev[p] = m >= wsize ? m - wsize : 0;
-  } while (--n);
-}, HASH = (s, prev, data) => (prev << s.hash_shift ^ data) & s.hash_mask, INSERT_STRING = (s, str) => {
-  let h;
-  if (s.legacy_hash) {
-    h = s.ins_h = HASH(s, s.ins_h, s.window[str + MIN_MATCH - 1]);
-  } else {
-    const w = s.window;
-    const value = w[str] | w[str + 1] << 8 | w[str + 2] << 16 | w[str + 3] << 24;
-    h = s.ins_h = Math.imul(value, 66521) + 66521 >>> 16 & s.hash_mask;
-  }
-  const hash_head = s.prev[str & s.w_mask] = s.head[h];
-  s.head[h] = str;
-  return hash_head;
-}, flush_pending = (strm) => {
-  const s = strm.state;
-  let len = s.pending;
-  if (len > strm.avail_out) {
-    len = strm.avail_out;
-  }
-  if (len === 0) {
-    return;
-  }
-  strm.output.set(s.pending_buf.subarray(s.pending_out, s.pending_out + len), strm.next_out);
-  strm.next_out += len;
-  s.pending_out += len;
-  strm.total_out += len;
-  strm.avail_out -= len;
-  s.pending -= len;
-  if (s.pending === 0) {
-    s.pending_out = 0;
-  }
-}, flush_block_only = (s, last) => {
-  _tr_flush_block(s, s.block_start >= 0 ? s.block_start : -1, s.strstart - s.block_start, last);
-  s.block_start = s.strstart;
-  flush_pending(s.strm);
-}, put_byte = (s, b) => {
-  s.pending_buf[s.pending++] = b;
-}, putShortMSB = (s, b) => {
-  s.pending_buf[s.pending++] = b >>> 8 & 255;
-  s.pending_buf[s.pending++] = b & 255;
-}, read_buf = (strm, buf, start, size) => {
-  let len = strm.avail_in;
-  if (len > size) {
-    len = size;
-  }
-  if (len === 0) {
-    return 0;
-  }
-  strm.avail_in -= len;
-  buf.set(strm.input.subarray(strm.next_in, strm.next_in + len), start);
-  if (strm.state.wrap === 1) {
-    strm.adler = adler32_1(strm.adler, buf, len, start);
-  } else if (strm.state.wrap === 2) {
-    strm.adler = crc32_1(strm.adler, buf, len, start);
-  }
-  strm.next_in += len;
-  strm.total_in += len;
-  return len;
-}, longest_match = (s, cur_match) => {
-  let chain_length = s.max_chain_length;
-  let scan = s.strstart;
-  let match;
-  let len;
-  let best_len = s.prev_length;
-  let nice_match = s.nice_match;
-  const limit = s.strstart > s.w_size - MIN_LOOKAHEAD ? s.strstart - (s.w_size - MIN_LOOKAHEAD) : 0;
-  const _win = s.window;
-  const wmask = s.w_mask;
-  const prev = s.prev;
-  const strend = s.strstart + MAX_MATCH;
-  let scan_end1 = _win[scan + best_len - 1];
-  let scan_end = _win[scan + best_len];
-  if (s.prev_length >= s.good_match) {
-    chain_length >>= 2;
-  }
-  if (nice_match > s.lookahead) {
-    nice_match = s.lookahead;
-  }
-  do {
-    match = cur_match;
-    if (_win[match + best_len] !== scan_end || _win[match + best_len - 1] !== scan_end1 || _win[match] !== _win[scan] || _win[++match] !== _win[scan + 1]) {
-      continue;
-    }
-    scan += 2;
-    match++;
-    do {} while (_win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && scan < strend);
-    len = MAX_MATCH - (strend - scan);
-    scan = strend - MAX_MATCH;
-    if (len > best_len) {
-      s.match_start = cur_match;
-      best_len = len;
-      if (len >= nice_match) {
-        break;
-      }
-      scan_end1 = _win[scan + best_len - 1];
-      scan_end = _win[scan + best_len];
-    }
-  } while ((cur_match = prev[cur_match & wmask]) > limit && --chain_length !== 0);
-  if (best_len <= s.lookahead) {
-    return best_len;
-  }
-  return s.lookahead;
-}, fill_window = (s) => {
-  const _w_size = s.w_size;
-  let n, more, str;
-  do {
-    more = s.window_size - s.lookahead - s.strstart;
-    if (s.strstart >= _w_size + (_w_size - MIN_LOOKAHEAD)) {
-      s.window.set(s.window.subarray(_w_size, _w_size + _w_size - more), 0);
-      s.match_start -= _w_size;
-      s.strstart -= _w_size;
-      s.block_start -= _w_size;
-      if (s.insert > s.strstart) {
-        s.insert = s.strstart;
-      }
-      slide_hash(s);
-      more += _w_size;
-    }
-    if (s.strm.avail_in === 0) {
-      break;
-    }
-    n = read_buf(s.strm, s.window, s.strstart + s.lookahead, more);
-    s.lookahead += n;
-    if (!s.legacy_hash) {
-      if (s.lookahead + s.insert > MIN_MATCH) {
-        str = s.strstart - s.insert;
-        while (s.insert) {
-          INSERT_STRING(s, str);
-          str++;
-          s.insert--;
-          if (s.lookahead + s.insert <= MIN_MATCH) {
-            break;
-          }
-        }
-      }
-    } else if (s.lookahead + s.insert >= MIN_MATCH) {
-      str = s.strstart - s.insert;
-      s.ins_h = s.window[str];
-      s.ins_h = HASH(s, s.ins_h, s.window[str + 1]);
-      while (s.insert) {
-        INSERT_STRING(s, str);
-        str++;
-        s.insert--;
-        if (s.lookahead + s.insert < MIN_MATCH) {
-          break;
-        }
-      }
-    }
-  } while (s.lookahead < MIN_LOOKAHEAD && s.strm.avail_in !== 0);
-}, deflate_stored = (s, flush) => {
-  let min_block = s.pending_buf_size - 5 > s.w_size ? s.w_size : s.pending_buf_size - 5;
-  let len, left, have, last = 0;
-  let used = s.strm.avail_in;
-  do {
-    len = 65535;
-    have = s.bi_valid + 42 >> 3;
-    if (s.strm.avail_out < have) {
-      break;
-    }
-    have = s.strm.avail_out - have;
-    left = s.strstart - s.block_start;
-    if (len > left + s.strm.avail_in) {
-      len = left + s.strm.avail_in;
-    }
-    if (len > have) {
-      len = have;
-    }
-    if (len < min_block && (len === 0 && flush !== Z_FINISH$3 || flush === Z_NO_FLUSH$2 || len !== left + s.strm.avail_in)) {
-      break;
-    }
-    last = flush === Z_FINISH$3 && len === left + s.strm.avail_in ? 1 : 0;
-    _tr_stored_block(s, 0, 0, last);
-    s.pending_buf[s.pending - 4] = len;
-    s.pending_buf[s.pending - 3] = len >> 8;
-    s.pending_buf[s.pending - 2] = ~len;
-    s.pending_buf[s.pending - 1] = ~len >> 8;
-    flush_pending(s.strm);
-    if (left) {
-      if (left > len) {
-        left = len;
-      }
-      s.strm.output.set(s.window.subarray(s.block_start, s.block_start + left), s.strm.next_out);
-      s.strm.next_out += left;
-      s.strm.avail_out -= left;
-      s.strm.total_out += left;
-      s.block_start += left;
-      len -= left;
-    }
-    if (len) {
-      read_buf(s.strm, s.strm.output, s.strm.next_out, len);
-      s.strm.next_out += len;
-      s.strm.avail_out -= len;
-      s.strm.total_out += len;
-    }
-  } while (last === 0);
-  used -= s.strm.avail_in;
-  if (used) {
-    if (used >= s.w_size) {
-      s.matches = 2;
-      s.window.set(s.strm.input.subarray(s.strm.next_in - s.w_size, s.strm.next_in), 0);
-      s.strstart = s.w_size;
-      s.insert = s.strstart;
-    } else {
-      if (s.window_size - s.strstart <= used) {
-        s.strstart -= s.w_size;
-        s.window.set(s.window.subarray(s.w_size, s.w_size + s.strstart), 0);
-        if (s.matches < 2) {
-          s.matches++;
-        }
-        if (s.insert > s.strstart) {
-          s.insert = s.strstart;
-        }
-      }
-      s.window.set(s.strm.input.subarray(s.strm.next_in - used, s.strm.next_in), s.strstart);
-      s.strstart += used;
-      s.insert += used > s.w_size - s.insert ? s.w_size - s.insert : used;
-    }
-    s.block_start = s.strstart;
-  }
-  if (s.high_water < s.strstart) {
-    s.high_water = s.strstart;
-  }
-  if (last) {
-    return BS_FINISH_DONE;
-  }
-  if (flush !== Z_NO_FLUSH$2 && flush !== Z_FINISH$3 && s.strm.avail_in === 0 && s.strstart === s.block_start) {
-    return BS_BLOCK_DONE;
-  }
-  have = s.window_size - s.strstart;
-  if (s.strm.avail_in > have && s.block_start >= s.w_size) {
-    s.block_start -= s.w_size;
-    s.strstart -= s.w_size;
-    s.window.set(s.window.subarray(s.w_size, s.w_size + s.strstart), 0);
-    if (s.matches < 2) {
-      s.matches++;
-    }
-    have += s.w_size;
-    if (s.insert > s.strstart) {
-      s.insert = s.strstart;
-    }
-  }
-  if (have > s.strm.avail_in) {
-    have = s.strm.avail_in;
-  }
-  if (have) {
-    read_buf(s.strm, s.window, s.strstart, have);
-    s.strstart += have;
-    s.insert += have > s.w_size - s.insert ? s.w_size - s.insert : have;
-  }
-  if (s.high_water < s.strstart) {
-    s.high_water = s.strstart;
-  }
-  have = s.bi_valid + 42 >> 3;
-  have = s.pending_buf_size - have > 65535 ? 65535 : s.pending_buf_size - have;
-  min_block = have > s.w_size ? s.w_size : have;
-  left = s.strstart - s.block_start;
-  if (left >= min_block || (left || flush === Z_FINISH$3) && flush !== Z_NO_FLUSH$2 && s.strm.avail_in === 0 && left <= have) {
-    len = left > have ? have : left;
-    last = flush === Z_FINISH$3 && s.strm.avail_in === 0 && len === left ? 1 : 0;
-    _tr_stored_block(s, s.block_start, len, last);
-    s.block_start += len;
-    flush_pending(s.strm);
-  }
-  return last ? BS_FINISH_STARTED : BS_NEED_MORE;
-}, deflate_fast = (s, flush) => {
-  let hash_head;
-  let bflush;
-  for (;; ) {
-    if (s.lookahead < MIN_LOOKAHEAD) {
-      fill_window(s);
-      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH$2) {
-        return BS_NEED_MORE;
-      }
-      if (s.lookahead === 0) {
-        break;
-      }
-    }
-    hash_head = 0;
-    if (s.lookahead >= MIN_MATCH) {
-      hash_head = INSERT_STRING(s, s.strstart);
-    }
-    if (hash_head !== 0 && s.strstart - hash_head <= s.w_size - MIN_LOOKAHEAD) {
-      s.match_length = longest_match(s, hash_head);
-    }
-    if (s.match_length >= MIN_MATCH) {
-      bflush = _tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH);
-      s.lookahead -= s.match_length;
-      if (s.match_length <= s.max_lazy_match && s.lookahead >= MIN_MATCH) {
-        s.match_length--;
-        do {
-          s.strstart++;
-          hash_head = INSERT_STRING(s, s.strstart);
-        } while (--s.match_length !== 0);
-        s.strstart++;
-      } else {
-        s.strstart += s.match_length;
-        s.match_length = 0;
-        if (s.legacy_hash) {
-          s.ins_h = s.window[s.strstart];
-          s.ins_h = HASH(s, s.ins_h, s.window[s.strstart + 1]);
-        }
-      }
-    } else {
-      bflush = _tr_tally(s, 0, s.window[s.strstart]);
-      s.lookahead--;
-      s.strstart++;
-    }
-    if (bflush) {
-      flush_block_only(s, false);
-      if (s.strm.avail_out === 0) {
-        return BS_NEED_MORE;
-      }
-    }
-  }
-  s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
-  if (flush === Z_FINISH$3) {
-    flush_block_only(s, true);
-    if (s.strm.avail_out === 0) {
-      return BS_FINISH_STARTED;
-    }
-    return BS_FINISH_DONE;
-  }
-  if (s.sym_next) {
-    flush_block_only(s, false);
-    if (s.strm.avail_out === 0) {
-      return BS_NEED_MORE;
-    }
-  }
-  return BS_BLOCK_DONE;
-}, deflate_slow = (s, flush) => {
-  let hash_head;
-  let bflush;
-  let max_insert;
-  for (;; ) {
-    if (s.lookahead < MIN_LOOKAHEAD) {
-      fill_window(s);
-      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH$2) {
-        return BS_NEED_MORE;
-      }
-      if (s.lookahead === 0) {
-        break;
-      }
-    }
-    hash_head = 0;
-    if (s.lookahead >= MIN_MATCH) {
-      hash_head = INSERT_STRING(s, s.strstart);
-    }
-    s.prev_length = s.match_length;
-    s.prev_match = s.match_start;
-    s.match_length = MIN_MATCH - 1;
-    if (hash_head !== 0 && s.prev_length < s.max_lazy_match && s.strstart - hash_head <= s.w_size - MIN_LOOKAHEAD) {
-      s.match_length = longest_match(s, hash_head);
-      if (s.match_length <= 5 && (s.strategy === Z_FILTERED || s.match_length === MIN_MATCH && s.strstart - s.match_start > 4096)) {
-        s.match_length = MIN_MATCH - 1;
-      }
-    }
-    if (s.prev_length >= MIN_MATCH && s.match_length <= s.prev_length) {
-      max_insert = s.strstart + s.lookahead - MIN_MATCH;
-      bflush = _tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH);
-      s.lookahead -= s.prev_length - 1;
-      s.prev_length -= 2;
-      do {
-        if (++s.strstart <= max_insert) {
-          hash_head = INSERT_STRING(s, s.strstart);
-        }
-      } while (--s.prev_length !== 0);
-      s.match_available = 0;
-      s.match_length = MIN_MATCH - 1;
-      s.strstart++;
-      if (bflush) {
-        flush_block_only(s, false);
-        if (s.strm.avail_out === 0) {
-          return BS_NEED_MORE;
-        }
-      }
-    } else if (s.match_available) {
-      bflush = _tr_tally(s, 0, s.window[s.strstart - 1]);
-      if (bflush) {
-        flush_block_only(s, false);
-      }
-      s.strstart++;
-      s.lookahead--;
-      if (s.strm.avail_out === 0) {
-        return BS_NEED_MORE;
-      }
-    } else {
-      s.match_available = 1;
-      s.strstart++;
-      s.lookahead--;
-    }
-  }
-  if (s.match_available) {
-    bflush = _tr_tally(s, 0, s.window[s.strstart - 1]);
-    s.match_available = 0;
-  }
-  s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
-  if (flush === Z_FINISH$3) {
-    flush_block_only(s, true);
-    if (s.strm.avail_out === 0) {
-      return BS_FINISH_STARTED;
-    }
-    return BS_FINISH_DONE;
-  }
-  if (s.sym_next) {
-    flush_block_only(s, false);
-    if (s.strm.avail_out === 0) {
-      return BS_NEED_MORE;
-    }
-  }
-  return BS_BLOCK_DONE;
-}, deflate_rle = (s, flush) => {
-  let bflush;
-  let prev;
-  let scan, strend;
-  const _win = s.window;
-  for (;; ) {
-    if (s.lookahead <= MAX_MATCH) {
-      fill_window(s);
-      if (s.lookahead <= MAX_MATCH && flush === Z_NO_FLUSH$2) {
-        return BS_NEED_MORE;
-      }
-      if (s.lookahead === 0) {
-        break;
-      }
-    }
-    s.match_length = 0;
-    if (s.lookahead >= MIN_MATCH && s.strstart > 0) {
-      scan = s.strstart - 1;
-      prev = _win[scan];
-      if (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan]) {
-        strend = s.strstart + MAX_MATCH;
-        do {} while (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && scan < strend);
-        s.match_length = MAX_MATCH - (strend - scan);
-        if (s.match_length > s.lookahead) {
-          s.match_length = s.lookahead;
-        }
-      }
-    }
-    if (s.match_length >= MIN_MATCH) {
-      bflush = _tr_tally(s, 1, s.match_length - MIN_MATCH);
-      s.lookahead -= s.match_length;
-      s.strstart += s.match_length;
-      s.match_length = 0;
-    } else {
-      bflush = _tr_tally(s, 0, s.window[s.strstart]);
-      s.lookahead--;
-      s.strstart++;
-    }
-    if (bflush) {
-      flush_block_only(s, false);
-      if (s.strm.avail_out === 0) {
-        return BS_NEED_MORE;
-      }
-    }
-  }
-  s.insert = 0;
-  if (flush === Z_FINISH$3) {
-    flush_block_only(s, true);
-    if (s.strm.avail_out === 0) {
-      return BS_FINISH_STARTED;
-    }
-    return BS_FINISH_DONE;
-  }
-  if (s.sym_next) {
-    flush_block_only(s, false);
-    if (s.strm.avail_out === 0) {
-      return BS_NEED_MORE;
-    }
-  }
-  return BS_BLOCK_DONE;
-}, deflate_huff = (s, flush) => {
-  let bflush;
-  for (;; ) {
-    if (s.lookahead === 0) {
-      fill_window(s);
-      if (s.lookahead === 0) {
-        if (flush === Z_NO_FLUSH$2) {
-          return BS_NEED_MORE;
-        }
-        break;
-      }
-    }
-    s.match_length = 0;
-    bflush = _tr_tally(s, 0, s.window[s.strstart]);
-    s.lookahead--;
-    s.strstart++;
-    if (bflush) {
-      flush_block_only(s, false);
-      if (s.strm.avail_out === 0) {
-        return BS_NEED_MORE;
-      }
-    }
-  }
-  s.insert = 0;
-  if (flush === Z_FINISH$3) {
-    flush_block_only(s, true);
-    if (s.strm.avail_out === 0) {
-      return BS_FINISH_STARTED;
-    }
-    return BS_FINISH_DONE;
-  }
-  if (s.sym_next) {
-    flush_block_only(s, false);
-    if (s.strm.avail_out === 0) {
-      return BS_NEED_MORE;
-    }
-  }
-  return BS_BLOCK_DONE;
-}, configuration_table, lm_init = (s) => {
-  s.window_size = 2 * s.w_size;
-  zero(s.head);
-  s.max_lazy_match = configuration_table[s.level].max_lazy;
-  s.good_match = configuration_table[s.level].good_length;
-  s.nice_match = configuration_table[s.level].nice_length;
-  s.max_chain_length = configuration_table[s.level].max_chain;
-  s.strstart = 0;
-  s.block_start = 0;
-  s.lookahead = 0;
-  s.insert = 0;
-  s.match_length = s.prev_length = MIN_MATCH - 1;
-  s.match_available = 0;
-  s.ins_h = 0;
-}, deflateStateCheck = (strm) => {
-  if (!strm) {
-    return 1;
-  }
-  const s = strm.state;
-  if (!s || s.strm !== strm || s.status !== INIT_STATE && s.status !== GZIP_STATE && s.status !== EXTRA_STATE && s.status !== NAME_STATE && s.status !== COMMENT_STATE && s.status !== HCRC_STATE && s.status !== BUSY_STATE && s.status !== FINISH_STATE) {
-    return 1;
-  }
-  return 0;
-}, deflateResetKeep = (strm) => {
-  if (deflateStateCheck(strm)) {
-    return err(strm, Z_STREAM_ERROR$2);
-  }
-  strm.total_in = strm.total_out = 0;
-  strm.data_type = Z_UNKNOWN;
-  const s = strm.state;
-  s.pending = 0;
-  s.pending_out = 0;
-  if (s.wrap < 0) {
-    s.wrap = -s.wrap;
-  }
-  s.status = s.wrap === 2 ? GZIP_STATE : s.wrap ? INIT_STATE : BUSY_STATE;
-  strm.adler = s.wrap === 2 ? 0 : 1;
-  s.last_flush = -2;
-  _tr_init(s);
-  return Z_OK$3;
-}, deflateReset = (strm) => {
-  const ret = deflateResetKeep(strm);
-  if (ret === Z_OK$3) {
-    lm_init(strm.state);
-  }
-  return ret;
-}, deflateSetHeader = (strm, head) => {
-  if (deflateStateCheck(strm) || strm.state.wrap !== 2) {
-    return Z_STREAM_ERROR$2;
-  }
-  strm.state.gzhead = head;
-  return Z_OK$3;
-}, deflateInit2 = (strm, level, method, windowBits, memLevel, strategy, legacyHash) => {
-  if (!strm) {
-    return Z_STREAM_ERROR$2;
-  }
-  let wrap = 1;
-  if (level === Z_DEFAULT_COMPRESSION$1) {
-    level = 6;
-  }
-  if (windowBits < 0) {
-    wrap = 0;
-    windowBits = -windowBits;
-  } else if (windowBits > 15) {
-    wrap = 2;
-    windowBits -= 16;
-  }
-  if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method !== Z_DEFLATED$2 || windowBits < 8 || windowBits > 15 || level < 0 || level > 9 || strategy < 0 || strategy > Z_FIXED || windowBits === 8 && wrap !== 1) {
-    return err(strm, Z_STREAM_ERROR$2);
-  }
-  if (windowBits === 8) {
-    windowBits = 9;
-  }
-  const s = new DeflateState;
-  strm.state = s;
-  s.strm = strm;
-  s.status = INIT_STATE;
-  s.wrap = wrap;
-  s.gzhead = null;
-  s.w_bits = windowBits;
-  s.w_size = 1 << s.w_bits;
-  s.w_mask = s.w_size - 1;
-  s.legacy_hash = legacyHash ? 1 : 0;
-  s.hash_bits = memLevel + 7;
-  if (!s.legacy_hash && s.hash_bits < 15) {
-    s.hash_bits = 15;
-  }
-  s.hash_size = 1 << s.hash_bits;
-  s.hash_mask = s.hash_size - 1;
-  s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
-  s.window = new Uint8Array(s.w_size * 2);
-  s.head = new Uint16Array(s.hash_size);
-  s.prev = new Uint16Array(s.w_size);
-  s.lit_bufsize = 1 << memLevel + 6;
-  s.pending_buf_size = s.lit_bufsize * 4;
-  s.pending_buf = new Uint8Array(s.pending_buf_size);
-  s.sym_buf = s.lit_bufsize;
-  s.sym_end = (s.lit_bufsize - 1) * 3;
-  s.level = level;
-  s.strategy = strategy;
-  s.method = method;
-  return deflateReset(strm);
-}, deflateInit = (strm, level) => {
-  return deflateInit2(strm, level, Z_DEFLATED$2, MAX_WBITS$1, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY$1);
-}, deflate$2 = (strm, flush) => {
-  if (deflateStateCheck(strm) || flush > Z_BLOCK$1 || flush < 0) {
-    return strm ? err(strm, Z_STREAM_ERROR$2) : Z_STREAM_ERROR$2;
-  }
-  const s = strm.state;
-  if (!strm.output || strm.avail_in !== 0 && !strm.input || s.status === FINISH_STATE && flush !== Z_FINISH$3) {
-    return err(strm, strm.avail_out === 0 ? Z_BUF_ERROR$2 : Z_STREAM_ERROR$2);
-  }
-  const old_flush = s.last_flush;
-  s.last_flush = flush;
-  if (s.pending !== 0) {
-    flush_pending(strm);
-    if (strm.avail_out === 0) {
-      s.last_flush = -1;
-      return Z_OK$3;
-    }
-  } else if (strm.avail_in === 0 && rank(flush) <= rank(old_flush) && flush !== Z_FINISH$3) {
-    return err(strm, Z_BUF_ERROR$2);
-  }
-  if (s.status === FINISH_STATE && strm.avail_in !== 0) {
-    return err(strm, Z_BUF_ERROR$2);
-  }
-  if (s.status === INIT_STATE && s.wrap === 0) {
-    s.status = BUSY_STATE;
-  }
-  if (s.status === INIT_STATE) {
-    let header = Z_DEFLATED$2 + (s.w_bits - 8 << 4) << 8;
-    let level_flags = -1;
-    if (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2) {
-      level_flags = 0;
-    } else if (s.level < 6) {
-      level_flags = 1;
-    } else if (s.level === 6) {
-      level_flags = 2;
-    } else {
-      level_flags = 3;
-    }
-    header |= level_flags << 6;
-    if (s.strstart !== 0) {
-      header |= PRESET_DICT;
-    }
-    header += 31 - header % 31;
-    putShortMSB(s, header);
-    if (s.strstart !== 0) {
-      putShortMSB(s, strm.adler >>> 16);
-      putShortMSB(s, strm.adler & 65535);
-    }
-    strm.adler = 1;
-    s.status = BUSY_STATE;
-    flush_pending(strm);
-    if (s.pending !== 0) {
-      s.last_flush = -1;
-      return Z_OK$3;
-    }
-  }
-  if (s.status === GZIP_STATE) {
-    strm.adler = 0;
-    put_byte(s, 31);
-    put_byte(s, 139);
-    put_byte(s, 8);
-    if (!s.gzhead) {
-      put_byte(s, 0);
-      put_byte(s, 0);
-      put_byte(s, 0);
-      put_byte(s, 0);
-      put_byte(s, 0);
-      put_byte(s, s.level === 9 ? 2 : s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ? 4 : 0);
-      put_byte(s, OS_CODE);
-      s.status = BUSY_STATE;
-      flush_pending(strm);
-      if (s.pending !== 0) {
-        s.last_flush = -1;
-        return Z_OK$3;
-      }
-    } else {
-      put_byte(s, (s.gzhead.text ? 1 : 0) + (s.gzhead.hcrc ? 2 : 0) + (!s.gzhead.extra ? 0 : 4) + (!s.gzhead.name ? 0 : 8) + (!s.gzhead.comment ? 0 : 16));
-      put_byte(s, s.gzhead.time & 255);
-      put_byte(s, s.gzhead.time >> 8 & 255);
-      put_byte(s, s.gzhead.time >> 16 & 255);
-      put_byte(s, s.gzhead.time >> 24 & 255);
-      put_byte(s, s.level === 9 ? 2 : s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ? 4 : 0);
-      put_byte(s, s.gzhead.os & 255);
-      if (s.gzhead.extra && s.gzhead.extra.length) {
-        put_byte(s, s.gzhead.extra.length & 255);
-        put_byte(s, s.gzhead.extra.length >> 8 & 255);
-      }
-      if (s.gzhead.hcrc) {
-        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending, 0);
-      }
-      s.gzindex = 0;
-      s.status = EXTRA_STATE;
-    }
-  }
-  if (s.status === EXTRA_STATE) {
-    if (s.gzhead.extra) {
-      let beg = s.pending;
-      let left = (s.gzhead.extra.length & 65535) - s.gzindex;
-      while (s.pending + left > s.pending_buf_size) {
-        let copy = s.pending_buf_size - s.pending;
-        s.pending_buf.set(s.gzhead.extra.subarray(s.gzindex, s.gzindex + copy), s.pending);
-        s.pending = s.pending_buf_size;
-        if (s.gzhead.hcrc && s.pending > beg) {
-          strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
-        }
-        s.gzindex += copy;
-        flush_pending(strm);
-        if (s.pending !== 0) {
-          s.last_flush = -1;
-          return Z_OK$3;
-        }
-        beg = 0;
-        left -= copy;
-      }
-      let gzhead_extra = new Uint8Array(s.gzhead.extra);
-      s.pending_buf.set(gzhead_extra.subarray(s.gzindex, s.gzindex + left), s.pending);
-      s.pending += left;
-      if (s.gzhead.hcrc && s.pending > beg) {
-        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
-      }
-      s.gzindex = 0;
-    }
-    s.status = NAME_STATE;
-  }
-  if (s.status === NAME_STATE) {
-    if (s.gzhead.name) {
-      let beg = s.pending;
-      let val;
-      do {
-        if (s.pending === s.pending_buf_size) {
-          if (s.gzhead.hcrc && s.pending > beg) {
-            strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
-          }
-          flush_pending(strm);
-          if (s.pending !== 0) {
-            s.last_flush = -1;
-            return Z_OK$3;
-          }
-          beg = 0;
-        }
-        if (s.gzindex < s.gzhead.name.length) {
-          val = s.gzhead.name.charCodeAt(s.gzindex++) & 255;
-        } else {
-          val = 0;
-        }
-        put_byte(s, val);
-      } while (val !== 0);
-      if (s.gzhead.hcrc && s.pending > beg) {
-        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
-      }
-      s.gzindex = 0;
-    }
-    s.status = COMMENT_STATE;
-  }
-  if (s.status === COMMENT_STATE) {
-    if (s.gzhead.comment) {
-      let beg = s.pending;
-      let val;
-      do {
-        if (s.pending === s.pending_buf_size) {
-          if (s.gzhead.hcrc && s.pending > beg) {
-            strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
-          }
-          flush_pending(strm);
-          if (s.pending !== 0) {
-            s.last_flush = -1;
-            return Z_OK$3;
-          }
-          beg = 0;
-        }
-        if (s.gzindex < s.gzhead.comment.length) {
-          val = s.gzhead.comment.charCodeAt(s.gzindex++) & 255;
-        } else {
-          val = 0;
-        }
-        put_byte(s, val);
-      } while (val !== 0);
-      if (s.gzhead.hcrc && s.pending > beg) {
-        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
-      }
-    }
-    s.status = HCRC_STATE;
-  }
-  if (s.status === HCRC_STATE) {
-    if (s.gzhead.hcrc) {
-      if (s.pending + 2 > s.pending_buf_size) {
-        flush_pending(strm);
-        if (s.pending !== 0) {
-          s.last_flush = -1;
-          return Z_OK$3;
-        }
-      }
-      put_byte(s, strm.adler & 255);
-      put_byte(s, strm.adler >> 8 & 255);
-      strm.adler = 0;
-    }
-    s.status = BUSY_STATE;
-    flush_pending(strm);
-    if (s.pending !== 0) {
-      s.last_flush = -1;
-      return Z_OK$3;
-    }
-  }
-  if (strm.avail_in !== 0 || s.lookahead !== 0 || flush !== Z_NO_FLUSH$2 && s.status !== FINISH_STATE) {
-    let bstate = s.level === 0 ? deflate_stored(s, flush) : s.strategy === Z_HUFFMAN_ONLY ? deflate_huff(s, flush) : s.strategy === Z_RLE ? deflate_rle(s, flush) : configuration_table[s.level].func(s, flush);
-    if (bstate === BS_FINISH_STARTED || bstate === BS_FINISH_DONE) {
-      s.status = FINISH_STATE;
-    }
-    if (bstate === BS_NEED_MORE || bstate === BS_FINISH_STARTED) {
-      if (strm.avail_out === 0) {
-        s.last_flush = -1;
-      }
-      return Z_OK$3;
-    }
-    if (bstate === BS_BLOCK_DONE) {
-      if (flush === Z_PARTIAL_FLUSH) {
-        _tr_align(s);
-      } else if (flush !== Z_BLOCK$1) {
-        _tr_stored_block(s, 0, 0, false);
-        if (flush === Z_FULL_FLUSH$1) {
-          zero(s.head);
-          if (s.lookahead === 0) {
-            s.strstart = 0;
-            s.block_start = 0;
-            s.insert = 0;
-          }
-        }
-      }
-      flush_pending(strm);
-      if (strm.avail_out === 0) {
-        s.last_flush = -1;
-        return Z_OK$3;
-      }
-    }
-  }
-  if (flush !== Z_FINISH$3) {
-    return Z_OK$3;
-  }
-  if (s.wrap <= 0) {
-    return Z_STREAM_END$3;
-  }
-  if (s.wrap === 2) {
-    put_byte(s, strm.adler & 255);
-    put_byte(s, strm.adler >> 8 & 255);
-    put_byte(s, strm.adler >> 16 & 255);
-    put_byte(s, strm.adler >> 24 & 255);
-    put_byte(s, strm.total_in & 255);
-    put_byte(s, strm.total_in >> 8 & 255);
-    put_byte(s, strm.total_in >> 16 & 255);
-    put_byte(s, strm.total_in >> 24 & 255);
-  } else {
-    putShortMSB(s, strm.adler >>> 16);
-    putShortMSB(s, strm.adler & 65535);
-  }
-  flush_pending(strm);
-  if (s.wrap > 0) {
-    s.wrap = -s.wrap;
-  }
-  return s.pending !== 0 ? Z_OK$3 : Z_STREAM_END$3;
-}, deflateEnd = (strm) => {
-  if (deflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$2;
-  }
-  const status = strm.state.status;
-  strm.state = null;
-  return status === BUSY_STATE ? err(strm, Z_DATA_ERROR$2) : Z_OK$3;
-}, deflateSetDictionary = (strm, dictionary) => {
-  let dictLength = dictionary.length;
-  if (deflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$2;
-  }
-  const s = strm.state;
-  const wrap = s.wrap;
-  if (wrap === 2 || wrap === 1 && s.status !== INIT_STATE || s.lookahead) {
-    return Z_STREAM_ERROR$2;
-  }
-  if (wrap === 1) {
-    strm.adler = adler32_1(strm.adler, dictionary, dictLength, 0);
-  }
-  s.wrap = 0;
-  if (dictLength >= s.w_size) {
-    if (wrap === 0) {
-      zero(s.head);
-      s.strstart = 0;
-      s.block_start = 0;
-      s.insert = 0;
-    }
-    let tmpDict = new Uint8Array(s.w_size);
-    tmpDict.set(dictionary.subarray(dictLength - s.w_size, dictLength), 0);
-    dictionary = tmpDict;
-    dictLength = s.w_size;
-  }
-  const avail = strm.avail_in;
-  const next = strm.next_in;
-  const input = strm.input;
-  strm.avail_in = dictLength;
-  strm.next_in = 0;
-  strm.input = dictionary;
-  fill_window(s);
-  while (s.lookahead >= MIN_MATCH) {
-    let str = s.strstart;
-    let n = s.lookahead - (MIN_MATCH - 1);
-    do {
-      INSERT_STRING(s, str);
-      str++;
-    } while (--n);
-    s.strstart = str;
-    s.lookahead = MIN_MATCH - 1;
-    fill_window(s);
-  }
-  s.strstart += s.lookahead;
-  s.block_start = s.strstart;
-  s.insert = s.lookahead;
-  s.lookahead = 0;
-  s.match_length = s.prev_length = MIN_MATCH - 1;
-  s.match_available = 0;
-  strm.next_in = next;
-  strm.input = input;
-  strm.avail_in = avail;
-  s.wrap = wrap;
-  return Z_OK$3;
-}, deflateInit_1, deflateInit2_1, deflateReset_1, deflateResetKeep_1, deflateSetHeader_1, deflate_2$1, deflateEnd_1, deflateSetDictionary_1, deflateInfo = "pako deflate (from Nodeca project)", deflate_1$2, _has = (obj, key) => {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}, assign = function(obj) {
-  const sources = Array.prototype.slice.call(arguments, 1);
-  while (sources.length) {
-    const source = sources.shift();
-    if (!source) {
-      continue;
-    }
-    if (typeof source !== "object") {
-      throw new TypeError(source + "must be non-object");
-    }
-    for (const p in source) {
-      if (_has(source, p)) {
-        obj[p] = source[p];
-      }
-    }
-  }
-  return obj;
-}, flattenChunks = (chunks) => {
-  let len = 0;
-  for (let i = 0, l = chunks.length;i < l; i++) {
-    len += chunks[i].length;
-  }
-  const result = new Uint8Array(len);
-  for (let i = 0, pos = 0, l = chunks.length;i < l; i++) {
-    let chunk = chunks[i];
-    result.set(chunk, pos);
-    pos += chunk.length;
-  }
-  return result;
-}, common, STR_APPLY_UIA_OK = true, _utf8len, string2buf = (str) => {
-  if (typeof TextEncoder === "function" && TextEncoder.prototype.encode) {
-    return new TextEncoder().encode(str);
-  }
-  let buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
-  for (m_pos = 0;m_pos < str_len; m_pos++) {
-    c = str.charCodeAt(m_pos);
-    if ((c & 64512) === 55296 && m_pos + 1 < str_len) {
-      c2 = str.charCodeAt(m_pos + 1);
-      if ((c2 & 64512) === 56320) {
-        c = 65536 + (c - 55296 << 10) + (c2 - 56320);
-        m_pos++;
-      }
-    }
-    buf_len += c < 128 ? 1 : c < 2048 ? 2 : c < 65536 ? 3 : 4;
-  }
-  buf = new Uint8Array(buf_len);
-  for (i = 0, m_pos = 0;i < buf_len; m_pos++) {
-    c = str.charCodeAt(m_pos);
-    if ((c & 64512) === 55296 && m_pos + 1 < str_len) {
-      c2 = str.charCodeAt(m_pos + 1);
-      if ((c2 & 64512) === 56320) {
-        c = 65536 + (c - 55296 << 10) + (c2 - 56320);
-        m_pos++;
-      }
-    }
-    if (c < 128) {
-      buf[i++] = c;
-    } else if (c < 2048) {
-      buf[i++] = 192 | c >>> 6;
-      buf[i++] = 128 | c & 63;
-    } else if (c < 65536) {
-      buf[i++] = 224 | c >>> 12;
-      buf[i++] = 128 | c >>> 6 & 63;
-      buf[i++] = 128 | c & 63;
-    } else {
-      buf[i++] = 240 | c >>> 18;
-      buf[i++] = 128 | c >>> 12 & 63;
-      buf[i++] = 128 | c >>> 6 & 63;
-      buf[i++] = 128 | c & 63;
-    }
-  }
-  return buf;
-}, buf2binstring = (buf, len) => {
-  if (len < 65534) {
-    if (buf.subarray && STR_APPLY_UIA_OK) {
-      return String.fromCharCode.apply(null, buf.length === len ? buf : buf.subarray(0, len));
-    }
-  }
-  let result = "";
-  for (let i = 0;i < len; i++) {
-    result += String.fromCharCode(buf[i]);
-  }
-  return result;
-}, buf2string = (buf, max) => {
-  const len = max || buf.length;
-  if (typeof TextDecoder === "function" && TextDecoder.prototype.decode) {
-    return new TextDecoder().decode(buf.subarray(0, max));
-  }
-  let i, out;
-  const utf16buf = new Array(len * 2);
-  for (out = 0, i = 0;i < len; ) {
-    let c = buf[i++];
-    if (c < 128) {
-      utf16buf[out++] = c;
-      continue;
-    }
-    let c_len = _utf8len[c];
-    if (c_len > 4) {
-      utf16buf[out++] = 65533;
-      i += c_len - 1;
-      continue;
-    }
-    c &= c_len === 2 ? 31 : c_len === 3 ? 15 : 7;
-    while (c_len > 1 && i < len) {
-      c = c << 6 | buf[i++] & 63;
-      c_len--;
-    }
-    if (c_len > 1) {
-      utf16buf[out++] = 65533;
-      continue;
-    }
-    if (c < 65536) {
-      utf16buf[out++] = c;
-    } else {
-      c -= 65536;
-      utf16buf[out++] = 55296 | c >> 10 & 1023;
-      utf16buf[out++] = 56320 | c & 1023;
-    }
-  }
-  return buf2binstring(utf16buf, out);
-}, utf8border = (buf, max) => {
-  max = max || buf.length;
-  if (max > buf.length) {
-    max = buf.length;
-  }
-  let pos = max - 1;
-  while (pos >= 0 && (buf[pos] & 192) === 128) {
-    pos--;
-  }
-  if (pos < 0) {
-    return max;
-  }
-  if (pos === 0) {
-    return max;
-  }
-  return pos + _utf8len[buf[pos]] > max ? pos : max;
-}, strings, zstream, toString$1, Z_NO_FLUSH$1, Z_SYNC_FLUSH, Z_FULL_FLUSH, Z_FINISH$2, Z_OK$2, Z_STREAM_END$2, Z_DEFAULT_COMPRESSION, Z_DEFAULT_STRATEGY, Z_DEFLATED$1, defaultOptions$1, Deflate_1$1, deflate_2, deflateRaw_1$1, gzip_1$1, constants$1, deflate_1$1, BAD$1 = 16209, TYPE$1 = 16191, inffast = function inflate_fast(strm, start) {
-  let _in;
-  let last;
-  let _out;
-  let beg;
-  let end;
-  let dmax;
-  let wsize;
-  let whave;
-  let wnext;
-  let s_window;
-  let hold;
-  let bits;
-  let lcode;
-  let dcode;
-  let lmask;
-  let dmask;
-  let here;
-  let op;
-  let len;
-  let dist;
-  let from;
-  let from_source;
-  let input, output;
-  const state = strm.state;
-  _in = strm.next_in;
-  input = strm.input;
-  last = _in + (strm.avail_in - 5);
-  _out = strm.next_out;
-  output = strm.output;
-  beg = _out - (start - strm.avail_out);
-  end = _out + (strm.avail_out - 257);
-  dmax = state.dmax;
-  wsize = state.wsize;
-  whave = state.whave;
-  wnext = state.wnext;
-  s_window = state.window;
-  hold = state.hold;
-  bits = state.bits;
-  lcode = state.lencode;
-  dcode = state.distcode;
-  lmask = (1 << state.lenbits) - 1;
-  dmask = (1 << state.distbits) - 1;
-  top:
-    do {
-      if (bits < 15) {
-        hold += input[_in++] << bits;
-        bits += 8;
-        hold += input[_in++] << bits;
-        bits += 8;
-      }
-      here = lcode[hold & lmask];
-      dolen:
-        for (;; ) {
-          op = here >>> 24;
-          hold >>>= op;
-          bits -= op;
-          op = here >>> 16 & 255;
-          if (op === 0) {
-            output[_out++] = here & 65535;
-          } else if (op & 16) {
-            len = here & 65535;
-            op &= 15;
-            if (op) {
-              if (bits < op) {
-                hold += input[_in++] << bits;
-                bits += 8;
-              }
-              len += hold & (1 << op) - 1;
-              hold >>>= op;
-              bits -= op;
-            }
-            if (bits < 15) {
-              hold += input[_in++] << bits;
-              bits += 8;
-              hold += input[_in++] << bits;
-              bits += 8;
-            }
-            here = dcode[hold & dmask];
-            dodist:
-              for (;; ) {
-                op = here >>> 24;
-                hold >>>= op;
-                bits -= op;
-                op = here >>> 16 & 255;
-                if (op & 16) {
-                  dist = here & 65535;
-                  op &= 15;
-                  if (bits < op) {
-                    hold += input[_in++] << bits;
-                    bits += 8;
-                    if (bits < op) {
-                      hold += input[_in++] << bits;
-                      bits += 8;
-                    }
-                  }
-                  dist += hold & (1 << op) - 1;
-                  if (dist > dmax) {
-                    strm.msg = "invalid distance too far back";
-                    state.mode = BAD$1;
-                    break top;
-                  }
-                  hold >>>= op;
-                  bits -= op;
-                  op = _out - beg;
-                  if (dist > op) {
-                    op = dist - op;
-                    if (op > whave) {
-                      if (state.sane) {
-                        strm.msg = "invalid distance too far back";
-                        state.mode = BAD$1;
-                        break top;
-                      }
-                    }
-                    from = 0;
-                    from_source = s_window;
-                    if (wnext === 0) {
-                      from += wsize - op;
-                      if (op < len) {
-                        len -= op;
-                        do {
-                          output[_out++] = s_window[from++];
-                        } while (--op);
-                        from = _out - dist;
-                        from_source = output;
-                      }
-                    } else if (wnext < op) {
-                      from += wsize + wnext - op;
-                      op -= wnext;
-                      if (op < len) {
-                        len -= op;
-                        do {
-                          output[_out++] = s_window[from++];
-                        } while (--op);
-                        from = 0;
-                        if (wnext < len) {
-                          op = wnext;
-                          len -= op;
-                          do {
-                            output[_out++] = s_window[from++];
-                          } while (--op);
-                          from = _out - dist;
-                          from_source = output;
-                        }
-                      }
-                    } else {
-                      from += wnext - op;
-                      if (op < len) {
-                        len -= op;
-                        do {
-                          output[_out++] = s_window[from++];
-                        } while (--op);
-                        from = _out - dist;
-                        from_source = output;
-                      }
-                    }
-                    while (len > 2) {
-                      output[_out++] = from_source[from++];
-                      output[_out++] = from_source[from++];
-                      output[_out++] = from_source[from++];
-                      len -= 3;
-                    }
-                    if (len) {
-                      output[_out++] = from_source[from++];
-                      if (len > 1) {
-                        output[_out++] = from_source[from++];
-                      }
-                    }
-                  } else {
-                    from = _out - dist;
-                    do {
-                      output[_out++] = output[from++];
-                      output[_out++] = output[from++];
-                      output[_out++] = output[from++];
-                      len -= 3;
-                    } while (len > 2);
-                    if (len) {
-                      output[_out++] = output[from++];
-                      if (len > 1) {
-                        output[_out++] = output[from++];
-                      }
-                    }
-                  }
-                } else if ((op & 64) === 0) {
-                  here = dcode[(here & 65535) + (hold & (1 << op) - 1)];
-                  continue dodist;
-                } else {
-                  strm.msg = "invalid distance code";
-                  state.mode = BAD$1;
-                  break top;
-                }
-                break;
-              }
-          } else if ((op & 64) === 0) {
-            here = lcode[(here & 65535) + (hold & (1 << op) - 1)];
-            continue dolen;
-          } else if (op & 32) {
-            state.mode = TYPE$1;
-            break top;
-          } else {
-            strm.msg = "invalid literal/length code";
-            state.mode = BAD$1;
-            break top;
-          }
-          break;
-        }
-    } while (_in < last && _out < end);
-  len = bits >> 3;
-  _in -= len;
-  bits -= len << 3;
-  hold &= (1 << bits) - 1;
-  strm.next_in = _in;
-  strm.next_out = _out;
-  strm.avail_in = _in < last ? 5 + (last - _in) : 5 - (_in - last);
-  strm.avail_out = _out < end ? 257 + (end - _out) : 257 - (_out - end);
-  state.hold = hold;
-  state.bits = bits;
-  return;
-}, MAXBITS = 15, ENOUGH_LENS$1 = 852, ENOUGH_DISTS$1 = 592, CODES$1 = 0, LENS$1 = 1, DISTS$1 = 2, lbase, lext, dbase, dext, inflate_table = (type, lens, lens_index, codes, table, table_index, work, opts) => {
-  const bits = opts.bits;
-  let len = 0;
-  let sym = 0;
-  let min = 0, max = 0;
-  let root = 0;
-  let curr = 0;
-  let drop = 0;
-  let left = 0;
-  let used = 0;
-  let huff = 0;
-  let incr;
-  let fill;
-  let low;
-  let mask;
-  let next;
-  let base = null;
-  let match;
-  const count = new Uint16Array(MAXBITS + 1);
-  const offs = new Uint16Array(MAXBITS + 1);
-  let extra = null;
-  let here_bits, here_op, here_val;
-  for (len = 0;len <= MAXBITS; len++) {
-    count[len] = 0;
-  }
-  for (sym = 0;sym < codes; sym++) {
-    count[lens[lens_index + sym]]++;
-  }
-  root = bits;
-  for (max = MAXBITS;max >= 1; max--) {
-    if (count[max] !== 0) {
-      break;
-    }
-  }
-  if (root > max) {
-    root = max;
-  }
-  if (max === 0) {
-    table[table_index++] = 1 << 24 | 64 << 16 | 0;
-    table[table_index++] = 1 << 24 | 64 << 16 | 0;
-    opts.bits = 1;
-    return 0;
-  }
-  for (min = 1;min < max; min++) {
-    if (count[min] !== 0) {
-      break;
-    }
-  }
-  if (root < min) {
-    root = min;
-  }
-  left = 1;
-  for (len = 1;len <= MAXBITS; len++) {
-    left <<= 1;
-    left -= count[len];
-    if (left < 0) {
-      return -1;
-    }
-  }
-  if (left > 0 && (type === CODES$1 || max !== 1)) {
-    return -1;
-  }
-  offs[1] = 0;
-  for (len = 1;len < MAXBITS; len++) {
-    offs[len + 1] = offs[len] + count[len];
-  }
-  for (sym = 0;sym < codes; sym++) {
-    if (lens[lens_index + sym] !== 0) {
-      work[offs[lens[lens_index + sym]]++] = sym;
-    }
-  }
-  if (type === CODES$1) {
-    base = extra = work;
-    match = 20;
-  } else if (type === LENS$1) {
-    base = lbase;
-    extra = lext;
-    match = 257;
-  } else {
-    base = dbase;
-    extra = dext;
-    match = 0;
-  }
-  huff = 0;
-  sym = 0;
-  len = min;
-  next = table_index;
-  curr = root;
-  drop = 0;
-  low = -1;
-  used = 1 << root;
-  mask = used - 1;
-  if (type === LENS$1 && used > ENOUGH_LENS$1 || type === DISTS$1 && used > ENOUGH_DISTS$1) {
-    return 1;
-  }
-  for (;; ) {
-    here_bits = len - drop;
-    if (work[sym] + 1 < match) {
-      here_op = 0;
-      here_val = work[sym];
-    } else if (work[sym] >= match) {
-      here_op = extra[work[sym] - match];
-      here_val = base[work[sym] - match];
-    } else {
-      here_op = 32 + 64;
-      here_val = 0;
-    }
-    incr = 1 << len - drop;
-    fill = 1 << curr;
-    min = fill;
-    do {
-      fill -= incr;
-      table[next + (huff >> drop) + fill] = here_bits << 24 | here_op << 16 | here_val | 0;
-    } while (fill !== 0);
-    incr = 1 << len - 1;
-    while (huff & incr) {
-      incr >>= 1;
-    }
-    if (incr !== 0) {
-      huff &= incr - 1;
-      huff += incr;
-    } else {
-      huff = 0;
-    }
-    sym++;
-    if (--count[len] === 0) {
-      if (len === max) {
-        break;
-      }
-      len = lens[lens_index + work[sym]];
-    }
-    if (len > root && (huff & mask) !== low) {
-      if (drop === 0) {
-        drop = root;
-      }
-      next += min;
-      curr = len - drop;
-      left = 1 << curr;
-      while (curr + drop < max) {
-        left -= count[curr + drop];
-        if (left <= 0) {
-          break;
-        }
-        curr++;
-        left <<= 1;
-      }
-      used += 1 << curr;
-      if (type === LENS$1 && used > ENOUGH_LENS$1 || type === DISTS$1 && used > ENOUGH_DISTS$1) {
-        return 1;
-      }
-      low = huff & mask;
-      table[low] = root << 24 | curr << 16 | next - table_index | 0;
-    }
-  }
-  if (huff !== 0) {
-    table[next + huff] = len - drop << 24 | 64 << 16 | 0;
-  }
-  opts.bits = root;
-  return 0;
-}, inftrees, CODES = 0, LENS = 1, DISTS = 2, Z_FINISH$1, Z_BLOCK, Z_TREES, Z_OK$1, Z_STREAM_END$1, Z_NEED_DICT$1, Z_STREAM_ERROR$1, Z_DATA_ERROR$1, Z_MEM_ERROR$1, Z_BUF_ERROR$1, Z_DEFLATED, HEAD = 16180, FLAGS = 16181, TIME = 16182, OS = 16183, EXLEN = 16184, EXTRA = 16185, NAME = 16186, COMMENT = 16187, HCRC = 16188, DICTID = 16189, DICT = 16190, TYPE = 16191, TYPEDO = 16192, STORED = 16193, COPY_ = 16194, COPY = 16195, TABLE = 16196, LENLENS = 16197, CODELENS = 16198, LEN_ = 16199, LEN = 16200, LENEXT = 16201, DIST = 16202, DISTEXT = 16203, MATCH = 16204, LIT = 16205, CHECK = 16206, LENGTH = 16207, DONE = 16208, BAD = 16209, MEM = 16210, SYNC = 16211, ENOUGH_LENS = 852, ENOUGH_DISTS = 592, MAX_WBITS = 15, DEF_WBITS, zswap32 = (q) => {
-  return (q >>> 24 & 255) + (q >>> 8 & 65280) + ((q & 65280) << 8) + ((q & 255) << 24);
-}, inflateStateCheck = (strm) => {
-  if (!strm) {
-    return 1;
-  }
-  const state = strm.state;
-  if (!state || state.strm !== strm || state.mode < HEAD || state.mode > SYNC) {
-    return 1;
-  }
-  return 0;
-}, inflateResetKeep = (strm) => {
-  if (inflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$1;
-  }
-  const state = strm.state;
-  strm.total_in = strm.total_out = state.total = 0;
-  strm.msg = "";
-  if (state.wrap) {
-    strm.adler = state.wrap & 1;
-  }
-  state.mode = HEAD;
-  state.last = 0;
-  state.havedict = 0;
-  state.flags = -1;
-  state.dmax = 32768;
-  state.head = null;
-  state.hold = 0;
-  state.bits = 0;
-  state.lencode = state.lendyn = new Int32Array(ENOUGH_LENS);
-  state.distcode = state.distdyn = new Int32Array(ENOUGH_DISTS);
-  state.sane = 1;
-  state.back = -1;
-  return Z_OK$1;
-}, inflateReset = (strm) => {
-  if (inflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$1;
-  }
-  const state = strm.state;
-  state.wsize = 0;
-  state.whave = 0;
-  state.wnext = 0;
-  return inflateResetKeep(strm);
-}, inflateReset2 = (strm, windowBits) => {
-  let wrap;
-  if (inflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$1;
-  }
-  const state = strm.state;
-  if (windowBits < 0) {
-    wrap = 0;
-    windowBits = -windowBits;
-  } else {
-    wrap = (windowBits >> 4) + 5;
-    if (windowBits < 48) {
-      windowBits &= 15;
-    }
-  }
-  if (windowBits && (windowBits < 8 || windowBits > 15)) {
-    return Z_STREAM_ERROR$1;
-  }
-  if (state.window !== null && state.wbits !== windowBits) {
-    state.window = null;
-  }
-  state.wrap = wrap;
-  state.wbits = windowBits;
-  return inflateReset(strm);
-}, inflateInit2 = (strm, windowBits) => {
-  if (!strm) {
-    return Z_STREAM_ERROR$1;
-  }
-  const state = new InflateState;
-  strm.state = state;
-  state.strm = strm;
-  state.window = null;
-  state.mode = HEAD;
-  const ret = inflateReset2(strm, windowBits);
-  if (ret !== Z_OK$1) {
-    strm.state = null;
-  }
-  return ret;
-}, inflateInit = (strm) => {
-  return inflateInit2(strm, DEF_WBITS);
-}, virgin = true, lenfix, distfix, fixedtables = (state) => {
-  if (virgin) {
-    lenfix = new Int32Array(512);
-    distfix = new Int32Array(32);
-    let sym = 0;
-    while (sym < 144) {
-      state.lens[sym++] = 8;
-    }
-    while (sym < 256) {
-      state.lens[sym++] = 9;
-    }
-    while (sym < 280) {
-      state.lens[sym++] = 7;
-    }
-    while (sym < 288) {
-      state.lens[sym++] = 8;
-    }
-    inftrees(LENS, state.lens, 0, 288, lenfix, 0, state.work, { bits: 9 });
-    sym = 0;
-    while (sym < 32) {
-      state.lens[sym++] = 5;
-    }
-    inftrees(DISTS, state.lens, 0, 32, distfix, 0, state.work, { bits: 5 });
-    virgin = false;
-  }
-  state.lencode = lenfix;
-  state.lenbits = 9;
-  state.distcode = distfix;
-  state.distbits = 5;
-}, updatewindow = (strm, src, end, copy) => {
-  let dist;
-  const state = strm.state;
-  if (state.window === null) {
-    state.window = new Uint8Array(1 << state.wbits);
-  }
-  if (state.wsize === 0) {
-    state.wsize = 1 << state.wbits;
-    state.wnext = 0;
-    state.whave = 0;
-  }
-  if (copy >= state.wsize) {
-    state.window.set(src.subarray(end - state.wsize, end), 0);
-    state.wnext = 0;
-    state.whave = state.wsize;
-  } else {
-    dist = state.wsize - state.wnext;
-    if (dist > copy) {
-      dist = copy;
-    }
-    state.window.set(src.subarray(end - copy, end - copy + dist), state.wnext);
-    copy -= dist;
-    if (copy) {
-      state.window.set(src.subarray(end - copy, end), 0);
-      state.wnext = copy;
-      state.whave = state.wsize;
-    } else {
-      state.wnext += dist;
-      if (state.wnext === state.wsize) {
-        state.wnext = 0;
-      }
-      if (state.whave < state.wsize) {
-        state.whave += dist;
-      }
-    }
-  }
-  return 0;
-}, inflate$2 = (strm, flush) => {
-  let state;
-  let input, output;
-  let next;
-  let put;
-  let have, left;
-  let hold;
-  let bits;
-  let _in, _out;
-  let copy;
-  let from;
-  let from_source;
-  let here = 0;
-  let here_bits, here_op, here_val;
-  let last_bits, last_op, last_val;
-  let len;
-  let ret;
-  const hbuf = new Uint8Array(4);
-  let opts;
-  let n;
-  const order = new Uint8Array([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
-  if (inflateStateCheck(strm) || !strm.output || !strm.input && strm.avail_in !== 0) {
-    return Z_STREAM_ERROR$1;
-  }
-  state = strm.state;
-  if (state.mode === TYPE) {
-    state.mode = TYPEDO;
-  }
-  put = strm.next_out;
-  output = strm.output;
-  left = strm.avail_out;
-  next = strm.next_in;
-  input = strm.input;
-  have = strm.avail_in;
-  hold = state.hold;
-  bits = state.bits;
-  _in = have;
-  _out = left;
-  ret = Z_OK$1;
-  inf_leave:
-    for (;; ) {
-      switch (state.mode) {
-        case HEAD:
-          if (state.wrap === 0) {
-            state.mode = TYPEDO;
-            break;
-          }
-          while (bits < 16) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          if (state.wrap & 2 && hold === 35615) {
-            if (state.wbits === 0) {
-              state.wbits = 15;
-            }
-            state.check = 0;
-            hbuf[0] = hold & 255;
-            hbuf[1] = hold >>> 8 & 255;
-            state.check = crc32_1(state.check, hbuf, 2, 0);
-            hold = 0;
-            bits = 0;
-            state.mode = FLAGS;
-            break;
-          }
-          if (state.head) {
-            state.head.done = false;
-          }
-          if (!(state.wrap & 1) || (((hold & 255) << 8) + (hold >> 8)) % 31) {
-            strm.msg = "incorrect header check";
-            state.mode = BAD;
-            break;
-          }
-          if ((hold & 15) !== Z_DEFLATED) {
-            strm.msg = "unknown compression method";
-            state.mode = BAD;
-            break;
-          }
-          hold >>>= 4;
-          bits -= 4;
-          len = (hold & 15) + 8;
-          if (state.wbits === 0) {
-            state.wbits = len;
-          }
-          if (len > 15 || len > state.wbits) {
-            strm.msg = "invalid window size";
-            state.mode = BAD;
-            break;
-          }
-          state.dmax = 1 << state.wbits;
-          state.flags = 0;
-          strm.adler = state.check = 1;
-          state.mode = hold & 512 ? DICTID : TYPE;
-          hold = 0;
-          bits = 0;
-          break;
-        case FLAGS:
-          while (bits < 16) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          state.flags = hold;
-          if ((state.flags & 255) !== Z_DEFLATED) {
-            strm.msg = "unknown compression method";
-            state.mode = BAD;
-            break;
-          }
-          if (state.flags & 57344) {
-            strm.msg = "unknown header flags set";
-            state.mode = BAD;
-            break;
-          }
-          if (state.head) {
-            state.head.text = hold >> 8 & 1;
-          }
-          if (state.flags & 512 && state.wrap & 4) {
-            hbuf[0] = hold & 255;
-            hbuf[1] = hold >>> 8 & 255;
-            state.check = crc32_1(state.check, hbuf, 2, 0);
-          }
-          hold = 0;
-          bits = 0;
-          state.mode = TIME;
-        case TIME:
-          while (bits < 32) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          if (state.head) {
-            state.head.time = hold;
-          }
-          if (state.flags & 512 && state.wrap & 4) {
-            hbuf[0] = hold & 255;
-            hbuf[1] = hold >>> 8 & 255;
-            hbuf[2] = hold >>> 16 & 255;
-            hbuf[3] = hold >>> 24 & 255;
-            state.check = crc32_1(state.check, hbuf, 4, 0);
-          }
-          hold = 0;
-          bits = 0;
-          state.mode = OS;
-        case OS:
-          while (bits < 16) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          if (state.head) {
-            state.head.xflags = hold & 255;
-            state.head.os = hold >> 8;
-          }
-          if (state.flags & 512 && state.wrap & 4) {
-            hbuf[0] = hold & 255;
-            hbuf[1] = hold >>> 8 & 255;
-            state.check = crc32_1(state.check, hbuf, 2, 0);
-          }
-          hold = 0;
-          bits = 0;
-          state.mode = EXLEN;
-        case EXLEN:
-          if (state.flags & 1024) {
-            while (bits < 16) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            state.length = hold;
-            if (state.head) {
-              state.head.extra_len = hold;
-            }
-            if (state.flags & 512 && state.wrap & 4) {
-              hbuf[0] = hold & 255;
-              hbuf[1] = hold >>> 8 & 255;
-              state.check = crc32_1(state.check, hbuf, 2, 0);
-            }
-            hold = 0;
-            bits = 0;
-          } else if (state.head) {
-            state.head.extra = null;
-          }
-          state.mode = EXTRA;
-        case EXTRA:
-          if (state.flags & 1024) {
-            copy = state.length;
-            if (copy > have) {
-              copy = have;
-            }
-            if (copy) {
-              if (state.head) {
-                len = state.head.extra_len - state.length;
-                if (!state.head.extra) {
-                  state.head.extra = new Uint8Array(state.head.extra_len);
-                }
-                state.head.extra.set(input.subarray(next, next + copy), len);
-              }
-              if (state.flags & 512 && state.wrap & 4) {
-                state.check = crc32_1(state.check, input, copy, next);
-              }
-              have -= copy;
-              next += copy;
-              state.length -= copy;
-            }
-            if (state.length) {
-              break inf_leave;
-            }
-          }
-          state.length = 0;
-          state.mode = NAME;
-        case NAME:
-          if (state.flags & 2048) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            copy = 0;
-            do {
-              len = input[next + copy++];
-              if (state.head && len && state.length < 65536) {
-                state.head.name += String.fromCharCode(len);
-              }
-            } while (len && copy < have);
-            if (state.flags & 512 && state.wrap & 4) {
-              state.check = crc32_1(state.check, input, copy, next);
-            }
-            have -= copy;
-            next += copy;
-            if (len) {
-              break inf_leave;
-            }
-          } else if (state.head) {
-            state.head.name = null;
-          }
-          state.length = 0;
-          state.mode = COMMENT;
-        case COMMENT:
-          if (state.flags & 4096) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            copy = 0;
-            do {
-              len = input[next + copy++];
-              if (state.head && len && state.length < 65536) {
-                state.head.comment += String.fromCharCode(len);
-              }
-            } while (len && copy < have);
-            if (state.flags & 512 && state.wrap & 4) {
-              state.check = crc32_1(state.check, input, copy, next);
-            }
-            have -= copy;
-            next += copy;
-            if (len) {
-              break inf_leave;
-            }
-          } else if (state.head) {
-            state.head.comment = null;
-          }
-          state.mode = HCRC;
-        case HCRC:
-          if (state.flags & 512) {
-            while (bits < 16) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            if (state.wrap & 4 && hold !== (state.check & 65535)) {
-              strm.msg = "header crc mismatch";
-              state.mode = BAD;
-              break;
-            }
-            hold = 0;
-            bits = 0;
-          }
-          if (state.head) {
-            state.head.hcrc = state.flags >> 9 & 1;
-            state.head.done = true;
-          }
-          strm.adler = state.check = 0;
-          state.mode = TYPE;
-          break;
-        case DICTID:
-          while (bits < 32) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          strm.adler = state.check = zswap32(hold);
-          hold = 0;
-          bits = 0;
-          state.mode = DICT;
-        case DICT:
-          if (state.havedict === 0) {
-            strm.next_out = put;
-            strm.avail_out = left;
-            strm.next_in = next;
-            strm.avail_in = have;
-            state.hold = hold;
-            state.bits = bits;
-            return Z_NEED_DICT$1;
-          }
-          strm.adler = state.check = 1;
-          state.mode = TYPE;
-        case TYPE:
-          if (flush === Z_BLOCK || flush === Z_TREES) {
-            break inf_leave;
-          }
-        case TYPEDO:
-          if (state.last) {
-            hold >>>= bits & 7;
-            bits -= bits & 7;
-            state.mode = CHECK;
-            break;
-          }
-          while (bits < 3) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          state.last = hold & 1;
-          hold >>>= 1;
-          bits -= 1;
-          switch (hold & 3) {
-            case 0:
-              state.mode = STORED;
-              break;
-            case 1:
-              fixedtables(state);
-              state.mode = LEN_;
-              if (flush === Z_TREES) {
-                hold >>>= 2;
-                bits -= 2;
-                break inf_leave;
-              }
-              break;
-            case 2:
-              state.mode = TABLE;
-              break;
-            case 3:
-              strm.msg = "invalid block type";
-              state.mode = BAD;
-          }
-          hold >>>= 2;
-          bits -= 2;
-          break;
-        case STORED:
-          hold >>>= bits & 7;
-          bits -= bits & 7;
-          while (bits < 32) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          if ((hold & 65535) !== (hold >>> 16 ^ 65535)) {
-            strm.msg = "invalid stored block lengths";
-            state.mode = BAD;
-            break;
-          }
-          state.length = hold & 65535;
-          hold = 0;
-          bits = 0;
-          state.mode = COPY_;
-          if (flush === Z_TREES) {
-            break inf_leave;
-          }
-        case COPY_:
-          state.mode = COPY;
-        case COPY:
-          copy = state.length;
-          if (copy) {
-            if (copy > have) {
-              copy = have;
-            }
-            if (copy > left) {
-              copy = left;
-            }
-            if (copy === 0) {
-              break inf_leave;
-            }
-            output.set(input.subarray(next, next + copy), put);
-            have -= copy;
-            next += copy;
-            left -= copy;
-            put += copy;
-            state.length -= copy;
-            break;
-          }
-          state.mode = TYPE;
-          break;
-        case TABLE:
-          while (bits < 14) {
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          state.nlen = (hold & 31) + 257;
-          hold >>>= 5;
-          bits -= 5;
-          state.ndist = (hold & 31) + 1;
-          hold >>>= 5;
-          bits -= 5;
-          state.ncode = (hold & 15) + 4;
-          hold >>>= 4;
-          bits -= 4;
-          if (state.nlen > 286 || state.ndist > 30) {
-            strm.msg = "too many length or distance symbols";
-            state.mode = BAD;
-            break;
-          }
-          state.have = 0;
-          state.mode = LENLENS;
-        case LENLENS:
-          while (state.have < state.ncode) {
-            while (bits < 3) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            state.lens[order[state.have++]] = hold & 7;
-            hold >>>= 3;
-            bits -= 3;
-          }
-          while (state.have < 19) {
-            state.lens[order[state.have++]] = 0;
-          }
-          state.lencode = state.lendyn;
-          state.lenbits = 7;
-          opts = { bits: state.lenbits };
-          ret = inftrees(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
-          state.lenbits = opts.bits;
-          if (ret) {
-            strm.msg = "invalid code lengths set";
-            state.mode = BAD;
-            break;
-          }
-          state.have = 0;
-          state.mode = CODELENS;
-        case CODELENS:
-          while (state.have < state.nlen + state.ndist) {
-            for (;; ) {
-              here = state.lencode[hold & (1 << state.lenbits) - 1];
-              here_bits = here >>> 24;
-              here_op = here >>> 16 & 255;
-              here_val = here & 65535;
-              if (here_bits <= bits) {
-                break;
-              }
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            if (here_val < 16) {
-              hold >>>= here_bits;
-              bits -= here_bits;
-              state.lens[state.have++] = here_val;
-            } else {
-              if (here_val === 16) {
-                n = here_bits + 2;
-                while (bits < n) {
-                  if (have === 0) {
-                    break inf_leave;
-                  }
-                  have--;
-                  hold += input[next++] << bits;
-                  bits += 8;
-                }
-                hold >>>= here_bits;
-                bits -= here_bits;
-                if (state.have === 0) {
-                  strm.msg = "invalid bit length repeat";
-                  state.mode = BAD;
-                  break;
-                }
-                len = state.lens[state.have - 1];
-                copy = 3 + (hold & 3);
-                hold >>>= 2;
-                bits -= 2;
-              } else if (here_val === 17) {
-                n = here_bits + 3;
-                while (bits < n) {
-                  if (have === 0) {
-                    break inf_leave;
-                  }
-                  have--;
-                  hold += input[next++] << bits;
-                  bits += 8;
-                }
-                hold >>>= here_bits;
-                bits -= here_bits;
-                len = 0;
-                copy = 3 + (hold & 7);
-                hold >>>= 3;
-                bits -= 3;
-              } else {
-                n = here_bits + 7;
-                while (bits < n) {
-                  if (have === 0) {
-                    break inf_leave;
-                  }
-                  have--;
-                  hold += input[next++] << bits;
-                  bits += 8;
-                }
-                hold >>>= here_bits;
-                bits -= here_bits;
-                len = 0;
-                copy = 11 + (hold & 127);
-                hold >>>= 7;
-                bits -= 7;
-              }
-              if (state.have + copy > state.nlen + state.ndist) {
-                strm.msg = "invalid bit length repeat";
-                state.mode = BAD;
-                break;
-              }
-              while (copy--) {
-                state.lens[state.have++] = len;
-              }
-            }
-          }
-          if (state.mode === BAD) {
-            break;
-          }
-          if (state.lens[256] === 0) {
-            strm.msg = "invalid code -- missing end-of-block";
-            state.mode = BAD;
-            break;
-          }
-          state.lenbits = 9;
-          opts = { bits: state.lenbits };
-          ret = inftrees(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
-          state.lenbits = opts.bits;
-          if (ret) {
-            strm.msg = "invalid literal/lengths set";
-            state.mode = BAD;
-            break;
-          }
-          state.distbits = 6;
-          state.distcode = state.distdyn;
-          opts = { bits: state.distbits };
-          ret = inftrees(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
-          state.distbits = opts.bits;
-          if (ret) {
-            strm.msg = "invalid distances set";
-            state.mode = BAD;
-            break;
-          }
-          state.mode = LEN_;
-          if (flush === Z_TREES) {
-            break inf_leave;
-          }
-        case LEN_:
-          state.mode = LEN;
-        case LEN:
-          if (have >= 6 && left >= 258) {
-            strm.next_out = put;
-            strm.avail_out = left;
-            strm.next_in = next;
-            strm.avail_in = have;
-            state.hold = hold;
-            state.bits = bits;
-            inffast(strm, _out);
-            put = strm.next_out;
-            output = strm.output;
-            left = strm.avail_out;
-            next = strm.next_in;
-            input = strm.input;
-            have = strm.avail_in;
-            hold = state.hold;
-            bits = state.bits;
-            if (state.mode === TYPE) {
-              state.back = -1;
-            }
-            break;
-          }
-          state.back = 0;
-          for (;; ) {
-            here = state.lencode[hold & (1 << state.lenbits) - 1];
-            here_bits = here >>> 24;
-            here_op = here >>> 16 & 255;
-            here_val = here & 65535;
-            if (here_bits <= bits) {
-              break;
-            }
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          if (here_op && (here_op & 240) === 0) {
-            last_bits = here_bits;
-            last_op = here_op;
-            last_val = here_val;
-            for (;; ) {
-              here = state.lencode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
-              here_bits = here >>> 24;
-              here_op = here >>> 16 & 255;
-              here_val = here & 65535;
-              if (last_bits + here_bits <= bits) {
-                break;
-              }
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            hold >>>= last_bits;
-            bits -= last_bits;
-            state.back += last_bits;
-          }
-          hold >>>= here_bits;
-          bits -= here_bits;
-          state.back += here_bits;
-          state.length = here_val;
-          if (here_op === 0) {
-            state.mode = LIT;
-            break;
-          }
-          if (here_op & 32) {
-            state.back = -1;
-            state.mode = TYPE;
-            break;
-          }
-          if (here_op & 64) {
-            strm.msg = "invalid literal/length code";
-            state.mode = BAD;
-            break;
-          }
-          state.extra = here_op & 15;
-          state.mode = LENEXT;
-        case LENEXT:
-          if (state.extra) {
-            n = state.extra;
-            while (bits < n) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            state.length += hold & (1 << state.extra) - 1;
-            hold >>>= state.extra;
-            bits -= state.extra;
-            state.back += state.extra;
-          }
-          state.was = state.length;
-          state.mode = DIST;
-        case DIST:
-          for (;; ) {
-            here = state.distcode[hold & (1 << state.distbits) - 1];
-            here_bits = here >>> 24;
-            here_op = here >>> 16 & 255;
-            here_val = here & 65535;
-            if (here_bits <= bits) {
-              break;
-            }
-            if (have === 0) {
-              break inf_leave;
-            }
-            have--;
-            hold += input[next++] << bits;
-            bits += 8;
-          }
-          if ((here_op & 240) === 0) {
-            last_bits = here_bits;
-            last_op = here_op;
-            last_val = here_val;
-            for (;; ) {
-              here = state.distcode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
-              here_bits = here >>> 24;
-              here_op = here >>> 16 & 255;
-              here_val = here & 65535;
-              if (last_bits + here_bits <= bits) {
-                break;
-              }
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            hold >>>= last_bits;
-            bits -= last_bits;
-            state.back += last_bits;
-          }
-          hold >>>= here_bits;
-          bits -= here_bits;
-          state.back += here_bits;
-          if (here_op & 64) {
-            strm.msg = "invalid distance code";
-            state.mode = BAD;
-            break;
-          }
-          state.offset = here_val;
-          state.extra = here_op & 15;
-          state.mode = DISTEXT;
-        case DISTEXT:
-          if (state.extra) {
-            n = state.extra;
-            while (bits < n) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            state.offset += hold & (1 << state.extra) - 1;
-            hold >>>= state.extra;
-            bits -= state.extra;
-            state.back += state.extra;
-          }
-          if (state.offset > state.dmax) {
-            strm.msg = "invalid distance too far back";
-            state.mode = BAD;
-            break;
-          }
-          state.mode = MATCH;
-        case MATCH:
-          if (left === 0) {
-            break inf_leave;
-          }
-          copy = _out - left;
-          if (state.offset > copy) {
-            copy = state.offset - copy;
-            if (copy > state.whave) {
-              if (state.sane) {
-                strm.msg = "invalid distance too far back";
-                state.mode = BAD;
-                break;
-              }
-            }
-            if (copy > state.wnext) {
-              copy -= state.wnext;
-              from = state.wsize - copy;
-            } else {
-              from = state.wnext - copy;
-            }
-            if (copy > state.length) {
-              copy = state.length;
-            }
-            from_source = state.window;
-          } else {
-            from_source = output;
-            from = put - state.offset;
-            copy = state.length;
-          }
-          if (copy > left) {
-            copy = left;
-          }
-          left -= copy;
-          state.length -= copy;
-          do {
-            output[put++] = from_source[from++];
-          } while (--copy);
-          if (state.length === 0) {
-            state.mode = LEN;
-          }
-          break;
-        case LIT:
-          if (left === 0) {
-            break inf_leave;
-          }
-          output[put++] = state.length;
-          left--;
-          state.mode = LEN;
-          break;
-        case CHECK:
-          if (state.wrap) {
-            while (bits < 32) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold |= input[next++] << bits;
-              bits += 8;
-            }
-            _out -= left;
-            strm.total_out += _out;
-            state.total += _out;
-            if (state.wrap & 4 && _out) {
-              strm.adler = state.check = state.flags ? crc32_1(state.check, output, _out, put - _out) : adler32_1(state.check, output, _out, put - _out);
-            }
-            _out = left;
-            if (state.wrap & 4 && (state.flags ? hold : zswap32(hold)) !== state.check) {
-              strm.msg = "incorrect data check";
-              state.mode = BAD;
-              break;
-            }
-            hold = 0;
-            bits = 0;
-          }
-          state.mode = LENGTH;
-        case LENGTH:
-          if (state.wrap && state.flags) {
-            while (bits < 32) {
-              if (have === 0) {
-                break inf_leave;
-              }
-              have--;
-              hold += input[next++] << bits;
-              bits += 8;
-            }
-            if (state.wrap & 4 && hold !== (state.total & 4294967295)) {
-              strm.msg = "incorrect length check";
-              state.mode = BAD;
-              break;
-            }
-            hold = 0;
-            bits = 0;
-          }
-          state.mode = DONE;
-        case DONE:
-          ret = Z_STREAM_END$1;
-          break inf_leave;
-        case BAD:
-          ret = Z_DATA_ERROR$1;
-          break inf_leave;
-        case MEM:
-          return Z_MEM_ERROR$1;
-        case SYNC:
-        default:
-          return Z_STREAM_ERROR$1;
-      }
-    }
-  strm.next_out = put;
-  strm.avail_out = left;
-  strm.next_in = next;
-  strm.avail_in = have;
-  state.hold = hold;
-  state.bits = bits;
-  if (state.wsize || _out !== strm.avail_out && state.mode < BAD && (state.mode < CHECK || flush !== Z_FINISH$1)) {
-    if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out))
-      ;
-  }
-  _in -= strm.avail_in;
-  _out -= strm.avail_out;
-  strm.total_in += _in;
-  strm.total_out += _out;
-  state.total += _out;
-  if (state.wrap & 4 && _out) {
-    strm.adler = state.check = state.flags ? crc32_1(state.check, output, _out, strm.next_out - _out) : adler32_1(state.check, output, _out, strm.next_out - _out);
-  }
-  strm.data_type = state.bits + (state.last ? 64 : 0) + (state.mode === TYPE ? 128 : 0) + (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
-  if ((_in === 0 && _out === 0 || flush === Z_FINISH$1) && ret === Z_OK$1) {
-    ret = Z_BUF_ERROR$1;
-  }
-  return ret;
-}, inflateEnd = (strm) => {
-  if (inflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$1;
-  }
-  let state = strm.state;
-  if (state.window) {
-    state.window = null;
-  }
-  strm.state = null;
-  return Z_OK$1;
-}, inflateGetHeader = (strm, head) => {
-  if (inflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$1;
-  }
-  const state = strm.state;
-  if ((state.wrap & 2) === 0) {
-    return Z_STREAM_ERROR$1;
-  }
-  state.head = head;
-  head.done = false;
-  return Z_OK$1;
-}, inflateSetDictionary = (strm, dictionary) => {
-  const dictLength = dictionary.length;
-  let state;
-  let dictid;
-  let ret;
-  if (inflateStateCheck(strm)) {
-    return Z_STREAM_ERROR$1;
-  }
-  state = strm.state;
-  if (state.wrap !== 0 && state.mode !== DICT) {
-    return Z_STREAM_ERROR$1;
-  }
-  if (state.mode === DICT) {
-    dictid = 1;
-    dictid = adler32_1(dictid, dictionary, dictLength, 0);
-    if (dictid !== state.check) {
-      return Z_DATA_ERROR$1;
-    }
-  }
-  ret = updatewindow(strm, dictionary, dictLength, dictLength);
-  if (ret) {
-    state.mode = MEM;
-    return Z_MEM_ERROR$1;
-  }
-  state.havedict = 1;
-  return Z_OK$1;
-}, inflateReset_1, inflateReset2_1, inflateResetKeep_1, inflateInit_1, inflateInit2_1, inflate_2$1, inflateEnd_1, inflateGetHeader_1, inflateSetDictionary_1, inflateInfo = "pako inflate (from Nodeca project)", inflate_1$2, gzheader, toString, Z_NO_FLUSH, Z_FINISH, Z_OK, Z_STREAM_END, Z_NEED_DICT, Z_STREAM_ERROR, Z_DATA_ERROR, Z_MEM_ERROR, Z_BUF_ERROR, defaultOptions, Inflate_1$1, inflate_2, inflateRaw_1$1, ungzip$1, constants, inflate_1$1, Deflate, deflate, deflateRaw, gzip, Inflate, inflate, inflateRaw, ungzip, Deflate_1, deflate_1, deflateRaw_1, gzip_1, Inflate_1, inflate_1, inflateRaw_1, ungzip_1, constants_1, pako;
-var init_pako_esm = __esm(() => {
-  /*! pako 2.2.0 https://github.com/nodeca/pako @license (MIT AND Zlib) */
-  L_CODES$1 = LITERALS$1 + 1 + LENGTH_CODES$1;
-  HEAP_SIZE$1 = 2 * L_CODES$1 + 1;
-  extra_lbits = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0]);
-  extra_dbits = new Uint8Array([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13]);
-  extra_blbits = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 7]);
-  bl_order = new Uint8Array([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
-  static_ltree = new Array((L_CODES$1 + 2) * 2);
-  zero$1(static_ltree);
-  static_dtree = new Array(D_CODES$1 * 2);
-  zero$1(static_dtree);
-  _dist_code = new Array(DIST_CODE_LEN);
-  zero$1(_dist_code);
-  _length_code = new Array(MAX_MATCH$1 - MIN_MATCH$1 + 1);
-  zero$1(_length_code);
-  base_length = new Array(LENGTH_CODES$1);
-  zero$1(base_length);
-  base_dist = new Array(D_CODES$1);
-  zero$1(base_dist);
-  _tr_init_1 = _tr_init$1;
-  _tr_stored_block_1 = _tr_stored_block$1;
-  _tr_flush_block_1 = _tr_flush_block$1;
-  _tr_tally_1 = _tr_tally$1;
-  _tr_align_1 = _tr_align$1;
-  trees = {
-    _tr_init: _tr_init_1,
-    _tr_stored_block: _tr_stored_block_1,
-    _tr_flush_block: _tr_flush_block_1,
-    _tr_tally: _tr_tally_1,
-    _tr_align: _tr_align_1
-  };
-  adler32_1 = adler32;
-  crcTable = new Uint32Array(makeTable());
-  crc32_1 = crc32;
-  messages = {
-    2: "need dictionary",
-    1: "stream end",
-    0: "",
-    "-1": "file error",
-    "-2": "stream error",
-    "-3": "data error",
-    "-4": "insufficient memory",
-    "-5": "buffer error",
-    "-6": "incompatible version"
-  };
-  constants$2 = {
-    Z_NO_FLUSH: 0,
-    Z_PARTIAL_FLUSH: 1,
-    Z_SYNC_FLUSH: 2,
-    Z_FULL_FLUSH: 3,
-    Z_FINISH: 4,
-    Z_BLOCK: 5,
-    Z_TREES: 6,
-    Z_OK: 0,
-    Z_STREAM_END: 1,
-    Z_NEED_DICT: 2,
-    Z_ERRNO: -1,
-    Z_STREAM_ERROR: -2,
-    Z_DATA_ERROR: -3,
-    Z_MEM_ERROR: -4,
-    Z_BUF_ERROR: -5,
-    Z_NO_COMPRESSION: 0,
-    Z_BEST_SPEED: 1,
-    Z_BEST_COMPRESSION: 9,
-    Z_DEFAULT_COMPRESSION: -1,
-    Z_FILTERED: 1,
-    Z_HUFFMAN_ONLY: 2,
-    Z_RLE: 3,
-    Z_FIXED: 4,
-    Z_DEFAULT_STRATEGY: 0,
-    Z_BINARY: 0,
-    Z_TEXT: 1,
-    Z_UNKNOWN: 2,
-    Z_DEFLATED: 8
-  };
-  ({ _tr_init, _tr_stored_block, _tr_flush_block, _tr_tally, _tr_align } = trees);
-  ({
-    Z_NO_FLUSH: Z_NO_FLUSH$2,
-    Z_PARTIAL_FLUSH,
-    Z_FULL_FLUSH: Z_FULL_FLUSH$1,
-    Z_FINISH: Z_FINISH$3,
-    Z_BLOCK: Z_BLOCK$1,
-    Z_OK: Z_OK$3,
-    Z_STREAM_END: Z_STREAM_END$3,
-    Z_STREAM_ERROR: Z_STREAM_ERROR$2,
-    Z_DATA_ERROR: Z_DATA_ERROR$2,
-    Z_BUF_ERROR: Z_BUF_ERROR$2,
-    Z_DEFAULT_COMPRESSION: Z_DEFAULT_COMPRESSION$1,
-    Z_FILTERED,
-    Z_HUFFMAN_ONLY,
-    Z_RLE,
-    Z_FIXED,
-    Z_DEFAULT_STRATEGY: Z_DEFAULT_STRATEGY$1,
-    Z_UNKNOWN,
-    Z_DEFLATED: Z_DEFLATED$2
-  } = constants$2);
-  L_CODES = LITERALS + 1 + LENGTH_CODES;
-  HEAP_SIZE = 2 * L_CODES + 1;
-  MIN_LOOKAHEAD = MAX_MATCH + MIN_MATCH + 1;
-  configuration_table = [
-    new Config(0, 0, 0, 0, deflate_stored),
-    new Config(4, 4, 8, 4, deflate_fast),
-    new Config(4, 5, 16, 8, deflate_fast),
-    new Config(4, 6, 32, 32, deflate_fast),
-    new Config(4, 4, 16, 16, deflate_slow),
-    new Config(8, 16, 32, 32, deflate_slow),
-    new Config(8, 16, 128, 128, deflate_slow),
-    new Config(8, 32, 128, 256, deflate_slow),
-    new Config(32, 128, 258, 1024, deflate_slow),
-    new Config(32, 258, 258, 4096, deflate_slow)
-  ];
-  deflateInit_1 = deflateInit;
-  deflateInit2_1 = deflateInit2;
-  deflateReset_1 = deflateReset;
-  deflateResetKeep_1 = deflateResetKeep;
-  deflateSetHeader_1 = deflateSetHeader;
-  deflate_2$1 = deflate$2;
-  deflateEnd_1 = deflateEnd;
-  deflateSetDictionary_1 = deflateSetDictionary;
-  deflate_1$2 = {
-    deflateInit: deflateInit_1,
-    deflateInit2: deflateInit2_1,
-    deflateReset: deflateReset_1,
-    deflateResetKeep: deflateResetKeep_1,
-    deflateSetHeader: deflateSetHeader_1,
-    deflate: deflate_2$1,
-    deflateEnd: deflateEnd_1,
-    deflateSetDictionary: deflateSetDictionary_1,
-    deflateInfo
-  };
-  common = {
-    assign,
-    flattenChunks
-  };
-  try {
-    String.fromCharCode.apply(null, new Uint8Array(1));
-  } catch (__) {
-    STR_APPLY_UIA_OK = false;
-  }
-  _utf8len = new Uint8Array(256);
-  for (let q = 0;q < 256; q++) {
-    _utf8len[q] = q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1;
-  }
-  _utf8len[254] = _utf8len[255] = 1;
-  strings = {
-    string2buf,
-    buf2string,
-    utf8border
-  };
-  zstream = ZStream;
-  toString$1 = Object.prototype.toString;
-  ({
-    Z_NO_FLUSH: Z_NO_FLUSH$1,
-    Z_SYNC_FLUSH,
-    Z_FULL_FLUSH,
-    Z_FINISH: Z_FINISH$2,
-    Z_OK: Z_OK$2,
-    Z_STREAM_END: Z_STREAM_END$2,
-    Z_DEFAULT_COMPRESSION,
-    Z_DEFAULT_STRATEGY,
-    Z_DEFLATED: Z_DEFLATED$1
-  } = constants$2);
-  defaultOptions$1 = {
-    level: Z_DEFAULT_COMPRESSION,
-    method: Z_DEFLATED$1,
-    chunkSize: 16384,
-    windowBits: 15,
-    memLevel: 8,
-    strategy: Z_DEFAULT_STRATEGY,
-    legacyHash: true
-  };
-  Deflate$1.prototype.push = function(data, flush_mode) {
-    const strm = this.strm;
-    const chunkSize = this.options.chunkSize;
-    let status, _flush_mode;
-    if (this.ended) {
-      return false;
-    }
-    if (flush_mode === ~~flush_mode)
-      _flush_mode = flush_mode;
-    else
-      _flush_mode = flush_mode === true ? Z_FINISH$2 : Z_NO_FLUSH$1;
-    if (typeof data === "string") {
-      strm.input = strings.string2buf(data);
-    } else if (toString$1.call(data) === "[object ArrayBuffer]") {
-      strm.input = new Uint8Array(data);
-    } else {
-      strm.input = data;
-    }
-    strm.next_in = 0;
-    strm.avail_in = strm.input.length;
-    for (;; ) {
-      if (strm.avail_out === 0) {
-        strm.output = new Uint8Array(chunkSize);
-        strm.next_out = 0;
-        strm.avail_out = chunkSize;
-      }
-      if ((_flush_mode === Z_SYNC_FLUSH || _flush_mode === Z_FULL_FLUSH) && strm.avail_out <= 6) {
-        this.onData(strm.output.subarray(0, strm.next_out));
-        strm.avail_out = 0;
-        continue;
-      }
-      status = deflate_1$2.deflate(strm, _flush_mode);
-      if (status === Z_STREAM_END$2) {
-        if (strm.next_out > 0) {
-          this.onData(strm.output.subarray(0, strm.next_out));
-        }
-        status = deflate_1$2.deflateEnd(this.strm);
-        this.onEnd(status);
-        this.ended = true;
-        return status === Z_OK$2;
-      }
-      if (strm.avail_out === 0) {
-        this.onData(strm.output);
-        continue;
-      }
-      if (_flush_mode > 0 && strm.next_out > 0) {
-        this.onData(strm.output.subarray(0, strm.next_out));
-        strm.avail_out = 0;
-        continue;
-      }
-      if (strm.avail_in === 0)
-        break;
-    }
-    return true;
-  };
-  Deflate$1.prototype.onData = function(chunk) {
-    this.chunks.push(chunk);
-  };
-  Deflate$1.prototype.onEnd = function(status) {
-    if (status === Z_OK$2) {
-      this.result = common.flattenChunks(this.chunks);
-    }
-    this.chunks = [];
-    this.err = status;
-    this.msg = this.strm.msg;
-  };
-  Deflate_1$1 = Deflate$1;
-  deflate_2 = deflate$1;
-  deflateRaw_1$1 = deflateRaw$1;
-  gzip_1$1 = gzip$1;
-  constants$1 = constants$2;
-  deflate_1$1 = {
-    Deflate: Deflate_1$1,
-    deflate: deflate_2,
-    deflateRaw: deflateRaw_1$1,
-    gzip: gzip_1$1,
-    constants: constants$1
-  };
-  lbase = new Uint16Array([
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    13,
-    15,
-    17,
-    19,
-    23,
-    27,
-    31,
-    35,
-    43,
-    51,
-    59,
-    67,
-    83,
-    99,
-    115,
-    131,
-    163,
-    195,
-    227,
-    258,
-    0,
-    0
-  ]);
-  lext = new Uint8Array([
-    16,
-    16,
-    16,
-    16,
-    16,
-    16,
-    16,
-    16,
-    17,
-    17,
-    17,
-    17,
-    18,
-    18,
-    18,
-    18,
-    19,
-    19,
-    19,
-    19,
-    20,
-    20,
-    20,
-    20,
-    21,
-    21,
-    21,
-    21,
-    16,
-    199,
-    75
-  ]);
-  dbase = new Uint16Array([
-    1,
-    2,
-    3,
-    4,
-    5,
-    7,
-    9,
-    13,
-    17,
-    25,
-    33,
-    49,
-    65,
-    97,
-    129,
-    193,
-    257,
-    385,
-    513,
-    769,
-    1025,
-    1537,
-    2049,
-    3073,
-    4097,
-    6145,
-    8193,
-    12289,
-    16385,
-    24577,
-    0,
-    0
-  ]);
-  dext = new Uint8Array([
-    16,
-    16,
-    16,
-    16,
-    17,
-    17,
-    18,
-    18,
-    19,
-    19,
-    20,
-    20,
-    21,
-    21,
-    22,
-    22,
-    23,
-    23,
-    24,
-    24,
-    25,
-    25,
-    26,
-    26,
-    27,
-    27,
-    28,
-    28,
-    29,
-    29,
-    64,
-    64
-  ]);
-  inftrees = inflate_table;
-  ({
-    Z_FINISH: Z_FINISH$1,
-    Z_BLOCK,
-    Z_TREES,
-    Z_OK: Z_OK$1,
-    Z_STREAM_END: Z_STREAM_END$1,
-    Z_NEED_DICT: Z_NEED_DICT$1,
-    Z_STREAM_ERROR: Z_STREAM_ERROR$1,
-    Z_DATA_ERROR: Z_DATA_ERROR$1,
-    Z_MEM_ERROR: Z_MEM_ERROR$1,
-    Z_BUF_ERROR: Z_BUF_ERROR$1,
-    Z_DEFLATED
-  } = constants$2);
-  DEF_WBITS = MAX_WBITS;
-  inflateReset_1 = inflateReset;
-  inflateReset2_1 = inflateReset2;
-  inflateResetKeep_1 = inflateResetKeep;
-  inflateInit_1 = inflateInit;
-  inflateInit2_1 = inflateInit2;
-  inflate_2$1 = inflate$2;
-  inflateEnd_1 = inflateEnd;
-  inflateGetHeader_1 = inflateGetHeader;
-  inflateSetDictionary_1 = inflateSetDictionary;
-  inflate_1$2 = {
-    inflateReset: inflateReset_1,
-    inflateReset2: inflateReset2_1,
-    inflateResetKeep: inflateResetKeep_1,
-    inflateInit: inflateInit_1,
-    inflateInit2: inflateInit2_1,
-    inflate: inflate_2$1,
-    inflateEnd: inflateEnd_1,
-    inflateGetHeader: inflateGetHeader_1,
-    inflateSetDictionary: inflateSetDictionary_1,
-    inflateInfo
-  };
-  gzheader = GZheader;
-  toString = Object.prototype.toString;
-  ({
-    Z_NO_FLUSH,
-    Z_FINISH,
-    Z_OK,
-    Z_STREAM_END,
-    Z_NEED_DICT,
-    Z_STREAM_ERROR,
-    Z_DATA_ERROR,
-    Z_MEM_ERROR,
-    Z_BUF_ERROR
-  } = constants$2);
-  defaultOptions = {
-    chunkSize: 1024 * 64,
-    windowBits: 15,
-    to: ""
-  };
-  Inflate$1.prototype.push = function(data, flush_mode) {
-    const strm = this.strm;
-    const chunkSize = this.options.chunkSize;
-    const dictionary = this.options.dictionary;
-    let status, _flush_mode, last_avail_out;
-    if (this.ended)
-      return false;
-    if (flush_mode === ~~flush_mode)
-      _flush_mode = flush_mode;
-    else
-      _flush_mode = flush_mode === true ? Z_FINISH : Z_NO_FLUSH;
-    if (toString.call(data) === "[object ArrayBuffer]") {
-      strm.input = new Uint8Array(data);
-    } else {
-      strm.input = data;
-    }
-    strm.next_in = 0;
-    strm.avail_in = strm.input.length;
-    for (;; ) {
-      if (strm.avail_out === 0) {
-        strm.output = new Uint8Array(chunkSize);
-        strm.next_out = 0;
-        strm.avail_out = chunkSize;
-      }
-      status = inflate_1$2.inflate(strm, _flush_mode);
-      if (status === Z_NEED_DICT && dictionary) {
-        status = inflate_1$2.inflateSetDictionary(strm, dictionary);
-        if (status === Z_OK) {
-          status = inflate_1$2.inflate(strm, _flush_mode);
-        } else if (status === Z_DATA_ERROR) {
-          status = Z_NEED_DICT;
-        }
-      }
-      while (strm.avail_in > 0 && status === Z_STREAM_END && strm.state.wrap & 2 && strm.state.flags !== 0 && strm.input[strm.next_in] !== 0) {
-        inflate_1$2.inflateReset(strm);
-        status = inflate_1$2.inflate(strm, _flush_mode);
-      }
-      switch (status) {
-        case Z_STREAM_ERROR:
-        case Z_DATA_ERROR:
-        case Z_NEED_DICT:
-        case Z_MEM_ERROR:
-          this.onEnd(status);
-          this.ended = true;
-          return false;
-      }
-      last_avail_out = strm.avail_out;
-      if (strm.next_out) {
-        if (strm.avail_out === 0 || status === Z_STREAM_END || _flush_mode > 0) {
-          if (this.options.to === "string") {
-            let next_out_utf8 = strings.utf8border(strm.output, strm.next_out);
-            let tail = strm.next_out - next_out_utf8;
-            let utf8str = strings.buf2string(strm.output, next_out_utf8);
-            strm.next_out = tail;
-            strm.avail_out = chunkSize - tail;
-            if (tail)
-              strm.output.set(strm.output.subarray(next_out_utf8, next_out_utf8 + tail), 0);
-            this.onData(utf8str);
-          } else {
-            this.onData(strm.output.length === strm.next_out ? strm.output : strm.output.subarray(0, strm.next_out));
-            strm.avail_out = 0;
-            strm.next_out = 0;
-          }
-        }
-      }
-      if ((status === Z_OK || status === Z_BUF_ERROR) && last_avail_out === 0)
-        continue;
-      if (status === Z_STREAM_END) {
-        status = inflate_1$2.inflateEnd(this.strm);
-        this.onEnd(status);
-        this.ended = true;
-        return true;
-      }
-      if (strm.avail_in === 0) {
-        if (_flush_mode === Z_FINISH) {
-          status = inflate_1$2.inflateEnd(this.strm);
-          this.onEnd(status === Z_OK ? Z_BUF_ERROR : status);
-          this.ended = true;
-          return false;
-        }
-        break;
-      }
-    }
-    return true;
-  };
-  Inflate$1.prototype.onData = function(chunk) {
-    this.chunks.push(chunk);
-  };
-  Inflate$1.prototype.onEnd = function(status) {
-    if (status === Z_OK) {
-      if (this.options.to === "string") {
-        this.result = this.chunks.join("");
-      } else {
-        this.result = common.flattenChunks(this.chunks);
-      }
-    }
-    this.chunks = [];
-    this.err = status;
-    this.msg = this.strm.msg;
-  };
-  Inflate_1$1 = Inflate$1;
-  inflate_2 = inflate$1;
-  inflateRaw_1$1 = inflateRaw$1;
-  ungzip$1 = inflate$1;
-  constants = constants$2;
-  inflate_1$1 = {
-    Inflate: Inflate_1$1,
-    inflate: inflate_2,
-    inflateRaw: inflateRaw_1$1,
-    ungzip: ungzip$1,
-    constants
-  };
-  ({ Deflate, deflate, deflateRaw, gzip } = deflate_1$1);
-  ({ Inflate, inflate, inflateRaw, ungzip } = inflate_1$1);
-  Deflate_1 = Deflate;
-  deflate_1 = deflate;
-  deflateRaw_1 = deflateRaw;
-  gzip_1 = gzip;
-  Inflate_1 = Inflate;
-  inflate_1 = inflate;
-  inflateRaw_1 = inflateRaw;
-  ungzip_1 = ungzip;
-  constants_1 = constants$2;
-  pako = {
-    Deflate: Deflate_1,
-    deflate: deflate_1,
-    deflateRaw: deflateRaw_1,
-    gzip: gzip_1,
-    Inflate: Inflate_1,
-    inflate: inflate_1,
-    inflateRaw: inflateRaw_1,
-    ungzip: ungzip_1,
-    constants: constants_1
-  };
-});
-
 // node_modules/spark-md5/spark-md5.js
-var require_spark_md5 = __commonJS(function(exports2, module2) {
+var require_spark_md5 = __commonJS(function(exports, module) {
   (function(factory) {
-    if (typeof exports2 === "object") {
-      module2.exports = factory();
+    if (typeof exports === "object") {
+      module.exports = factory();
     } else if (typeof define === "function" && define.amd) {
       define(factory);
     } else {
@@ -12865,7 +8263,7 @@ var require_spark_md5 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/bignumber.js/bignumber.js
-var require_bignumber = __commonJS(function(exports2, module2) {
+var require_bignumber = __commonJS(function(exports, module) {
   (function(globalObject) {
     var BigNumber, isNumeric = /^-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i, { ceil: mathceil, floor: mathfloor } = Math, bignumberError = "[BigNumber Error] ", tooManyDigits = bignumberError + "Number primitive has more than 15 significant digits: ", BASE = 100000000000000, LOG_BASE = 14, MAX_SAFE_INTEGER = 9007199254740991, POWS_TEN = [1, 10, 100, 1000, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 10000000000, 100000000000, 1000000000000, 10000000000000], SQRT_BASE = 1e7, MAX = 1e9;
     function clone(configObject) {
@@ -14307,21 +9705,21 @@ var require_bignumber = __commonJS(function(exports2, module2) {
       define(function() {
         return BigNumber;
       });
-    } else if (typeof module2 != "undefined" && module2.exports) {
-      module2.exports = BigNumber;
+    } else if (typeof module != "undefined" && module.exports) {
+      module.exports = BigNumber;
     } else {
       if (!globalObject) {
         globalObject = typeof self != "undefined" && self ? self : window;
       }
       globalObject.BigNumber = BigNumber;
     }
-  })(exports2);
+  })(exports);
 });
 
 // node_modules/json-bigint/lib/stringify.js
-var require_stringify = __commonJS(function(exports2, module2) {
+var require_stringify = __commonJS(function(exports, module) {
   var BigNumber = require_bignumber();
-  var JSON2 = module2.exports;
+  var JSON2 = exports;
   (function() {
     function f(n) {
       return n < 10 ? "0" + n : n;
@@ -14431,7 +9829,7 @@ var require_stringify = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/json-bigint/lib/parse.js
-var require_parse = __commonJS(function(exports2, module2) {
+var require_parse = __commonJS(function(exports, module) {
   var BigNumber = null;
   var suspectProtoRx = /(?:_|\\u005[Ff])(?:_|\\u005[Ff])(?:p|\\u0070)(?:r|\\u0072)(?:o|\\u006[Ff])(?:t|\\u0074)(?:o|\\u006[Ff])(?:_|\\u005[Ff])(?:_|\\u005[Ff])/;
   var suspectConstructorRx = /(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)/;
@@ -14701,1103 +10099,25 @@ var require_parse = __commonJS(function(exports2, module2) {
       }({ "": result }, "") : result;
     };
   };
-  module2.exports = json_parse;
+  module.exports = json_parse;
 });
 
 // node_modules/json-bigint/index.js
-var require_json_bigint = __commonJS(function(exports2, module2) {
+var require_json_bigint = __commonJS(function(exports, module) {
   var json_stringify = require_stringify().stringify;
   var json_parse = require_parse();
-  module2.exports = function(options) {
+  module.exports = function(options) {
     return {
       parse: json_parse(options),
       stringify: json_stringify
     };
   };
-  module2.exports.parse = json_parse();
-  module2.exports.stringify = json_stringify;
-});
-
-// node_modules/zca-js/dist/context.js
-function isContextSession(ctx) {
-  return !!ctx.secretKey;
-}
-var _5_MINUTES, CallbacksMap, createContext = (apiType = 30, apiVersion = 685) => ({
-  API_TYPE: apiType,
-  API_VERSION: apiVersion,
-  uploadCallbacks: new CallbacksMap,
-  options: {
-    selfListen: false,
-    checkUpdate: true,
-    logging: true,
-    polyfill: global.fetch
-  },
-  secretKey: null
-}), MAX_MESSAGES_PER_SEND = 50;
-var init_context = __esm(() => {
-  _5_MINUTES = 5 * 60 * 1000;
-  CallbacksMap = class CallbacksMap extends Map {
-    set(key, value, ttl = _5_MINUTES) {
-      setTimeout(() => {
-        this.delete(key);
-      }, ttl);
-      return super.set(key, value);
-    }
-  };
-});
-
-// node_modules/zca-js/dist/utils.js
-function hasOwn(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}
-function getSignKey(type, params) {
-  const n = [];
-  for (const s in params) {
-    if (hasOwn(params, s)) {
-      n.push(s);
-    }
-  }
-  n.sort();
-  let a = "zsecure" + type;
-  for (let s = 0;s < n.length; s++)
-    a += params[n[s]];
-  return import_crypto_js.default.MD5(a).toString();
-}
-function makeURL(ctx, baseURL, params = {}, apiVersion = true) {
-  const url = new URL(baseURL);
-  for (const key in params) {
-    if (hasOwn(params, key)) {
-      url.searchParams.append(key, params[key].toString());
-    }
-  }
-  if (apiVersion) {
-    if (!url.searchParams.has("zpw_ver"))
-      url.searchParams.set("zpw_ver", ctx.API_VERSION.toString());
-    if (!url.searchParams.has("zpw_type"))
-      url.searchParams.set("zpw_type", ctx.API_TYPE.toString());
-  }
-  return url.toString();
-}
-
-class ParamsEncryptor {
-  constructor({ type, imei, firstLaunchTime }) {
-    this.zcid = null;
-    this.enc_ver = "v2";
-    this.zcid = null;
-    this.encryptKey = null;
-    this.createZcid(type, imei, firstLaunchTime);
-    this.zcid_ext = ParamsEncryptor.randomString();
-    this.createEncryptKey();
-  }
-  getEncryptKey() {
-    if (!this.encryptKey)
-      throw new ZaloApiError("getEncryptKey: didn't create encryptKey yet");
-    return this.encryptKey;
-  }
-  createZcid(type, imei, firstLaunchTime) {
-    if (!type || !imei || !firstLaunchTime)
-      throw new ZaloApiError("createZcid: missing params");
-    const msg = `${type},${imei},${firstLaunchTime}`;
-    const s = ParamsEncryptor.encodeAES("3FC4F0D2AB50057BCE0D90D9187A22B1", msg, "hex", true);
-    this.zcid = s;
-  }
-  createEncryptKey(e = 0) {
-    const t = (e, t) => {
-      const { even: n } = ParamsEncryptor.processStr(e), { even: a, odd: s } = ParamsEncryptor.processStr(t);
-      if (!n || !a || !s)
-        return false;
-      const i = n.slice(0, 8).join("") + a.slice(0, 12).join("") + s.reverse().slice(0, 12).join("");
-      return this.encryptKey = i, true;
-    };
-    if (!this.zcid || !this.zcid_ext)
-      throw new ZaloApiError("createEncryptKey: zcid or zcid_ext is null");
-    try {
-      const n = import_crypto_js.default.MD5(this.zcid_ext).toString().toUpperCase();
-      if (t(n, this.zcid) || !(e < 3))
-        return false;
-      this.createEncryptKey(e + 1);
-    } catch (_a) {
-      if (e < 3)
-        this.createEncryptKey(e + 1);
-    }
-    return true;
-  }
-  getParams() {
-    return this.zcid ? {
-      zcid: this.zcid,
-      zcid_ext: this.zcid_ext,
-      enc_ver: this.enc_ver
-    } : null;
-  }
-  static processStr(e) {
-    if (!e || typeof e != "string")
-      return {
-        even: null,
-        odd: null
-      };
-    const [t, n] = [...e].reduce((e, t, n) => (e[n % 2].push(t), e), [[], []]);
-    return {
-      even: t,
-      odd: n
-    };
-  }
-  static randomString(e, t) {
-    const n = e || 6, a = t && e && t > e ? t : 12;
-    let s = Math.floor(Math.random() * (a - n + 1)) + n;
-    if (s > 12) {
-      let e = "";
-      for (;s > 0; ) {
-        e += Math.random().toString(16).substr(2, s > 12 ? 12 : s);
-        s -= 12;
-      }
-      return e;
-    }
-    return Math.random().toString(16).substr(2, s);
-  }
-  static encodeAES(e, message, type, uppercase, s = 0) {
-    if (!message)
-      return null;
-    try {
-      {
-        const encoder = type == "hex" ? import_crypto_js.default.enc.Hex : import_crypto_js.default.enc.Base64;
-        const key = import_crypto_js.default.enc.Utf8.parse(e);
-        const cfg = {
-          words: [0, 0, 0, 0],
-          sigBytes: 16
-        };
-        const encrypted = import_crypto_js.default.AES.encrypt(message, key, {
-          iv: cfg,
-          mode: import_crypto_js.default.mode.CBC,
-          padding: import_crypto_js.default.pad.Pkcs7
-        }).ciphertext.toString(encoder);
-        return uppercase ? encrypted.toUpperCase() : encrypted;
-      }
-    } catch (_a) {
-      return s < 3 ? ParamsEncryptor.encodeAES(e, message, type, uppercase, s + 1) : null;
-    }
-  }
-}
-function decryptResp(key, data) {
-  let n = null;
-  try {
-    n = decodeRespAES(key, data);
-    const parsed = JSON.parse(n);
-    return parsed;
-  } catch (_a) {
-    return n;
-  }
-}
-function decodeRespAES(key, data) {
-  data = decodeURIComponent(data);
-  const parsedKey = import_crypto_js.default.enc.Utf8.parse(key);
-  const n = {
-    words: [0, 0, 0, 0],
-    sigBytes: 16
-  };
-  return import_crypto_js.default.AES.decrypt({
-    ciphertext: import_crypto_js.default.enc.Base64.parse(data)
-  }, parsedKey, {
-    iv: n,
-    mode: import_crypto_js.default.mode.CBC,
-    padding: import_crypto_js.default.pad.Pkcs7
-  }).toString(import_crypto_js.default.enc.Utf8);
-}
-function decodeBase64ToBuffer(data) {
-  return Buffer.from(data, "base64");
-}
-function decodeUnit8Array(data) {
-  try {
-    return new TextDecoder().decode(data);
-  } catch (_a) {
-    return null;
-  }
-}
-function encodeAES(secretKey, data, t = 0) {
-  try {
-    const key = import_crypto_js.default.enc.Base64.parse(secretKey);
-    return import_crypto_js.default.AES.encrypt(data, key, {
-      iv: import_crypto_js.default.enc.Hex.parse("00000000000000000000000000000000"),
-      mode: import_crypto_js.default.mode.CBC,
-      padding: import_crypto_js.default.pad.Pkcs7
-    }).ciphertext.toString(import_crypto_js.default.enc.Base64);
-  } catch (_a) {
-    return t < 3 ? encodeAES(secretKey, data, t + 1) : null;
-  }
-}
-function decodeAES(secretKey, data, t = 0) {
-  try {
-    data = decodeURIComponent(data);
-    const key = import_crypto_js.default.enc.Base64.parse(secretKey);
-    return import_crypto_js.default.AES.decrypt({
-      ciphertext: import_crypto_js.default.enc.Base64.parse(data)
-    }, key, {
-      iv: import_crypto_js.default.enc.Hex.parse("00000000000000000000000000000000"),
-      mode: import_crypto_js.default.mode.CBC,
-      padding: import_crypto_js.default.pad.Pkcs7
-    }).toString(import_crypto_js.default.enc.Utf8);
-  } catch (_a) {
-    return t < 3 ? decodeAES(secretKey, data, t + 1) : null;
-  }
-}
-async function getDefaultHeaders(ctx, origin = "https://chat.zalo.me") {
-  if (!ctx.cookie)
-    throw new ZaloApiError("Cookie is not available");
-  if (!ctx.userAgent)
-    throw new ZaloApiError("User agent is not available");
-  return {
-    Accept: "application/json, text/plain, */*",
-    "Accept-Encoding": "gzip, deflate, br, zstd",
-    "Accept-Language": "en-US,en;q=0.9",
-    "content-type": "application/x-www-form-urlencoded",
-    Cookie: await ctx.cookie.getCookieString(origin),
-    Origin: "https://chat.zalo.me",
-    Referer: "https://chat.zalo.me/",
-    "User-Agent": ctx.userAgent
-  };
-}
-async function request(ctx, url, options, raw = false) {
-  var _a, _b;
-  if (!ctx.cookie)
-    ctx.cookie = new import_tough_cookie.default.CookieJar;
-  const origin = new URL(url).origin;
-  const defaultHeaders = await getDefaultHeaders(ctx, origin);
-  if (!raw) {
-    if (options) {
-      options.headers = Object.assign(defaultHeaders, options.headers || {});
-    } else
-      options = { headers: defaultHeaders };
-  }
-  const _options = Object.assign(Object.assign({}, options !== null && options !== undefined ? options : {}), isBun ? {
-    proxy: (_b = (_a = ctx.options.agent) === null || _a === undefined ? undefined : _a.proxy) === null || _b === undefined ? undefined : _b.href
-  } : { agent: ctx.options.agent });
-  const response = await ctx.options.polyfill(url, _options);
-  const setCookieRaw = response.headers.get("set-cookie");
-  if (setCookieRaw && !raw) {
-    let cookieStrings;
-    if (typeof response.headers.getSetCookie === "function") {
-      cookieStrings = response.headers.getSetCookie();
-    } else {
-      cookieStrings = setCookieRaw.split(", ");
-    }
-    for (const cookie of cookieStrings) {
-      const parsed = import_tough_cookie.default.Cookie.parse(cookie);
-      try {
-        if (parsed)
-          await ctx.cookie.setCookie(parsed, parsed.domain != "zalo.me" ? `https://${parsed.domain}` : origin);
-      } catch (error) {
-        logger(ctx).error(error);
-      }
-    }
-  }
-  const redirectURL = response.headers.get("location");
-  if (redirectURL) {
-    const redirectOptions = Object.assign({}, options);
-    redirectOptions.method = "GET";
-    if (!raw) {
-      redirectOptions.headers = new Headers(redirectOptions.headers);
-      redirectOptions.headers.set("Referer", "https://id.zalo.me/");
-    }
-    return await request(ctx, redirectURL, redirectOptions);
-  }
-  return response;
-}
-async function getImageMetaData(ctx, filePath) {
-  if (!ctx.options.imageMetadataGetter) {
-    throw new ZaloApiMissingImageMetadataGetter;
-  }
-  const imageData = await ctx.options.imageMetadataGetter(filePath);
-  if (!imageData) {
-    throw new ZaloApiError("Failed to get image metadata");
-  }
-  const fileName = filePath.split("/").pop();
-  return {
-    fileName,
-    totalSize: imageData.size,
-    width: imageData.width,
-    height: imageData.height
-  };
-}
-async function getFileSize(filePath) {
-  return import_node_fs.default.promises.stat(filePath).then((s) => s.size);
-}
-async function getGifMetaData(ctx, filePath) {
-  if (!ctx.options.imageMetadataGetter) {
-    throw new ZaloApiMissingImageMetadataGetter;
-  }
-  const gifData = await ctx.options.imageMetadataGetter(filePath);
-  if (!gifData) {
-    throw new ZaloApiError("Failed to get gif metadata");
-  }
-  const fileName = import_node_path.default.basename(filePath);
-  return {
-    fileName,
-    totalSize: gifData.size,
-    width: gifData.width,
-    height: gifData.height
-  };
-}
-async function decodeEventData(parsed, cipherKey) {
-  if (typeof parsed.data !== "string")
-    throw new ZaloApiError(`Invalid data, expected string but got ${typeof parsed.data}`);
-  if (typeof parsed.encrypt !== "number")
-    throw new ZaloApiError(`Invalid encrypt type, expected number but got ${typeof parsed.encrypt}`);
-  if (parsed.encrypt < 0 || parsed.encrypt > 3)
-    throw new ZaloApiError(`Invalid encrypt type, expected 0-3 but got ${parsed.encrypt}`);
-  const rawData = parsed.data;
-  const encryptType = parsed.encrypt;
-  if (encryptType === 0)
-    return JSON.parse(rawData);
-  const decodedBuffer = decodeBase64ToBuffer(encryptType === 1 ? rawData : decodeURIComponent(rawData));
-  let decryptedBuffer = decodedBuffer;
-  if (encryptType !== 1) {
-    if (cipherKey && decodedBuffer.length >= 48) {
-      const algorithm = {
-        name: "AES-GCM",
-        iv: decodedBuffer.subarray(0, 16),
-        tagLength: 128,
-        additionalData: decodedBuffer.subarray(16, 32)
-      };
-      const dataSource = decodedBuffer.subarray(32);
-      const cryptoKey = await import_node_crypto.default.subtle.importKey("raw", decodeBase64ToBuffer(cipherKey), algorithm, false, [
-        "decrypt"
-      ]);
-      decryptedBuffer = await import_node_crypto.default.subtle.decrypt(algorithm, cryptoKey, dataSource);
-    } else {
-      throw new ZaloApiError("Invalid data length or missing cipher key");
-    }
-  }
-  const decompressedBuffer = encryptType === 3 ? new Uint8Array(decryptedBuffer) : pako.inflate(decryptedBuffer);
-  const decodedData = decodeUnit8Array(decompressedBuffer);
-  if (!decodedData)
-    return;
-  return import_json_bigint.default.parse(decodedData);
-}
-async function getMd5LargeFileObject(source, fileSize) {
-  const buffer = typeof source == "string" ? await import_node_fs.default.promises.readFile(source) : source.data;
-  return new Promise((resolve) => {
-    let currentChunk = 0;
-    const chunkSize = 2097152, chunks = Math.ceil(fileSize / chunkSize), spark = new import_spark_md5.default.ArrayBuffer;
-    function loadNext() {
-      const start = currentChunk * chunkSize, end = start + chunkSize >= fileSize ? fileSize : start + chunkSize;
-      spark.append(new Uint8Array(buffer.subarray(start, end)).buffer);
-      currentChunk++;
-      if (currentChunk < chunks) {
-        loadNext();
-      } else {
-        resolve({
-          currentChunk,
-          data: spark.end()
-        });
-      }
-    }
-    loadNext();
-  });
-}
-function getClientMessageType(msgType) {
-  if (msgType === "webchat")
-    return 1;
-  if (msgType === "chat.voice")
-    return 31;
-  if (msgType === "chat.photo")
-    return 32;
-  if (msgType === "chat.sticker")
-    return 36;
-  if (msgType === "chat.doodle")
-    return 37;
-  if (msgType === "chat.recommended")
-    return 38;
-  if (msgType === "chat.link")
-    return 38;
-  if (msgType === "chat.video.msg")
-    return 44;
-  if (msgType === "share.file")
-    return 46;
-  if (msgType === "chat.gif")
-    return 49;
-  if (msgType === "chat.location.new")
-    return 43;
-  return 1;
-}
-function strPadLeft(e, t, n) {
-  const a = (e = "" + e).length;
-  return a === n ? e : a > n ? e.slice(-n) : t.repeat(n - a) + e;
-}
-function formatTime(format, timestamp = Date.now()) {
-  const date = new Date(timestamp);
-  const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
-  };
-  const formatted = new Intl.DateTimeFormat("vi-VN", options).format(date);
-  if (format.includes("%H") || format.includes("%d")) {
-    return format.replace("%H", date.getHours().toString().padStart(2, "0")).replace("%M", date.getMinutes().toString().padStart(2, "0")).replace("%S", date.getSeconds().toString().padStart(2, "0")).replace("%d", date.getDate().toString().padStart(2, "0")).replace("%m", (date.getMonth() + 1).toString().padStart(2, "0")).replace("%Y", date.getFullYear().toString());
-  }
-  return formatted;
-}
-function getFullTimeFromMillisecond(e) {
-  const t = new Date(e);
-  return strPadLeft(t.getHours(), "0", 2) + ":" + strPadLeft(t.getMinutes(), "0", 2) + " " + strPadLeft(t.getDate(), "0", 2) + "/" + strPadLeft(t.getMonth() + 1, "0", 2) + "/" + t.getFullYear();
-}
-function getFileExtension(e) {
-  return import_node_path.default.extname(e).slice(1);
-}
-function getFileName(e) {
-  return import_node_path.default.basename(e);
-}
-function removeUndefinedKeys(e) {
-  for (const t in e)
-    if (e[t] === undefined)
-      delete e[t];
-  return e;
-}
-function getGroupEventType(act) {
-  if (act == "join_request")
-    return GroupEventType.JOIN_REQUEST;
-  if (act == "join")
-    return GroupEventType.JOIN;
-  if (act == "leave")
-    return GroupEventType.LEAVE;
-  if (act == "remove_member")
-    return GroupEventType.REMOVE_MEMBER;
-  if (act == "block_member")
-    return GroupEventType.BLOCK_MEMBER;
-  if (act == "update_setting")
-    return GroupEventType.UPDATE_SETTING;
-  if (act == "update_avatar")
-    return GroupEventType.UPDATE_AVATAR;
-  if (act == "update")
-    return GroupEventType.UPDATE;
-  if (act == "new_link")
-    return GroupEventType.NEW_LINK;
-  if (act == "add_admin")
-    return GroupEventType.ADD_ADMIN;
-  if (act == "remove_admin")
-    return GroupEventType.REMOVE_ADMIN;
-  if (act == "new_pin_topic")
-    return GroupEventType.NEW_PIN_TOPIC;
-  if (act == "update_pin_topic")
-    return GroupEventType.UPDATE_PIN_TOPIC;
-  if (act == "update_topic")
-    return GroupEventType.UPDATE_TOPIC;
-  if (act == "update_board")
-    return GroupEventType.UPDATE_BOARD;
-  if (act == "remove_board")
-    return GroupEventType.REMOVE_BOARD;
-  if (act == "reorder_pin_topic")
-    return GroupEventType.REORDER_PIN_TOPIC;
-  if (act == "unpin_topic")
-    return GroupEventType.UNPIN_TOPIC;
-  if (act == "remove_topic")
-    return GroupEventType.REMOVE_TOPIC;
-  if (act == "accept_remind")
-    return GroupEventType.ACCEPT_REMIND;
-  if (act == "reject_remind")
-    return GroupEventType.REJECT_REMIND;
-  if (act == "remind_topic")
-    return GroupEventType.REMIND_TOPIC;
-  return GroupEventType.UNKNOWN;
-}
-function getFriendEventType(act) {
-  if (act == "add")
-    return FriendEventType.ADD;
-  if (act == "remove")
-    return FriendEventType.REMOVE;
-  if (act == "block")
-    return FriendEventType.BLOCK;
-  if (act == "unblock")
-    return FriendEventType.UNBLOCK;
-  if (act == "block_call")
-    return FriendEventType.BLOCK_CALL;
-  if (act == "unblock_call")
-    return FriendEventType.UNBLOCK_CALL;
-  if (act == "req_v2")
-    return FriendEventType.REQUEST;
-  if (act == "reject")
-    return FriendEventType.REJECT_REQUEST;
-  if (act == "undo_req")
-    return FriendEventType.UNDO_REQUEST;
-  if (act == "seen_fr_req")
-    return FriendEventType.SEEN_FRIEND_REQUEST;
-  if (act == "pin_unpin")
-    return FriendEventType.PIN_UNPIN;
-  if (act == "pin_create")
-    return FriendEventType.PIN_CREATE;
-  return FriendEventType.UNKNOWN;
-}
-async function handleZaloResponse(ctx, response, isEncrypted = true) {
-  const result = {
-    data: null,
-    error: null
-  };
-  if (!response.ok) {
-    result.error = {
-      message: "Request failed with status code " + response.status
-    };
-    return result;
-  }
-  try {
-    const jsonData = await response.json();
-    if (jsonData.error_code != 0) {
-      result.error = {
-        message: jsonData.error_message,
-        code: jsonData.error_code
-      };
-      return result;
-    }
-    const decodedData = isEncrypted ? JSON.parse(decodeAES(ctx.secretKey, jsonData.data)) : jsonData;
-    if (decodedData.error_code != 0) {
-      result.error = {
-        message: decodedData.error_message,
-        code: decodedData.error_code
-      };
-      return result;
-    }
-    result.data = decodedData.data;
-  } catch (error) {
-    logger(ctx).error("Failed to parse response data:", error);
-    result.error = {
-      message: "Failed to parse response data"
-    };
-  }
-  return result;
-}
-async function resolveResponse(ctx, res, cb, isEncrypted) {
-  const result = await handleZaloResponse(ctx, res, isEncrypted);
-  if (result.error)
-    throw new ZaloApiError(result.error.message, result.error.code);
-  if (cb)
-    return cb(result);
-  return result.data;
-}
-function apiFactory() {
-  return (callback) => {
-    return (ctx, api) => {
-      if (!isContextSession(ctx))
-        throw new ZaloApiError("Invalid context " + JSON.stringify(ctx, null, 2));
-      const utils = {
-        makeURL(baseURL, params, apiVersion) {
-          return makeURL(ctx, baseURL, params, apiVersion);
-        },
-        encodeAES(data, t) {
-          return encodeAES(ctx.secretKey, data, t);
-        },
-        request(url, options, raw) {
-          return request(ctx, url, options, raw);
-        },
-        logger: logger(ctx),
-        resolve: (res, cb, isEncrypted) => resolveResponse(ctx, res, cb, isEncrypted)
-      };
-      return callback(api, ctx, utils);
-    };
-  };
-}
-function generateZaloUUID(userAgent) {
-  return import_node_crypto.default.randomUUID() + "-" + import_crypto_js.default.MD5(userAgent).toString();
-}
-function encryptPin(pin) {
-  return import_node_crypto.default.createHash("md5").update(pin).digest("hex");
-}
-function normalizeHolderName(input) {
-  if (!input)
-    return;
-  const normalized = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g, "d").toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim();
-  return normalized.length >= 5 ? normalized : undefined;
-}
-var import_crypto_js, import_node_crypto, import_node_fs, import_node_path, import_spark_md5, import_tough_cookie, import_json_bigint, isBun, logger = (ctx) => ({
-  verbose: (...args) => {
-    if (ctx.options.logging)
-      console.log("\x1B[35m\uD83D\uDE80 VERBOSE\x1B[0m", ...args);
-  },
-  info: (...args) => {
-    if (ctx.options.logging)
-      console.log("\x1B[34mINFO\x1B[0m", ...args);
-  },
-  warn: (...args) => {
-    if (ctx.options.logging)
-      console.log("\x1B[33mWARN\x1B[0m", ...args);
-  },
-  error: (...args) => {
-    if (ctx.options.logging)
-      console.log("\x1B[31mERROR\x1B[0m", ...args);
-  },
-  success: (...args) => {
-    if (ctx.options.logging)
-      console.log("\x1B[32mSUCCESS\x1B[0m", ...args);
-  },
-  timestamp: (...args) => {
-    const now = new Date().toISOString();
-    if (ctx.options.logging)
-      console.log(`\x1B[90m[${now}]\x1B[0m`, ...args);
-  }
-});
-var init_utils = __esm(() => {
-  init_pako_esm();
-  init_context();
-  init_Errors();
-  init_FriendEvent();
-  init_GroupEvent();
-  import_crypto_js = __toESM(require_crypto_js(), 1);
-  import_node_crypto = __toESM(require("node:crypto"), 1);
-  import_node_fs = __toESM(require("node:fs"), 1);
-  import_node_path = __toESM(require("node:path"), 1);
-  import_spark_md5 = __toESM(require_spark_md5(), 1);
-  import_tough_cookie = __toESM(require_cookie2(), 1);
-  import_json_bigint = __toESM(require_json_bigint(), 1);
-  isBun = typeof Bun !== "undefined";
-});
-
-// node_modules/zca-js/dist/apis/loginQR.js
-async function loadLoginPage(ctx) {
-  const response = await request(ctx, "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F", {
-    headers: {
-      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      "cache-control": "max-age=0",
-      priority: "u=0, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "same-site",
-      "sec-fetch-user": "?1",
-      "upgrade-insecure-requests": "1",
-      Referer: "https://chat.zalo.me/",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    method: "GET"
-  });
-  const html = await response.text();
-  const regex = /https:\/\/stc-zlogin\.zdn\.vn\/main-([\d.]+)\.js/;
-  const match = html.match(regex);
-  return match === null || match === undefined ? undefined : match[1];
-}
-async function getLoginInfo(ctx, version) {
-  const form = new URLSearchParams;
-  form.append("continue", "https://zalo.me/pc");
-  form.append("v", version);
-  return await request(ctx, "https://id.zalo.me/account/logininfo", {
-    headers: {
-      accept: "*/*",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      "content-type": "application/x-www-form-urlencoded",
-      priority: "u=1, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fzalo.me%2Fpc",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    body: form,
-    method: "POST"
-  }).then((res) => res.json()).catch(logger(ctx).error);
-}
-async function verifyClient(ctx, version) {
-  const form = new URLSearchParams;
-  form.append("type", "device");
-  form.append("continue", "https://zalo.me/pc");
-  form.append("v", version);
-  return await request(ctx, "https://id.zalo.me/account/verify-client", {
-    headers: {
-      accept: "*/*",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      "content-type": "application/x-www-form-urlencoded",
-      priority: "u=1, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fzalo.me%2Fpc",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    body: form,
-    method: "POST"
-  }).then((res) => res.json()).catch(logger(ctx).error);
-}
-async function generate(ctx, version) {
-  const form = new URLSearchParams;
-  form.append("continue", "https://zalo.me/pc");
-  form.append("v", version);
-  return await request(ctx, "https://id.zalo.me/account/authen/qr/generate", {
-    headers: {
-      accept: "*/*",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      "content-type": "application/x-www-form-urlencoded",
-      priority: "u=1, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fzalo.me%2Fpc",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    body: form,
-    method: "POST"
-  }).then((res) => res.json()).catch(logger(ctx).error);
-}
-async function saveQRCodeToFile(filepath, imageData) {
-  await import_promises.writeFile(filepath, imageData, "base64");
-}
-async function waitingScan(ctx, version, code, signal) {
-  const form = new URLSearchParams;
-  form.append("code", code);
-  form.append("continue", "https://chat.zalo.me/");
-  form.append("v", version);
-  return await request(ctx, "https://id.zalo.me/account/authen/qr/waiting-scan", {
-    headers: {
-      accept: "*/*",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      "content-type": "application/x-www-form-urlencoded",
-      priority: "u=1, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    body: form,
-    method: "POST",
-    signal
-  }).then((res) => res.json()).then((data) => {
-    if (data.error_code == 8) {
-      return waitingScan(ctx, version, code, signal);
-    }
-    return data;
-  }).catch((e) => {
-    if (!signal.aborted)
-      logger(ctx).error(e);
-  });
-}
-async function waitingConfirm(ctx, version, code, signal) {
-  const form = new URLSearchParams;
-  form.append("code", code);
-  form.append("gToken", "");
-  form.append("gAction", "CONFIRM_QR");
-  form.append("continue", "https://chat.zalo.me/");
-  form.append("v", version);
-  logger(ctx).info("Please confirm on your phone");
-  return await request(ctx, "https://id.zalo.me/account/authen/qr/waiting-confirm", {
-    headers: {
-      accept: "*/*",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      "content-type": "application/x-www-form-urlencoded",
-      priority: "u=1, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    body: form,
-    method: "POST",
-    signal
-  }).then((res) => res.json()).then((data) => {
-    if (data.error_code == 8) {
-      return waitingConfirm(ctx, version, code, signal);
-    }
-    return data;
-  }).catch((e) => {
-    if (!signal.aborted)
-      logger(ctx).error(e);
-  });
-}
-async function checkSession(ctx) {
-  return await request(ctx, "https://id.zalo.me/account/checksession?continue=https%3A%2F%2Fchat.zalo.me%2Findex.html", {
-    headers: {
-      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      priority: "u=0, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "same-origin",
-      "upgrade-insecure-requests": "1",
-      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    redirect: "manual",
-    method: "GET"
-  }).catch(logger(ctx).error);
-}
-async function getUserInfo(ctx) {
-  return await request(ctx, "https://jr.chat.zalo.me/jr/userinfo", {
-    headers: {
-      accept: "*/*",
-      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
-      priority: "u=1, i",
-      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-site",
-      Referer: "https://chat.zalo.me/",
-      "Referrer-Policy": "strict-origin-when-cross-origin"
-    },
-    method: "GET"
-  }).then((res) => res.json()).catch(logger(ctx).error);
-}
-async function loginQR(ctx, options, callback) {
-  ctx.cookie = new import_tough_cookie2.CookieJar;
-  ctx.userAgent = options.userAgent;
-  return new Promise(async (resolve, reject) => {
-    var _a;
-    const controller = new AbortController;
-    let qrTimeout = null;
-    function cleanUp() {
-      controller.abort();
-      if (qrTimeout) {
-        clearTimeout(qrTimeout);
-        qrTimeout = null;
-      }
-    }
-    try {
-      let retry = function() {
-        cleanUp();
-        return resolve(loginQR(ctx, options, callback));
-      }, abort = function() {
-        cleanUp();
-        return reject(new ZaloApiLoginQRAborted);
-      };
-      if (ctx.options.logging)
-        console.log();
-      const loginVersion = await loadLoginPage(ctx);
-      if (!loginVersion)
-        throw new ZaloApiError("Cannot get API login version");
-      logger(ctx).info("Got login version:", loginVersion);
-      await getLoginInfo(ctx, loginVersion);
-      await verifyClient(ctx, loginVersion);
-      const qrGenResult = await generate(ctx, loginVersion);
-      if (!qrGenResult || !qrGenResult.data)
-        throw new ZaloApiError(`Unable to generate QRCode
-Response: ${JSON.stringify(qrGenResult, null, 2)}`);
-      const qrData = qrGenResult.data;
-      if (callback) {
-        callback({
-          type: LoginQRCallbackEventType.QRCodeGenerated,
-          data: Object.assign(Object.assign({}, qrGenResult.data), { image: qrGenResult.data.image.replace(/^data:image\/png;base64,/, "") }),
-          actions: {
-            async saveToFile(qrPath) {
-              var _a;
-              if (qrPath === undefined) {
-                qrPath = (_a = options.qrPath) !== null && _a !== undefined ? _a : "qr.png";
-              }
-              await saveQRCodeToFile(qrPath, qrData.image.replace(/^data:image\/png;base64,/, ""));
-              logger(ctx).info("Scan the QR code at", `'${qrPath}'`, "to proceed with login");
-            },
-            retry,
-            abort
-          }
-        });
-      } else {
-        const qrPath = (_a = options.qrPath) !== null && _a !== undefined ? _a : "qr.png";
-        await saveQRCodeToFile(qrPath, qrData.image.replace(/^data:image\/png;base64,/, ""));
-        logger(ctx).info("Scan the QR code at", `'${qrPath}'`, "to proceed with login");
-      }
-      qrTimeout = setTimeout(() => {
-        cleanUp();
-        logger(ctx).info("QR expired!");
-        if (callback) {
-          callback({
-            type: LoginQRCallbackEventType.QRCodeExpired,
-            data: null,
-            actions: {
-              retry,
-              abort
-            }
-          });
-        } else {
-          retry();
-        }
-      }, 1e5);
-      const scanResult = await waitingScan(ctx, loginVersion, qrGenResult.data.code, controller.signal);
-      if (!scanResult || !scanResult.data)
-        throw new ZaloApiError("Cannot get scan result");
-      if (callback) {
-        callback({
-          type: LoginQRCallbackEventType.QRCodeScanned,
-          data: scanResult.data,
-          actions: {
-            retry,
-            abort
-          }
-        });
-      }
-      const confirmResult = await waitingConfirm(ctx, loginVersion, qrGenResult.data.code, controller.signal);
-      if (!confirmResult)
-        throw new ZaloApiError("Cannot get confirm result");
-      clearTimeout(qrTimeout);
-      if (confirmResult.error_code == -13) {
-        if (callback) {
-          callback({
-            type: LoginQRCallbackEventType.QRCodeDeclined,
-            data: {
-              code: qrData.code
-            },
-            actions: {
-              retry,
-              abort
-            }
-          });
-        } else {
-          logger(ctx).error("QRCode login declined");
-          throw new ZaloApiLoginQRDeclined;
-        }
-        return;
-      } else if (confirmResult.error_code != 0) {
-        throw new ZaloApiError(`An error has occurred.
-Response: ${JSON.stringify(confirmResult, null, 2)}`);
-      }
-      const checkSessionResult = await checkSession(ctx);
-      if (!checkSessionResult)
-        throw new ZaloApiError("Cannot get session, login failed");
-      logger(ctx).info("Successfully logged into the account", scanResult.data.display_name);
-      const userInfo = await getUserInfo(ctx);
-      if (!userInfo || !userInfo.data)
-        throw new ZaloApiError("Can't get account info");
-      if (!userInfo.data.logged)
-        throw new ZaloApiError("Can't login");
-      resolve({
-        cookies: ctx.cookie.toJSON().cookies,
-        userInfo: userInfo.data.info
-      });
-    } catch (error) {
-      cleanUp();
-      reject(error);
-    }
-  });
-}
-var import_tough_cookie2, import_promises, LoginQRCallbackEventType;
-var init_loginQR = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_ZaloApiLoginQRAborted();
-  init_ZaloApiLoginQRDeclined();
-  import_tough_cookie2 = __toESM(require_cookie2(), 1);
-  import_promises = require("node:fs/promises");
-  (function(LoginQRCallbackEventType) {
-    LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeGenerated"] = 0] = "QRCodeGenerated";
-    LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeExpired"] = 1] = "QRCodeExpired";
-    LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeScanned"] = 2] = "QRCodeScanned";
-    LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeDeclined"] = 3] = "QRCodeDeclined";
-    LoginQRCallbackEventType[LoginQRCallbackEventType["GotLoginInfo"] = 4] = "GotLoginInfo";
-  })(LoginQRCallbackEventType || (LoginQRCallbackEventType = {}));
-});
-
-// node_modules/zca-js/dist/apis/login.js
-async function login(ctx, encryptParams) {
-  const encryptedParams = await getEncryptParam(ctx, encryptParams, "getlogininfo");
-  try {
-    const response = await request(ctx, makeURL(ctx, "https://wpa.chat.zalo.me/api/login/getLoginInfo", Object.assign(Object.assign({}, encryptedParams.params), { nretry: 0 })));
-    if (!response.ok)
-      throw new ZaloApiError("Failed to fetch login info: " + response.statusText);
-    const data = await response.json();
-    if (encryptedParams.enk) {
-      const decryptedData = decryptResp(encryptedParams.enk, data.data);
-      return decryptedData != null && typeof decryptedData != "string" ? decryptedData : null;
-    }
-    return null;
-  } catch (error) {
-    logger(ctx).error("Login failed:", error);
-    throw error;
-  }
-}
-async function getServerInfo(ctx, encryptParams) {
-  const encryptedParams = await getEncryptParam(ctx, encryptParams, "getserverinfo");
-  if (!encryptedParams.params.signkey || typeof encryptedParams.params.signkey !== "string")
-    throw new ZaloApiError("Missing signkey");
-  const response = await request(ctx, makeURL(ctx, "https://wpa.chat.zalo.me/api/login/getServerInfo", {
-    imei: ctx.imei,
-    type: ctx.API_TYPE,
-    client_version: ctx.API_VERSION,
-    computer_name: "Web",
-    signkey: encryptedParams.params.signkey
-  }, false));
-  if (!response.ok)
-    throw new ZaloApiError("Failed to fetch server info: " + response.statusText);
-  const data = await response.json();
-  if (data.data == null)
-    throw new ZaloApiError("Failed to fetch server info: " + data.error_message);
-  return data.data;
-}
-async function getEncryptParam(ctx, encryptParams, type) {
-  const params = {};
-  const data = {
-    computer_name: "Web",
-    imei: ctx.imei,
-    language: ctx.language,
-    ts: Date.now()
-  };
-  const encryptedData = await _encryptParam(ctx, data, encryptParams);
-  if (encryptedData == null)
-    Object.assign(params, data);
-  else {
-    const { encrypted_params, encrypted_data } = encryptedData;
-    Object.assign(params, encrypted_params);
-    params.params = encrypted_data;
-  }
-  params.type = ctx.API_TYPE;
-  params.client_version = ctx.API_VERSION;
-  params.signkey = type == "getserverinfo" ? getSignKey(type, {
-    imei: ctx.imei,
-    type: ctx.API_TYPE,
-    client_version: ctx.API_VERSION,
-    computer_name: "Web"
-  }) : getSignKey(type, params);
-  return {
-    params,
-    enk: encryptedData ? encryptedData.enk : null
-  };
-}
-async function _encryptParam(ctx, data, encryptParams) {
-  if (encryptParams) {
-    const encryptor = new ParamsEncryptor({
-      type: ctx.API_TYPE,
-      imei: data.imei,
-      firstLaunchTime: Date.now()
-    });
-    try {
-      const stringifiedData = JSON.stringify(data);
-      const encryptedKey = encryptor.getEncryptKey();
-      const encodedData = ParamsEncryptor.encodeAES(encryptedKey, stringifiedData, "base64", false);
-      const params = encryptor.getParams();
-      return params ? {
-        encrypted_data: encodedData,
-        encrypted_params: params,
-        enk: encryptedKey
-      } : null;
-    } catch (error) {
-      throw new ZaloApiError("Failed to encrypt params: " + error);
-    }
-  }
-  return null;
-}
-var init_login = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
+  module.exports.parse = json_parse();
+  module.exports.stringify = json_stringify;
 });
 
 // node_modules/semver/internal/constants.js
-var require_constants2 = __commonJS(function(exports2, module2) {
+var require_constants2 = __commonJS(function(exports, module) {
   var SEMVER_SPEC_VERSION = "2.0.0";
   var MAX_LENGTH = 256;
   var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
@@ -15812,7 +10132,7 @@ var require_constants2 = __commonJS(function(exports2, module2) {
     "prepatch",
     "prerelease"
   ];
-  module2.exports = {
+  module.exports = {
     MAX_LENGTH,
     MAX_SAFE_COMPONENT_LENGTH,
     MAX_SAFE_BUILD_LENGTH,
@@ -15825,25 +10145,25 @@ var require_constants2 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/semver/internal/debug.js
-var require_debug = __commonJS(function(exports2, module2) {
+var require_debug = __commonJS(function(exports, module) {
   var debug = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {};
-  module2.exports = debug;
+  module.exports = debug;
 });
 
 // node_modules/semver/internal/re.js
-var require_re = __commonJS(function(exports2, module2) {
+var require_re = __commonJS(function(exports, module) {
   var {
     MAX_SAFE_COMPONENT_LENGTH,
     MAX_SAFE_BUILD_LENGTH,
     MAX_LENGTH
   } = require_constants2();
   var debug = require_debug();
-  exports2 = module2.exports = {};
-  var re = exports2.re = [];
-  var safeRe = exports2.safeRe = [];
-  var src = exports2.src = [];
-  var safeSrc = exports2.safeSrc = [];
-  var t = exports2.t = {};
+  exports = module.exports = {};
+  var re = exports.re = [];
+  var safeRe = exports.safeRe = [];
+  var src = exports.src = [];
+  var safeSrc = exports.safeSrc = [];
+  var t = exports.t = {};
   var R = 0;
   var LETTERDASHNUMBER = "[a-zA-Z0-9-]";
   var safeRegexReplacements = [
@@ -15896,18 +10216,18 @@ var require_re = __commonJS(function(exports2, module2) {
   createToken("COERCERTLFULL", src[t.COERCEFULL], true);
   createToken("LONETILDE", "(?:~>?)");
   createToken("TILDETRIM", `(\\s*)${src[t.LONETILDE]}\\s+`, true);
-  exports2.tildeTrimReplace = "$1~";
+  exports.tildeTrimReplace = "$1~";
   createToken("TILDE", `^${src[t.LONETILDE]}${src[t.XRANGEPLAIN]}$`);
   createToken("TILDELOOSE", `^${src[t.LONETILDE]}${src[t.XRANGEPLAINLOOSE]}$`);
   createToken("LONECARET", "(?:\\^)");
   createToken("CARETTRIM", `(\\s*)${src[t.LONECARET]}\\s+`, true);
-  exports2.caretTrimReplace = "$1^";
+  exports.caretTrimReplace = "$1^";
   createToken("CARET", `^${src[t.LONECARET]}${src[t.XRANGEPLAIN]}$`);
   createToken("CARETLOOSE", `^${src[t.LONECARET]}${src[t.XRANGEPLAINLOOSE]}$`);
   createToken("COMPARATORLOOSE", `^${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]})$|^$`);
   createToken("COMPARATOR", `^${src[t.GTLT]}\\s*(${src[t.FULLPLAIN]})$|^$`);
   createToken("COMPARATORTRIM", `(\\s*)${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]}|${src[t.XRANGEPLAIN]})`, true);
-  exports2.comparatorTrimReplace = "$1$2$3";
+  exports.comparatorTrimReplace = "$1$2$3";
   createToken("HYPHENRANGE", `^\\s*(${src[t.XRANGEPLAIN]})` + `\\s+-\\s+` + `(${src[t.XRANGEPLAIN]})` + `\\s*$`);
   createToken("HYPHENRANGELOOSE", `^\\s*(${src[t.XRANGEPLAINLOOSE]})` + `\\s+-\\s+` + `(${src[t.XRANGEPLAINLOOSE]})` + `\\s*$`);
   createToken("STAR", "(<|>)?=?\\s*\\*");
@@ -15916,7 +10236,7 @@ var require_re = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/semver/internal/parse-options.js
-var require_parse_options = __commonJS(function(exports2, module2) {
+var require_parse_options = __commonJS(function(exports, module) {
   var looseOption = Object.freeze({ loose: true });
   var emptyOpts = Object.freeze({});
   var parseOptions = (options) => {
@@ -15928,11 +10248,11 @@ var require_parse_options = __commonJS(function(exports2, module2) {
     }
     return options;
   };
-  module2.exports = parseOptions;
+  module.exports = parseOptions;
 });
 
 // node_modules/semver/internal/identifiers.js
-var require_identifiers = __commonJS(function(exports2, module2) {
+var require_identifiers = __commonJS(function(exports, module) {
   var numeric = /^[0-9]+$/;
   var compareIdentifiers = (a, b) => {
     if (typeof a === "number" && typeof b === "number") {
@@ -15947,14 +10267,14 @@ var require_identifiers = __commonJS(function(exports2, module2) {
     return a === b ? 0 : anum && !bnum ? -1 : bnum && !anum ? 1 : a < b ? -1 : 1;
   };
   var rcompareIdentifiers = (a, b) => compareIdentifiers(b, a);
-  module2.exports = {
+  module.exports = {
     compareIdentifiers,
     rcompareIdentifiers
   };
 });
 
 // node_modules/semver/classes/semver.js
-var require_semver = __commonJS(function(exports2, module2) {
+var require_semver = __commonJS(function(exports, module) {
   var debug = require_debug();
   var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants2();
   var { safeRe: re, t } = require_re();
@@ -16232,11 +10552,11 @@ var require_semver = __commonJS(function(exports2, module2) {
       return this;
     }
   }
-  module2.exports = SemVer;
+  module.exports = SemVer;
 });
 
 // node_modules/semver/functions/parse.js
-var require_parse2 = __commonJS(function(exports2, module2) {
+var require_parse2 = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var parse = (version, options, throwErrors = false) => {
     if (version instanceof SemVer) {
@@ -16251,31 +10571,31 @@ var require_parse2 = __commonJS(function(exports2, module2) {
       throw er;
     }
   };
-  module2.exports = parse;
+  module.exports = parse;
 });
 
 // node_modules/semver/functions/valid.js
-var require_valid = __commonJS(function(exports2, module2) {
+var require_valid = __commonJS(function(exports, module) {
   var parse = require_parse2();
   var valid = (version, options) => {
     const v = parse(version, options);
     return v ? v.version : null;
   };
-  module2.exports = valid;
+  module.exports = valid;
 });
 
 // node_modules/semver/functions/clean.js
-var require_clean = __commonJS(function(exports2, module2) {
+var require_clean = __commonJS(function(exports, module) {
   var parse = require_parse2();
   var clean = (version, options) => {
     const s = parse(version.trim().replace(/^[=v]+/, ""), options);
     return s ? s.version : null;
   };
-  module2.exports = clean;
+  module.exports = clean;
 });
 
 // node_modules/semver/functions/inc.js
-var require_inc = __commonJS(function(exports2, module2) {
+var require_inc = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var inc = (version, release, options, identifier, identifierBase) => {
     if (typeof options === "string") {
@@ -16289,11 +10609,11 @@ var require_inc = __commonJS(function(exports2, module2) {
       return null;
     }
   };
-  module2.exports = inc;
+  module.exports = inc;
 });
 
 // node_modules/semver/functions/diff.js
-var require_diff = __commonJS(function(exports2, module2) {
+var require_diff = __commonJS(function(exports, module) {
   var parse = require_parse2();
   var diff = (version1, version2) => {
     const v1 = parse(version1, null, true);
@@ -16330,130 +10650,130 @@ var require_diff = __commonJS(function(exports2, module2) {
     }
     return "prerelease";
   };
-  module2.exports = diff;
+  module.exports = diff;
 });
 
 // node_modules/semver/functions/major.js
-var require_major = __commonJS(function(exports2, module2) {
+var require_major = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var major = (a, loose) => new SemVer(a, loose).major;
-  module2.exports = major;
+  module.exports = major;
 });
 
 // node_modules/semver/functions/minor.js
-var require_minor = __commonJS(function(exports2, module2) {
+var require_minor = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var minor = (a, loose) => new SemVer(a, loose).minor;
-  module2.exports = minor;
+  module.exports = minor;
 });
 
 // node_modules/semver/functions/patch.js
-var require_patch = __commonJS(function(exports2, module2) {
+var require_patch = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var patch = (a, loose) => new SemVer(a, loose).patch;
-  module2.exports = patch;
+  module.exports = patch;
 });
 
 // node_modules/semver/functions/prerelease.js
-var require_prerelease = __commonJS(function(exports2, module2) {
+var require_prerelease = __commonJS(function(exports, module) {
   var parse = require_parse2();
   var prerelease = (version, options) => {
     const parsed = parse(version, options);
     return parsed && parsed.prerelease.length ? parsed.prerelease : null;
   };
-  module2.exports = prerelease;
+  module.exports = prerelease;
 });
 
 // node_modules/semver/functions/compare.js
-var require_compare = __commonJS(function(exports2, module2) {
+var require_compare = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var compare = (a, b, loose) => new SemVer(a, loose).compare(new SemVer(b, loose));
-  module2.exports = compare;
+  module.exports = compare;
 });
 
 // node_modules/semver/functions/rcompare.js
-var require_rcompare = __commonJS(function(exports2, module2) {
+var require_rcompare = __commonJS(function(exports, module) {
   var compare = require_compare();
   var rcompare = (a, b, loose) => compare(b, a, loose);
-  module2.exports = rcompare;
+  module.exports = rcompare;
 });
 
 // node_modules/semver/functions/compare-loose.js
-var require_compare_loose = __commonJS(function(exports2, module2) {
+var require_compare_loose = __commonJS(function(exports, module) {
   var compare = require_compare();
   var compareLoose = (a, b) => compare(a, b, true);
-  module2.exports = compareLoose;
+  module.exports = compareLoose;
 });
 
 // node_modules/semver/functions/compare-build.js
-var require_compare_build = __commonJS(function(exports2, module2) {
+var require_compare_build = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var compareBuild = (a, b, loose) => {
     const versionA = new SemVer(a, loose);
     const versionB = new SemVer(b, loose);
     return versionA.compare(versionB) || versionA.compareBuild(versionB);
   };
-  module2.exports = compareBuild;
+  module.exports = compareBuild;
 });
 
 // node_modules/semver/functions/sort.js
-var require_sort = __commonJS(function(exports2, module2) {
+var require_sort = __commonJS(function(exports, module) {
   var compareBuild = require_compare_build();
   var sort = (list, loose) => list.sort((a, b) => compareBuild(a, b, loose));
-  module2.exports = sort;
+  module.exports = sort;
 });
 
 // node_modules/semver/functions/rsort.js
-var require_rsort = __commonJS(function(exports2, module2) {
+var require_rsort = __commonJS(function(exports, module) {
   var compareBuild = require_compare_build();
   var rsort = (list, loose) => list.sort((a, b) => compareBuild(b, a, loose));
-  module2.exports = rsort;
+  module.exports = rsort;
 });
 
 // node_modules/semver/functions/gt.js
-var require_gt = __commonJS(function(exports2, module2) {
+var require_gt = __commonJS(function(exports, module) {
   var compare = require_compare();
   var gt = (a, b, loose) => compare(a, b, loose) > 0;
-  module2.exports = gt;
+  module.exports = gt;
 });
 
 // node_modules/semver/functions/lt.js
-var require_lt = __commonJS(function(exports2, module2) {
+var require_lt = __commonJS(function(exports, module) {
   var compare = require_compare();
   var lt = (a, b, loose) => compare(a, b, loose) < 0;
-  module2.exports = lt;
+  module.exports = lt;
 });
 
 // node_modules/semver/functions/eq.js
-var require_eq = __commonJS(function(exports2, module2) {
+var require_eq = __commonJS(function(exports, module) {
   var compare = require_compare();
   var eq = (a, b, loose) => compare(a, b, loose) === 0;
-  module2.exports = eq;
+  module.exports = eq;
 });
 
 // node_modules/semver/functions/neq.js
-var require_neq = __commonJS(function(exports2, module2) {
+var require_neq = __commonJS(function(exports, module) {
   var compare = require_compare();
   var neq = (a, b, loose) => compare(a, b, loose) !== 0;
-  module2.exports = neq;
+  module.exports = neq;
 });
 
 // node_modules/semver/functions/gte.js
-var require_gte = __commonJS(function(exports2, module2) {
+var require_gte = __commonJS(function(exports, module) {
   var compare = require_compare();
   var gte = (a, b, loose) => compare(a, b, loose) >= 0;
-  module2.exports = gte;
+  module.exports = gte;
 });
 
 // node_modules/semver/functions/lte.js
-var require_lte = __commonJS(function(exports2, module2) {
+var require_lte = __commonJS(function(exports, module) {
   var compare = require_compare();
   var lte = (a, b, loose) => compare(a, b, loose) <= 0;
-  module2.exports = lte;
+  module.exports = lte;
 });
 
 // node_modules/semver/functions/cmp.js
-var require_cmp = __commonJS(function(exports2, module2) {
+var require_cmp = __commonJS(function(exports, module) {
   var eq = require_eq();
   var neq = require_neq();
   var gt = require_gt();
@@ -16496,11 +10816,11 @@ var require_cmp = __commonJS(function(exports2, module2) {
         throw new TypeError(`Invalid operator: ${op}`);
     }
   };
-  module2.exports = cmp;
+  module.exports = cmp;
 });
 
 // node_modules/semver/functions/coerce.js
-var require_coerce = __commonJS(function(exports2, module2) {
+var require_coerce = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var parse = require_parse2();
   var { safeRe: re, t } = require_re();
@@ -16539,11 +10859,11 @@ var require_coerce = __commonJS(function(exports2, module2) {
     const build = options.includePrerelease && match[6] ? `+${match[6]}` : "";
     return parse(`${major}.${minor}.${patch}${prerelease}${build}`, options);
   };
-  module2.exports = coerce;
+  module.exports = coerce;
 });
 
 // node_modules/semver/functions/truncate.js
-var require_truncate = __commonJS(function(exports2, module2) {
+var require_truncate = __commonJS(function(exports, module) {
   var parse = require_parse2();
   var constants = require_constants2();
   var SemVer = require_semver();
@@ -16577,11 +10897,11 @@ var require_truncate = __commonJS(function(exports2, module2) {
   var isPrerelease = (type) => {
     return type.startsWith("pre");
   };
-  module2.exports = truncate;
+  module.exports = truncate;
 });
 
 // node_modules/semver/internal/lrucache.js
-var require_lrucache = __commonJS(function(exports2, module2) {
+var require_lrucache = __commonJS(function(exports, module) {
   class LRUCache {
     constructor() {
       this.max = 1000;
@@ -16612,11 +10932,11 @@ var require_lrucache = __commonJS(function(exports2, module2) {
       return this;
     }
   }
-  module2.exports = LRUCache;
+  module.exports = LRUCache;
 });
 
 // node_modules/semver/classes/range.js
-var require_range = __commonJS(function(exports2, module2) {
+var require_range = __commonJS(function(exports, module) {
   var SPACE_CHARACTERS = /\s+/g;
 
   class Range {
@@ -16757,7 +11077,7 @@ var require_range = __commonJS(function(exports2, module2) {
       return false;
     }
   }
-  module2.exports = Range;
+  module.exports = Range;
   var LRU = require_lrucache();
   var cache = new LRU;
   var parseOptions = require_parse_options();
@@ -16998,7 +11318,7 @@ var require_range = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/semver/classes/comparator.js
-var require_comparator = __commonJS(function(exports2, module2) {
+var require_comparator = __commonJS(function(exports, module) {
   var ANY = Symbol("SemVer ANY");
 
   class Comparator {
@@ -17099,7 +11419,7 @@ var require_comparator = __commonJS(function(exports2, module2) {
       return false;
     }
   }
-  module2.exports = Comparator;
+  module.exports = Comparator;
   var parseOptions = require_parse_options();
   var { safeRe: re, t } = require_re();
   var cmp = require_cmp();
@@ -17109,7 +11429,7 @@ var require_comparator = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/semver/functions/satisfies.js
-var require_satisfies = __commonJS(function(exports2, module2) {
+var require_satisfies = __commonJS(function(exports, module) {
   var Range = require_range();
   var satisfies = (version, range, options) => {
     try {
@@ -17119,18 +11439,18 @@ var require_satisfies = __commonJS(function(exports2, module2) {
     }
     return range.test(version);
   };
-  module2.exports = satisfies;
+  module.exports = satisfies;
 });
 
 // node_modules/semver/ranges/to-comparators.js
-var require_to_comparators = __commonJS(function(exports2, module2) {
+var require_to_comparators = __commonJS(function(exports, module) {
   var Range = require_range();
   var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
-  module2.exports = toComparators;
+  module.exports = toComparators;
 });
 
 // node_modules/semver/ranges/max-satisfying.js
-var require_max_satisfying = __commonJS(function(exports2, module2) {
+var require_max_satisfying = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var Range = require_range();
   var maxSatisfying = (versions, range, options) => {
@@ -17152,11 +11472,11 @@ var require_max_satisfying = __commonJS(function(exports2, module2) {
     });
     return max;
   };
-  module2.exports = maxSatisfying;
+  module.exports = maxSatisfying;
 });
 
 // node_modules/semver/ranges/min-satisfying.js
-var require_min_satisfying = __commonJS(function(exports2, module2) {
+var require_min_satisfying = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var Range = require_range();
   var minSatisfying = (versions, range, options) => {
@@ -17178,11 +11498,11 @@ var require_min_satisfying = __commonJS(function(exports2, module2) {
     });
     return min;
   };
-  module2.exports = minSatisfying;
+  module.exports = minSatisfying;
 });
 
 // node_modules/semver/ranges/min-version.js
-var require_min_version = __commonJS(function(exports2, module2) {
+var require_min_version = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var Range = require_range();
   var gt = require_gt();
@@ -17232,11 +11552,11 @@ var require_min_version = __commonJS(function(exports2, module2) {
     }
     return null;
   };
-  module2.exports = minVersion;
+  module.exports = minVersion;
 });
 
 // node_modules/semver/ranges/valid.js
-var require_valid2 = __commonJS(function(exports2, module2) {
+var require_valid2 = __commonJS(function(exports, module) {
   var Range = require_range();
   var validRange = (range, options) => {
     try {
@@ -17245,11 +11565,11 @@ var require_valid2 = __commonJS(function(exports2, module2) {
       return null;
     }
   };
-  module2.exports = validRange;
+  module.exports = validRange;
 });
 
 // node_modules/semver/ranges/outside.js
-var require_outside = __commonJS(function(exports2, module2) {
+var require_outside = __commonJS(function(exports, module) {
   var SemVer = require_semver();
   var Comparator = require_comparator();
   var { ANY } = Comparator;
@@ -17311,39 +11631,39 @@ var require_outside = __commonJS(function(exports2, module2) {
     }
     return true;
   };
-  module2.exports = outside;
+  module.exports = outside;
 });
 
 // node_modules/semver/ranges/gtr.js
-var require_gtr = __commonJS(function(exports2, module2) {
+var require_gtr = __commonJS(function(exports, module) {
   var outside = require_outside();
   var gtr = (version, range, options) => outside(version, range, ">", options);
-  module2.exports = gtr;
+  module.exports = gtr;
 });
 
 // node_modules/semver/ranges/ltr.js
-var require_ltr = __commonJS(function(exports2, module2) {
+var require_ltr = __commonJS(function(exports, module) {
   var outside = require_outside();
   var ltr = (version, range, options) => outside(version, range, "<", options);
-  module2.exports = ltr;
+  module.exports = ltr;
 });
 
 // node_modules/semver/ranges/intersects.js
-var require_intersects = __commonJS(function(exports2, module2) {
+var require_intersects = __commonJS(function(exports, module) {
   var Range = require_range();
   var intersects = (r1, r2, options) => {
     r1 = new Range(r1, options);
     r2 = new Range(r2, options);
     return r1.intersects(r2, options);
   };
-  module2.exports = intersects;
+  module.exports = intersects;
 });
 
 // node_modules/semver/ranges/simplify.js
-var require_simplify = __commonJS(function(exports2, module2) {
+var require_simplify = __commonJS(function(exports, module) {
   var satisfies = require_satisfies();
   var compare = require_compare();
-  module2.exports = (versions, range, options) => {
+  module.exports = (versions, range, options) => {
     const set = [];
     let first = null;
     let prev = null;
@@ -17387,7 +11707,7 @@ var require_simplify = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/semver/ranges/subset.js
-var require_subset = __commonJS(function(exports2, module2) {
+var require_subset = __commonJS(function(exports, module) {
   var Range = require_range();
   var Comparator = require_comparator();
   var { ANY } = Comparator;
@@ -17543,11 +11863,11 @@ var require_subset = __commonJS(function(exports2, module2) {
     const comp = compare(a.semver, b.semver, options);
     return comp < 0 ? a : comp > 0 ? b : b.operator === "<" && a.operator === "<=" ? b : a;
   };
-  module2.exports = subset;
+  module.exports = subset;
 });
 
 // node_modules/semver/index.js
-var require_semver2 = __commonJS(function(exports2, module2) {
+var require_semver2 = __commonJS(function(exports, module) {
   var internalRe = require_re();
   var constants = require_constants2();
   var SemVer = require_semver();
@@ -17590,7 +11910,7 @@ var require_semver2 = __commonJS(function(exports2, module2) {
   var intersects = require_intersects();
   var simplifyRange = require_simplify();
   var subset = require_subset();
-  module2.exports = {
+  module.exports = {
     parse,
     valid,
     clean,
@@ -17640,40 +11960,13 @@ var require_semver2 = __commonJS(function(exports2, module2) {
   };
 });
 
-// node_modules/zca-js/dist/update.js
-async function checkUpdate(ctx) {
-  var _a, _b;
-  if (!ctx.options.checkUpdate)
-    return;
-  const _options = Object.assign({}, isBun ? {
-    proxy: (_b = (_a = ctx.options.agent) === null || _a === undefined ? undefined : _a.proxy) === null || _b === undefined ? undefined : _b.href
-  } : { agent: ctx.options.agent });
-  const response = await ctx.options.polyfill(NPM_REGISTRY, _options).catch(() => null);
-  if (!response || !response.ok)
-    return;
-  const data = await response.json().catch(() => null);
-  if (!data)
-    return;
-  const latestVersion = data["dist-tags"].latest;
-  if (import_semver.compare(VERSION, latestVersion) === -1) {
-    logger(ctx).info(`A new version of zca-js is available: ${latestVersion}`);
-  } else {
-    logger(ctx).info("zca-js is up to date");
-  }
-}
-var import_semver, VERSION = "2.2.0", NPM_REGISTRY = "https://registry.npmjs.org/zca-js";
-var init_update = __esm(() => {
-  init_utils();
-  import_semver = __toESM(require_semver2(), 1);
-});
-
 // node_modules/ws/lib/constants.js
-var require_constants3 = __commonJS(function(exports2, module2) {
+var require_constants3 = __commonJS(function(exports, module) {
   var BINARY_TYPES = ["nodebuffer", "arraybuffer", "fragments"];
   var hasBlob = typeof Blob !== "undefined";
   if (hasBlob)
     BINARY_TYPES.push("blob");
-  module2.exports = {
+  module.exports = {
     BINARY_TYPES,
     CLOSE_TIMEOUT: 30000,
     EMPTY_BUFFER: Buffer.alloc(0),
@@ -17688,7 +11981,7 @@ var require_constants3 = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/buffer-util.js
-var require_buffer_util = __commonJS(function(exports2, module2) {
+var require_buffer_util = __commonJS(function(exports, module) {
   var { EMPTY_BUFFER } = require_constants3();
   var FastBuffer = Buffer[Symbol.species];
   function concat(list, totalLength) {
@@ -17739,7 +12032,7 @@ var require_buffer_util = __commonJS(function(exports2, module2) {
     }
     return buf;
   }
-  module2.exports = {
+  module.exports = {
     concat,
     mask: _mask,
     toArrayBuffer,
@@ -17749,13 +12042,13 @@ var require_buffer_util = __commonJS(function(exports2, module2) {
   if (!process.env.WS_NO_BUFFER_UTIL) {
     try {
       const bufferUtil = (()=>{throw new Error("Cannot require module "+"bufferutil");})();
-      module2.exports.mask = function(source, mask2, output, offset, length) {
+      module.exports.mask = function(source, mask2, output, offset, length) {
         if (length < 48)
           _mask(source, mask2, output, offset, length);
         else
           bufferUtil.mask(source, mask2, output, offset, length);
       };
-      module2.exports.unmask = function(buffer, mask) {
+      module.exports.unmask = function(buffer, mask) {
         if (buffer.length < 32)
           _unmask(buffer, mask);
         else
@@ -17766,7 +12059,7 @@ var require_buffer_util = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/limiter.js
-var require_limiter = __commonJS(function(exports2, module2) {
+var require_limiter = __commonJS(function(exports, module) {
   var kDone = Symbol("kDone");
   var kRun = Symbol("kRun");
 
@@ -17794,12 +12087,12 @@ var require_limiter = __commonJS(function(exports2, module2) {
       }
     }
   }
-  module2.exports = Limiter;
+  module.exports = Limiter;
 });
 
 // node_modules/ws/lib/permessage-deflate.js
-var require_permessage_deflate = __commonJS(function(exports2, module2) {
-  var zlib = require("zlib");
+var require_permessage_deflate = __commonJS(function(exports, module) {
+  var zlib = __require("zlib");
   var bufferUtil = require_buffer_util();
   var Limiter = require_limiter();
   var { kStatusCode } = require_constants3();
@@ -18033,7 +12326,7 @@ var require_permessage_deflate = __commonJS(function(exports2, module2) {
       });
     }
   }
-  module2.exports = PerMessageDeflate;
+  module.exports = PerMessageDeflate;
   function deflateOnData(chunk) {
     this[kBuffers].push(chunk);
     this[kTotalLength] += chunk.length;
@@ -18062,8 +12355,8 @@ var require_permessage_deflate = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/validation.js
-var require_validation = __commonJS(function(exports2, module2) {
-  var { isUtf8 } = require("buffer");
+var require_validation = __commonJS(function(exports, module) {
+  var { isUtf8 } = __require("buffer");
   var { hasBlob } = require_constants3();
   var tokenChars = [
     0,
@@ -18228,20 +12521,20 @@ var require_validation = __commonJS(function(exports2, module2) {
   function isBlob(value) {
     return hasBlob && typeof value === "object" && typeof value.arrayBuffer === "function" && typeof value.type === "string" && typeof value.stream === "function" && (value[Symbol.toStringTag] === "Blob" || value[Symbol.toStringTag] === "File");
   }
-  module2.exports = {
+  module.exports = {
     isBlob,
     isValidStatusCode,
     isValidUTF8: _isValidUTF8,
     tokenChars
   };
   if (isUtf8) {
-    module2.exports.isValidUTF8 = function(buf) {
+    module.exports.isValidUTF8 = function(buf) {
       return buf.length < 24 ? _isValidUTF8(buf) : isUtf8(buf);
     };
   } else if (!process.env.WS_NO_UTF_8_VALIDATE) {
     try {
       const isValidUTF8 = (()=>{throw new Error("Cannot require module "+"utf-8-validate");})();
-      module2.exports.isValidUTF8 = function(buf) {
+      module.exports.isValidUTF8 = function(buf) {
         return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
       };
     } catch (e) {}
@@ -18249,8 +12542,8 @@ var require_validation = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/receiver.js
-var require_receiver = __commonJS(function(exports2, module2) {
-  var { Writable } = require("stream");
+var require_receiver = __commonJS(function(exports, module) {
+  var { Writable } = __require("stream");
   var PerMessageDeflate = require_permessage_deflate();
   var {
     BINARY_TYPES,
@@ -18639,16 +12932,16 @@ var require_receiver = __commonJS(function(exports2, module2) {
       return err;
     }
   }
-  module2.exports = Receiver;
+  module.exports = Receiver;
 });
 
 // node_modules/ws/lib/sender.js
-var require_sender = __commonJS(function(exports2, module2) {
-  var { Duplex } = require("stream");
-  var { randomFillSync } = require("crypto");
+var require_sender = __commonJS(function(exports, module) {
+  var { Duplex } = __require("stream");
+  var { randomFillSync } = __require("crypto");
   var {
     types: { isUint8Array }
-  } = require("util");
+  } = __require("util");
   var PerMessageDeflate = require_permessage_deflate();
   var { EMPTY_BUFFER, kWebSocket, NOOP } = require_constants3();
   var { isBlob, isValidStatusCode } = require_validation();
@@ -18984,7 +13277,7 @@ var require_sender = __commonJS(function(exports2, module2) {
       }
     }
   }
-  module2.exports = Sender;
+  module.exports = Sender;
   function callCallbacks(sender, err, cb) {
     if (typeof cb === "function")
       cb(err);
@@ -19002,7 +13295,7 @@ var require_sender = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/event-target.js
-var require_event_target = __commonJS(function(exports2, module2) {
+var require_event_target = __commonJS(function(exports, module) {
   var { kForOnEventAttribute, kListener } = require_constants3();
   var kCode = Symbol("kCode");
   var kData = Symbol("kData");
@@ -19136,7 +13429,7 @@ var require_event_target = __commonJS(function(exports2, module2) {
       }
     }
   };
-  module2.exports = {
+  module.exports = {
     CloseEvent,
     ErrorEvent,
     Event,
@@ -19153,7 +13446,7 @@ var require_event_target = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/extension.js
-var require_extension = __commonJS(function(exports2, module2) {
+var require_extension = __commonJS(function(exports, module) {
   var { tokenChars } = require_validation();
   function push(dest, name, elem) {
     if (dest[name] === undefined)
@@ -19314,19 +13607,19 @@ var require_extension = __commonJS(function(exports2, module2) {
       }).join(", ");
     }).join(", ");
   }
-  module2.exports = { format, parse };
+  module.exports = { format, parse };
 });
 
 // node_modules/ws/lib/websocket.js
-var require_websocket = __commonJS(function(exports2, module2) {
-  var EventEmitter = require("events");
-  var https = require("https");
-  var http = require("http");
-  var net = require("net");
-  var tls = require("tls");
-  var { randomBytes, createHash } = require("crypto");
-  var { Duplex, Readable } = require("stream");
-  var { URL: URL2 } = require("url");
+var require_websocket = __commonJS(function(exports, module) {
+  var EventEmitter = __require("events");
+  var https = __require("https");
+  var http = __require("http");
+  var net = __require("net");
+  var tls = __require("tls");
+  var { randomBytes, createHash } = __require("crypto");
+  var { Duplex, Readable } = __require("stream");
+  var { URL: URL2 } = __require("url");
   var PerMessageDeflate = require_permessage_deflate();
   var Receiver = require_receiver();
   var Sender = require_sender();
@@ -19675,7 +13968,7 @@ var require_websocket = __commonJS(function(exports2, module2) {
   });
   WebSocket.prototype.addEventListener = addEventListener;
   WebSocket.prototype.removeEventListener = removeEventListener;
-  module2.exports = WebSocket;
+  module.exports = WebSocket;
   function initAsClient(websocket, address, protocols, options) {
     const opts = {
       allowSynchronousEvents: true,
@@ -20090,9 +14383,9 @@ var require_websocket = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/lib/stream.js
-var require_stream = __commonJS(function(exports2, module2) {
+var require_stream = __commonJS(function(exports, module) {
   var WebSocket = require_websocket();
-  var { Duplex } = require("stream");
+  var { Duplex } = __require("stream");
   function emitClose(stream) {
     stream.emit("close");
   }
@@ -20189,11 +14482,11 @@ var require_stream = __commonJS(function(exports2, module2) {
     duplex.on("error", duplexOnError);
     return duplex;
   }
-  module2.exports = createWebSocketStream;
+  module.exports = createWebSocketStream;
 });
 
 // node_modules/ws/lib/subprotocol.js
-var require_subprotocol = __commonJS(function(exports2, module2) {
+var require_subprotocol = __commonJS(function(exports, module) {
   var { tokenChars } = require_validation();
   function parse(header) {
     const protocols = new Set;
@@ -20234,15 +14527,15 @@ var require_subprotocol = __commonJS(function(exports2, module2) {
     protocols.add(protocol);
     return protocols;
   }
-  module2.exports = { parse };
+  module.exports = { parse };
 });
 
 // node_modules/ws/lib/websocket-server.js
-var require_websocket_server = __commonJS(function(exports2, module2) {
-  var EventEmitter = require("events");
-  var http = require("http");
-  var { Duplex } = require("stream");
-  var { createHash } = require("crypto");
+var require_websocket_server = __commonJS(function(exports, module) {
+  var EventEmitter = __require("events");
+  var http = __require("http");
+  var { Duplex } = __require("stream");
+  var { createHash } = __require("crypto");
   var extension = require_extension();
   var PerMessageDeflate = require_permessage_deflate();
   var subprotocol = require_subprotocol();
@@ -20504,7 +14797,7 @@ var require_websocket_server = __commonJS(function(exports2, module2) {
       cb(ws, req);
     }
   }
-  module2.exports = WebSocketServer;
+  module.exports = WebSocketServer;
   function addListeners(server, map) {
     for (const event of Object.keys(map))
       server.on(event, map[event]);
@@ -20547,988 +14840,11 @@ var require_websocket_server = __commonJS(function(exports2, module2) {
   }
 });
 
-// node_modules/ws/wrapper.mjs
-var import_stream, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
-var init_wrapper = __esm(() => {
-  import_stream = __toESM(require_stream(), 1);
-  import_extension = __toESM(require_extension(), 1);
-  import_permessage_deflate = __toESM(require_permessage_deflate(), 1);
-  import_receiver = __toESM(require_receiver(), 1);
-  import_sender = __toESM(require_sender(), 1);
-  import_subprotocol = __toESM(require_subprotocol(), 1);
-  import_websocket = __toESM(require_websocket(), 1);
-  import_websocket_server = __toESM(require_websocket_server(), 1);
-  wrapper_default = import_websocket.default;
-});
-
-// node_modules/zca-js/dist/apis/listen.js
-function getHeader(buffer) {
-  if (buffer.byteLength < 4) {
-    throw new ZaloApiError("Invalid header");
-  }
-  return [buffer[0], buffer.readUInt16LE(1), buffer[3]];
-}
-var import_events, CloseReason, Listener;
-var init_listen = __esm(() => {
-  init_wrapper();
-  init_FriendEvent();
-  init_GroupEvent();
-  init_models();
-  init_utils();
-  init_ZaloApiError();
-  init_SeenMessage();
-  init_DeliveredMessage();
-  import_events = __toESM(require("events"), 1);
-  (function(CloseReason) {
-    CloseReason[CloseReason["ManualClosure"] = 1000] = "ManualClosure";
-    CloseReason[CloseReason["AbnormalClosure"] = 1006] = "AbnormalClosure";
-    CloseReason[CloseReason["DuplicateConnection"] = 3000] = "DuplicateConnection";
-    CloseReason[CloseReason["KickConnection"] = 3003] = "KickConnection";
-  })(CloseReason || (CloseReason = {}));
-  Listener = class Listener extends import_events.default {
-    constructor(ctx, urls) {
-      super();
-      this.ctx = ctx;
-      this.urls = urls;
-      this.id = 0;
-      if (!ctx.cookie)
-        throw new ZaloApiError("Cookie is not available");
-      if (!ctx.userAgent)
-        throw new ZaloApiError("User agent is not available");
-      this.wsURL = makeURL(this.ctx, this.urls[0], {
-        t: Date.now()
-      });
-      this.retryCount = {};
-      this.rotateCount = 0;
-      for (const retry in ctx.settings.features.socket.retries) {
-        const { times, max } = ctx.settings.features.socket.retries[retry];
-        this.retryCount[retry] = {
-          count: 0,
-          max: max || 0,
-          times: typeof times === "number" ? [times] : times
-        };
-      }
-      this.cookie = ctx.cookie.getCookieStringSync("https://chat.zalo.me");
-      this.userAgent = ctx.userAgent;
-      this.selfListen = ctx.options.selfListen;
-      this.ws = null;
-      this.onConnectedCallback = () => {};
-      this.onClosedCallback = () => {};
-      this.onErrorCallback = () => {};
-      this.onMessageCallback = () => {};
-    }
-    onConnected(cb) {
-      this.onConnectedCallback = cb;
-    }
-    onClosed(cb) {
-      this.onClosedCallback = cb;
-    }
-    onError(cb) {
-      this.onErrorCallback = cb;
-    }
-    onMessage(cb) {
-      this.onMessageCallback = cb;
-    }
-    canRetry(code) {
-      if (!this.ctx.settings.features.socket.close_and_retry_codes.includes(code))
-        return false;
-      if (this.retryCount[code.toString()].count >= this.retryCount[code.toString()].max)
-        return false;
-      this.retryCount[code.toString()].count++;
-      const { count, max, times } = this.retryCount[code.toString()];
-      const retryTime = count - 1 < times.length ? times[count - 1] : times[times.length - 1];
-      logger(this.ctx).verbose(`Retry for code ${code} in ${retryTime}ms (${count}/${max})`);
-      return retryTime;
-    }
-    shouldRotate(code) {
-      if (!this.ctx.settings.features.socket.rotate_error_codes.includes(code))
-        return false;
-      if (this.rotateCount >= this.urls.length - 1)
-        return false;
-      return true;
-    }
-    rotateEndpoint() {
-      this.rotateCount++;
-      this.wsURL = makeURL(this.ctx, this.urls[this.rotateCount], {
-        t: Date.now()
-      });
-      logger(this.ctx).verbose(`Rotating endpoint to ${this.wsURL}`);
-    }
-    start({ retryOnClose = false } = {}) {
-      if (this.ws)
-        throw new ZaloApiError("Already started");
-      const ws = new wrapper_default(this.wsURL, {
-        headers: {
-          "accept-encoding": "gzip, deflate, br, zstd",
-          "accept-language": "en-US,en;q=0.9",
-          "cache-control": "no-cache",
-          connection: "Upgrade",
-          host: new URL(this.wsURL).host,
-          origin: "https://chat.zalo.me",
-          prgama: "no-cache",
-          "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
-          "sec-websocket-version": "13",
-          upgrade: "websocket",
-          "user-agent": this.userAgent,
-          cookie: this.cookie
-        },
-        agent: this.ctx.options.agent
-      });
-      this.ws = ws;
-      ws.onopen = () => {
-        this.onConnectedCallback();
-        this.emit("connected");
-      };
-      ws.onclose = (event) => {
-        this.reset();
-        this.emit("disconnected", event.code, event.reason);
-        const retry = retryOnClose && this.canRetry(event.code);
-        if (retry && retryOnClose) {
-          const shouldRotate = this.shouldRotate(event.code);
-          if (shouldRotate) {
-            this.rotateEndpoint();
-          }
-          setTimeout(() => {
-            this.start({ retryOnClose: true });
-          }, retry);
-        } else {
-          this.onClosedCallback(event.code, event.reason);
-          this.emit("closed", event.code, event.reason);
-        }
-      };
-      ws.onerror = (event) => {
-        this.onErrorCallback(event);
-        this.emit("error", event);
-      };
-      ws.onmessage = async (event) => {
-        const { data } = event;
-        if (!(data instanceof Buffer))
-          return;
-        const encodedHeader = data.subarray(0, 4);
-        const [version, cmd, subCmd] = getHeader(encodedHeader);
-        try {
-          const dataToDecode = data.subarray(4);
-          const decodedData = new TextDecoder("utf-8").decode(dataToDecode);
-          if (decodedData.length == 0)
-            return;
-          const parsed = JSON.parse(decodedData);
-          if (version == 1 && cmd == 1 && subCmd == 1 && hasOwn(parsed, "key")) {
-            this.cipherKey = parsed.key;
-            this.emit("cipher_key", parsed.key);
-            if (this.pingInterval)
-              clearInterval(this.pingInterval);
-            const ping = () => {
-              const payload = {
-                version: 1,
-                cmd: 2,
-                subCmd: 1,
-                data: { eventId: Date.now() }
-              };
-              this.sendWs(payload, false);
-            };
-            this.pingInterval = setInterval(() => {
-              ping();
-            }, this.ctx.settings.features.socket.ping_interval);
-          }
-          if (version == 1 && cmd == 501 && subCmd == 0) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { msgs } = parsedData;
-            for (const msg of msgs) {
-              if (typeof msg.content == "object" && hasOwn(msg.content, "deleteMsg")) {
-                const undoObject = new Undo(this.ctx.uid, msg, false);
-                if (undoObject.isSelf && !this.selfListen)
-                  continue;
-                this.emit("undo", undoObject);
-              } else {
-                const messageObject = new UserMessage(this.ctx.uid, msg);
-                if (messageObject.isSelf && !this.selfListen)
-                  continue;
-                this.onMessageCallback(messageObject);
-                this.emit("message", messageObject);
-              }
-            }
-          }
-          if (version == 1 && cmd == 521 && subCmd == 0) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { groupMsgs } = parsedData;
-            for (const msg of groupMsgs) {
-              if (typeof msg.content == "object" && hasOwn(msg.content, "deleteMsg")) {
-                const undoObject = new Undo(this.ctx.uid, msg, true);
-                if (undoObject.isSelf && !this.selfListen)
-                  continue;
-                this.emit("undo", undoObject);
-              } else {
-                const messageObject = new GroupMessage(this.ctx.uid, msg);
-                if (messageObject.isSelf && !this.selfListen)
-                  continue;
-                this.onMessageCallback(messageObject);
-                this.emit("message", messageObject);
-              }
-            }
-          }
-          if (version == 1 && cmd == 601 && subCmd == 0) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { controls } = parsedData;
-            for (const control of controls) {
-              if (control.content.act_type == "file_done") {
-                const data = {
-                  fileUrl: control.content.data.url,
-                  fileId: control.content.fileId
-                };
-                const uploadCallback = this.ctx.uploadCallbacks.get(String(control.content.fileId));
-                if (uploadCallback)
-                  uploadCallback(data);
-                this.ctx.uploadCallbacks.delete(String(control.content.fileId));
-                this.emit("upload_attachment", data);
-              } else if (control.content.act_type == "group") {
-                if (control.content.act == "join_reject")
-                  continue;
-                const groupEventData = typeof control.content.data == "string" ? JSON.parse(control.content.data) : control.content.data;
-                const groupEvent = initializeGroupEvent(this.ctx.uid, groupEventData, getGroupEventType(control.content.act), control.content.act);
-                if (groupEvent.isSelf && !this.selfListen)
-                  continue;
-                this.emit("group_event", groupEvent);
-              } else if (control.content.act_type == "fr") {
-                if (control.content.act == "req")
-                  continue;
-                const friendEventData = typeof control.content.data == "string" ? JSON.parse(control.content.data) : control.content.data;
-                if (typeof friendEventData == "object" && "topic" in friendEventData && typeof friendEventData.topic == "object" && "params" in friendEventData.topic) {
-                  friendEventData.topic.params = JSON.parse(`${friendEventData.topic.params}`);
-                }
-                const friendEvent = initializeFriendEvent(this.ctx.uid, typeof friendEventData == "number" ? control.content.data : friendEventData, getFriendEventType(control.content.act));
-                if (friendEvent.isSelf && !this.selfListen)
-                  continue;
-                this.emit("friend_event", friendEvent);
-              }
-            }
-          }
-          if (cmd == 612) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { reacts, reactGroups } = parsedData;
-            for (const react of reacts) {
-              react.content = JSON.parse(react.content);
-              const reactionObject = new Reaction(this.ctx.uid, react, false);
-              if (reactionObject.isSelf && !this.selfListen)
-                continue;
-              this.emit("reaction", reactionObject);
-            }
-            for (const reactGroup of reactGroups) {
-              reactGroup.content = JSON.parse(reactGroup.content);
-              const reactionObject = new Reaction(this.ctx.uid, reactGroup, true);
-              if (reactionObject.isSelf && !this.selfListen)
-                continue;
-              this.emit("reaction", reactionObject);
-            }
-          }
-          if (cmd == 610 || cmd == 611) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const isGroup = cmd == 611;
-            const reacts = parsedData[isGroup ? "reactGroups" : "reacts"];
-            const reactionObjects = reacts.map((react) => new Reaction(this.ctx.uid, react, isGroup));
-            this.emit("old_reactions", reactionObjects, isGroup);
-          }
-          if (cmd == 510 && subCmd == 1) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const msgs = parsedData.msgs;
-            const responseMsgs = msgs.map((msg) => new UserMessage(this.ctx.uid, msg));
-            this.emit("old_messages", responseMsgs, ThreadType.User);
-          }
-          if (cmd == 511 && subCmd == 1) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const groupMsgs = parsedData.groupMsgs;
-            const responseMsgs = groupMsgs.map((msg) => new GroupMessage(this.ctx.uid, msg));
-            this.emit("old_messages", responseMsgs, ThreadType.Group);
-          }
-          if (cmd == 602 && subCmd == 0) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { actions } = parsedData;
-            for (const action of actions) {
-              if (action.act_type == "typing") {
-                const data = JSON.parse(`{${action.data}}`);
-                if (action.act == "typing") {
-                  const typingObject = new UserTyping(data);
-                  this.emit("typing", typingObject);
-                } else if (action.act == "gtyping") {
-                  const typingObject = new GroupTyping(data);
-                  this.emit("typing", typingObject);
-                }
-              }
-            }
-          }
-          if (cmd == 502 && subCmd == 0) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { delivereds: deliveredMsgs, seens: seenMsgs } = parsedData;
-            if (Array.isArray(deliveredMsgs) && deliveredMsgs.length > 0) {
-              const deliveredObjects = deliveredMsgs.map((delivered) => new UserDeliveredMessage(delivered));
-              this.emit("delivered_messages", deliveredObjects);
-            }
-            if (Array.isArray(seenMsgs) && seenMsgs.length > 0) {
-              const seenObjects = seenMsgs.map((seen) => new UserSeenMessage(seen));
-              this.emit("seen_messages", seenObjects);
-            }
-          }
-          if (cmd == 522 && subCmd == 0) {
-            const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
-            const { delivereds: deliveredMsgs, groupSeens: groupSeenMsgs } = parsedData;
-            if (Array.isArray(deliveredMsgs) && deliveredMsgs.length > 0) {
-              let deliveredObjects = deliveredMsgs.map((delivered) => new GroupDeliveredMessage(this.ctx.uid, delivered));
-              if (!this.selfListen)
-                deliveredObjects = deliveredObjects.filter((delivered) => !delivered.isSelf);
-              this.emit("delivered_messages", deliveredObjects);
-            }
-            if (Array.isArray(groupSeenMsgs) && groupSeenMsgs.length > 0) {
-              let seenObjects = groupSeenMsgs.map((seen) => new GroupSeenMessage(this.ctx.uid, seen));
-              if (!this.selfListen)
-                seenObjects = seenObjects.filter((seen) => !seen.isSelf);
-              this.emit("seen_messages", seenObjects);
-            }
-          }
-          if (version == 1 && cmd == 3000 && subCmd == 0) {
-            logger(this.ctx).error();
-            logger(this.ctx).error("Another connection is opened, closing this one");
-            logger(this.ctx).error();
-            if (ws.readyState !== wrapper_default.CLOSED)
-              ws.close(CloseReason.DuplicateConnection);
-          }
-        } catch (error) {
-          this.onErrorCallback(error);
-          this.emit("error", error);
-        }
-      };
-    }
-    stop() {
-      if (this.ws) {
-        this.ws.close(CloseReason.ManualClosure);
-        this.reset();
-      }
-    }
-    sendWs(payload, requireId = true) {
-      if (this.ws) {
-        if (requireId)
-          payload.data["req_id"] = `req_${this.id++}`;
-        const encodedData = new TextEncoder().encode(JSON.stringify(payload.data));
-        const dataLength = encodedData.length;
-        const data = new DataView(Buffer.alloc(4 + dataLength).buffer);
-        data.setUint8(0, payload.version);
-        data.setInt32(1, payload.cmd, true);
-        data.setInt8(3, payload.subCmd);
-        encodedData.forEach((e, i) => {
-          data.setUint8(4 + i, e);
-        });
-        this.ws.send(data);
-      }
-    }
-    requestOldMessages(threadType, lastMsgId = null) {
-      const payload = {
-        version: 1,
-        cmd: threadType === ThreadType.User ? 510 : 511,
-        subCmd: 1,
-        data: { first: true, lastId: lastMsgId, preIds: [] }
-      };
-      this.sendWs(payload);
-    }
-    requestOldReactions(threadType, lastMsgId = null) {
-      const payload = {
-        version: 1,
-        cmd: threadType === ThreadType.User ? 610 : 611,
-        subCmd: 1,
-        data: { first: true, lastId: lastMsgId, preIds: [] }
-      };
-      this.sendWs(payload);
-    }
-    reset() {
-      this.ws = null;
-      this.cipherKey = undefined;
-      if (this.pingInterval)
-        clearInterval(this.pingInterval);
-    }
-  };
-});
-
-// node_modules/zca-js/dist/apis/acceptFriendRequest.js
-var acceptFriendRequestFactory;
-var init_acceptFriendRequest = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  acceptFriendRequestFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/accept`);
-    return async function acceptFriendRequest(friendId) {
-      const params = {
-        fid: friendId,
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addGroupBlockedMember.js
-var addGroupBlockedMemberFactory;
-var init_addGroupBlockedMember = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  addGroupBlockedMemberFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/blockedmems/add`);
-    return async function addGroupBlockedMember(memberId, groupId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        grid: groupId,
-        members: memberId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addGroupDeputy.js
-var addGroupDeputyFactory;
-var init_addGroupDeputy = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  addGroupDeputyFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/admins/add`);
-    return async function addGroupDeputy(memberId, groupId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        grid: groupId,
-        members: memberId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addPollOptions.js
-var addPollOptionsFactory;
-var init_addPollOptions = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  addPollOptionsFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/option/add`);
-    return async function addPollOptions(payload) {
-      const params = {
-        poll_id: payload.pollId,
-        new_options: JSON.stringify(payload.options),
-        voted_option_ids: payload.votedOptionIds
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addQuickMessage.js
-var addQuickMessageFactory;
-var init_addQuickMessage = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  addQuickMessageFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/create`);
-    return async function addQuickMessage(addPayload) {
-      const isType = !addPayload.media ? 0 : 1;
-      const params = {
-        keyword: addPayload.keyword,
-        message: {
-          title: addPayload.title,
-          params: ""
-        },
-        type: isType,
-        imei: ctx.imei
-      };
-      if (isType === 1) {
-        if (!addPayload.media)
-          throw new ZaloApiError("Media is required");
-        const uploadMedia = await api.uploadProductPhoto({
-          file: addPayload.media
-        });
-        const photoId = uploadMedia.photoId;
-        const thumbUrl = uploadMedia.thumbUrl;
-        const normalUrl = uploadMedia.normalUrl;
-        const hdUrl = uploadMedia.hdUrl;
-        params.media = {
-          items: [
-            {
-              type: 0,
-              photoId,
-              title: "",
-              width: "",
-              height: "",
-              previewThumb: thumbUrl,
-              rawUrl: normalUrl || hdUrl,
-              thumbUrl,
-              normalUrl: normalUrl || hdUrl,
-              hdUrl: hdUrl || normalUrl
-            }
-          ]
-        };
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addReaction.js
-var addReactionFactory;
-var init_addReaction = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  addReactionFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURLs = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.reaction[0]}/api/message/reaction`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.reaction[0]}/api/group/reaction`)
-    };
-    return async function addReaction(icon, dest) {
-      const serviceURL = serviceURLs[dest.type];
-      let rType, source;
-      if (typeof icon == "object") {
-        rType = icon.rType;
-        source = icon.source;
-      } else
-        switch (icon) {
-          case Reactions.HAHA:
-            rType = 0;
-            source = 6;
-            break;
-          case Reactions.LIKE:
-            rType = 3;
-            source = 6;
-            break;
-          case Reactions.HEART:
-            rType = 5;
-            source = 6;
-            break;
-          case Reactions.WOW:
-            rType = 32;
-            source = 6;
-            break;
-          case Reactions.CRY:
-            rType = 2;
-            source = 6;
-            break;
-          case Reactions.ANGRY:
-            rType = 20;
-            source = 6;
-            break;
-          case Reactions.KISS:
-            rType = 8;
-            source = 6;
-            break;
-          case Reactions.TEARS_OF_JOY:
-            rType = 7;
-            source = 6;
-            break;
-          case Reactions.SHIT:
-            rType = 66;
-            source = 6;
-            break;
-          case Reactions.ROSE:
-            rType = 120;
-            source = 6;
-            break;
-          case Reactions.BROKEN_HEART:
-            rType = 65;
-            source = 6;
-            break;
-          case Reactions.DISLIKE:
-            rType = 4;
-            source = 6;
-            break;
-          case Reactions.LOVE:
-            rType = 29;
-            source = 6;
-            break;
-          case Reactions.CONFUSED:
-            rType = 51;
-            source = 6;
-            break;
-          case Reactions.WINK:
-            rType = 45;
-            source = 6;
-            break;
-          case Reactions.FADE:
-            rType = 121;
-            source = 6;
-            break;
-          case Reactions.SUN:
-            rType = 67;
-            source = 6;
-            break;
-          case Reactions.BIRTHDAY:
-            rType = 126;
-            source = 6;
-            break;
-          case Reactions.BOMB:
-            rType = 127;
-            source = 6;
-            break;
-          case Reactions.OK:
-            rType = 68;
-            source = 6;
-            break;
-          case Reactions.PEACE:
-            rType = 69;
-            source = 6;
-            break;
-          case Reactions.THANKS:
-            rType = 70;
-            source = 6;
-            break;
-          case Reactions.PUNCH:
-            rType = 71;
-            source = 6;
-            break;
-          case Reactions.SHARE:
-            rType = 72;
-            source = 6;
-            break;
-          case Reactions.PRAY:
-            rType = 73;
-            source = 6;
-            break;
-          case Reactions.NO:
-            rType = 131;
-            source = 6;
-            break;
-          case Reactions.BAD:
-            rType = 132;
-            source = 6;
-            break;
-          case Reactions.LOVE_YOU:
-            rType = 133;
-            source = 6;
-            break;
-          case Reactions.SAD:
-            rType = 1;
-            source = 6;
-            break;
-          case Reactions.VERY_SAD:
-            rType = 16;
-            source = 6;
-            break;
-          case Reactions.COOL:
-            rType = 21;
-            source = 6;
-            break;
-          case Reactions.NERD:
-            rType = 22;
-            source = 6;
-            break;
-          case Reactions.BIG_SMILE:
-            rType = 23;
-            source = 6;
-            break;
-          case Reactions.SUNGLASSES:
-            rType = 26;
-            source = 6;
-            break;
-          case Reactions.NEUTRAL:
-            rType = 30;
-            source = 6;
-            break;
-          case Reactions.SAD_FACE:
-            rType = 35;
-            source = 6;
-            break;
-          case Reactions.BYE:
-            rType = 36;
-            source = 6;
-            break;
-          case Reactions.SLEEPY:
-            rType = 38;
-            source = 6;
-            break;
-          case Reactions.WIPE:
-            rType = 39;
-            source = 6;
-            break;
-          case Reactions.DIG:
-            rType = 42;
-            source = 6;
-            break;
-          case Reactions.ANGUISH:
-            rType = 44;
-            source = 6;
-            break;
-          case Reactions.HANDCLAP:
-            rType = 46;
-            source = 6;
-            break;
-          case Reactions.ANGRY_FACE:
-            rType = 47;
-            source = 6;
-            break;
-          case Reactions.F_CHAIR:
-            rType = 48;
-            source = 6;
-            break;
-          case Reactions.L_CHAIR:
-            rType = 49;
-            source = 6;
-            break;
-          case Reactions.R_CHAIR:
-            rType = 50;
-            source = 6;
-            break;
-          case Reactions.SILENT:
-            rType = 52;
-            source = 6;
-            break;
-          case Reactions.SURPRISE:
-            rType = 53;
-            source = 6;
-            break;
-          case Reactions.EMBARRASSED:
-            rType = 54;
-            source = 6;
-            break;
-          case Reactions.AFRAID:
-            rType = 60;
-            source = 6;
-            break;
-          case Reactions.SAD2:
-            rType = 61;
-            source = 6;
-            break;
-          case Reactions.BIG_LAUGH:
-            rType = 62;
-            source = 6;
-            break;
-          case Reactions.RICH:
-            rType = 63;
-            source = 6;
-            break;
-          case Reactions.BEER:
-            rType = 99;
-            source = 6;
-            break;
-          default:
-            rType = -1;
-            source = 6;
-        }
-      const rIcon = typeof icon == "object" ? icon.icon : icon;
-      if (rType == undefined || source == undefined || rIcon == undefined) {
-        throw new ZaloApiError("Invalid reaction");
-      }
-      const params = {
-        react_list: [
-          {
-            message: JSON.stringify({
-              rMsg: [
-                {
-                  gMsgID: parseInt(dest.data.msgId),
-                  cMsgID: parseInt(dest.data.cliMsgId),
-                  msgType: 1
-                }
-              ],
-              rIcon,
-              rType,
-              source
-            }),
-            clientId: Date.now()
-          }
-        ]
-      };
-      if (dest.type == ThreadType.User) {
-        params.toid = dest.threadId;
-      } else {
-        params.grid = dest.threadId;
-        params.imei = ctx.imei;
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response, (result) => {
-        if (typeof result.data.msgIds === "string") {
-          return {
-            msgIds: JSON.parse(result.data.msgIds)
-          };
-        }
-        return result.data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addUnreadMark.js
-var addUnreadMarkFactory;
-var init_addUnreadMark = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  addUnreadMarkFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/addUnreadMark`);
-    return async function addUnreadMark(threadId, type = ThreadType.User) {
-      const timestamp = Date.now();
-      const timestampString = timestamp.toString();
-      const isGroup = type === ThreadType.Group;
-      const requestParams = {
-        param: JSON.stringify({
-          [isGroup ? "convsGroup" : "convsUser"]: [
-            {
-              id: threadId,
-              cliMsgId: timestampString,
-              fromUid: "0",
-              ts: timestamp
-            }
-          ],
-          [isGroup ? "convsUser" : "convsGroup"]: [],
-          imei: ctx.imei
-        })
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        if (typeof data.data === "string") {
-          return {
-            data: JSON.parse(data.data),
-            status: data.status
-          };
-        }
-        return result.data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/addUserToGroup.js
-var addUserToGroupFactory;
-var init_addUserToGroup = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  addUserToGroupFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/invite/v2`);
-    return async function addUserToGroup(memberId, groupId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        grid: groupId,
-        members: memberId,
-        memberTypes: memberId.map(() => -1),
-        imei: ctx.imei,
-        clientLang: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/blockUser.js
-var blockUserFactory;
-var init_blockUser = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  blockUserFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/block`);
-    return async function blockUser(userId) {
-      const params = {
-        fid: userId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/blockViewFeed.js
-var blockViewFeedFactory;
-var init_blockViewFeed = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  blockViewFeedFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/feed/block`);
-    return async function blockViewFeed(isBlockFeed, userId) {
-      const params = {
-        fid: userId,
-        isBlockFeed: isBlockFeed ? 1 : 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
 // node_modules/delayed-stream/lib/delayed_stream.js
-var require_delayed_stream = __commonJS(function(exports2, module2) {
-  var Stream = require("stream").Stream;
-  var util = require("util");
-  module2.exports = DelayedStream;
+var require_delayed_stream = __commonJS(function(exports, module) {
+  var Stream = __require("stream").Stream;
+  var util = __require("util");
+  module.exports = DelayedStream;
   function DelayedStream() {
     this.source = null;
     this.dataSize = 0;
@@ -21613,11 +14929,11 @@ var require_delayed_stream = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/combined-stream/lib/combined_stream.js
-var require_combined_stream = __commonJS(function(exports2, module2) {
-  var util = require("util");
-  var Stream = require("stream").Stream;
+var require_combined_stream = __commonJS(function(exports, module) {
+  var util = __require("util");
+  var Stream = __require("stream").Stream;
   var DelayedStream = require_delayed_stream();
-  module2.exports = CombinedStream;
+  module.exports = CombinedStream;
   function CombinedStream() {
     this.writable = false;
     this.readable = true;
@@ -21782,8 +15098,8 @@ var require_combined_stream = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/mime-db/db.json
-var require_db = __commonJS(function(exports2, module2) {
-  module2.exports = {
+var require_db = __commonJS(function(exports, module) {
+  module.exports = {
     "application/1d-interleaved-parityfec": {
       source: "iana"
     },
@@ -30304,37 +23620,26 @@ var require_db = __commonJS(function(exports2, module2) {
   };
 });
 
-// node_modules/mime-db/index.js
-var require_mime_db = __commonJS(function(exports2, module2) {
-  /*!
-   * mime-db
-   * Copyright(c) 2014 Jonathan Ong
-   * Copyright(c) 2015-2022 Douglas Christopher Wilson
-   * MIT Licensed
-   */
-  module2.exports = require_db();
-});
-
 // node_modules/mime-types/index.js
-var require_mime_types = __commonJS(function(exports2) {
+var require_mime_types = __commonJS(function(exports) {
   /*!
    * mime-types
    * Copyright(c) 2014 Jonathan Ong
    * Copyright(c) 2015 Douglas Christopher Wilson
    * MIT Licensed
    */
-  var db = require_mime_db();
-  var extname = require("path").extname;
+  var db = require_db();
+  var extname = __require("path").extname;
   var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
   var TEXT_TYPE_REGEXP = /^text\//i;
-  exports2.charset = charset;
-  exports2.charsets = { lookup: charset };
-  exports2.contentType = contentType;
-  exports2.extension = extension;
-  exports2.extensions = Object.create(null);
-  exports2.lookup = lookup;
-  exports2.types = Object.create(null);
-  populateMaps(exports2.extensions, exports2.types);
+  exports.charset = charset;
+  exports.charsets = { lookup: charset };
+  exports.contentType = contentType;
+  exports.extension = extension;
+  exports.extensions = Object.create(null);
+  exports.lookup = lookup;
+  exports.types = Object.create(null);
+  populateMaps(exports.extensions, exports.types);
   function charset(type) {
     if (!type || typeof type !== "string") {
       return false;
@@ -30353,12 +23658,12 @@ var require_mime_types = __commonJS(function(exports2) {
     if (!str || typeof str !== "string") {
       return false;
     }
-    var mime = str.indexOf("/") === -1 ? exports2.lookup(str) : str;
+    var mime = str.indexOf("/") === -1 ? exports.lookup(str) : str;
     if (!mime) {
       return false;
     }
     if (mime.indexOf("charset") === -1) {
-      var charset = exports2.charset(mime);
+      var charset = exports.charset(mime);
       if (charset)
         mime += "; charset=" + charset.toLowerCase();
     }
@@ -30369,7 +23674,7 @@ var require_mime_types = __commonJS(function(exports2) {
       return false;
     }
     var match = EXTRACT_TYPE_REGEXP.exec(type);
-    var exts = match && exports2.extensions[match[1].toLowerCase()];
+    var exts = match && exports.extensions[match[1].toLowerCase()];
     if (!exts || !exts.length) {
       return false;
     }
@@ -30383,7 +23688,7 @@ var require_mime_types = __commonJS(function(exports2) {
     if (!extension) {
       return false;
     }
-    return exports2.types[extension] || false;
+    return exports.types[extension] || false;
   }
   function populateMaps(extensions, types) {
     var preference = ["nginx", "apache", undefined, "iana"];
@@ -30410,8 +23715,8 @@ var require_mime_types = __commonJS(function(exports2) {
 });
 
 // node_modules/asynckit/lib/defer.js
-var require_defer = __commonJS(function(exports2, module2) {
-  module2.exports = defer;
+var require_defer = __commonJS(function(exports, module) {
+  module.exports = defer;
   function defer(fn) {
     var nextTick = typeof setImmediate == "function" ? setImmediate : typeof process == "object" && typeof process.nextTick == "function" ? process.nextTick : null;
     if (nextTick) {
@@ -30423,9 +23728,9 @@ var require_defer = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/lib/async.js
-var require_async = __commonJS(function(exports2, module2) {
+var require_async = __commonJS(function(exports, module) {
   var defer = require_defer();
-  module2.exports = async;
+  module.exports = async;
   function async(callback) {
     var isAsync = false;
     defer(function() {
@@ -30444,8 +23749,8 @@ var require_async = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/lib/abort.js
-var require_abort = __commonJS(function(exports2, module2) {
-  module2.exports = abort;
+var require_abort = __commonJS(function(exports, module) {
+  module.exports = abort;
   function abort(state) {
     Object.keys(state.jobs).forEach(clean.bind(state));
     state.jobs = {};
@@ -30458,10 +23763,10 @@ var require_abort = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/lib/iterate.js
-var require_iterate = __commonJS(function(exports2, module2) {
+var require_iterate = __commonJS(function(exports, module) {
   var async = require_async();
   var abort = require_abort();
-  module2.exports = iterate;
+  module.exports = iterate;
   function iterate(list, iterator, state, callback) {
     var key = state["keyedList"] ? state["keyedList"][state.index] : state.index;
     state.jobs[key] = runJob(iterator, key, list[key], function(error, output) {
@@ -30489,8 +23794,8 @@ var require_iterate = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/lib/state.js
-var require_state = __commonJS(function(exports2, module2) {
-  module2.exports = state;
+var require_state = __commonJS(function(exports, module) {
+  module.exports = state;
   function state(list, sortMethod) {
     var isNamedList = !Array.isArray(list), initState = {
       index: 0,
@@ -30509,10 +23814,10 @@ var require_state = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/lib/terminator.js
-var require_terminator = __commonJS(function(exports2, module2) {
+var require_terminator = __commonJS(function(exports, module) {
   var abort = require_abort();
   var async = require_async();
-  module2.exports = terminator;
+  module.exports = terminator;
   function terminator(callback) {
     if (!Object.keys(this.jobs).length) {
       return;
@@ -30524,11 +23829,11 @@ var require_terminator = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/parallel.js
-var require_parallel = __commonJS(function(exports2, module2) {
+var require_parallel = __commonJS(function(exports, module) {
   var iterate = require_iterate();
   var initState = require_state();
   var terminator = require_terminator();
-  module2.exports = parallel;
+  module.exports = parallel;
   function parallel(list, iterator, callback) {
     var state = initState(list);
     while (state.index < (state["keyedList"] || list).length) {
@@ -30549,13 +23854,13 @@ var require_parallel = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/serialOrdered.js
-var require_serialOrdered = __commonJS(function(exports2, module2) {
+var require_serialOrdered = __commonJS(function(exports, module) {
   var iterate = require_iterate();
   var initState = require_state();
   var terminator = require_terminator();
-  module2.exports = serialOrdered;
-  module2.exports.ascending = ascending;
-  module2.exports.descending = descending;
+  module.exports = serialOrdered;
+  module.exports.ascending = ascending;
+  module.exports.descending = descending;
   function serialOrdered(list, iterator, sortMethod, callback) {
     var state = initState(list, sortMethod);
     iterate(list, iterator, state, function iteratorHandler(error, result) {
@@ -30581,17 +23886,17 @@ var require_serialOrdered = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/asynckit/serial.js
-var require_serial = __commonJS(function(exports2, module2) {
+var require_serial = __commonJS(function(exports, module) {
   var serialOrdered = require_serialOrdered();
-  module2.exports = serial;
+  module.exports = serial;
   function serial(list, iterator, callback) {
     return serialOrdered(list, iterator, null, callback);
   }
 });
 
 // node_modules/asynckit/index.js
-var require_asynckit = __commonJS(function(exports2, module2) {
-  module2.exports = {
+var require_asynckit = __commonJS(function(exports, module) {
+  module.exports = {
     parallel: require_parallel(),
     serial: require_serial(),
     serialOrdered: require_serialOrdered()
@@ -30599,86 +23904,86 @@ var require_asynckit = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/es-object-atoms/index.js
-var require_es_object_atoms = __commonJS(function(exports2, module2) {
-  module2.exports = Object;
+var require_es_object_atoms = __commonJS(function(exports, module) {
+  module.exports = Object;
 });
 
 // node_modules/es-errors/index.js
-var require_es_errors = __commonJS(function(exports2, module2) {
-  module2.exports = Error;
+var require_es_errors = __commonJS(function(exports, module) {
+  module.exports = Error;
 });
 
 // node_modules/es-errors/eval.js
-var require_eval = __commonJS(function(exports2, module2) {
-  module2.exports = EvalError;
+var require_eval = __commonJS(function(exports, module) {
+  module.exports = EvalError;
 });
 
 // node_modules/es-errors/range.js
-var require_range2 = __commonJS(function(exports2, module2) {
-  module2.exports = RangeError;
+var require_range2 = __commonJS(function(exports, module) {
+  module.exports = RangeError;
 });
 
 // node_modules/es-errors/ref.js
-var require_ref = __commonJS(function(exports2, module2) {
-  module2.exports = ReferenceError;
+var require_ref = __commonJS(function(exports, module) {
+  module.exports = ReferenceError;
 });
 
 // node_modules/es-errors/syntax.js
-var require_syntax = __commonJS(function(exports2, module2) {
-  module2.exports = SyntaxError;
+var require_syntax = __commonJS(function(exports, module) {
+  module.exports = SyntaxError;
 });
 
 // node_modules/es-errors/type.js
-var require_type = __commonJS(function(exports2, module2) {
-  module2.exports = TypeError;
+var require_type = __commonJS(function(exports, module) {
+  module.exports = TypeError;
 });
 
 // node_modules/es-errors/uri.js
-var require_uri = __commonJS(function(exports2, module2) {
-  module2.exports = URIError;
+var require_uri = __commonJS(function(exports, module) {
+  module.exports = URIError;
 });
 
 // node_modules/math-intrinsics/abs.js
-var require_abs = __commonJS(function(exports2, module2) {
-  module2.exports = Math.abs;
+var require_abs = __commonJS(function(exports, module) {
+  module.exports = Math.abs;
 });
 
 // node_modules/math-intrinsics/floor.js
-var require_floor = __commonJS(function(exports2, module2) {
-  module2.exports = Math.floor;
+var require_floor = __commonJS(function(exports, module) {
+  module.exports = Math.floor;
 });
 
 // node_modules/math-intrinsics/max.js
-var require_max = __commonJS(function(exports2, module2) {
-  module2.exports = Math.max;
+var require_max = __commonJS(function(exports, module) {
+  module.exports = Math.max;
 });
 
 // node_modules/math-intrinsics/min.js
-var require_min = __commonJS(function(exports2, module2) {
-  module2.exports = Math.min;
+var require_min = __commonJS(function(exports, module) {
+  module.exports = Math.min;
 });
 
 // node_modules/math-intrinsics/pow.js
-var require_pow = __commonJS(function(exports2, module2) {
-  module2.exports = Math.pow;
+var require_pow = __commonJS(function(exports, module) {
+  module.exports = Math.pow;
 });
 
 // node_modules/math-intrinsics/round.js
-var require_round = __commonJS(function(exports2, module2) {
-  module2.exports = Math.round;
+var require_round = __commonJS(function(exports, module) {
+  module.exports = Math.round;
 });
 
 // node_modules/math-intrinsics/isNaN.js
-var require_isNaN = __commonJS(function(exports2, module2) {
-  module2.exports = Number.isNaN || function isNaN2(a) {
+var require_isNaN = __commonJS(function(exports, module) {
+  module.exports = Number.isNaN || function isNaN2(a) {
     return a !== a;
   };
 });
 
 // node_modules/math-intrinsics/sign.js
-var require_sign = __commonJS(function(exports2, module2) {
+var require_sign = __commonJS(function(exports, module) {
   var $isNaN = require_isNaN();
-  module2.exports = function sign(number) {
+  module.exports = function sign(number) {
     if ($isNaN(number) || number === 0) {
       return number;
     }
@@ -30687,12 +23992,12 @@ var require_sign = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/gopd/gOPD.js
-var require_gOPD = __commonJS(function(exports2, module2) {
-  module2.exports = Object.getOwnPropertyDescriptor;
+var require_gOPD = __commonJS(function(exports, module) {
+  module.exports = Object.getOwnPropertyDescriptor;
 });
 
 // node_modules/gopd/index.js
-var require_gopd = __commonJS(function(exports2, module2) {
+var require_gopd = __commonJS(function(exports, module) {
   var $gOPD = require_gOPD();
   if ($gOPD) {
     try {
@@ -30701,11 +24006,11 @@ var require_gopd = __commonJS(function(exports2, module2) {
       $gOPD = null;
     }
   }
-  module2.exports = $gOPD;
+  module.exports = $gOPD;
 });
 
 // node_modules/es-define-property/index.js
-var require_es_define_property = __commonJS(function(exports2, module2) {
+var require_es_define_property = __commonJS(function(exports, module) {
   var $defineProperty = Object.defineProperty || false;
   if ($defineProperty) {
     try {
@@ -30714,12 +24019,12 @@ var require_es_define_property = __commonJS(function(exports2, module2) {
       $defineProperty = false;
     }
   }
-  module2.exports = $defineProperty;
+  module.exports = $defineProperty;
 });
 
 // node_modules/has-symbols/shams.js
-var require_shams = __commonJS(function(exports2, module2) {
-  module2.exports = function hasSymbols() {
+var require_shams = __commonJS(function(exports, module) {
+  module.exports = function hasSymbols() {
     if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
       return false;
     }
@@ -30767,10 +24072,10 @@ var require_shams = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/has-symbols/index.js
-var require_has_symbols = __commonJS(function(exports2, module2) {
+var require_has_symbols = __commonJS(function(exports, module) {
   var origSymbol = typeof Symbol !== "undefined" && Symbol;
   var hasSymbolSham = require_shams();
-  module2.exports = function hasNativeSymbols() {
+  module.exports = function hasNativeSymbols() {
     if (typeof origSymbol !== "function") {
       return false;
     }
@@ -30788,18 +24093,18 @@ var require_has_symbols = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/get-proto/Reflect.getPrototypeOf.js
-var require_Reflect_getPrototypeOf = __commonJS(function(exports2, module2) {
-  module2.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
+var require_Reflect_getPrototypeOf = __commonJS(function(exports, module) {
+  module.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
 });
 
 // node_modules/get-proto/Object.getPrototypeOf.js
-var require_Object_getPrototypeOf = __commonJS(function(exports2, module2) {
+var require_Object_getPrototypeOf = __commonJS(function(exports, module) {
   var $Object = require_es_object_atoms();
-  module2.exports = $Object.getPrototypeOf || null;
+  module.exports = $Object.getPrototypeOf || null;
 });
 
 // node_modules/function-bind/implementation.js
-var require_implementation = __commonJS(function(exports2, module2) {
+var require_implementation = __commonJS(function(exports, module) {
   var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
   var toStr = Object.prototype.toString;
   var max = Math.max;
@@ -30831,7 +24136,7 @@ var require_implementation = __commonJS(function(exports2, module2) {
     }
     return str;
   };
-  module2.exports = function bind(that) {
+  module.exports = function bind(that) {
     var target = this;
     if (typeof target !== "function" || toStr.apply(target) !== funcType) {
       throw new TypeError(ERROR_MESSAGE + target);
@@ -30865,42 +24170,42 @@ var require_implementation = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/function-bind/index.js
-var require_function_bind = __commonJS(function(exports2, module2) {
+var require_function_bind = __commonJS(function(exports, module) {
   var implementation = require_implementation();
-  module2.exports = Function.prototype.bind || implementation;
+  module.exports = Function.prototype.bind || implementation;
 });
 
 // node_modules/call-bind-apply-helpers/functionCall.js
-var require_functionCall = __commonJS(function(exports2, module2) {
-  module2.exports = Function.prototype.call;
+var require_functionCall = __commonJS(function(exports, module) {
+  module.exports = Function.prototype.call;
 });
 
 // node_modules/call-bind-apply-helpers/functionApply.js
-var require_functionApply = __commonJS(function(exports2, module2) {
-  module2.exports = Function.prototype.apply;
+var require_functionApply = __commonJS(function(exports, module) {
+  module.exports = Function.prototype.apply;
 });
 
 // node_modules/call-bind-apply-helpers/reflectApply.js
-var require_reflectApply = __commonJS(function(exports2, module2) {
-  module2.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
+var require_reflectApply = __commonJS(function(exports, module) {
+  module.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
 });
 
 // node_modules/call-bind-apply-helpers/actualApply.js
-var require_actualApply = __commonJS(function(exports2, module2) {
+var require_actualApply = __commonJS(function(exports, module) {
   var bind = require_function_bind();
   var $apply = require_functionApply();
   var $call = require_functionCall();
   var $reflectApply = require_reflectApply();
-  module2.exports = $reflectApply || bind.call($call, $apply);
+  module.exports = $reflectApply || bind.call($call, $apply);
 });
 
 // node_modules/call-bind-apply-helpers/index.js
-var require_call_bind_apply_helpers = __commonJS(function(exports2, module2) {
+var require_call_bind_apply_helpers = __commonJS(function(exports, module) {
   var bind = require_function_bind();
   var $TypeError = require_type();
   var $call = require_functionCall();
   var $actualApply = require_actualApply();
-  module2.exports = function callBindBasic(args) {
+  module.exports = function callBindBasic(args) {
     if (args.length < 1 || typeof args[0] !== "function") {
       throw new $TypeError("a function is required");
     }
@@ -30909,7 +24214,7 @@ var require_call_bind_apply_helpers = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/dunder-proto/get.js
-var require_get = __commonJS(function(exports2, module2) {
+var require_get = __commonJS(function(exports, module) {
   var callBind = require_call_bind_apply_helpers();
   var gOPD = require_gopd();
   var hasProtoAccessor;
@@ -30923,17 +24228,17 @@ var require_get = __commonJS(function(exports2, module2) {
   var desc = !!hasProtoAccessor && gOPD && gOPD(Object.prototype, "__proto__");
   var $Object = Object;
   var $getPrototypeOf = $Object.getPrototypeOf;
-  module2.exports = desc && typeof desc.get === "function" ? callBind([desc.get]) : typeof $getPrototypeOf === "function" ? function getDunder(value) {
+  module.exports = desc && typeof desc.get === "function" ? callBind([desc.get]) : typeof $getPrototypeOf === "function" ? function getDunder(value) {
     return $getPrototypeOf(value == null ? value : $Object(value));
   } : false;
 });
 
 // node_modules/get-proto/index.js
-var require_get_proto = __commonJS(function(exports2, module2) {
+var require_get_proto = __commonJS(function(exports, module) {
   var reflectGetProto = require_Reflect_getPrototypeOf();
   var originalGetProto = require_Object_getPrototypeOf();
   var getDunderProto = require_get();
-  module2.exports = reflectGetProto ? function getProto(O) {
+  module.exports = reflectGetProto ? function getProto(O) {
     return reflectGetProto(O);
   } : originalGetProto ? function getProto(O) {
     if (!O || typeof O !== "object" && typeof O !== "function") {
@@ -30946,15 +24251,15 @@ var require_get_proto = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/hasown/index.js
-var require_hasown = __commonJS(function(exports2, module2) {
+var require_hasown = __commonJS(function(exports, module) {
   var call = Function.prototype.call;
   var $hasOwn = Object.prototype.hasOwnProperty;
   var bind = require_function_bind();
-  module2.exports = bind.call(call, $hasOwn);
+  module.exports = bind.call(call, $hasOwn);
 });
 
 // node_modules/get-intrinsic/index.js
-var require_get_intrinsic = __commonJS(function(exports2, module2) {
+var require_get_intrinsic = __commonJS(function(exports, module) {
   var undefined2;
   var $Object = require_es_object_atoms();
   var $Error = require_es_errors();
@@ -31216,7 +24521,7 @@ var require_get_intrinsic = __commonJS(function(exports2, module2) {
     }
     throw new $SyntaxError("intrinsic " + name + " does not exist!");
   };
-  module2.exports = function GetIntrinsic(name, allowMissing) {
+  module.exports = function GetIntrinsic(name, allowMissing) {
     if (typeof name !== "string" || name.length === 0) {
       throw new $TypeError("intrinsic name must be a non-empty string");
     }
@@ -31280,22 +24585,22 @@ var require_get_intrinsic = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/has-tostringtag/shams.js
-var require_shams2 = __commonJS(function(exports2, module2) {
+var require_shams2 = __commonJS(function(exports, module) {
   var hasSymbols = require_shams();
-  module2.exports = function hasToStringTagShams() {
+  module.exports = function hasToStringTagShams() {
     return hasSymbols() && !!Symbol.toStringTag;
   };
 });
 
 // node_modules/es-set-tostringtag/index.js
-var require_es_set_tostringtag = __commonJS(function(exports2, module2) {
+var require_es_set_tostringtag = __commonJS(function(exports, module) {
   var GetIntrinsic = require_get_intrinsic();
   var $defineProperty = GetIntrinsic("%Object.defineProperty%", true);
   var hasToStringTag = require_shams2()();
   var hasOwn = require_hasown();
   var $TypeError = require_type();
   var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
-  module2.exports = function setToStringTag(object, value) {
+  module.exports = function setToStringTag(object, value) {
     var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
     var nonConfigurable = arguments.length > 2 && !!arguments[2] && arguments[2].nonConfigurable;
     if (typeof overrideIfSet !== "undefined" && typeof overrideIfSet !== "boolean" || typeof nonConfigurable !== "undefined" && typeof nonConfigurable !== "boolean") {
@@ -31317,8 +24622,8 @@ var require_es_set_tostringtag = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/form-data/lib/populate.js
-var require_populate = __commonJS(function(exports2, module2) {
-  module2.exports = function(dst, src) {
+var require_populate = __commonJS(function(exports, module) {
+  module.exports = function(dst, src) {
     Object.keys(src).forEach(function(prop) {
       dst[prop] = dst[prop] || src[prop];
     });
@@ -31327,16 +24632,16 @@ var require_populate = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/form-data/lib/form_data.js
-var require_form_data = __commonJS(function(exports2, module2) {
+var require_form_data = __commonJS(function(exports, module) {
   var CombinedStream = require_combined_stream();
-  var util = require("util");
-  var path = require("path");
-  var http = require("http");
-  var https = require("https");
-  var parseUrl = require("url").parse;
-  var fs = require("fs");
-  var Stream = require("stream").Stream;
-  var crypto2 = require("crypto");
+  var util = __require("util");
+  var path = __require("path");
+  var http = __require("http");
+  var https = __require("https");
+  var parseUrl = __require("url").parse;
+  var fs = __require("fs");
+  var Stream = __require("stream").Stream;
+  var crypto2 = __require("crypto");
   var mime = require_mime_types();
   var asynckit = require_asynckit();
   var setToStringTag = require_es_set_tostringtag();
@@ -31345,9 +24650,9 @@ var require_form_data = __commonJS(function(exports2, module2) {
   function escapeHeaderParam(str) {
     return String(str).replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/"/g, "%22");
   }
-  function FormData2(options) {
-    if (!(this instanceof FormData2)) {
-      return new FormData2(options);
+  function FormData(options) {
+    if (!(this instanceof FormData)) {
+      return new FormData(options);
     }
     this._overheadLength = 0;
     this._valueLength = 0;
@@ -31358,11 +24663,11 @@ var require_form_data = __commonJS(function(exports2, module2) {
       this[option] = options[option];
     }
   }
-  util.inherits(FormData2, CombinedStream);
-  FormData2.LINE_BREAK = `\r
+  util.inherits(FormData, CombinedStream);
+  FormData.LINE_BREAK = `\r
 `;
-  FormData2.DEFAULT_CONTENT_TYPE = "application/octet-stream";
-  FormData2.prototype.append = function(field, value, options) {
+  FormData.DEFAULT_CONTENT_TYPE = "application/octet-stream";
+  FormData.prototype.append = function(field, value, options) {
     options = options || {};
     if (typeof options === "string") {
       options = { filename: options };
@@ -31382,7 +24687,7 @@ var require_form_data = __commonJS(function(exports2, module2) {
     append(footer);
     this._trackLength(header, value, options);
   };
-  FormData2.prototype._trackLength = function(header, value, options) {
+  FormData.prototype._trackLength = function(header, value, options) {
     var valueLength = 0;
     if (options.knownLength != null) {
       valueLength += Number(options.knownLength);
@@ -31392,7 +24697,7 @@ var require_form_data = __commonJS(function(exports2, module2) {
       valueLength = Buffer.byteLength(value);
     }
     this._valueLength += valueLength;
-    this._overheadLength += Buffer.byteLength(header) + FormData2.LINE_BREAK.length;
+    this._overheadLength += Buffer.byteLength(header) + FormData.LINE_BREAK.length;
     if (!value || !value.path && !(value.readable && hasOwn(value, "httpVersion")) && !(value instanceof Stream)) {
       return;
     }
@@ -31400,7 +24705,7 @@ var require_form_data = __commonJS(function(exports2, module2) {
       this._valuesToMeasure.push(value);
     }
   };
-  FormData2.prototype._lengthRetriever = function(value, callback) {
+  FormData.prototype._lengthRetriever = function(value, callback) {
     if (hasOwn(value, "fd")) {
       if (value.end != null && value.end != Infinity && value.start != null) {
         callback(null, value.end + 1 - (value.start ? value.start : 0));
@@ -31426,7 +24731,7 @@ var require_form_data = __commonJS(function(exports2, module2) {
       callback("Unknown stream");
     }
   };
-  FormData2.prototype._multiPartHeader = function(field, value, options) {
+  FormData.prototype._multiPartHeader = function(field, value, options) {
     if (typeof options.header === "string") {
       return options.header;
     }
@@ -31451,13 +24756,13 @@ var require_form_data = __commonJS(function(exports2, module2) {
           header = [header];
         }
         if (header.length) {
-          contents += prop + ": " + header.join("; ") + FormData2.LINE_BREAK;
+          contents += prop + ": " + header.join("; ") + FormData.LINE_BREAK;
         }
       }
     }
-    return "--" + this.getBoundary() + FormData2.LINE_BREAK + contents + FormData2.LINE_BREAK;
+    return "--" + this.getBoundary() + FormData.LINE_BREAK + contents + FormData.LINE_BREAK;
   };
-  FormData2.prototype._getContentDisposition = function(value, options) {
+  FormData.prototype._getContentDisposition = function(value, options) {
     var filename;
     if (typeof options.filepath === "string") {
       filename = path.normalize(options.filepath).replace(/\\/g, "/");
@@ -31470,7 +24775,7 @@ var require_form_data = __commonJS(function(exports2, module2) {
       return 'filename="' + escapeHeaderParam(filename) + '"';
     }
   };
-  FormData2.prototype._getContentType = function(value, options) {
+  FormData.prototype._getContentType = function(value, options) {
     var contentType = options.contentType;
     if (!contentType && value && value.name) {
       contentType = mime.lookup(value.name);
@@ -31485,13 +24790,13 @@ var require_form_data = __commonJS(function(exports2, module2) {
       contentType = mime.lookup(options.filepath || options.filename);
     }
     if (!contentType && value && typeof value === "object") {
-      contentType = FormData2.DEFAULT_CONTENT_TYPE;
+      contentType = FormData.DEFAULT_CONTENT_TYPE;
     }
     return contentType;
   };
-  FormData2.prototype._multiPartFooter = function() {
+  FormData.prototype._multiPartFooter = function() {
     return function(next) {
-      var footer = FormData2.LINE_BREAK;
+      var footer = FormData.LINE_BREAK;
       var lastPart = this._streams.length === 0;
       if (lastPart) {
         footer += this._lastBoundary();
@@ -31499,10 +24804,10 @@ var require_form_data = __commonJS(function(exports2, module2) {
       next(footer);
     }.bind(this);
   };
-  FormData2.prototype._lastBoundary = function() {
-    return "--" + this.getBoundary() + "--" + FormData2.LINE_BREAK;
+  FormData.prototype._lastBoundary = function() {
+    return "--" + this.getBoundary() + "--" + FormData.LINE_BREAK;
   };
-  FormData2.prototype.getHeaders = function(userHeaders) {
+  FormData.prototype.getHeaders = function(userHeaders) {
     var header;
     var formHeaders = {
       "content-type": "multipart/form-data; boundary=" + this.getBoundary()
@@ -31514,19 +24819,19 @@ var require_form_data = __commonJS(function(exports2, module2) {
     }
     return formHeaders;
   };
-  FormData2.prototype.setBoundary = function(boundary) {
+  FormData.prototype.setBoundary = function(boundary) {
     if (typeof boundary !== "string") {
       throw new TypeError("FormData boundary must be a string");
     }
     this._boundary = boundary;
   };
-  FormData2.prototype.getBoundary = function() {
+  FormData.prototype.getBoundary = function() {
     if (!this._boundary) {
       this._generateBoundary();
     }
     return this._boundary;
   };
-  FormData2.prototype.getBuffer = function() {
+  FormData.prototype.getBuffer = function() {
     var dataBuffer = new Buffer.alloc(0);
     var boundary = this.getBoundary();
     for (var i = 0, len = this._streams.length;i < len; i++) {
@@ -31537,16 +24842,16 @@ var require_form_data = __commonJS(function(exports2, module2) {
           dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i])]);
         }
         if (typeof this._streams[i] !== "string" || this._streams[i].substring(2, boundary.length + 2) !== boundary) {
-          dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData2.LINE_BREAK)]);
+          dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData.LINE_BREAK)]);
         }
       }
     }
     return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
   };
-  FormData2.prototype._generateBoundary = function() {
+  FormData.prototype._generateBoundary = function() {
     this._boundary = "--------------------------" + crypto2.randomBytes(12).toString("hex");
   };
-  FormData2.prototype.getLengthSync = function() {
+  FormData.prototype.getLengthSync = function() {
     var knownLength = this._overheadLength + this._valueLength;
     if (this._streams.length) {
       knownLength += this._lastBoundary().length;
@@ -31556,14 +24861,14 @@ var require_form_data = __commonJS(function(exports2, module2) {
     }
     return knownLength;
   };
-  FormData2.prototype.hasKnownLength = function() {
+  FormData.prototype.hasKnownLength = function() {
     var hasKnownLength = true;
     if (this._valuesToMeasure.length) {
       hasKnownLength = false;
     }
     return hasKnownLength;
   };
-  FormData2.prototype.getLength = function(cb) {
+  FormData.prototype.getLength = function(cb) {
     var knownLength = this._overheadLength + this._valueLength;
     if (this._streams.length) {
       knownLength += this._lastBoundary().length;
@@ -31583,7 +24888,7 @@ var require_form_data = __commonJS(function(exports2, module2) {
       cb(null, knownLength);
     });
   };
-  FormData2.prototype.submit = function(params, cb) {
+  FormData.prototype.submit = function(params, cb) {
     var request;
     var options;
     var defaults = { method: "post" };
@@ -31630,5533 +24935,23 @@ var require_form_data = __commonJS(function(exports2, module2) {
     }.bind(this));
     return request;
   };
-  FormData2.prototype._error = function(err) {
+  FormData.prototype._error = function(err) {
     if (!this.error) {
       this.error = err;
       this.pause();
       this.emit("error", err);
     }
   };
-  FormData2.prototype.toString = function() {
+  FormData.prototype.toString = function() {
     return "[object FormData]";
   };
-  setToStringTag(FormData2.prototype, "FormData");
-  module2.exports = FormData2;
-});
-
-// node_modules/zca-js/dist/apis/changeAccountAvatar.js
-var import_form_data, import_node_fs2, changeAccountAvatarFactory;
-var init_changeAccountAvatar = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  import_form_data = __toESM(require_form_data(), 1);
-  import_node_fs2 = __toESM(require("node:fs"), 1);
-  changeAccountAvatarFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/profile/upavatar`);
-    return async function changeAccountAvatar(avatarSource) {
-      const isSourceFilePath = typeof avatarSource == "string";
-      const imageMetaData = isSourceFilePath ? await getImageMetaData(ctx, avatarSource) : avatarSource.metadata;
-      const fileSize = imageMetaData.totalSize || 0;
-      const params = {
-        avatarSize: 120,
-        clientId: String(ctx.uid + formatTime("%H:%M %d/%m/%Y")),
-        language: ctx.language,
-        metaData: JSON.stringify({
-          origin: {
-            width: imageMetaData.width || 1080,
-            height: imageMetaData.height || 1080
-          },
-          processed: {
-            width: imageMetaData.width || 1080,
-            height: imageMetaData.height || 1080,
-            size: fileSize
-          }
-        })
-      };
-      const avatarData = isSourceFilePath ? import_node_fs2.default.readFileSync(avatarSource) : avatarSource.data;
-      const formData = new import_form_data.default;
-      formData.append("fileContent", avatarData, {
-        filename: "blob",
-        contentType: "image/jpeg"
-      });
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, {
-        params: encryptedParams
-      }), {
-        method: "POST",
-        headers: formData.getHeaders(),
-        body: formData.getBuffer()
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/changeFriendAlias.js
-var changeFriendAliasFactory;
-var init_changeFriendAlias = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  changeFriendAliasFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.alias[0]}/api/alias/update`);
-    return async function changeFriendAlias(alias, friendId) {
-      const params = {
-        friendId,
-        alias,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/changeGroupAvatar.js
-var import_form_data2, import_node_fs3, changeGroupAvatarFactory;
-var init_changeGroupAvatar = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  import_form_data2 = __toESM(require_form_data(), 1);
-  import_node_fs3 = __toESM(require("node:fs"), 1);
-  changeGroupAvatarFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/upavatar`);
-    return async function changeGroupAvatar(avatarSource, groupId) {
-      const params = {
-        grid: groupId,
-        avatarSize: 120,
-        clientId: `g${groupId}${getFullTimeFromMillisecond(new Date().getTime())}`,
-        imei: ctx.imei
-      };
-      const isSourceFilePath = typeof avatarSource == "string";
-      const imageMetaData = isSourceFilePath ? await getImageMetaData(ctx, avatarSource) : avatarSource.metadata;
-      params.originWidth = imageMetaData.width || 1080;
-      params.originHeight = imageMetaData.height || 1080;
-      const avatarData = isSourceFilePath ? import_node_fs3.default.readFileSync(avatarSource) : avatarSource.data;
-      const formData = new import_form_data2.default;
-      formData.append("fileContent", avatarData, {
-        filename: "blob",
-        contentType: "image/jpeg"
-      });
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, {
-        params: encryptedParams
-      }), {
-        method: "POST",
-        headers: formData.getHeaders(),
-        body: formData.getBuffer()
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/changeGroupName.js
-var changeGroupNameFactory;
-var init_changeGroupName = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  changeGroupNameFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/updateinfo`);
-    return async function changeGroupName(name, groupId) {
-      if (name.length == 0)
-        name = Date.now().toString();
-      const params = {
-        grid: groupId,
-        gname: name,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/changeGroupOwner.js
-var changeGroupOwnerFactory;
-var init_changeGroupOwner = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  changeGroupOwnerFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/change-owner`);
-    return async function changeGroupOwner(memberId, groupId) {
-      const params = {
-        grid: groupId,
-        newAdminId: memberId,
-        imei: ctx.imei,
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createAutoReply.js
-var createAutoReplyFactory;
-var init_createAutoReply = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createAutoReplyFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/create`);
-    return async function createAutoReply(payload) {
-      const uids = Array.isArray(payload.uids) ? payload.uids : [payload.uids];
-      const resultUids = payload.scope === 2 || payload.scope === 3 ? uids : [];
-      const params = {
-        cliLang: ctx.language,
-        enable: payload.isEnable,
-        content: payload.content,
-        startTime: payload.startTime,
-        endTime: payload.endTime,
-        recurrence: ["RRULE:FREQ=DAILY;"],
-        scope: payload.scope,
-        uids: resultUids
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createBankAccount.js
-var createBankAccountFactory;
-var init_createBankAccount = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createBankAccountFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/create`);
-    return async function createBankAccount(payload) {
-      const params = {
-        bin: payload.binBank,
-        bank_number: payload.numAccBank,
-        holder_name: normalizeHolderName(payload.nameAccBank),
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createCatalog.js
-var createCatalogFactory;
-var init_createCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createCatalogFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/create`);
-    return async function createCatalog(catalogName) {
-      const params = {
-        catalog_name: catalogName,
-        catalog_photo: ""
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createGroup.js
-var createGroupFactory;
-var init_createGroup = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createGroupFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/create/v2`);
-    return async function createGroup(options) {
-      if (options.members.length == 0)
-        throw new ZaloApiError("Group must have at least one member");
-      const params = {
-        clientId: Date.now(),
-        gname: String(Date.now()),
-        gdesc: null,
-        members: options.members,
-        membersTypes: options.members.map(() => -1),
-        nameChanged: 0,
-        createLink: 1,
-        clientLang: ctx.language,
-        imei: ctx.imei,
-        zsource: 601
-      };
-      if (options.name && options.name.length > 0) {
-        params.gname = options.name;
-        params.nameChanged = 1;
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "POST"
-      });
-      const data = await utils.resolve(response);
-      options.avatarSource = options.avatarSource || options.avatarPath;
-      if (options.avatarSource)
-        await api.changeGroupAvatar(options.avatarSource, data.groupId).catch(utils.logger.error);
-      return data;
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createNote.js
-var createNoteFactory;
-var init_createNote = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createNoteFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/createv2`);
-    return async function createNote(options, groupId) {
-      const params = {
-        grid: groupId,
-        type: 0,
-        color: -16777216,
-        emoji: "",
-        startTime: -1,
-        duration: -1,
-        params: JSON.stringify({
-          title: options.title
-        }),
-        repeat: 0,
-        src: 1,
-        imei: ctx.imei,
-        pinAct: options.pinAct ? 1 : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response, (result) => {
-        if (typeof result.data.params === "string") {
-          result.data.params = JSON.parse(result.data.params);
-        }
-        return result.data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createPoll.js
-var createPollFactory;
-var init_createPoll = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createPollFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/create`);
-    return async function createPoll(options, groupId) {
-      var _a;
-      const params = {
-        group_id: groupId,
-        question: options.question,
-        options: options.options,
-        expired_time: (_a = options.expiredTime) !== null && _a !== undefined ? _a : 0,
-        pinAct: false,
-        allow_multi_choices: !!options.allowMultiChoices,
-        allow_add_new_option: !!options.allowAddNewOption,
-        is_hide_vote_preview: !!options.hideVotePreview,
-        is_anonymous: !!options.isAnonymous,
-        poll_type: 0,
-        src: 1,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createProductCatalog.js
-var createProductCatalogFactory;
-var init_createProductCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  createProductCatalogFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/create`);
-    return async function createProductCatalog(payload) {
-      const productPhoto = payload.product_photos || [];
-      if (payload.files && payload.files.length == 0) {
-        if (payload.files.length > 5) {
-          throw new ZaloApiError("Maximum 5 media files are allowed");
-        }
-        for (const mediaFile of payload.files) {
-          const uploadMedia = await api.uploadProductPhoto({
-            file: mediaFile
-          });
-          const url = uploadMedia.normalUrl || uploadMedia.hdUrl;
-          productPhoto.push(url);
-        }
-      }
-      if (productPhoto.length > 5) {
-        throw new ZaloApiError("Maximum 5 media files are allowed");
-      }
-      const params = {
-        product_name: payload.productName,
-        price: payload.price,
-        description: payload.description,
-        product_photos: productPhoto,
-        catalog_id: payload.catalogId,
-        currency_unit: "₫",
-        create_time: Date.now()
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/createReminder.js
-var createReminderFactory;
-var init_createReminder = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  createReminderFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/create`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/createv2`)
-    };
-    return async function createReminder(options, threadId, type = ThreadType.User) {
-      var _a, _b, _c, _d, _e, _f;
-      const params = type === ThreadType.User ? {
-        objectData: JSON.stringify({
-          toUid: threadId,
-          type: 0,
-          color: -16245706,
-          emoji: (_a = options.emoji) !== null && _a !== undefined ? _a : "⏰",
-          startTime: (_b = options.startTime) !== null && _b !== undefined ? _b : Date.now(),
-          duration: -1,
-          params: { title: options.title },
-          needPin: false,
-          repeat: (_c = options.repeat) !== null && _c !== undefined ? _c : ReminderRepeatMode.None,
-          creatorUid: ctx.uid,
-          src: 1
-        }),
-        imei: ctx.imei
-      } : {
-        grid: threadId,
-        type: 0,
-        color: -16245706,
-        emoji: (_d = options.emoji) !== null && _d !== undefined ? _d : "⏰",
-        startTime: (_e = options.startTime) !== null && _e !== undefined ? _e : Date.now(),
-        duration: -1,
-        params: JSON.stringify({
-          title: options.title
-        }),
-        repeat: (_f = options.repeat) !== null && _f !== undefined ? _f : ReminderRepeatMode.None,
-        src: 1,
-        imei: ctx.imei,
-        pinAct: 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteAutoReply.js
-var deleteAutoReplyFactory;
-var init_deleteAutoReply = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  deleteAutoReplyFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/delete`);
-    return async function deleteAutoReply(id) {
-      const params = {
-        cliLang: ctx.language,
-        id
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteAvatar.js
-var deleteAvatarFactory;
-var init_deleteAvatar = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  deleteAvatarFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/del-avatars`);
-    return async function deleteAvatar(photoId) {
-      const photoIds = Array.isArray(photoId) ? photoId : [photoId];
-      const delPhotos = photoIds.map((id) => ({ photoId: id }));
-      const params = {
-        delPhotos: JSON.stringify(delPhotos),
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteBankAccount.js
-var deleteBankAccountFactory;
-var init_deleteBankAccount = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  deleteBankAccountFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/delete`);
-    return async function deleteBankAccount(payload) {
-      const params = {
-        account_id: payload.accountId,
-        is_default: payload.isDefault,
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteCatalog.js
-var deleteCatalogFactory;
-var init_deleteCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  deleteCatalogFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/delete`);
-    return async function deleteCatalog(catalogId) {
-      const params = {
-        catalog_id: catalogId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteChat.js
-var deleteChatFactory;
-var init_deleteChat = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  deleteChatFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/deleteconver`, {
-        nretry: 0
-      }),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/deleteconver`, {
-        nretry: 0
-      })
-    };
-    return async function deleteChat(lastMessage, threadId, type = ThreadType.User) {
-      const timestampString = Date.now().toString();
-      const params = type === ThreadType.User ? {
-        toid: threadId,
-        cliMsgId: timestampString,
-        conver: lastMessage,
-        onlyMe: 1,
-        imei: ctx.imei
-      } : {
-        grid: threadId,
-        cliMsgId: timestampString,
-        conver: lastMessage,
-        onlyMe: 1,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteGroupInviteBox.js
-var deleteGroupInviteBoxFactory;
-var init_deleteGroupInviteBox = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  deleteGroupInviteBoxFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/mdel-inv`);
-    return async function deleteGroupInviteBox(groupId, blockFutureInvite = false) {
-      const grids = Array.isArray(groupId) ? groupId : [groupId];
-      const params = {
-        invitations: JSON.stringify(grids.map((grid) => ({ grid }))),
-        block: blockFutureInvite ? 1 : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteMessage.js
-var deleteMessageFactory;
-var init_deleteMessage = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  deleteMessageFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/delete`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/deletemsg`)
-    };
-    return async function deleteMessage(dest, onlyMe = false) {
-      const { threadId, type = ThreadType.User, data } = dest;
-      const isGroup = type === ThreadType.Group;
-      const isSelf = ctx.uid == data.uidFrom;
-      if (isSelf && onlyMe === false)
-        throw new ZaloApiError("To delete your message for everyone, use undo api instead");
-      if (!isGroup && onlyMe === false)
-        throw new ZaloApiError("Can't delete message for everyone in a private chat");
-      const params = {
-        [isGroup ? "grid" : "toid"]: threadId,
-        cliMsgId: Date.now(),
-        msgs: [
-          {
-            cliMsgId: data.cliMsgId,
-            globalMsgId: data.msgId,
-            ownerId: data.uidFrom,
-            destId: threadId
-          }
-        ],
-        onlyMe: onlyMe ? 1 : 0
-      };
-      if (!isGroup) {
-        params.imei = ctx.imei;
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/deleteProductCatalog.js
-var deleteProductCatalogFactory;
-var init_deleteProductCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  deleteProductCatalogFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/mdelete`);
-    return async function deleteProductCatalog(payload) {
-      if (!Array.isArray(payload.productIds))
-        payload.productIds = [payload.productIds];
-      const params = {
-        product_ids: payload.productIds,
-        catalog_id: payload.catalogId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/disableGroupLink.js
-var disableGroupLinkFactory;
-var init_disableGroupLink = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  disableGroupLinkFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/disable`);
-    return async function disableGroupLink(groupId) {
-      const params = {
-        grid: groupId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/disperseGroup.js
-var disperseGroupFactory;
-var init_disperseGroup = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  disperseGroupFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/disperse`);
-    return async function disperseGroup(groupId) {
-      const params = {
-        grid: groupId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/editNote.js
-var editNoteFactory;
-var init_editNote = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  editNoteFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/updatev2`);
-    return async function editNote(options, groupId) {
-      const params = {
-        grid: groupId,
-        type: 0,
-        color: -16777216,
-        emoji: "",
-        startTime: -1,
-        duration: -1,
-        params: JSON.stringify({
-          title: options.title
-        }),
-        topicId: options.topicId,
-        repeat: 0,
-        imei: ctx.imei,
-        pinAct: options.pinAct ? 1 : 2
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        if (typeof data.params == "string") {
-          data.params = JSON.parse(data.params);
-        }
-        return data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/editReminder.js
-var editReminderFactory;
-var init_editReminder = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  editReminderFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/update`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/updatev2`)
-    };
-    return async function editReminder(options, threadId, type = ThreadType.User) {
-      var _a, _b, _c, _d, _e, _f;
-      const requestParams = type === ThreadType.User ? {
-        objectData: JSON.stringify({
-          toUid: threadId,
-          type: 0,
-          color: -16777216,
-          emoji: (_a = options.emoji) !== null && _a !== undefined ? _a : "",
-          startTime: (_b = options.startTime) !== null && _b !== undefined ? _b : Date.now(),
-          duration: -1,
-          params: { title: options.title },
-          needPin: false,
-          reminderId: options.topicId,
-          repeat: (_c = options.repeat) !== null && _c !== undefined ? _c : 0
-        })
-      } : {
-        grid: threadId,
-        type: 0,
-        color: -16777216,
-        emoji: (_d = options.emoji) !== null && _d !== undefined ? _d : "",
-        startTime: (_e = options.startTime) !== null && _e !== undefined ? _e : Date.now(),
-        duration: -1,
-        params: JSON.stringify({
-          title: options.title
-        }),
-        topicId: options.topicId,
-        repeat: (_f = options.repeat) !== null && _f !== undefined ? _f : 0,
-        imei: ctx.imei,
-        pinAct: 2
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/enableGroupLink.js
-var enableGroupLinkFactory;
-var init_enableGroupLink = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  enableGroupLinkFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/new`);
-    return async function enableGroupLink(groupId) {
-      const params = {
-        grid: groupId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/fetchAccountInfo.js
-var fetchAccountInfoFactory;
-var init_fetchAccountInfo = __esm(() => {
-  init_utils();
-  fetchAccountInfoFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/me-v2`);
-    return async function fetchAccountInfo() {
-      const response = await utils.request(serviceURL, {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/findUser.js
-var findUserFactory;
-var init_findUser = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_models();
-  findUserFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/profile/get`);
-    return async function findUser(phoneNumber, avatarSize = AvatarSize.Large) {
-      if (!phoneNumber)
-        throw new ZaloApiError("Missing phoneNumber");
-      if (phoneNumber.startsWith("0")) {
-        if (ctx.language == "vi")
-          phoneNumber = "84" + phoneNumber.slice(1);
-      }
-      const params = {
-        phone: phoneNumber,
-        avatar_size: avatarSize,
-        language: ctx.language,
-        imei: ctx.imei,
-        reqSrc: 40
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const finalServiceUrl = new URL(serviceURL);
-      finalServiceUrl.searchParams.append("params", encryptedParams);
-      const response = await utils.request(utils.makeURL(finalServiceUrl.toString(), {
-        params: encryptedParams
-      }));
-      return utils.resolve(response, (result) => {
-        if (result.error && result.error.code != 216)
-          throw new ZaloApiError(result.error.message, result.error.code);
-        return result.data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/findUserByUsername.js
-var findUserByUsernameFactory;
-var init_findUserByUsername = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_models();
-  findUserByUsernameFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/search/by-user-name`);
-    return async function findUserByUsername(username, avatarSize = AvatarSize.Large) {
-      const params = {
-        user_name: username,
-        avatar_size: avatarSize
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/forwardMessage.js
-var forwardMessageFactory;
-var init_forwardMessage = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  forwardMessageFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/mforward`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/mforward`)
-    };
-    return async function forwardMessage(payload, threadIds, type = ThreadType.User) {
-      var _a, _b;
-      if (!payload.message)
-        throw new ZaloApiError("Missing message content");
-      if (!threadIds || threadIds.length === 0)
-        throw new ZaloApiError("Missing thread IDs");
-      const timestamp = Date.now();
-      const clientId = timestamp.toString();
-      const msgInfo = {
-        message: payload.message,
-        reference: payload.reference ? JSON.stringify({
-          type: 3,
-          data: JSON.stringify(payload.reference)
-        }) : undefined
-      };
-      const decorLog = payload.reference ? {
-        fw: {
-          pmsg: {
-            st: 1,
-            ts: payload.reference.ts,
-            id: payload.reference.id
-          },
-          rmsg: {
-            st: 1,
-            ts: payload.reference.ts,
-            id: payload.reference.id
-          },
-          fwLvl: payload.reference.fwLvl
-        }
-      } : null;
-      let params;
-      if (type === ThreadType.User) {
-        params = {
-          toIds: threadIds.map((threadId) => {
-            var _a;
-            return {
-              clientId,
-              toUid: threadId,
-              ttl: (_a = payload.ttl) !== null && _a !== undefined ? _a : 0
-            };
-          }),
-          imei: ctx.imei,
-          ttl: (_a = payload.ttl) !== null && _a !== undefined ? _a : 0,
-          msgType: "1",
-          totalIds: threadIds.length,
-          msgInfo: JSON.stringify(msgInfo),
-          decorLog: JSON.stringify(decorLog)
-        };
-      } else {
-        params = {
-          grids: threadIds.map((threadId) => {
-            var _a;
-            return {
-              clientId,
-              grid: threadId,
-              ttl: (_a = payload.ttl) !== null && _a !== undefined ? _a : 0
-            };
-          }),
-          ttl: (_b = payload.ttl) !== null && _b !== undefined ? _b : 0,
-          msgType: "1",
-          totalIds: threadIds.length,
-          msgInfo: JSON.stringify(msgInfo),
-          decorLog: JSON.stringify(decorLog)
-        };
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAliasList.js
-var getAliasListFactory;
-var init_getAliasList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getAliasListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.alias[0]}/api/alias/list`);
-    return async function getAliasList(count = 100, page = 1) {
-      const params = {
-        page,
-        count,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAllFriends.js
-var getAllFriendsFactory;
-var init_getAllFriends = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_models();
-  getAllFriendsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/getfriends`);
-    return async function getAllFriends(count = 20000, page = 1, avatarSize = AvatarSize.Small) {
-      const params = {
-        incInvalid: 1,
-        page,
-        count,
-        avatar_size: avatarSize,
-        actiontime: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(utils.makeURL(serviceURL, {
-        params: encryptedParams
-      }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAllGroups.js
-var getAllGroupsFactory;
-var init_getAllGroups = __esm(() => {
-  init_utils();
-  getAllGroupsFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_poll[0]}/api/group/getlg/v4`);
-    return async function getAllGroups() {
-      const response = await utils.request(serviceURL, {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getArchivedChatList.js
-var getArchivedChatListFactory;
-var init_getArchivedChatList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getArchivedChatListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/archivedchat/list`);
-    return async function getArchivedChatList() {
-      const params = {
-        version: 1,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAutoDeleteChat.js
-var getAutoDeleteChatFactory;
-var init_getAutoDeleteChat = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getAutoDeleteChatFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/autodelete/getConvers`);
-    return async function getAutoDeleteChat() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAutoReplyList.js
-var getAutoReplyListFactory;
-var init_getAutoReplyList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getAutoReplyListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/list`);
-    return async function getAutoReplyList() {
-      const params = {
-        version: 0,
-        cliLang: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAvatarList.js
-var getAvatarListFactory;
-var init_getAvatarList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getAvatarListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/avatar-list`);
-    return async function getAvatarList(count = 50, page = 1) {
-      const params = {
-        page,
-        albumId: "0",
-        count,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getAvatarUrlProfile.js
-var getAvatarUrlProfileFactory;
-var init_getAvatarUrlProfile = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  getAvatarUrlProfileFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/avatar-url`);
-    return async function getAvatarUrlProfile(friendIds, avatarSize = AvatarSize.Large) {
-      if (!Array.isArray(friendIds))
-        friendIds = [friendIds];
-      const params = {
-        friend_ids: friendIds,
-        avatar_size: avatarSize,
-        srcReq: -1
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getBizAccount.js
-var getBizAccountFactory;
-var init_getBizAccount = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getBizAccountFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/get-bizacc`);
-    return async function getBizAccount(friendId) {
-      const params = {
-        fid: friendId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getCatalogList.js
-var getCatalogListFactory;
-var init_getCatalogList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getCatalogListFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/list`);
-    return async function getCatalogList(payload) {
-      var _a, _b, _c;
-      const params = {
-        version_list_catalog: 0,
-        limit: (_a = payload === null || payload === undefined ? undefined : payload.limit) !== null && _a !== undefined ? _a : 20,
-        last_product_id: (_b = payload === null || payload === undefined ? undefined : payload.lastProductId) !== null && _b !== undefined ? _b : -1,
-        page: (_c = payload === null || payload === undefined ? undefined : payload.page) !== null && _c !== undefined ? _c : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getCloseFriends.js
-var getCloseFriendsFactory;
-var init_getCloseFriends = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getCloseFriendsFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/getclosedfriends`);
-    return async function getCloseFriends() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getContext.js
-var getContextFactory;
-var init_getContext = __esm(() => {
-  init_utils();
-  getContextFactory = apiFactory()((_, ctx) => {
-    return () => ctx;
-  });
-});
-
-// node_modules/zca-js/dist/apis/getCookie.js
-var getCookieFactory;
-var init_getCookie = __esm(() => {
-  init_utils();
-  getCookieFactory = apiFactory()((_, ctx) => {
-    return function getCookie() {
-      return ctx.cookie;
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getFriendBoardList.js
-var getFriendBoardListFactory;
-var init_getFriendBoardList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getFriendBoardListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend_board[0]}/api/friendboard/list`);
-    return async function getFriendBoardList(conversationId) {
-      const params = {
-        conversationId,
-        version: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getFriendOnlines.js
-var getFriendOnlinesFactory;
-var init_getFriendOnlines = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getFriendOnlinesFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/onlines`);
-    return async function getFriendOnlines() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        if (Array.isArray(data.onlines)) {
-          for (const online of data.onlines) {
-            if (typeof online.status === "string") {
-              const parsed = JSON.parse(online.status);
-              if (parsed && typeof parsed.status === "string") {
-                online.status = parsed.status;
-              }
-            }
-          }
-        }
-        return data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getFriendRecommendations.js
-var FriendRecommendationsType, getFriendRecommendationsFactory;
-var init_getFriendRecommendations = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  (function(FriendRecommendationsType) {
-    FriendRecommendationsType[FriendRecommendationsType["RecommendedFriend"] = 1] = "RecommendedFriend";
-    FriendRecommendationsType[FriendRecommendationsType["ReceivedFriendRequest"] = 2] = "ReceivedFriendRequest";
-  })(FriendRecommendationsType || (FriendRecommendationsType = {}));
-  getFriendRecommendationsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/recommendsv2/list`);
-    return async function getFriendRecommendations() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getFriendRequestStatus.js
-var getFriendRequestStatusFactory;
-var init_getFriendRequestStatus = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getFriendRequestStatusFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/reqstatus`);
-    return async function getFriendRequestStatus(friendId) {
-      const params = {
-        fid: friendId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getFullAvatar.js
-var getFullAvatarFactory;
-var init_getFullAvatar = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getFullAvatarFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/avatar`);
-    return async function getFullAvatar(friendId) {
-      const params = {
-        fid: friendId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupBlockedMember.js
-var getGroupBlockedMemberFactory;
-var init_getGroupBlockedMember = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupBlockedMemberFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/blockedmems/list`);
-    return async function getGroupBlockedMember(payload, groupId) {
-      var _a, _b;
-      const params = {
-        grid: groupId,
-        page: (_a = payload.page) !== null && _a !== undefined ? _a : 1,
-        count: (_b = payload.count) !== null && _b !== undefined ? _b : 50,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupChatHistory.js
-var getGroupChatHistoryFactory;
-var init_getGroupChatHistory = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_models();
-  getGroupChatHistoryFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/history`);
-    return async function getGroupChatHistory(groupId, count = 50) {
-      const params = {
-        grid: groupId,
-        count
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, (result) => {
-        let data = result.data;
-        if (typeof data === "string") {
-          data = JSON.parse(data);
-        }
-        for (let i = 0;i < data.groupMsgs.length; i++) {
-          data.groupMsgs[i] = new GroupMessage(ctx.uid, data.groupMsgs[i]);
-        }
-        return data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupInfo.js
-var getGroupInfoFactory;
-var init_getGroupInfo = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupInfoFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/getmg-v2`);
-    return async function getGroupInfo(groupId) {
-      if (!Array.isArray(groupId))
-        groupId = [groupId];
-      const params = {
-        gridVerMap: JSON.stringify(groupId.reduce((acc, id) => {
-          acc[id] = 0;
-          return acc;
-        }, {}))
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupInviteBoxInfo.js
-var getGroupInviteBoxInfoFactory;
-var init_getGroupInviteBoxInfo = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupInviteBoxInfoFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/inv-info`);
-    return async function getGroupInviteBoxInfo(payload) {
-      var _a, _b;
-      const params = {
-        grId: payload.groupId,
-        mcount: (_a = payload.mcount) !== null && _a !== undefined ? _a : 10,
-        mpage: (_b = payload.mpage) !== null && _b !== undefined ? _b : 1
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        const topic = data.groupInfo.topic;
-        if (typeof topic.params == "string") {
-          const params = JSON.parse(topic.params);
-          if (typeof params.extra == "string") {
-            params.extra = JSON.parse(params.extra);
-          }
-          topic.params = params;
-        }
-        return data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupInviteBoxList.js
-var getGroupInviteBoxListFactory;
-var init_getGroupInviteBoxList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupInviteBoxListFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/list`);
-    return async function getGroupInviteBoxList(payload) {
-      var _a, _b, _c, _d;
-      const params = {
-        mpage: (_a = payload === null || payload === undefined ? undefined : payload.mpage) !== null && _a !== undefined ? _a : 1,
-        page: (_b = payload === null || payload === undefined ? undefined : payload.page) !== null && _b !== undefined ? _b : 0,
-        invPerPage: (_c = payload === null || payload === undefined ? undefined : payload.invPerPage) !== null && _c !== undefined ? _c : 12,
-        mcount: (_d = payload === null || payload === undefined ? undefined : payload.mcount) !== null && _d !== undefined ? _d : 10,
-        lastGroupId: null,
-        avatar_size: 120,
-        member_avatar_size: 120
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupLinkDetail.js
-var getGroupLinkDetailFactory;
-var init_getGroupLinkDetail = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupLinkDetailFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/detail`);
-    return async function getGroupLinkDetail(groupId) {
-      const params = {
-        grid: groupId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupLinkInfo.js
-var getGroupLinkInfoFactory;
-var init_getGroupLinkInfo = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupLinkInfoFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/ginfo`);
-    return async function getGroupLinkInfo(payload) {
-      var _a;
-      const params = {
-        link: payload.link,
-        avatar_size: 120,
-        member_avatar_size: 120,
-        mpage: (_a = payload.memberPage) !== null && _a !== undefined ? _a : 1
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getGroupMembersInfo.js
-var getGroupMembersInfoFactory;
-var init_getGroupMembersInfo = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getGroupMembersInfoFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/group/members`);
-    return async function getGroupMembersInfo(memberId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        friend_pversion_map: memberId.map((id) => id.endsWith("_0") ? id : `${id}_0`)
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }));
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getHiddenConversations.js
-var getHiddenConversationsFactory;
-var init_getHiddenConversations = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getHiddenConversationsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/get-all`);
-    return async function getHiddenConversations() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getLabels.js
-var getLabelsFactory;
-var init_getLabels = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getLabelsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/convlabel/get`);
-    return async function getLabels() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }));
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        const formattedData = {
-          labelData: JSON.parse(data.labelData),
-          version: data.version,
-          lastUpdateTime: data.lastUpdateTime
-        };
-        return formattedData;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getListBank.js
-var getListBankFactory;
-var init_getListBank = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getListBankFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/conf`);
-    return async function getListBank() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getListBankAccount.js
-var getListBankAccountFactory;
-var init_getListBankAccount = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getListBankAccountFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/list`);
-    return async function getListBankAccount(page = 0, limit = 20) {
-      const params = {
-        page,
-        limit
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getListBoard.js
-var getListBoardFactory;
-var init_getListBoard = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  getListBoardFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/list`);
-    return async function getListBoard(options, groupId) {
-      var _a, _b;
-      const requestParams = {
-        group_id: groupId,
-        board_type: 0,
-        page: (_a = options.page) !== null && _a !== undefined ? _a : 1,
-        count: (_b = options.count) !== null && _b !== undefined ? _b : 20,
-        last_id: 0,
-        last_type: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        data.items.forEach((item) => {
-          if (item.boardType != BoardType.Poll) {
-            const detailData = item.data;
-            if (typeof detailData.params === "string") {
-              detailData.params = JSON.parse(detailData.params);
-            }
-          }
-        });
-        return data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getListDevice.js
-var getListDeviceFactory;
-var init_getListDevice = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getListDeviceFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.aext[0]}/api/devices/linked`);
-    return async function getListDevice() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getListReminder.js
-var getListReminderFactory;
-var init_getListReminder = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  getListReminderFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/list`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/listReminder`)
-    };
-    return async function getListReminder(options, threadId, type = ThreadType.User) {
-      var _a, _b, _c, _d;
-      const requestParams = Object.assign({ objectData: JSON.stringify(type === ThreadType.User ? {
-        uid: threadId,
-        board_type: 1,
-        page: (_a = options.page) !== null && _a !== undefined ? _a : 1,
-        count: (_b = options.count) !== null && _b !== undefined ? _b : 20,
-        last_id: 0,
-        last_type: 0
-      } : {
-        group_id: threadId,
-        board_type: 1,
-        page: (_c = options.page) !== null && _c !== undefined ? _c : 1,
-        count: (_d = options.count) !== null && _d !== undefined ? _d : 20,
-        last_id: 0,
-        last_type: 0
-      }) }, type === ThreadType.Group && { imei: ctx.imei });
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL[type], { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, (result) => {
-        return JSON.parse(result.data);
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getMultiUsersByPhones.js
-var getMultiUsersByPhonesFactory;
-var init_getMultiUsersByPhones = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_models();
-  getMultiUsersByPhonesFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/profile/multiget`);
-    return async function getMultiUsersByPhones(phoneNumbers, avatarSize = AvatarSize.Large) {
-      if (!phoneNumbers)
-        throw new ZaloApiError("Missing phoneNumbers");
-      if (!Array.isArray(phoneNumbers))
-        phoneNumbers = [phoneNumbers];
-      phoneNumbers = phoneNumbers.map((phone) => {
-        if (phone.startsWith("0")) {
-          if (ctx.language == "vi")
-            phone = "84" + phone.slice(1);
-        }
-        return phone;
-      });
-      const params = {
-        phones: phoneNumbers,
-        avatar_size: avatarSize,
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getMute.js
-var getMuteFactory;
-var init_getMute = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getMuteFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/getmute`);
-    return async function getMute() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getOwnId.js
-var getOwnIdFactory;
-var init_getOwnId = __esm(() => {
-  init_utils();
-  getOwnIdFactory = apiFactory()((_, ctx) => {
-    return () => ctx.uid;
-  });
-});
-
-// node_modules/zca-js/dist/apis/getPendingGroupMembers.js
-var getPendingGroupMembersFactory;
-var init_getPendingGroupMembers = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getPendingGroupMembersFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/pending-mems/list`);
-    return async function getPendingGroupMembers(groupId) {
-      const params = {
-        grid: groupId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getPinConversations.js
-var getPinConversationsFactory;
-var init_getPinConversations = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getPinConversationsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/pinconvers/list`);
-    return async function getPinConversations() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getPollDetail.js
-var getPollDetailFactory;
-var init_getPollDetail = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getPollDetailFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/detail`);
-    return async function getPollDetail(pollId) {
-      if (!pollId)
-        throw new ZaloApiError("Missing poll id");
-      const params = {
-        poll_id: pollId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getProductCatalogList.js
-var getProductCatalogListFactory;
-var init_getProductCatalogList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getProductCatalogListFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/list`);
-    return async function getProductCatalogList(payload) {
-      var _a, _b, _c, _d;
-      const params = {
-        catalog_id: payload.catalogId,
-        limit: (_a = payload.limit) !== null && _a !== undefined ? _a : 100,
-        version_catalog: (_b = payload.versionCatalog) !== null && _b !== undefined ? _b : 0,
-        last_product_id: (_c = payload.lastProductId) !== null && _c !== undefined ? _c : -1,
-        page: (_d = payload.page) !== null && _d !== undefined ? _d : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getQR.js
-var getQRFactory;
-var init_getQR = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getQRFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/mget-qr`);
-    return async function getQR(userId) {
-      if (typeof userId == "string")
-        userId = [userId];
-      const params = {
-        fids: userId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getQuickMessageList.js
-var getQuickMessageListFactory;
-var init_getQuickMessageList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getQuickMessageListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/list`);
-    return async function getQuickMessageList() {
-      const params = {
-        version: 0,
-        lang: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getRelatedFriendGroup.js
-var getRelatedFriendGroupFactory;
-var init_getRelatedFriendGroup = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getRelatedFriendGroupFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/group/related`);
-    return async function getRelatedFriendGroup(friendId) {
-      const friendIds = Array.isArray(friendId) ? friendId : [friendId];
-      const params = {
-        friend_ids: JSON.stringify(friendIds),
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getReminder.js
-var getReminderFactory;
-var init_getReminder = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getReminderFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/getReminder`);
-    return async function getReminder(reminderId) {
-      const params = {
-        eventId: reminderId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getReminderResponses.js
-var getReminderResponsesFactory;
-var init_getReminderResponses = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getReminderResponsesFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/listResponseEvent`);
-    return async function getReminderResponses(reminderId) {
-      const params = {
-        eventId: reminderId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getSentFriendRequest.js
-var getSentFriendRequestFactory;
-var init_getSentFriendRequest = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getSentFriendRequestFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/requested/list`);
-    return async function getSentFriendRequest() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getSettings.js
-var getSettingsFactory;
-var init_getSettings = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getSettingsFactory = apiFactory()((_api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`https://wpa.chat.zalo.me/api/setting/me`);
-    return async function getSettings() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getStickerCategoryDetail.js
-var getStickerCategoryDetailFactory;
-var init_getStickerCategoryDetail = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getStickerCategoryDetailFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker[0]}/api/message/sticker/category/sticker_detail`);
-    return async function getStickerCategoryDetail(cateId) {
-      const params = {
-        cid: cateId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getStickers.js
-var getStickersFactory;
-var init_getStickers = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getStickersFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker}/api/message/sticker`);
-    return async function getStickers(keyword) {
-      if (!keyword)
-        throw new ZaloApiError("Missing keyword");
-      const params = {
-        keyword,
-        gif: 1,
-        guggy: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const finalServiceUrl = new URL(serviceURL);
-      finalServiceUrl.pathname = finalServiceUrl.pathname + "/suggest/stickers";
-      const response = await utils.request(utils.makeURL(finalServiceUrl.toString(), {
-        params: encryptedParams
-      }));
-      return utils.resolve(response, (result) => {
-        const suggestions = result.data;
-        const stickerIds = [];
-        if (suggestions.sugg_sticker)
-          suggestions.sugg_sticker.forEach((sticker) => stickerIds.push(sticker.sticker_id));
-        return stickerIds;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getStickersDetail.js
-var getStickersDetailFactory;
-var init_getStickersDetail = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getStickersDetailFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker}/api/message/sticker/sticker_detail`);
-    return async function getStickersDetail(stickerIds) {
-      if (!stickerIds)
-        throw new ZaloApiError("Missing sticker id");
-      if (!Array.isArray(stickerIds))
-        stickerIds = [stickerIds];
-      if (stickerIds.length == 0)
-        throw new ZaloApiError("Missing sticker id");
-      const stickers = [];
-      const tasks = stickerIds.map((stickerId) => getStickerDetail(stickerId));
-      const tasksResult = await Promise.allSettled(tasks);
-      tasksResult.forEach((result) => {
-        if (result.status === "fulfilled")
-          stickers.push(result.value);
-      });
-      return stickers;
-    };
-    async function getStickerDetail(stickerId) {
-      const params = {
-        sid: stickerId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(utils.makeURL(serviceURL, {
-        params: encryptedParams
-      }));
-      return resolveResponse(ctx, response);
-    }
-  });
-});
-
-// node_modules/zca-js/dist/apis/getUnreadMark.js
-var getUnreadMarkFactory;
-var init_getUnreadMark = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  getUnreadMarkFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/getUnreadMark`);
-    return async function getUnreadMark() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        if (typeof data.data === "string") {
-          return {
-            data: JSON.parse(data.data),
-            status: data.status
-          };
-        }
-        return data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/getUserInfo.js
-var getUserInfoFactory;
-var init_getUserInfo = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  init_models();
-  getUserInfoFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/getprofiles/v2`);
-    return async function getUserInfo(userId, avatarSize = AvatarSize.Small) {
-      if (!userId)
-        throw new ZaloApiError("Missing user id");
-      if (!Array.isArray(userId))
-        userId = [userId];
-      userId = userId.map((id) => {
-        if (id.split("_").length > 1) {
-          return id;
-        }
-        return `${id}_0`;
-      });
-      const params = {
-        phonebook_version: ctx.extraVer.phonebook,
-        friend_pversion_map: userId,
-        avatar_size: avatarSize,
-        language: ctx.language,
-        show_online_status: 1,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/inviteUserToGroups.js
-var inviteUserToGroupsFactory;
-var init_inviteUserToGroups = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  inviteUserToGroupsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/invite/multi`);
-    return async function inviteUserToGroups(userId, groupId) {
-      const params = {
-        grids: Array.isArray(groupId) ? groupId : [groupId],
-        member: userId,
-        memberType: -1,
-        srcInteraction: 2,
-        clientLang: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/joinGroupInviteBox.js
-var joinGroupInviteBoxFactory;
-var init_joinGroupInviteBox = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  joinGroupInviteBoxFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/join`);
-    return async function joinGroupInviteBox(groupId) {
-      const params = {
-        grid: groupId,
-        lang: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/joinGroupLink.js
-var joinGroupLinkFactory;
-var init_joinGroupLink = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  joinGroupLinkFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/join`);
-    return async function joinGroupLink(link) {
-      const params = {
-        link,
-        clientLang: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/keepAlive.js
-var keepAliveFactory;
-var init_keepAlive = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  keepAliveFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.chat[0]}/keepalive`);
-    return async function keepAlive() {
-      const params = {
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response, undefined, false);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/lastOnline.js
-var lastOnlineFactory;
-var init_lastOnline = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  lastOnlineFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/lastOnline`);
-    return async function lastOnline(uid) {
-      const params = {
-        uid,
-        conv_type: 1,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/leaveGroup.js
-var leaveGroupFactory;
-var init_leaveGroup = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  leaveGroupFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/leave`);
-    return async function leaveGroup(groupId, silent = false) {
-      const requestParams = {
-        grids: [groupId],
-        imei: ctx.imei,
-        silent: silent ? 1 : 0,
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/lockPoll.js
-var lockPollFactory;
-var init_lockPoll = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  lockPollFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/end`);
-    return async function lockPoll(pollId) {
-      const params = {
-        poll_id: pollId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/lostFocus.js
-var lostFocusFactory;
-var init_lostFocus = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  lostFocusFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/changefgtobg`);
-    return async function lostFocus() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/parseLink.js
-var parseLinkFactory;
-var init_parseLink = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  parseLinkFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/parselink`);
-    return async function parseLink(link) {
-      const params = {
-        link,
-        version: 1,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/registerCatalog.js
-var registerCatalogFactory;
-var init_registerCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  registerCatalogFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/register`);
-    return async function registerCatalog(enable) {
-      const params = {
-        enable: enable ? 1 : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/rejectFriendRequest.js
-var rejectFriendRequestFactory;
-var init_rejectFriendRequest = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  rejectFriendRequestFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/reject`);
-    return async function rejectFriendRequest(friendId) {
-      const params = {
-        fid: friendId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeFriend.js
-var removeFriendFactory;
-var init_removeFriend = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  removeFriendFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/remove`);
-    return async function removeFriend(friendId) {
-      const params = {
-        fid: friendId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeFriendAlias.js
-var removeFriendAliasFactory;
-var init_removeFriendAlias = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  removeFriendAliasFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.alias[0]}/api/alias/remove`);
-    return async function removeFriendAlias(friendId) {
-      const params = {
-        friendId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeGroupBlockedMember.js
-var removeGroupBlockedMemberFactory;
-var init_removeGroupBlockedMember = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  removeGroupBlockedMemberFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/blockedmems/remove`);
-    return async function removeGroupBlockedMember(memberId, groupId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        grid: groupId,
-        members: memberId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeGroupDeputy.js
-var removeGroupDeputyFactory;
-var init_removeGroupDeputy = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  removeGroupDeputyFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/admins/remove`);
-    return async function removeGroupDeputy(memberId, groupId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        grid: groupId,
-        members: memberId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeQuickMessage.js
-var removeQuickMessageFactory;
-var init_removeQuickMessage = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  removeQuickMessageFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/delete`);
-    return async function removeQuickMessage(itemIds) {
-      const idsArray = Array.isArray(itemIds) ? itemIds : [itemIds];
-      const params = {
-        itemIds: idsArray
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeReminder.js
-var removeReminderFactory;
-var init_removeReminder = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  removeReminderFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/remove`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/remove`)
-    };
-    return async function removeReminder(reminderId, threadId, type = ThreadType.User) {
-      const params = type === ThreadType.User ? {
-        uid: threadId,
-        reminderId
-      } : {
-        grid: threadId,
-        topicId: reminderId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeUnreadMark.js
-var removeUnreadMarkFactory;
-var init_removeUnreadMark = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  removeUnreadMarkFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/removeUnreadMark`);
-    return async function removeUnreadMark(threadId, type = ThreadType.User) {
-      const timestamp = Date.now();
-      const isGroup = type === ThreadType.Group;
-      const requestParams = {
-        param: JSON.stringify({
-          [isGroup ? "convsGroup" : "convsUser"]: [threadId],
-          [isGroup ? "convsUser" : "convsGroup"]: [],
-          [isGroup ? "convsGroupData" : "convsUserData"]: [
-            {
-              id: threadId,
-              ts: timestamp
-            }
-          ],
-          [isGroup ? "convsUserData" : "convsGroupData"]: []
-        })
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response, (result) => {
-        const data = result.data;
-        if (typeof data.data === "string") {
-          return {
-            data: JSON.parse(data.data),
-            status: data.status
-          };
-        }
-        return result.data;
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/removeUserFromGroup.js
-var removeUserFromGroupFactory;
-var init_removeUserFromGroup = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  removeUserFromGroupFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/kickout`);
-    return async function removeUserFromGroup(memberId, groupId) {
-      if (!Array.isArray(memberId))
-        memberId = [memberId];
-      const params = {
-        grid: groupId,
-        members: memberId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/resetHiddenConversPin.js
-var resetHiddenConversPinFactory;
-var init_resetHiddenConversPin = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  resetHiddenConversPinFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/reset`);
-    return async function resetHiddenConversPin() {
-      const params = {};
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/reuseAvatar.js
-var reuseAvatarFactory;
-var init_reuseAvatar = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  reuseAvatarFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/reuse-avatar`);
-    return async function reuseAvatar(photoId) {
-      const params = {
-        photoId,
-        isPostSocial: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/reviewPendingMemberRequest.js
-var ReviewPendingMemberRequestStatus, reviewPendingMemberRequestFactory;
-var init_reviewPendingMemberRequest = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  (function(ReviewPendingMemberRequestStatus) {
-    ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["SUCCESS"] = 0] = "SUCCESS";
-    ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["NOT_IN_PENDING_LIST"] = 170] = "NOT_IN_PENDING_LIST";
-    ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["ALREADY_IN_GROUP"] = 178] = "ALREADY_IN_GROUP";
-    ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["INSUFFICIENT_PERMISSION"] = 166] = "INSUFFICIENT_PERMISSION";
-  })(ReviewPendingMemberRequestStatus || (ReviewPendingMemberRequestStatus = {}));
-  reviewPendingMemberRequestFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/pending-mems/review`);
-    return async function reviewPendingMemberRequest(payload, groupId) {
-      if (!Array.isArray(payload.members))
-        payload.members = [payload.members];
-      const params = {
-        grid: groupId,
-        members: payload.members,
-        isApprove: payload.isApprove ? 1 : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/scanURL.js
-var scanURLFactory;
-var init_scanURL = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  scanURLFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/scanurl`);
-    return async function scanURL(url) {
-      const params = {
-        url
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/searchSticker.js
-var searchStickerFactory;
-var init_searchSticker = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  searchStickerFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker[0]}/api/message/sticker/search`);
-    return async function searchSticker(keyword, limit = 50) {
-      const params = {
-        keyword,
-        limit,
-        srcType: 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendBankCard.js
-var sendBankCardFactory;
-var init_sendBankCard = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendBankCardFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/card`);
-    return async function sendBankCard(payload, threadId, type = ThreadType.User) {
-      var _a;
-      const params = {
-        binBank: payload.binBank,
-        numAccBank: payload.numAccBank,
-        nameAccBank: ((_a = payload.nameAccBank) === null || _a === undefined ? undefined : _a.toUpperCase()) || "---",
-        cliMsgId: Date.now().toString(),
-        tsMsg: Date.now(),
-        destUid: threadId,
-        destType: type === ThreadType.Group ? 1 : 0
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendCard.js
-var sendCardFactory;
-var init_sendCard = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendCardFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/forward`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/forward`)
-    };
-    return async function sendCard(options, threadId, type = ThreadType.User) {
-      var _a;
-      const data = await api.getQR(options.userId);
-      const QRCodeURL = data[options.userId];
-      const clientId = Date.now().toString();
-      const params = {
-        ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
-        msgType: 6,
-        clientId,
-        msgInfo: {
-          contactUid: options.userId,
-          qrCodeUrl: QRCodeURL
-        }
-      };
-      if (options.phoneNumber) {
-        params.msgInfo.phone = options.phoneNumber;
-      }
-      if (type == ThreadType.Group) {
-        params.visibility = 0;
-        params.grid = threadId;
-      } else {
-        params.toId = threadId;
-        params.imei = ctx.imei;
-      }
-      const msgInfoStringified = JSON.stringify(params.msgInfo);
-      params.msgInfo = msgInfoStringified;
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendDeliveredEvent.js
-var sendDeliveredEventFactory;
-var init_sendDeliveredEvent = __esm(() => {
-  init_ZaloApiError();
-  init_context();
-  init_models();
-  init_utils();
-  sendDeliveredEventFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/deliveredv2`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/deliveredv2`)
-    };
-    return async function sendDeliveredEvent(isSeen, messages, type = ThreadType.User) {
-      if (!messages)
-        throw new ZaloApiError("messages are missing or not in a valid array format.");
-      if (!Array.isArray(messages))
-        messages = [messages];
-      if (messages.length === 0 || messages.length > MAX_MESSAGES_PER_SEND)
-        throw new ZaloApiError("messages must contain between 1 and 50 messages.");
-      const idTo = messages[0].idTo;
-      if (type === ThreadType.Group && !messages.every((msg) => msg.idTo === idTo))
-        throw new ZaloApiError("All messages must have the same idTo for Group thread");
-      const msgInfos = Object.assign({ seen: isSeen ? 1 : 0, data: messages.map((msg) => ({
-        cmi: msg.cliMsgId,
-        gmi: msg.msgId,
-        si: msg.uidFrom,
-        di: msg.idTo === ctx.uid ? "0" : msg.idTo,
-        mt: msg.msgType,
-        st: msg.st || msg.st === 0 ? 0 : -1,
-        at: msg.at || msg.at === 0 ? 0 : -1,
-        cmd: msg.cmd || msg.cmd === 0 ? 0 : -1,
-        ts: parseInt(`${msg.ts}`) || parseInt(`${msg.ts}`) === 0 ? 0 : -1
-      })) }, type === ThreadType.User ? {} : { grid: idTo });
-      const params = Object.assign({ msgInfos: JSON.stringify(msgInfos) }, type === ThreadType.User ? {} : { imei: ctx.imei });
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendFriendRequest.js
-var sendFriendRequestFactory;
-var init_sendFriendRequest = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  sendFriendRequestFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/sendreq`);
-    return async function sendFriendRequest(msg, userId) {
-      const params = {
-        toid: userId,
-        msg,
-        reqsrc: 30,
-        imei: ctx.imei,
-        language: ctx.language,
-        srcParams: JSON.stringify({
-          uidTo: userId
-        })
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendLink.js
-var sendLinkFactory;
-var init_sendLink = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendLinkFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/link`, {
-        nretry: 0
-      }),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/sendlink`, {
-        nretry: 0
-      })
-    };
-    return async function sendLink(options, threadId, type = ThreadType.User) {
-      var _a;
-      const res = await api.parseLink(options.link);
-      const params = {
-        msg: options.msg && options.msg.trim() ? options.msg.includes(options.link) ? options.msg : options.msg + " " + options.link : options.link,
-        href: res.data.href,
-        src: res.data.src,
-        title: res.data.title,
-        desc: res.data.desc,
-        thumb: res.data.thumb,
-        type: 2,
-        media: JSON.stringify(res.data.media),
-        ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
-        clientId: Date.now()
-      };
-      if (type == ThreadType.Group) {
-        params.grid = threadId;
-        params.imei = ctx.imei;
-      } else {
-        params.toId = threadId;
-        params.mentionInfo = "";
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendMessage.js
-function prepareQMSGAttach(quote) {
-  const quoteData = quote;
-  if (typeof quoteData.content == "string")
-    return quoteData.propertyExt;
-  if (quoteData.msgType == "chat.todo")
-    return {
-      properties: {
-        color: 0,
-        size: 0,
-        type: 0,
-        subType: 0,
-        ext: '{"shouldParseLinkOrContact":0}'
-      }
-    };
-  return Object.assign(Object.assign({}, quoteData.content), { thumbUrl: quoteData.content.thumb, oriUrl: quoteData.content.href, normalUrl: quoteData.content.href });
-}
-function prepareQMSG(quote) {
-  const quoteData = quote;
-  if (quoteData.msgType == "chat.todo" && typeof quoteData.content == "object" && typeof quoteData.content.params == "string") {
-    return JSON.parse(quoteData.content.params).item.content;
-  }
-  return "";
-}
-var import_form_data3, import_promises2, attachmentUrlType, TextStyle, Urgency, sendMessageFactory;
-var init_sendMessage = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  import_form_data3 = __toESM(require_form_data(), 1);
-  import_promises2 = __toESM(require("node:fs/promises"), 1);
-  attachmentUrlType = {
-    image: "photo_original/send?",
-    gif: "gif?",
-    video: "asyncfile/msg?",
-    others: "asyncfile/msg?"
-  };
-  (function(TextStyle) {
-    TextStyle["Bold"] = "b";
-    TextStyle["Italic"] = "i";
-    TextStyle["Underline"] = "u";
-    TextStyle["StrikeThrough"] = "s";
-    TextStyle["Red"] = "c_db342e";
-    TextStyle["Orange"] = "c_f27806";
-    TextStyle["Yellow"] = "c_f7b503";
-    TextStyle["Green"] = "c_15a85f";
-    TextStyle["Small"] = "f_13";
-    TextStyle["Big"] = "f_18";
-    TextStyle["UnorderedList"] = "lst_1";
-    TextStyle["OrderedList"] = "lst_2";
-    TextStyle["Indent"] = "ind_$";
-  })(TextStyle || (TextStyle = {}));
-  (function(Urgency) {
-    Urgency[Urgency["Default"] = 0] = "Default";
-    Urgency[Urgency["Important"] = 1] = "Important";
-    Urgency[Urgency["Urgent"] = 2] = "Urgent";
-  })(Urgency || (Urgency = {}));
-  sendMessageFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURLs = {
-      message: {
-        [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message`, {
-          nretry: 0
-        }),
-        [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group`, {
-          nretry: 0
-        })
-      },
-      attachment: {
-        [ThreadType.User]: `${api.zpwServiceMap.file[0]}/api/message/`,
-        [ThreadType.Group]: `${api.zpwServiceMap.file[0]}/api/group/`
-      }
-    };
-    const { sharefile } = ctx.settings.features;
-    function isExceedMaxFile(totalFile) {
-      return totalFile > sharefile.max_file;
-    }
-    function isExceedMaxFileSize(fileSize) {
-      return fileSize > sharefile.max_size_share_file_v3 * 1024 * 1024;
-    }
-    function getGroupLayoutId() {
-      return Date.now();
-    }
-    async function send(data) {
-      if (!Array.isArray(data))
-        data = [data];
-      const requests = [];
-      for (const each of data) {
-        requests.push((async () => {
-          const response = await utils.request(each.url, {
-            method: "POST",
-            body: each.body,
-            headers: each.headers
-          });
-          return await resolveResponse(ctx, response);
-        })());
-      }
-      return await Promise.all(requests);
-    }
-    async function upthumb(source, url) {
-      const formData = new import_form_data3.default;
-      const buffer = typeof source == "string" ? await import_promises2.default.readFile(source) : source.data;
-      formData.append("fileContent", buffer, {
-        filename: "blob",
-        contentType: "image/png"
-      });
-      const params = {
-        clientId: Date.now(),
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(utils.makeURL(url + "upthumb?", {
-        params: encryptedParams
-      }), {
-        method: "POST",
-        headers: formData.getHeaders(),
-        body: formData.getBuffer()
-      });
-      return await resolveResponse(ctx, response);
-    }
-    function handleMentions(type, msg, mentions) {
-      let totalMentionLen = 0;
-      const mentionsFinal = Array.isArray(mentions) && type == ThreadType.Group ? mentions.filter((m) => m.pos >= 0 && m.uid && m.len > 0).map((m) => {
-        totalMentionLen += m.len;
-        return {
-          pos: m.pos,
-          uid: m.uid,
-          len: m.len,
-          type: m.uid == "-1" ? 1 : 0
-        };
-      }) : [];
-      if (totalMentionLen > msg.length) {
-        throw new ZaloApiError("Invalid mentions: total mention characters exceed message length");
-      }
-      return {
-        mentionsFinal,
-        msgFinal: msg
-      };
-    }
-    function handleStyles(params, styles) {
-      if (styles)
-        Object.assign(params, {
-          textProperties: JSON.stringify({
-            styles: styles.map((e) => {
-              var _a;
-              const styleFinal = Object.assign(Object.assign({}, e), { indentSize: undefined, st: e.st == TextStyle.Indent ? TextStyle.Indent.replace(/\$/g, `${(_a = e.indentSize) !== null && _a !== undefined ? _a : 1}0`) : e.st });
-              removeUndefinedKeys(styleFinal);
-              return styleFinal;
-            }),
-            ver: 0
-          })
-        });
-    }
-    function handleUrgency(params, urgency) {
-      if (urgency == Urgency.Important || urgency == Urgency.Urgent) {
-        Object.assign(params, { metaData: { urgency } });
-      }
-    }
-    async function handleMessage({ msg, styles, urgency, mentions, quote, ttl }, threadId, type) {
-      if (!msg || msg.length == 0)
-        throw new ZaloApiError("Missing message content");
-      const isGroupMessage = type == ThreadType.Group;
-      const { mentionsFinal, msgFinal } = handleMentions(type, msg, mentions);
-      msg = msgFinal;
-      if (quote) {
-        if (typeof quote.content != "string" && quote.msgType == "webchat") {
-          throw new ZaloApiError("This kind of `webchat` quote type is not available");
-        }
-        if (quote.msgType == "group.poll") {
-          throw new ZaloApiError("The `group.poll` quote type is not available");
-        }
-      }
-      const isMentionsValid = mentionsFinal.length > 0 && isGroupMessage;
-      const params = quote ? {
-        toid: isGroupMessage ? undefined : threadId,
-        grid: isGroupMessage ? threadId : undefined,
-        message: msg,
-        clientId: Date.now(),
-        mentionInfo: isMentionsValid ? JSON.stringify(mentionsFinal) : undefined,
-        qmsgOwner: quote.uidFrom,
-        qmsgId: quote.msgId,
-        qmsgCliId: quote.cliMsgId,
-        qmsgType: getClientMessageType(quote.msgType),
-        qmsgTs: quote.ts,
-        qmsg: typeof quote.content == "string" ? quote.content : prepareQMSG(quote),
-        imei: isGroupMessage ? undefined : ctx.imei,
-        visibility: isGroupMessage ? 0 : undefined,
-        qmsgAttach: isGroupMessage ? JSON.stringify(prepareQMSGAttach(quote)) : undefined,
-        qmsgTTL: quote.ttl,
-        ttl: ttl !== null && ttl !== undefined ? ttl : 0
-      } : {
-        message: msg,
-        clientId: Date.now(),
-        mentionInfo: isMentionsValid ? JSON.stringify(mentionsFinal) : undefined,
-        imei: isGroupMessage ? undefined : ctx.imei,
-        ttl: ttl !== null && ttl !== undefined ? ttl : 0,
-        visibility: isGroupMessage ? 0 : undefined,
-        toid: isGroupMessage ? undefined : threadId,
-        grid: isGroupMessage ? threadId : undefined
-      };
-      handleStyles(params, styles);
-      handleUrgency(params, urgency);
-      removeUndefinedKeys(params);
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const finalServiceUrl = new URL(serviceURLs.message[type]);
-      if (quote) {
-        finalServiceUrl.pathname = finalServiceUrl.pathname + "/quote";
-      } else {
-        finalServiceUrl.pathname = finalServiceUrl.pathname + "/" + (isGroupMessage ? params.mentionInfo ? "mention" : "sendmsg" : "sms");
-      }
-      return {
-        url: finalServiceUrl.toString(),
-        body: new URLSearchParams({ params: encryptedParams })
-      };
-    }
-    async function handleAttachment({ msg, attachments, mentions, quote, ttl, urgency }, threadId, type) {
-      if (!attachments)
-        throw new ZaloApiError("Missing attachments");
-      if (!Array.isArray(attachments))
-        attachments = [attachments];
-      if (attachments.length == 0)
-        throw new ZaloApiError("Missing attachments");
-      const firstSource = attachments[0];
-      const isFilePath = typeof firstSource == "string";
-      const firstExtFile = getFileExtension(isFilePath ? firstSource : firstSource.filename);
-      const isSingleFile = attachments.length == 1;
-      const isGroupMessage = type == ThreadType.Group;
-      const canBeDesc = isSingleFile && ["jpg", "jpeg", "png", "webp"].includes(firstExtFile);
-      const gifFiles = attachments.filter((e) => getFileExtension(typeof e == "string" ? e : e.filename) == "gif");
-      attachments = attachments.filter((e) => getFileExtension(typeof e == "string" ? e : e.filename) != "gif");
-      const uploadAttachment = attachments.length == 0 ? [] : await api.uploadAttachment(attachments, threadId, type);
-      const attachmentsData = [];
-      let indexInGroupLayout = 0;
-      const groupLayoutId = getGroupLayoutId().toString();
-      const { mentionsFinal, msgFinal } = handleMentions(type, msg, mentions);
-      msg = msgFinal;
-      const isMentionsValid = mentionsFinal.length > 0 && isGroupMessage && attachments.length == 1;
-      const isMultiFile = attachments.length > 1;
-      let clientId = Date.now();
-      for (const attachment of uploadAttachment) {
-        let data;
-        switch (attachment.fileType) {
-          case "image": {
-            data = {
-              fileType: attachment.fileType,
-              params: {
-                photoId: attachment.photoId,
-                clientId: (clientId++).toString(),
-                desc: msg,
-                width: attachment.width,
-                height: attachment.height,
-                toid: isGroupMessage ? undefined : String(threadId),
-                grid: isGroupMessage ? String(threadId) : undefined,
-                rawUrl: attachment.normalUrl,
-                hdUrl: attachment.hdUrl,
-                thumbUrl: attachment.thumbUrl,
-                oriUrl: isGroupMessage ? attachment.normalUrl : undefined,
-                normalUrl: isGroupMessage ? undefined : attachment.normalUrl,
-                hdSize: String(attachment.totalSize),
-                zsource: -1,
-                ttl: ttl !== null && ttl !== undefined ? ttl : 0,
-                jcp: '{"convertible":"jxl"}',
-                groupLayoutId: isMultiFile ? groupLayoutId : undefined,
-                isGroupLayout: isMultiFile ? 1 : undefined,
-                idInGroup: isMultiFile ? indexInGroupLayout++ : undefined,
-                totalItemInGroup: isMultiFile ? uploadAttachment.length : undefined,
-                extMsgProp: isMultiFile ? `{"groupMediaMsg":{"groupLayoutId":"${groupLayoutId}"}}` : undefined,
-                mentionInfo: isMentionsValid && canBeDesc && !quote ? JSON.stringify(mentionsFinal) : undefined
-              },
-              body: new URLSearchParams
-            };
-            break;
-          }
-          case "video": {
-            data = {
-              fileType: attachment.fileType,
-              params: {
-                fileId: attachment.fileId,
-                checksum: attachment.checksum,
-                checksumSha: "",
-                extention: getFileExtension(attachment.fileName),
-                totalSize: attachment.totalSize,
-                fileName: attachment.fileName,
-                clientId: attachment.clientFileId,
-                fType: 1,
-                fileCount: 0,
-                fdata: "{}",
-                toid: isGroupMessage ? undefined : String(threadId),
-                grid: isGroupMessage ? String(threadId) : undefined,
-                fileUrl: attachment.fileUrl,
-                zsource: -1,
-                ttl: ttl !== null && ttl !== undefined ? ttl : 0
-              },
-              body: new URLSearchParams
-            };
-            break;
-          }
-          case "others": {
-            data = {
-              fileType: attachment.fileType,
-              params: {
-                fileId: attachment.fileId,
-                checksum: attachment.checksum,
-                checksumSha: "",
-                extention: getFileExtension(attachment.fileName),
-                totalSize: attachment.totalSize,
-                fileName: attachment.fileName,
-                clientId: attachment.clientFileId,
-                fType: 1,
-                fileCount: 0,
-                fdata: "{}",
-                toid: isGroupMessage ? undefined : String(threadId),
-                grid: isGroupMessage ? String(threadId) : undefined,
-                fileUrl: attachment.fileUrl,
-                zsource: -1,
-                ttl: ttl !== null && ttl !== undefined ? ttl : 0
-              },
-              body: new URLSearchParams
-            };
-            break;
-          }
-        }
-        handleUrgency(data.params, urgency);
-        removeUndefinedKeys(data.params);
-        const encryptedParams = utils.encodeAES(JSON.stringify(data.params));
-        if (!encryptedParams)
-          throw new ZaloApiError("Failed to encrypt message");
-        data.body.append("params", encryptedParams);
-        attachmentsData.push(data);
-      }
-      for (const gif of gifFiles) {
-        const isFilePath = typeof gif == "string";
-        const gifData = isFilePath ? await getGifMetaData(ctx, gif) : Object.assign(Object.assign({}, gif.metadata), { fileName: gif.filename });
-        if (isExceedMaxFileSize(gifData.totalSize))
-          throw new ZaloApiError(`File ${isFilePath ? getFileName(gif) : gif.filename} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
-        const _upthumb = await upthumb(gif, serviceURLs.attachment[ThreadType.User]);
-        const formData = new import_form_data3.default;
-        formData.append("chunkContent", isFilePath ? await import_promises2.default.readFile(gif) : gif.data, {
-          filename: isFilePath ? getFileName(gif) : gif.filename,
-          contentType: "application/octet-stream"
-        });
-        const params = {
-          clientId: Date.now().toString(),
-          fileName: gifData.fileName,
-          totalSize: gifData.totalSize,
-          width: gifData.width,
-          height: gifData.height,
-          msg,
-          type: 1,
-          ttl: ttl !== null && ttl !== undefined ? ttl : 0,
-          visibility: isGroupMessage ? 0 : undefined,
-          toid: isGroupMessage ? undefined : threadId,
-          grid: isGroupMessage ? threadId : undefined,
-          thumb: _upthumb.url,
-          checksum: (await getMd5LargeFileObject(gif, gifData.totalSize)).data,
-          totalChunk: 1,
-          chunkId: 1
-        };
-        handleUrgency(params, urgency);
-        removeUndefinedKeys(params);
-        const encryptedParams = utils.encodeAES(JSON.stringify(params));
-        if (!encryptedParams)
-          throw new ZaloApiError("Failed to encrypt message");
-        attachmentsData.push({
-          query: {
-            params: encryptedParams,
-            type: "1"
-          },
-          body: formData.getBuffer(),
-          headers: formData.getHeaders(),
-          fileType: "gif"
-        });
-      }
-      const responses = [];
-      for (const data of attachmentsData) {
-        responses.push({
-          url: utils.makeURL(serviceURLs.attachment[type] + attachmentUrlType[data.fileType], Object.assign({
-            nretry: "0"
-          }, data.query || {})),
-          body: data.body,
-          headers: data.fileType == "gif" ? data.headers : {}
-        });
-      }
-      return responses;
-    }
-    return async function sendMessage(message, threadId, type = ThreadType.User) {
-      if (!message)
-        throw new ZaloApiError("Missing message content");
-      if (!threadId)
-        throw new ZaloApiError("Missing threadId");
-      if (typeof message == "string")
-        message = { msg: message };
-      let { msg, attachments, mentions } = message;
-      const { quote, ttl, styles, urgency } = message;
-      if (attachments && !Array.isArray(attachments)) {
-        attachments = [attachments];
-      }
-      if (!msg && (!attachments || attachments && attachments.length == 0))
-        throw new ZaloApiError("Missing message content");
-      if (attachments && isExceedMaxFile(attachments.length))
-        throw new ZaloApiError("Exceed maximum file of " + sharefile.max_file);
-      const responses = {
-        message: null,
-        attachment: []
-      };
-      if (attachments && attachments.length > 0) {
-        const firstExtFile = getFileExtension(typeof attachments[0] == "string" ? attachments[0] : attachments[0].filename);
-        const isSingleFile = attachments.length == 1;
-        const canBeDesc = isSingleFile && ["jpg", "jpeg", "png", "webp"].includes(firstExtFile);
-        if (!canBeDesc && msg.length > 0 || msg.length > 0 && quote) {
-          await handleMessage(message, threadId, type).then(async (data) => {
-            responses.message = (await send(data))[0];
-          });
-          msg = "";
-          mentions = undefined;
-        }
-        const handledData = await handleAttachment({ msg, mentions, attachments, quote, ttl, styles, urgency }, threadId, type);
-        responses.attachment = await send(handledData);
-        msg = "";
-      }
-      if (msg.length > 0) {
-        const handledData = await handleMessage(message, threadId, type);
-        responses.message = (await send(handledData))[0];
-      }
-      return responses;
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendReport.js
-var ReportReason, sendReportFactory;
-var init_sendReport = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  (function(ReportReason) {
-    ReportReason[ReportReason["Sensitive"] = 1] = "Sensitive";
-    ReportReason[ReportReason["Annoy"] = 2] = "Annoy";
-    ReportReason[ReportReason["Fraud"] = 3] = "Fraud";
-    ReportReason[ReportReason["Other"] = 0] = "Other";
-  })(ReportReason || (ReportReason = {}));
-  sendReportFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/report/abuse-v2`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/reportabuse`)
-    };
-    return async function sendReport(options, threadId, type = ThreadType.User) {
-      const params = type == ThreadType.User ? {
-        idTo: threadId,
-        objId: "person.profile",
-        reason: options.reason.toString(),
-        content: options.reason == ReportReason.Other ? options.content : undefined
-      } : {
-        uidTo: threadId,
-        type: 14,
-        reason: options.reason,
-        content: options.reason == ReportReason.Other ? options.content : "",
-        imei: ctx.imei
-      };
-      removeUndefinedKeys(params);
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendSeenEvent.js
-var sendSeenEventFactory;
-var init_sendSeenEvent = __esm(() => {
-  init_ZaloApiError();
-  init_context();
-  init_models();
-  init_utils();
-  sendSeenEventFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/seenv2`, {
-        nretry: 0
-      }),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/seenv2`, {
-        nretry: 0
-      })
-    };
-    return async function sendSeenEvent(messages, type = ThreadType.User) {
-      if (!messages)
-        throw new ZaloApiError("messages are missing or not in a valid array format.");
-      if (!Array.isArray(messages))
-        messages = [messages];
-      if (messages.length === 0 || messages.length > MAX_MESSAGES_PER_SEND)
-        throw new ZaloApiError("messages must contain between 1 and 50 messages.");
-      const isGroup = type === ThreadType.Group;
-      const threadId = isGroup ? messages[0].idTo : messages[0].uidFrom;
-      const msgInfos = {
-        data: messages.map((msg) => {
-          const curThreadId = isGroup ? msg.idTo : msg.uidFrom;
-          if (curThreadId !== threadId) {
-            throw new ZaloApiError("All messages must belong to the same thread.");
-          }
-          return {
-            cmi: msg.cliMsgId,
-            gmi: msg.msgId,
-            si: msg.uidFrom,
-            di: msg.idTo === ctx.uid ? "0" : msg.idTo,
-            mt: msg.msgType,
-            st: msg.st || msg.st === 0 ? 0 : -1,
-            at: msg.at || msg.at === 0 ? 0 : -1,
-            cmd: msg.cmd || msg.cmd === 0 ? 0 : -1,
-            ts: parseInt(`${msg.ts}`) || parseInt(`${msg.ts}`) === 0 ? 0 : -1
-          };
-        }),
-        [isGroup ? "grid" : "senderId"]: threadId
-      };
-      const params = Object.assign({ msgInfos: JSON.stringify(msgInfos) }, isGroup ? { imei: ctx.imei } : {});
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendSticker.js
-var sendStickerFactory;
-var init_sendSticker = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendStickerFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/sticker`, {
-        nretry: "0"
-      }),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/sticker`, {
-        nretry: "0"
-      })
-    };
-    return async function sendSticker(sticker, threadId, type = ThreadType.User) {
-      if (!sticker)
-        throw new ZaloApiError("Missing sticker");
-      if (!threadId)
-        throw new ZaloApiError("Missing threadId");
-      if (!sticker.id)
-        throw new ZaloApiError("Missing sticker id");
-      if (sticker.cateId === undefined || sticker.cateId === null)
-        throw new ZaloApiError("Missing sticker cateId");
-      if (!sticker.type)
-        throw new ZaloApiError("Missing sticker type");
-      const isGroupMessage = type === ThreadType.Group;
-      const params = {
-        stickerId: sticker.id,
-        cateId: sticker.cateId,
-        type: sticker.type,
-        clientId: Date.now(),
-        imei: ctx.imei,
-        zsource: 101,
-        toid: isGroupMessage ? undefined : threadId,
-        grid: isGroupMessage ? threadId : undefined
-      };
-      removeUndefinedKeys(params);
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendTypingEvent.js
-var sendTypingEventFactory;
-var init_sendTypingEvent = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendTypingEventFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/typing`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/typing`)
-    };
-    return async function sendTypingEvent(threadId, type = ThreadType.User, destType = DestType.User) {
-      if (!threadId)
-        throw new ZaloApiError("Missing threadId");
-      const params = Object.assign(Object.assign({ [type === ThreadType.User ? "toid" : "grid"]: threadId }, type === ThreadType.User ? { destType } : {}), { imei: ctx.imei });
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendVideo.js
-var sendVideoFactory;
-var init_sendVideo = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendVideoFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/forward`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/forward`)
-    };
-    return async function sendVideo(options, threadId, type = ThreadType.User) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-      let fileSize = 0;
-      const clientId = Date.now();
-      try {
-        const headResponse = await utils.request(options.videoUrl, { method: "HEAD" }, true);
-        if (headResponse.ok) {
-          fileSize = parseInt(headResponse.headers.get("content-length") || "0");
-        }
-      } catch (error) {
-        throw new ZaloApiError(`Unable to get video content: ${error instanceof Error ? error.message : String(error)}`);
-      }
-      const params = type === ThreadType.User ? {
-        toId: threadId,
-        clientId: String(clientId),
-        ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
-        zsource: 704,
-        msgType: 5,
-        msgInfo: JSON.stringify({
-          videoUrl: options.videoUrl,
-          thumbUrl: options.thumbnailUrl,
-          duration: (_b = options.duration) !== null && _b !== undefined ? _b : 0,
-          width: (_c = options.width) !== null && _c !== undefined ? _c : 1280,
-          height: (_d = options.height) !== null && _d !== undefined ? _d : 720,
-          fileSize,
-          properties: {
-            color: -1,
-            size: -1,
-            type: 1003,
-            subType: 0,
-            ext: {
-              sSrcType: -1,
-              sSrcStr: "",
-              msg_warning_type: 0
-            }
-          },
-          title: (_e = options.msg) !== null && _e !== undefined ? _e : ""
-        }),
-        imei: ctx.imei
-      } : {
-        grid: threadId,
-        visibility: 0,
-        clientId: String(clientId),
-        ttl: (_f = options.ttl) !== null && _f !== undefined ? _f : 0,
-        zsource: 704,
-        msgType: 5,
-        msgInfo: JSON.stringify({
-          videoUrl: options.videoUrl,
-          thumbUrl: options.thumbnailUrl,
-          duration: (_g = options.duration) !== null && _g !== undefined ? _g : 0,
-          width: (_h = options.width) !== null && _h !== undefined ? _h : 1280,
-          height: (_j = options.height) !== null && _j !== undefined ? _j : 720,
-          fileSize,
-          properties: {
-            color: -1,
-            size: -1,
-            type: 1003,
-            subType: 0,
-            ext: {
-              sSrcType: -1,
-              sSrcStr: "",
-              msg_warning_type: 0
-            }
-          },
-          title: (_k = options.msg) !== null && _k !== undefined ? _k : ""
-        }),
-        imei: ctx.imei
-      };
-      if (type !== ThreadType.User && type !== ThreadType.Group) {
-        throw new ZaloApiError("Thread type is invalid");
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sendVoice.js
-var sendVoiceFactory;
-var init_sendVoice = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  sendVoiceFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/forward`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/forward`)
-    };
-    return async function sendVoice(options, threadId, type = ThreadType.User) {
-      var _a, _b;
-      let fileSize = null;
-      const clientId = Date.now().toString();
-      try {
-        const headResponse = await utils.request(options.voiceUrl, { method: "HEAD" }, true);
-        if (headResponse.ok) {
-          fileSize = parseInt(headResponse.headers.get("content-length") || "0");
-        }
-      } catch (error) {
-        throw new ZaloApiError(`Unable to get voice content: ${error instanceof Error ? error.message : String(error)}`);
-      }
-      const params = type === ThreadType.User ? {
-        toId: threadId,
-        ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
-        zsource: -1,
-        msgType: 3,
-        clientId,
-        msgInfo: JSON.stringify({
-          voiceUrl: options.voiceUrl,
-          m4aUrl: options.voiceUrl,
-          fileSize: fileSize !== null && fileSize !== undefined ? fileSize : 0
-        }),
-        imei: ctx.imei
-      } : {
-        grid: threadId,
-        visibility: 0,
-        ttl: (_b = options.ttl) !== null && _b !== undefined ? _b : 0,
-        zsource: -1,
-        msgType: 3,
-        clientId,
-        msgInfo: JSON.stringify({
-          voiceUrl: options.voiceUrl,
-          m4aUrl: options.voiceUrl,
-          fileSize: fileSize !== null && fileSize !== undefined ? fileSize : 0
-        }),
-        imei: ctx.imei
-      };
-      if (type !== ThreadType.User && type !== ThreadType.Group) {
-        throw new ZaloApiError("Thread type is invalid");
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/setHiddenConversations.js
-var setHiddenConversationsFactory;
-var init_setHiddenConversations = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  setHiddenConversationsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/add-remove`);
-    return async function setHiddenConversations(hidden, threadId, type = ThreadType.User) {
-      threadId = Array.isArray(threadId) ? threadId : [threadId];
-      if (threadId.length === 0)
-        throw new ZaloApiError("threadId is required");
-      const is_group = type === ThreadType.Group ? 1 : 0;
-      const params = {
-        [hidden ? "add_threads" : "del_threads"]: JSON.stringify(threadId.map((id) => ({
-          thread_id: id,
-          is_group
-        }))),
-        [hidden ? "del_threads" : "add_threads"]: "[]",
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/setMute.js
-var MuteDuration, MuteAction, setMuteFactory;
-var init_setMute = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  (function(MuteDuration) {
-    MuteDuration[MuteDuration["ONE_HOUR"] = 3600] = "ONE_HOUR";
-    MuteDuration[MuteDuration["FOUR_HOURS"] = 14400] = "FOUR_HOURS";
-    MuteDuration[MuteDuration["FOREVER"] = -1] = "FOREVER";
-    MuteDuration["UNTIL_8AM"] = "until8AM";
-  })(MuteDuration || (MuteDuration = {}));
-  (function(MuteAction) {
-    MuteAction[MuteAction["MUTE"] = 1] = "MUTE";
-    MuteAction[MuteAction["UNMUTE"] = 3] = "UNMUTE";
-  })(MuteAction || (MuteAction = {}));
-  setMuteFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/setmute`);
-    return async function setMute(params = {}, threadID, type = ThreadType.User) {
-      const { duration = MuteDuration.FOREVER, action = MuteAction.MUTE } = params;
-      let muteDuration;
-      if (action === MuteAction.UNMUTE) {
-        muteDuration = -1;
-      } else if (duration === MuteDuration.FOREVER) {
-        muteDuration = -1;
-      } else if (duration === MuteDuration.UNTIL_8AM) {
-        const now = new Date;
-        const next8AM = new Date(now);
-        next8AM.setHours(8, 0, 0, 0);
-        if (now.getHours() >= 8) {
-          next8AM.setDate(next8AM.getDate() + 1);
-        }
-        muteDuration = Math.floor((next8AM.getTime() - now.getTime()) / 1000);
-      } else {
-        muteDuration = duration;
-      }
-      const requestParams = {
-        toid: threadID,
-        duration: muteDuration,
-        action,
-        startTime: Math.floor(Date.now() / 1000),
-        muteType: type === ThreadType.User ? 1 : 2,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/setPinnedConversations.js
-var setPinnedConversationsFactory;
-var init_setPinnedConversations = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  setPinnedConversationsFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/pinconvers/updatev2`);
-    return async function setPinnedConversations(pinned, threadId, type = ThreadType.User) {
-      if (typeof threadId == "string")
-        threadId = [threadId];
-      const params = {
-        actionType: pinned ? 1 : 2,
-        conversations: type == ThreadType.Group ? threadId.map((id) => `g${id}`) : threadId.map((id) => `u${id}`)
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/sharePoll.js
-var sharePollFactory;
-var init_sharePoll = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  sharePollFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/share`);
-    return async function sharePoll(pollId) {
-      const params = {
-        poll_id: pollId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/unblockUser.js
-var unblockUserFactory;
-var init_unblockUser = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  unblockUserFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/unblock`);
-    return async function unblockUser(userId) {
-      const params = {
-        fid: userId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/undo.js
-var undoFactory;
-var init_undo = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  undoFactory = apiFactory()((api, ctx, utils) => {
-    const URLType = {
-      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/undo`),
-      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/undomsg`)
-    };
-    return async function undo(payload, threadId, type = ThreadType.User) {
-      const params = {
-        msgId: payload.msgId,
-        clientId: Date.now(),
-        cliMsgIdUndo: payload.cliMsgId
-      };
-      if (type == ThreadType.Group) {
-        params["grid"] = threadId;
-        params["visibility"] = 0;
-        params["imei"] = ctx.imei;
-      } else
-        params["toid"] = threadId;
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(URLType[type], {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/undoFriendRequest.js
-var undoFriendRequestFactory;
-var init_undoFriendRequest = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  undoFriendRequestFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/undo`);
-    return async function undoFriendRequest(friendId) {
-      const params = {
-        fid: friendId
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateActiveStatus.js
-var updateActiveStatusFactory;
-var init_updateActiveStatus = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateActiveStatusFactory = apiFactory()((api, ctx, utils) => {
-    const pingURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/ping`);
-    const deactiveURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/deactive`);
-    return async function updateActiveStatus(active) {
-      const params = {
-        status: active ? 1 : 0,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const targetURL = active ? pingURL : deactiveURL;
-      const response = await utils.request(utils.makeURL(targetURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateArchivedChatList.js
-var updateArchivedChatListFactory;
-var init_updateArchivedChatList = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateArchivedChatListFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/archivedchat/update`);
-    return async function updateArchivedChatList(isArchived, conversations) {
-      if (!Array.isArray(conversations)) {
-        conversations = [conversations];
-      }
-      const params = {
-        actionType: isArchived ? 0 : 1,
-        ids: conversations,
-        imei: ctx.imei,
-        version: Date.now()
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateAutoDeleteChat.js
-var ChatTTL, updateAutoDeleteChatFactory;
-var init_updateAutoDeleteChat = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  (function(ChatTTL) {
-    ChatTTL[ChatTTL["NO_DELETE"] = 0] = "NO_DELETE";
-    ChatTTL[ChatTTL["ONE_DAY"] = 86400000] = "ONE_DAY";
-    ChatTTL[ChatTTL["SEVEN_DAYS"] = 604800000] = "SEVEN_DAYS";
-    ChatTTL[ChatTTL["FOURTEEN_DAYS"] = 1209600000] = "FOURTEEN_DAYS";
-  })(ChatTTL || (ChatTTL = {}));
-  updateAutoDeleteChatFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/autodelete/updateConvers`);
-    return async function updateAutoDeleteChat(ttl, threadId, type = ThreadType.User) {
-      const params = {
-        threadId,
-        isGroup: type === ThreadType.Group ? 1 : 0,
-        ttl,
-        clientLang: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateAutoReply.js
-var updateAutoReplyFactory;
-var init_updateAutoReply = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateAutoReplyFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/update`);
-    return async function updateAutoReply(payload) {
-      const uids = Array.isArray(payload.uids) ? payload.uids : [payload.uids];
-      const resultUids = payload.scope === 2 || payload.scope === 3 ? uids : [];
-      const params = {
-        cliLang: ctx.language,
-        id: payload.id,
-        enable: payload.isEnable,
-        content: payload.content,
-        startTime: payload.startTime,
-        endTime: payload.endTime,
-        recurrence: ["RRULE:FREQ=DAILY;"],
-        scope: payload.scope,
-        uids: resultUids
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateBankAccount.js
-var updateBankAccountFactory;
-var init_updateBankAccount = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateBankAccountFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/update`);
-    return async function updateBankAccount(payload) {
-      const params = {
-        account_id: payload.accountId,
-        bin: payload.binBank,
-        bank_number: payload.numAccBank,
-        holder_name: normalizeHolderName(payload.nameAccBank),
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateCatalog.js
-var updateCatalogFactory;
-var init_updateCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateCatalogFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/update`);
-    return async function updateCatalog(payload) {
-      const params = {
-        catalog_id: payload.catalogId,
-        catalog_name: payload.catalogName,
-        catalog_photo: ""
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateGroupSettings.js
-var updateGroupSettingsFactory;
-var init_updateGroupSettings = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateGroupSettingsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/setting/update`);
-    return async function updateGroupSettings(options, groupId) {
-      const params = {
-        blockName: options.blockName ? 1 : 0,
-        signAdminMsg: options.signAdminMsg ? 1 : 0,
-        setTopicOnly: options.setTopicOnly ? 1 : 0,
-        enableMsgHistory: options.enableMsgHistory ? 1 : 0,
-        joinAppr: options.joinAppr ? 1 : 0,
-        lockCreatePost: options.lockCreatePost ? 1 : 0,
-        lockCreatePoll: options.lockCreatePoll ? 1 : 0,
-        lockSendMsg: options.lockSendMsg ? 1 : 0,
-        lockViewMember: options.lockViewMember ? 1 : 0,
-        bannFeature: 0,
-        dirtyMedia: 0,
-        banDuration: 0,
-        blocked_members: [],
-        grid: groupId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateHiddenConversPin.js
-var updateHiddenConversPinFactory;
-var init_updateHiddenConversPin = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateHiddenConversPinFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/update-pin`);
-    const pinRegex = /^\d{4}$/;
-    return async function updateHiddenConversPin(pin) {
-      if (!pinRegex.test(pin)) {
-        throw new ZaloApiError("Pin must be a 4-digit number between 0000-9999");
-      }
-      const encryptedPin = encryptPin(pin);
-      const params = {
-        new_pin: encryptedPin,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateLabels.js
-var updateLabelsFactory;
-var init_updateLabels = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateLabelsFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/convlabel/update`);
-    return async function updateLabels(payload) {
-      const params = {
-        labelData: JSON.stringify(payload.labelData),
-        version: payload.version,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt message");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      const unFormatted = await utils.resolve(response);
-      return {
-        labelData: JSON.parse(unFormatted.labelData),
-        version: unFormatted.version,
-        lastUpdateTime: unFormatted.lastUpdateTime
-      };
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateLang.js
-var UpdateLangAvailableLanguages, updateLangFactory;
-var init_updateLang = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  (function(UpdateLangAvailableLanguages) {
-    UpdateLangAvailableLanguages["VI"] = "VI";
-    UpdateLangAvailableLanguages["EN"] = "EN";
-  })(UpdateLangAvailableLanguages || (UpdateLangAvailableLanguages = {}));
-  updateLangFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/updatelang`);
-    return async function updateLang(language = UpdateLangAvailableLanguages.VI) {
-      const params = {
-        language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateProductCatalog.js
-var updateProductCatalogFactory;
-var init_updateProductCatalog = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateProductCatalogFactory = apiFactory()((api, _, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/update`);
-    return async function updateProductCatalog(payload) {
-      const productPhoto = payload.product_photos || [];
-      if (payload.files && payload.files.length == 0) {
-        if (payload.files.length > 5) {
-          throw new ZaloApiError("Maximum 5 media files are allowed");
-        }
-        for (const mediaFile of payload.files) {
-          const uploadMedia = await api.uploadProductPhoto({
-            file: mediaFile
-          });
-          const url = uploadMedia.normalUrl || uploadMedia.hdUrl;
-          productPhoto.push(url);
-        }
-      }
-      if (productPhoto.length > 5) {
-        throw new ZaloApiError("Maximum 5 media files are allowed");
-      }
-      const params = {
-        product_id: payload.productId,
-        product_name: payload.productName,
-        price: payload.price,
-        description: payload.description,
-        product_photos: productPhoto,
-        catalog_id: payload.catalogId,
-        currency_unit: "₫",
-        create_time: payload.createTime
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateProfile.js
-var updateProfileFactory;
-var init_updateProfile = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateProfileFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/update`);
-    return async function updateProfile(payload) {
-      var _a, _b, _c, _d, _e;
-      const params = {
-        profile: JSON.stringify({
-          name: payload.profile.name,
-          dob: payload.profile.dob,
-          gender: payload.profile.gender
-        }),
-        biz: JSON.stringify({
-          desc: (_a = payload.biz) === null || _a === undefined ? undefined : _a.description,
-          cate: (_b = payload.biz) === null || _b === undefined ? undefined : _b.cate,
-          addr: (_c = payload.biz) === null || _c === undefined ? undefined : _c.address,
-          website: (_d = payload.biz) === null || _d === undefined ? undefined : _d.website,
-          email: (_e = payload.biz) === null || _e === undefined ? undefined : _e.email
-        }),
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(serviceURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateProfileBio.js
-var updateProfileBioFactory;
-var init_updateProfileBio = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateProfileBioFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/status`);
-    return async function updateProfileBio(status) {
-      const params = {
-        status
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "POST",
-        body: new URLSearchParams({
-          params: encryptedParams
-        })
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateQuickMessage.js
-var updateQuickMessageFactory;
-var init_updateQuickMessage = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  updateQuickMessageFactory = apiFactory()((api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/update`);
-    return async function updateQuickMessage(updatePayload, itemId) {
-      const isType = !updatePayload.media ? 0 : 1;
-      const params = {
-        itemId,
-        keyword: updatePayload.keyword,
-        message: {
-          title: updatePayload.title,
-          params: ""
-        },
-        type: isType
-      };
-      if (isType === 1) {
-        if (!updatePayload.media)
-          throw new ZaloApiError("Media is required");
-        const uploadMedia = await api.uploadProductPhoto({
-          file: updatePayload.media
-        });
-        const photoId = uploadMedia.photoId;
-        const thumbUrl = uploadMedia.thumbUrl;
-        const normalUrl = uploadMedia.normalUrl;
-        const hdUrl = uploadMedia.hdUrl;
-        params.media = {
-          items: [
-            {
-              type: 0,
-              photoId,
-              title: "",
-              width: "",
-              height: "",
-              previewThumb: thumbUrl,
-              rawUrl: normalUrl || hdUrl,
-              thumbUrl,
-              normalUrl: normalUrl || hdUrl,
-              hdUrl: hdUrl || normalUrl
-            }
-          ]
-        };
-      }
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/updateSettings.js
-var UpdateSettingsType, updateSettingsFactory;
-var init_updateSettings = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  (function(UpdateSettingsType) {
-    UpdateSettingsType["ViewBirthday"] = "view_birthday";
-    UpdateSettingsType["ShowOnlineStatus"] = "show_online_status";
-    UpdateSettingsType["DisplaySeenStatus"] = "display_seen_status";
-    UpdateSettingsType["ReceiveMessage"] = "receive_message";
-    UpdateSettingsType["AcceptCall"] = "accept_stranger_call";
-    UpdateSettingsType["AddFriendViaPhone"] = "add_friend_via_phone";
-    UpdateSettingsType["AddFriendViaQR"] = "add_friend_via_qr";
-    UpdateSettingsType["AddFriendViaGroup"] = "add_friend_via_group";
-    UpdateSettingsType["AddFriendViaContact"] = "add_friend_via_contact";
-    UpdateSettingsType["DisplayOnRecommendFriend"] = "display_on_recommend_friend";
-    UpdateSettingsType["ArchivedChat"] = "archivedChatStatus";
-    UpdateSettingsType["QuickMessage"] = "quickMessageStatus";
-  })(UpdateSettingsType || (UpdateSettingsType = {}));
-  updateSettingsFactory = apiFactory()((_api, _ctx, utils) => {
-    const serviceURL = utils.makeURL(`https://wpa.chat.zalo.me/api/setting/update`);
-    return async function updateSettings(type, value) {
-      const params = {
-        [type]: value
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/upgradeGroupToCommunity.js
-var upgradeGroupToCommunityFactory;
-var init_upgradeGroupToCommunity = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  upgradeGroupToCommunityFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/upgrade/community`);
-    return async function upgradeGroupToCommunity(groupId) {
-      const params = {
-        grId: groupId,
-        language: ctx.language
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/uploadAttachment.js
-var import_form_data4, import_node_fs4, urlType, uploadAttachmentFactory;
-var init_uploadAttachment = __esm(() => {
-  init_ZaloApiError();
-  init_models();
-  init_utils();
-  import_form_data4 = __toESM(require_form_data(), 1);
-  import_node_fs4 = __toESM(require("node:fs"), 1);
-  urlType = {
-    image: "photo_original/upload",
-    video: "asyncfile/upload",
-    others: "asyncfile/upload"
-  };
-  uploadAttachmentFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = `${api.zpwServiceMap.file[0]}/api`;
-    const { sharefile } = ctx.settings.features;
-    function isExceedMaxFile(totalFile) {
-      return totalFile > sharefile.max_file;
-    }
-    function isExceedMaxFileSize(fileSize) {
-      return fileSize > sharefile.max_size_share_file_v3 * 1024 * 1024;
-    }
-    function isExtensionValid(ext) {
-      return sharefile.restricted_ext_file.indexOf(ext) == -1;
-    }
-    return async function uploadAttachment(sources, threadId, type = ThreadType.User) {
-      if (!sources)
-        throw new ZaloApiError("Missing sources");
-      if (!Array.isArray(sources))
-        sources = [sources];
-      if (sources.length == 0)
-        throw new ZaloApiError("Missing sources");
-      if (isExceedMaxFile(sources.length))
-        throw new ZaloApiError("Exceed maximum file of " + sharefile.max_file);
-      if (!threadId)
-        throw new ZaloApiError("Missing threadId");
-      const chunkSize = ctx.settings.features.sharefile.chunk_size_file;
-      const isGroupMessage = type == ThreadType.Group;
-      const attachmentsData = [];
-      const url = `${serviceURL}/${isGroupMessage ? "group" : "message"}/`;
-      const typeParam = isGroupMessage ? "11" : "2";
-      let clientId = Date.now();
-      for (const source of sources) {
-        const isFilePath = typeof source == "string";
-        const isBuffer = typeof source == "object" && source.data instanceof Buffer;
-        if (!isFilePath && !isBuffer)
-          throw new ZaloApiError("Invalid source type");
-        if (!isFilePath && !source.filename)
-          throw new ZaloApiError("Missing filename");
-        if (isFilePath && !import_node_fs4.default.existsSync(source))
-          throw new ZaloApiError("File not found");
-        const extFile = getFileExtension(isFilePath ? source : source.filename).toLowerCase();
-        const fileName = isFilePath ? getFileName(source) : source.filename;
-        if (isExtensionValid(extFile) == false)
-          throw new ZaloApiError(`File extension "${extFile}" is not allowed`);
-        const data = {
-          filePath: isFilePath ? source : source.filename,
-          chunkContent: [],
-          params: {},
-          source
-        };
-        if (isGroupMessage)
-          data.params.grid = threadId;
-        else
-          data.params.toid = threadId;
-        switch (extFile) {
-          case "jpg":
-          case "jpeg":
-          case "png":
-          case "webp": {
-            const imageData = isFilePath ? await getImageMetaData(ctx, source) : Object.assign(Object.assign({}, source.metadata), { fileName });
-            if (isExceedMaxFileSize(imageData.totalSize))
-              throw new ZaloApiError(`File ${fileName} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
-            data.fileData = imageData;
-            data.fileType = "image";
-            data.params.totalChunk = Math.ceil(data.fileData.totalSize / chunkSize);
-            data.params.fileName = fileName;
-            data.params.clientId = clientId++;
-            data.params.totalSize = imageData.totalSize;
-            data.params.imei = ctx.imei;
-            data.params.isE2EE = 0;
-            data.params.jxl = 0;
-            data.params.chunkId = 1;
-            break;
-          }
-          case "mp4": {
-            const videoSize = isFilePath ? await getFileSize(source) : source.metadata.totalSize;
-            if (isExceedMaxFileSize(videoSize))
-              throw new ZaloApiError(`File ${fileName} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
-            data.fileType = "video";
-            data.fileData = {
-              fileName,
-              totalSize: videoSize
-            };
-            data.params.totalChunk = Math.ceil(data.fileData.totalSize / chunkSize);
-            data.params.fileName = fileName;
-            data.params.clientId = clientId++;
-            data.params.totalSize = videoSize;
-            data.params.imei = ctx.imei;
-            data.params.isE2EE = 0;
-            data.params.jxl = 0;
-            data.params.chunkId = 1;
-            break;
-          }
-          default: {
-            const fileSize = isFilePath ? await getFileSize(source) : source.metadata.totalSize;
-            if (isExceedMaxFileSize(fileSize))
-              throw new ZaloApiError(`File ${fileName} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
-            data.fileType = "others";
-            data.fileData = {
-              fileName,
-              totalSize: fileSize
-            };
-            data.params.totalChunk = Math.ceil(data.fileData.totalSize / chunkSize);
-            data.params.fileName = fileName;
-            data.params.clientId = clientId++;
-            data.params.totalSize = fileSize;
-            data.params.imei = ctx.imei;
-            data.params.isE2EE = 0;
-            data.params.jxl = 0;
-            data.params.chunkId = 1;
-            break;
-          }
-        }
-        const fileBuffer = isFilePath ? await import_node_fs4.default.promises.readFile(source) : source.data;
-        for (let i = 0;i < data.params.totalChunk; i++) {
-          const formData = new import_form_data4.default;
-          const slicedBuffer = fileBuffer.subarray(i * chunkSize, (i + 1) * chunkSize);
-          formData.append("chunkContent", slicedBuffer, {
-            filename: fileName,
-            contentType: "application/octet-stream"
-          });
-          data.chunkContent[i] = formData;
-        }
-        attachmentsData.push(data);
-      }
-      const requests = [], results = [];
-      for (let atmIndex = 0;atmIndex < attachmentsData.length; atmIndex++) {
-        const data = attachmentsData[atmIndex];
-        for (let i = 0;i < data.params.totalChunk; i++) {
-          const encryptedParams = utils.encodeAES(JSON.stringify(data.params));
-          if (!encryptedParams)
-            throw new ZaloApiError("Failed to encrypt message");
-          requests.push(utils.request(utils.makeURL(url + urlType[data.fileType], { type: typeParam, params: encryptedParams }), {
-            method: "POST",
-            headers: data.chunkContent[i].getHeaders(),
-            body: data.chunkContent[i].getBuffer()
-          }).then(async (response) => {
-            const resData = await resolveResponse(ctx, response);
-            if (resData && resData.fileId != "-1" && resData.photoId != "-1")
-              await new Promise((resolve) => {
-                if (data.fileType == "video" || data.fileType == "others") {
-                  const uploadCallback = async (wsData) => {
-                    const result = Object.assign(Object.assign(Object.assign({ fileType: data.fileType }, resData), wsData), { totalSize: data.fileData.totalSize, fileName: data.fileData.fileName, checksum: (await getMd5LargeFileObject(data.source, data.fileData.totalSize)).data });
-                    results[atmIndex] = result;
-                    resolve();
-                  };
-                  ctx.uploadCallbacks.set(resData.fileId.toString(), uploadCallback);
-                }
-                if (data.fileType == "image") {
-                  const result = {
-                    fileType: "image",
-                    width: data.fileData.width,
-                    height: data.fileData.height,
-                    totalSize: data.fileData.totalSize,
-                    hdSize: data.fileData.totalSize,
-                    finished: resData.finished,
-                    normalUrl: resData.normalUrl,
-                    hdUrl: resData.hdUrl,
-                    thumbUrl: resData.thumbUrl,
-                    chunkId: resData.chunkId,
-                    photoId: resData.photoId,
-                    clientFileId: resData.clientFileId
-                  };
-                  results[atmIndex] = result;
-                  resolve();
-                }
-              });
-          }));
-          data.params.chunkId++;
-        }
-      }
-      await Promise.all(requests);
-      return results;
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/uploadProductPhoto.js
-var import_node_fs5, import_form_data5, uploadProductPhotoFactory;
-var init_uploadProductPhoto = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  import_node_fs5 = __toESM(require("node:fs"), 1);
-  import_form_data5 = __toESM(require_form_data(), 1);
-  uploadProductPhotoFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/product/upload/photo`);
-    return async function uploadProductPhoto(payload) {
-      const isSourceFilePath = typeof payload.file == "string";
-      const fileMetaData = isSourceFilePath ? await getImageMetaData(ctx, payload.file) : payload.file.metadata;
-      const fileSize = fileMetaData.totalSize || 0;
-      const fileBuffer = isSourceFilePath ? await import_node_fs5.default.promises.readFile(payload.file) : payload.file.data;
-      const formData = new import_form_data5.default;
-      formData.append("chunkContent", fileBuffer, {
-        filename: "undefined",
-        contentType: "application/octet-stream"
-      });
-      const params = {
-        totalChunk: 1,
-        fileName: `Base64_Img_Picker_${Date.now()}.jpg`,
-        clientId: Date.now(),
-        totalSize: fileSize,
-        imei: ctx.imei,
-        chunkId: 1,
-        toid: ctx.loginInfo.send2me_id,
-        featureId: 1
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, {
-        params: encryptedParams
-      }), {
-        method: "POST",
-        headers: formData.getHeaders(),
-        body: formData.getBuffer()
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/votePoll.js
-var votePollFactory;
-var init_votePoll = __esm(() => {
-  init_ZaloApiError();
-  init_utils();
-  votePollFactory = apiFactory()((api, ctx, utils) => {
-    const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/vote`);
-    return async function votePoll(pollId, optionId) {
-      if (!Array.isArray(optionId))
-        optionId = [optionId];
-      const params = {
-        poll_id: pollId,
-        option_ids: optionId,
-        imei: ctx.imei
-      };
-      const encryptedParams = utils.encodeAES(JSON.stringify(params));
-      if (!encryptedParams)
-        throw new ZaloApiError("Failed to encrypt params");
-      const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
-        method: "GET"
-      });
-      return utils.resolve(response);
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis/custom.js
-var customFactory;
-var init_custom = __esm(() => {
-  init_context();
-  init_utils();
-  customFactory = apiFactory()((api, ctx, utils) => {
-    return function custom(name, callback) {
-      Object.defineProperty(api, name, {
-        value: function(props) {
-          return callback({ ctx, utils, props });
-        },
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
-    };
-  });
-});
-
-// node_modules/zca-js/dist/apis.js
-class API {
-  constructor(ctx, zpwServiceMap, wsUrls) {
-    this.zpwServiceMap = zpwServiceMap;
-    this.listener = new Listener(ctx, wsUrls);
-    this.acceptFriendRequest = acceptFriendRequestFactory(ctx, this);
-    this.addGroupBlockedMember = addGroupBlockedMemberFactory(ctx, this);
-    this.addGroupDeputy = addGroupDeputyFactory(ctx, this);
-    this.addPollOptions = addPollOptionsFactory(ctx, this);
-    this.addQuickMessage = addQuickMessageFactory(ctx, this);
-    this.addReaction = addReactionFactory(ctx, this);
-    this.addUnreadMark = addUnreadMarkFactory(ctx, this);
-    this.addUserToGroup = addUserToGroupFactory(ctx, this);
-    this.blockUser = blockUserFactory(ctx, this);
-    this.blockViewFeed = blockViewFeedFactory(ctx, this);
-    this.changeAccountAvatar = changeAccountAvatarFactory(ctx, this);
-    this.changeFriendAlias = changeFriendAliasFactory(ctx, this);
-    this.changeGroupAvatar = changeGroupAvatarFactory(ctx, this);
-    this.changeGroupName = changeGroupNameFactory(ctx, this);
-    this.changeGroupOwner = changeGroupOwnerFactory(ctx, this);
-    this.createAutoReply = createAutoReplyFactory(ctx, this);
-    this.createBankAccount = createBankAccountFactory(ctx, this);
-    this.createCatalog = createCatalogFactory(ctx, this);
-    this.createGroup = createGroupFactory(ctx, this);
-    this.createNote = createNoteFactory(ctx, this);
-    this.createPoll = createPollFactory(ctx, this);
-    this.createProductCatalog = createProductCatalogFactory(ctx, this);
-    this.createReminder = createReminderFactory(ctx, this);
-    this.deleteAutoReply = deleteAutoReplyFactory(ctx, this);
-    this.deleteAvatar = deleteAvatarFactory(ctx, this);
-    this.deleteBankAccount = deleteBankAccountFactory(ctx, this);
-    this.deleteCatalog = deleteCatalogFactory(ctx, this);
-    this.deleteChat = deleteChatFactory(ctx, this);
-    this.deleteGroupInviteBox = deleteGroupInviteBoxFactory(ctx, this);
-    this.deleteMessage = deleteMessageFactory(ctx, this);
-    this.deleteProductCatalog = deleteProductCatalogFactory(ctx, this);
-    this.disableGroupLink = disableGroupLinkFactory(ctx, this);
-    this.disperseGroup = disperseGroupFactory(ctx, this);
-    this.editNote = editNoteFactory(ctx, this);
-    this.editReminder = editReminderFactory(ctx, this);
-    this.enableGroupLink = enableGroupLinkFactory(ctx, this);
-    this.fetchAccountInfo = fetchAccountInfoFactory(ctx, this);
-    this.findUser = findUserFactory(ctx, this);
-    this.findUserByUsername = findUserByUsernameFactory(ctx, this);
-    this.forwardMessage = forwardMessageFactory(ctx, this);
-    this.getAliasList = getAliasListFactory(ctx, this);
-    this.getAllFriends = getAllFriendsFactory(ctx, this);
-    this.getAllGroups = getAllGroupsFactory(ctx, this);
-    this.getArchivedChatList = getArchivedChatListFactory(ctx, this);
-    this.getAutoDeleteChat = getAutoDeleteChatFactory(ctx, this);
-    this.getAutoReplyList = getAutoReplyListFactory(ctx, this);
-    this.getAvatarList = getAvatarListFactory(ctx, this);
-    this.getAvatarUrlProfile = getAvatarUrlProfileFactory(ctx, this);
-    this.getBizAccount = getBizAccountFactory(ctx, this);
-    this.getCatalogList = getCatalogListFactory(ctx, this);
-    this.getCloseFriends = getCloseFriendsFactory(ctx, this);
-    this.getContext = getContextFactory(ctx, this);
-    this.getCookie = getCookieFactory(ctx, this);
-    this.getFriendBoardList = getFriendBoardListFactory(ctx, this);
-    this.getFriendOnlines = getFriendOnlinesFactory(ctx, this);
-    this.getFriendRecommendations = getFriendRecommendationsFactory(ctx, this);
-    this.getFriendRequestStatus = getFriendRequestStatusFactory(ctx, this);
-    this.getFullAvatar = getFullAvatarFactory(ctx, this);
-    this.getGroupBlockedMember = getGroupBlockedMemberFactory(ctx, this);
-    this.getGroupChatHistory = getGroupChatHistoryFactory(ctx, this);
-    this.getGroupInfo = getGroupInfoFactory(ctx, this);
-    this.getGroupInviteBoxInfo = getGroupInviteBoxInfoFactory(ctx, this);
-    this.getGroupInviteBoxList = getGroupInviteBoxListFactory(ctx, this);
-    this.getGroupLinkDetail = getGroupLinkDetailFactory(ctx, this);
-    this.getGroupLinkInfo = getGroupLinkInfoFactory(ctx, this);
-    this.getGroupMembersInfo = getGroupMembersInfoFactory(ctx, this);
-    this.getHiddenConversations = getHiddenConversationsFactory(ctx, this);
-    this.getLabels = getLabelsFactory(ctx, this);
-    this.getListBank = getListBankFactory(ctx, this);
-    this.getListBankAccount = getListBankAccountFactory(ctx, this);
-    this.getListBoard = getListBoardFactory(ctx, this);
-    this.getListDevice = getListDeviceFactory(ctx, this);
-    this.getListReminder = getListReminderFactory(ctx, this);
-    this.getMultiUsersByPhones = getMultiUsersByPhonesFactory(ctx, this);
-    this.getMute = getMuteFactory(ctx, this);
-    this.getOwnId = getOwnIdFactory(ctx, this);
-    this.getPendingGroupMembers = getPendingGroupMembersFactory(ctx, this);
-    this.getPinConversations = getPinConversationsFactory(ctx, this);
-    this.getPollDetail = getPollDetailFactory(ctx, this);
-    this.getProductCatalogList = getProductCatalogListFactory(ctx, this);
-    this.getQR = getQRFactory(ctx, this);
-    this.getQuickMessageList = getQuickMessageListFactory(ctx, this);
-    this.getRelatedFriendGroup = getRelatedFriendGroupFactory(ctx, this);
-    this.getReminder = getReminderFactory(ctx, this);
-    this.getReminderResponses = getReminderResponsesFactory(ctx, this);
-    this.getSentFriendRequest = getSentFriendRequestFactory(ctx, this);
-    this.getSettings = getSettingsFactory(ctx, this);
-    this.getStickerCategoryDetail = getStickerCategoryDetailFactory(ctx, this);
-    this.getStickers = getStickersFactory(ctx, this);
-    this.getStickersDetail = getStickersDetailFactory(ctx, this);
-    this.getUnreadMark = getUnreadMarkFactory(ctx, this);
-    this.getUserInfo = getUserInfoFactory(ctx, this);
-    this.inviteUserToGroups = inviteUserToGroupsFactory(ctx, this);
-    this.joinGroupInviteBox = joinGroupInviteBoxFactory(ctx, this);
-    this.joinGroupLink = joinGroupLinkFactory(ctx, this);
-    this.keepAlive = keepAliveFactory(ctx, this);
-    this.lastOnline = lastOnlineFactory(ctx, this);
-    this.leaveGroup = leaveGroupFactory(ctx, this);
-    this.lockPoll = lockPollFactory(ctx, this);
-    this.lostFocus = lostFocusFactory(ctx, this);
-    this.parseLink = parseLinkFactory(ctx, this);
-    this.registerCatalog = registerCatalogFactory(ctx, this);
-    this.rejectFriendRequest = rejectFriendRequestFactory(ctx, this);
-    this.removeFriend = removeFriendFactory(ctx, this);
-    this.removeFriendAlias = removeFriendAliasFactory(ctx, this);
-    this.removeGroupBlockedMember = removeGroupBlockedMemberFactory(ctx, this);
-    this.removeGroupDeputy = removeGroupDeputyFactory(ctx, this);
-    this.removeQuickMessage = removeQuickMessageFactory(ctx, this);
-    this.removeReminder = removeReminderFactory(ctx, this);
-    this.removeUnreadMark = removeUnreadMarkFactory(ctx, this);
-    this.removeUserFromGroup = removeUserFromGroupFactory(ctx, this);
-    this.resetHiddenConversPin = resetHiddenConversPinFactory(ctx, this);
-    this.reuseAvatar = reuseAvatarFactory(ctx, this);
-    this.reviewPendingMemberRequest = reviewPendingMemberRequestFactory(ctx, this);
-    this.scanURL = scanURLFactory(ctx, this);
-    this.searchSticker = searchStickerFactory(ctx, this);
-    this.sendBankCard = sendBankCardFactory(ctx, this);
-    this.sendCard = sendCardFactory(ctx, this);
-    this.sendDeliveredEvent = sendDeliveredEventFactory(ctx, this);
-    this.sendFriendRequest = sendFriendRequestFactory(ctx, this);
-    this.sendLink = sendLinkFactory(ctx, this);
-    this.sendMessage = sendMessageFactory(ctx, this);
-    this.sendReport = sendReportFactory(ctx, this);
-    this.sendSeenEvent = sendSeenEventFactory(ctx, this);
-    this.sendSticker = sendStickerFactory(ctx, this);
-    this.sendTypingEvent = sendTypingEventFactory(ctx, this);
-    this.sendVideo = sendVideoFactory(ctx, this);
-    this.sendVoice = sendVoiceFactory(ctx, this);
-    this.setHiddenConversations = setHiddenConversationsFactory(ctx, this);
-    this.setMute = setMuteFactory(ctx, this);
-    this.setPinnedConversations = setPinnedConversationsFactory(ctx, this);
-    this.sharePoll = sharePollFactory(ctx, this);
-    this.unblockUser = unblockUserFactory(ctx, this);
-    this.undo = undoFactory(ctx, this);
-    this.undoFriendRequest = undoFriendRequestFactory(ctx, this);
-    this.updateActiveStatus = updateActiveStatusFactory(ctx, this);
-    this.updateArchivedChatList = updateArchivedChatListFactory(ctx, this);
-    this.updateAutoDeleteChat = updateAutoDeleteChatFactory(ctx, this);
-    this.updateAutoReply = updateAutoReplyFactory(ctx, this);
-    this.updateBankAccount = updateBankAccountFactory(ctx, this);
-    this.updateCatalog = updateCatalogFactory(ctx, this);
-    this.updateGroupSettings = updateGroupSettingsFactory(ctx, this);
-    this.updateHiddenConversPin = updateHiddenConversPinFactory(ctx, this);
-    this.updateLabels = updateLabelsFactory(ctx, this);
-    this.updateLang = updateLangFactory(ctx, this);
-    this.updateProductCatalog = updateProductCatalogFactory(ctx, this);
-    this.updateProfile = updateProfileFactory(ctx, this);
-    this.updateProfileBio = updateProfileBioFactory(ctx, this);
-    this.updateQuickMessage = updateQuickMessageFactory(ctx, this);
-    this.updateSettings = updateSettingsFactory(ctx, this);
-    this.upgradeGroupToCommunity = upgradeGroupToCommunityFactory(ctx, this);
-    this.uploadAttachment = uploadAttachmentFactory(ctx, this);
-    this.uploadProductPhoto = uploadProductPhotoFactory(ctx, this);
-    this.votePoll = votePollFactory(ctx, this);
-    this.custom = customFactory(ctx, this);
-  }
-}
-var init_apis = __esm(() => {
-  init_listen();
-  init_acceptFriendRequest();
-  init_addGroupBlockedMember();
-  init_addGroupDeputy();
-  init_addPollOptions();
-  init_addQuickMessage();
-  init_addReaction();
-  init_addUnreadMark();
-  init_addUserToGroup();
-  init_blockUser();
-  init_blockViewFeed();
-  init_changeAccountAvatar();
-  init_changeFriendAlias();
-  init_changeGroupAvatar();
-  init_changeGroupName();
-  init_changeGroupOwner();
-  init_createAutoReply();
-  init_createBankAccount();
-  init_createCatalog();
-  init_createGroup();
-  init_createNote();
-  init_createPoll();
-  init_createProductCatalog();
-  init_createReminder();
-  init_deleteAutoReply();
-  init_deleteAvatar();
-  init_deleteBankAccount();
-  init_deleteCatalog();
-  init_deleteChat();
-  init_deleteGroupInviteBox();
-  init_deleteMessage();
-  init_deleteProductCatalog();
-  init_disableGroupLink();
-  init_disperseGroup();
-  init_editNote();
-  init_editReminder();
-  init_enableGroupLink();
-  init_fetchAccountInfo();
-  init_findUser();
-  init_findUserByUsername();
-  init_forwardMessage();
-  init_getAliasList();
-  init_getAllFriends();
-  init_getAllGroups();
-  init_getArchivedChatList();
-  init_getAutoDeleteChat();
-  init_getAutoReplyList();
-  init_getAvatarList();
-  init_getAvatarUrlProfile();
-  init_getBizAccount();
-  init_getCatalogList();
-  init_getCloseFriends();
-  init_getContext();
-  init_getCookie();
-  init_getFriendBoardList();
-  init_getFriendOnlines();
-  init_getFriendRecommendations();
-  init_getFriendRequestStatus();
-  init_getFullAvatar();
-  init_getGroupBlockedMember();
-  init_getGroupChatHistory();
-  init_getGroupInfo();
-  init_getGroupInviteBoxInfo();
-  init_getGroupInviteBoxList();
-  init_getGroupLinkDetail();
-  init_getGroupLinkInfo();
-  init_getGroupMembersInfo();
-  init_getHiddenConversations();
-  init_getLabels();
-  init_getListBank();
-  init_getListBankAccount();
-  init_getListBoard();
-  init_getListDevice();
-  init_getListReminder();
-  init_getMultiUsersByPhones();
-  init_getMute();
-  init_getOwnId();
-  init_getPendingGroupMembers();
-  init_getPinConversations();
-  init_getPollDetail();
-  init_getProductCatalogList();
-  init_getQR();
-  init_getQuickMessageList();
-  init_getRelatedFriendGroup();
-  init_getReminder();
-  init_getReminderResponses();
-  init_getSentFriendRequest();
-  init_getSettings();
-  init_getStickerCategoryDetail();
-  init_getStickers();
-  init_getStickersDetail();
-  init_getUnreadMark();
-  init_getUserInfo();
-  init_inviteUserToGroups();
-  init_joinGroupInviteBox();
-  init_joinGroupLink();
-  init_keepAlive();
-  init_lastOnline();
-  init_leaveGroup();
-  init_lockPoll();
-  init_lostFocus();
-  init_parseLink();
-  init_registerCatalog();
-  init_rejectFriendRequest();
-  init_removeFriend();
-  init_removeFriendAlias();
-  init_removeGroupBlockedMember();
-  init_removeGroupDeputy();
-  init_removeQuickMessage();
-  init_removeReminder();
-  init_removeUnreadMark();
-  init_removeUserFromGroup();
-  init_resetHiddenConversPin();
-  init_reuseAvatar();
-  init_reviewPendingMemberRequest();
-  init_scanURL();
-  init_searchSticker();
-  init_sendBankCard();
-  init_sendCard();
-  init_sendDeliveredEvent();
-  init_sendFriendRequest();
-  init_sendLink();
-  init_sendMessage();
-  init_sendReport();
-  init_sendSeenEvent();
-  init_sendSticker();
-  init_sendTypingEvent();
-  init_sendVideo();
-  init_sendVoice();
-  init_setHiddenConversations();
-  init_setMute();
-  init_setPinnedConversations();
-  init_sharePoll();
-  init_unblockUser();
-  init_undo();
-  init_undoFriendRequest();
-  init_updateActiveStatus();
-  init_updateArchivedChatList();
-  init_updateAutoDeleteChat();
-  init_updateAutoReply();
-  init_updateBankAccount();
-  init_updateCatalog();
-  init_updateGroupSettings();
-  init_updateHiddenConversPin();
-  init_updateLabels();
-  init_updateLang();
-  init_updateProductCatalog();
-  init_updateProfile();
-  init_updateProfileBio();
-  init_updateQuickMessage();
-  init_updateSettings();
-  init_upgradeGroupToCommunity();
-  init_uploadAttachment();
-  init_uploadProductPhoto();
-  init_votePoll();
-  init_custom();
-});
-
-// node_modules/zca-js/dist/zalo.js
-class Zalo {
-  constructor(options = {}) {
-    this.options = options;
-    this.enableEncryptParam = true;
-  }
-  parseCookies(cookie) {
-    const cookieArr = Array.isArray(cookie) ? cookie : cookie.cookies;
-    cookieArr.forEach((e, i) => {
-      if (typeof e.domain == "string" && e.domain.startsWith("."))
-        cookieArr[i].domain = e.domain.slice(1);
-    });
-    const jar = new import_tough_cookie3.default.CookieJar;
-    for (const each of cookieArr) {
-      try {
-        const cookieObj = import_tough_cookie3.default.Cookie.fromJSON(Object.assign(Object.assign({}, each), { key: each.key || each.name }));
-        if (cookieObj) {
-          const domain = cookieObj.domain || "chat.zalo.me";
-          const url = `https://${domain.startsWith(".") ? domain.slice(1) : domain}`;
-          jar.setCookieSync(cookieObj, url);
-        }
-      } catch (error) {
-        logger({
-          options: {
-            logging: this.options.logging
-          }
-        }).error("Failed to set cookie:", error);
-      }
-    }
-    return jar;
-  }
-  validateParams(credentials) {
-    if (!credentials.imei || !credentials.cookie || !credentials.userAgent) {
-      throw new ZaloApiError("Missing required params");
-    }
-  }
-  async login(credentials) {
-    const ctx = createContext(this.options.apiType, this.options.apiVersion);
-    Object.assign(ctx.options, this.options);
-    return this.loginCookie(ctx, credentials);
-  }
-  async loginCookie(ctx, credentials) {
-    await checkUpdate(ctx);
-    this.validateParams(credentials);
-    ctx.imei = credentials.imei;
-    ctx.cookie = this.parseCookies(credentials.cookie);
-    ctx.userAgent = credentials.userAgent;
-    ctx.language = credentials.language || "vi";
-    const loginData = await login(ctx, this.enableEncryptParam);
-    const serverInfo = await getServerInfo(ctx, this.enableEncryptParam);
-    const loginInfo = loginData === null || loginData === undefined ? undefined : loginData.data;
-    if (!loginData || !loginInfo || !serverInfo)
-      throw new ZaloApiError("Đăng nhập thất bại");
-    ctx.secretKey = loginInfo.zpw_enk;
-    ctx.uid = loginInfo.uid;
-    ctx.settings = serverInfo.setttings || serverInfo.settings;
-    ctx.extraVer = serverInfo.extra_ver;
-    ctx.loginInfo = loginInfo;
-    if (!isContextSession(ctx))
-      throw new ZaloApiError("Khởi tạo ngữ cảnh thất bại.");
-    logger(ctx).info("Logged in as", loginInfo.uid);
-    return new API(ctx, loginInfo.zpw_service_map_v3, loginInfo.zpw_ws);
-  }
-  async loginQR(options, callback) {
-    if (!options)
-      options = {};
-    if (!options.userAgent)
-      options.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0";
-    if (!options.language)
-      options.language = "vi";
-    const ctx = createContext(this.options.apiType, this.options.apiVersion);
-    Object.assign(ctx.options, this.options);
-    const loginQRResult = await loginQR(ctx, options, callback);
-    if (!loginQRResult)
-      throw new ZaloApiError("Unable to login with QRCode");
-    const imei = generateZaloUUID(options.userAgent);
-    if (callback) {
-      callback({
-        type: LoginQRCallbackEventType.GotLoginInfo,
-        data: {
-          cookie: loginQRResult.cookies,
-          imei,
-          userAgent: options.userAgent
-        },
-        actions: null
-      });
-    }
-    return this.loginCookie(ctx, {
-      cookie: loginQRResult.cookies,
-      imei,
-      userAgent: options.userAgent,
-      language: options.language
-    });
-  }
-}
-var import_tough_cookie3;
-var init_zalo = __esm(() => {
-  init_loginQR();
-  init_login();
-  init_context();
-  init_utils();
-  init_ZaloApiError();
-  init_update();
-  init_apis();
-  import_tough_cookie3 = __toESM(require_cookie2(), 1);
-});
-
-// node_modules/zca-js/dist/index.js
-var init_dist = __esm(() => {
-  init_listen();
-  init_loginQR();
-  init_getFriendRecommendations();
-  init_reviewPendingMemberRequest();
-  init_sendMessage();
-  init_sendReport();
-  init_setMute();
-  init_updateAutoDeleteChat();
-  init_updateLang();
-  init_updateSettings();
-  init_Errors();
-  init_models();
-  init_zalo();
+  setToStringTag(FormData.prototype, "FormData");
+  module.exports = FormData;
 });
 
 // node_modules/dotenv/package.json
-var require_package = __commonJS(function(exports2, module2) {
-  module2.exports = {
+var require_package = __commonJS(function(exports, module) {
+  module.exports = {
     name: "dotenv",
     version: "16.6.1",
     description: "Loads environment variables from .env file",
@@ -37221,11 +25016,11 @@ var require_package = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/dotenv/lib/main.js
-var require_main = __commonJS(function(exports2, module2) {
-  var fs = require("fs");
-  var path = require("path");
-  var os = require("os");
-  var crypto2 = require("crypto");
+var require_main = __commonJS(function(exports, module) {
+  var fs = __require("fs");
+  var path = __require("path");
+  var os = __require("os");
+  var crypto2 = __require("crypto");
   var packageJson = require_package();
   var version = packageJson.version;
   var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
@@ -37500,259 +25295,11250 @@ var require_main = __commonJS(function(exports2, module2) {
     parse,
     populate
   };
-  module2.exports.configDotenv = DotenvModule.configDotenv;
-  module2.exports._configVault = DotenvModule._configVault;
-  module2.exports._parseVault = DotenvModule._parseVault;
-  module2.exports.config = DotenvModule.config;
-  module2.exports.decrypt = DotenvModule.decrypt;
-  module2.exports.parse = DotenvModule.parse;
-  module2.exports.populate = DotenvModule.populate;
-  module2.exports = DotenvModule;
+  module.exports.configDotenv = DotenvModule.configDotenv;
+  module.exports._configVault = DotenvModule._configVault;
+  module.exports._parseVault = DotenvModule._parseVault;
+  module.exports.config = DotenvModule.config;
+  module.exports.decrypt = DotenvModule.decrypt;
+  module.exports.parse = DotenvModule.parse;
+  module.exports.populate = DotenvModule.populate;
+  module.exports = DotenvModule;
 });
 
-// src/index.ts
-var exports_src = {};
-__export(exports_src, {
-  BaseChannel: () => BaseChannel,
-  CONFIG: () => CONFIG,
-  ChannelEventBus: () => ChannelEventBus,
-  ChannelHub: () => ChannelHub,
-  CommandRouter: () => CommandRouter,
-  DiscordChannelAdapter: () => DiscordChannelAdapter,
-  SlackChannelAdapter: () => SlackChannelAdapter,
-  TelegramChannelAdapter: () => TelegramChannelAdapter,
-  WebhookBridge: () => WebhookBridge,
-  Zalo: () => Zalo,
-  ZaloChannelAdapter: () => ZaloChannelAdapter,
-  ZaloOABot: () => ZaloOABot,
-  ZaloPersonalBot: () => ZaloPersonalBot,
-  createMessageContext: () => createMessageContext,
-  getChannelHubMcpTools: () => getChannelHubMcpTools,
-  handleChannelHubMcpCall: () => handleChannelHubMcpCall,
-  initOABot: () => initOABot,
-  initPersonalBot: () => initPersonalBot
-});
-module.exports = __toCommonJS(exports_src);
-// src/core/adapter.ts
-var import_node_events = require("node:events");
+// src/personal/index.ts
+import fs7 from "node:fs";
 
-class BaseChannel extends import_node_events.EventEmitter {
-  _connected = false;
-  isConnected() {
-    return this._connected;
+// node_modules/zca-js/dist/Errors/ZaloApiError.js
+class ZaloApiError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.name = "ZcaApiError";
+    this.code = code || null;
   }
-  setConnected(value) {
-    const changed = this._connected !== value;
-    this._connected = value;
-    if (changed) {
-      this.emit("status", value ? "connected" : "disconnected");
+}
+// node_modules/zca-js/dist/Errors/ZaloApiMissingImageMetadataGetter.js
+class ZaloApiMissingImageMetadataGetter extends ZaloApiError {
+  constructor() {
+    super("Missing `imageMetadataGetter`. Please provide it in the Zalo object options.");
+    this.name = "ZaloApiMissingImageMetadataGetter";
+  }
+}
+// node_modules/zca-js/dist/Errors/ZaloApiLoginQRAborted.js
+class ZaloApiLoginQRAborted extends ZaloApiError {
+  constructor(message = "Operation aborted") {
+    super(message);
+    this.name = "ZaloApiLoginQRAborted";
+  }
+}
+// node_modules/zca-js/dist/Errors/ZaloApiLoginQRDeclined.js
+class ZaloApiLoginQRDeclined extends ZaloApiError {
+  constructor(message = "Login QR request declined") {
+    super(message);
+    this.name = "ZaloApiLoginQRDeclined";
+  }
+}
+// node_modules/zca-js/dist/models/AutoReply.js
+var AutoReplyScope;
+(function(AutoReplyScope) {
+  AutoReplyScope[AutoReplyScope["Everyone"] = 0] = "Everyone";
+  AutoReplyScope[AutoReplyScope["Stranger"] = 1] = "Stranger";
+  AutoReplyScope[AutoReplyScope["SpecificFriends"] = 2] = "SpecificFriends";
+  AutoReplyScope[AutoReplyScope["FriendsExcept"] = 3] = "FriendsExcept";
+})(AutoReplyScope || (AutoReplyScope = {}));
+// node_modules/zca-js/dist/models/Bank.js
+var BinBankCard;
+(function(BinBankCard) {
+  BinBankCard[BinBankCard["ABBank"] = 970425] = "ABBank";
+  BinBankCard[BinBankCard["ACB"] = 970416] = "ACB";
+  BinBankCard[BinBankCard["Agribank"] = 970405] = "Agribank";
+  BinBankCard[BinBankCard["BIDV"] = 970418] = "BIDV";
+  BinBankCard[BinBankCard["BNP_Paribas_HCM"] = 963666] = "BNP_Paribas_HCM";
+  BinBankCard[BinBankCard["BNP_Paribas_HN"] = 963668] = "BNP_Paribas_HN";
+  BinBankCard[BinBankCard["BVBank"] = 970454] = "BVBank";
+  BinBankCard[BinBankCard["BacA_Bank"] = 970409] = "BacA_Bank";
+  BinBankCard[BinBankCard["BaoViet_Bank"] = 970438] = "BaoViet_Bank";
+  BinBankCard[BinBankCard["CAKE"] = 546034] = "CAKE";
+  BinBankCard[BinBankCard["Cathay_United_HCM"] = 168999] = "Cathay_United_HCM";
+  BinBankCard[BinBankCard["VCBNeo"] = 970444] = "VCBNeo";
+  BinBankCard[BinBankCard["CIMB_Bank"] = 422589] = "CIMB_Bank";
+  BinBankCard[BinBankCard["Coop_Bank"] = 970446] = "Coop_Bank";
+  BinBankCard[BinBankCard["DBS_Bank"] = 796500] = "DBS_Bank";
+  BinBankCard[BinBankCard["DongA_Bank"] = 970406] = "DongA_Bank";
+  BinBankCard[BinBankCard["Eximbank"] = 970431] = "Eximbank";
+  BinBankCard[BinBankCard["Citibank"] = 533948] = "Citibank";
+  BinBankCard[BinBankCard["GPBank"] = 970408] = "GPBank";
+  BinBankCard[BinBankCard["HDBank"] = 970437] = "HDBank";
+  BinBankCard[BinBankCard["HSBC"] = 458761] = "HSBC";
+  BinBankCard[BinBankCard["HongLeong_Bank"] = 970442] = "HongLeong_Bank";
+  BinBankCard[BinBankCard["IBK_HCM"] = 970456] = "IBK_HCM";
+  BinBankCard[BinBankCard["IBK_HN"] = 970455] = "IBK_HN";
+  BinBankCard[BinBankCard["Indovina_Bank"] = 970434] = "Indovina_Bank";
+  BinBankCard[BinBankCard["KBank"] = 668888] = "KBank";
+  BinBankCard[BinBankCard["KienlongBank"] = 970452] = "KienlongBank";
+  BinBankCard[BinBankCard["Kookmin_Bank_HCM"] = 970463] = "Kookmin_Bank_HCM";
+  BinBankCard[BinBankCard["Kookmin_Bank_HN"] = 970462] = "Kookmin_Bank_HN";
+  BinBankCard[BinBankCard["Liobank"] = 963369] = "Liobank";
+  BinBankCard[BinBankCard["LPBank"] = 970449] = "LPBank";
+  BinBankCard[BinBankCard["MB_Bank"] = 970422] = "MB_Bank";
+  BinBankCard[BinBankCard["MSB"] = 970426] = "MSB";
+  BinBankCard[BinBankCard["MoMo"] = 971025] = "MoMo";
+  BinBankCard[BinBankCard["NCB"] = 970419] = "NCB";
+  BinBankCard[BinBankCard["Nam_A_Bank"] = 970428] = "Nam_A_Bank";
+  BinBankCard[BinBankCard["NongHyup_Bank"] = 801011] = "NongHyup_Bank";
+  BinBankCard[BinBankCard["OCB"] = 970448] = "OCB";
+  BinBankCard[BinBankCard["Ocean_Bank"] = 970414] = "Ocean_Bank";
+  BinBankCard[BinBankCard["PGBank"] = 970430] = "PGBank";
+  BinBankCard[BinBankCard["PVcomBank"] = 970412] = "PVcomBank";
+  BinBankCard[BinBankCard["Public_Bank_Vietnam"] = 970439] = "Public_Bank_Vietnam";
+  BinBankCard[BinBankCard["SCB"] = 970429] = "SCB";
+  BinBankCard[BinBankCard["SHB"] = 970443] = "SHB";
+  BinBankCard[BinBankCard["Sacombank"] = 970403] = "Sacombank";
+  BinBankCard[BinBankCard["Saigon_Bank"] = 970400] = "Saigon_Bank";
+  BinBankCard[BinBankCard["SeABank"] = 970440] = "SeABank";
+  BinBankCard[BinBankCard["Shinhan_Bank"] = 970424] = "Shinhan_Bank";
+  BinBankCard[BinBankCard["Standard_Chartered_Vietnam"] = 970410] = "Standard_Chartered_Vietnam";
+  BinBankCard[BinBankCard["TNEX"] = 963326] = "TNEX";
+  BinBankCard[BinBankCard["TPBank"] = 970423] = "TPBank";
+  BinBankCard[BinBankCard["Techcombank"] = 970407] = "Techcombank";
+  BinBankCard[BinBankCard["Timo"] = 963388] = "Timo";
+  BinBankCard[BinBankCard["UBank"] = 546035] = "UBank";
+  BinBankCard[BinBankCard["United_Overseas_Bank_Vietnam"] = 970458] = "United_Overseas_Bank_Vietnam";
+  BinBankCard[BinBankCard["VIB"] = 970441] = "VIB";
+  BinBankCard[BinBankCard["VPBank"] = 970432] = "VPBank";
+  BinBankCard[BinBankCard["VRB"] = 970421] = "VRB";
+  BinBankCard[BinBankCard["VietABank"] = 970427] = "VietABank";
+  BinBankCard[BinBankCard["VietBank"] = 970433] = "VietBank";
+  BinBankCard[BinBankCard["Vietcombank"] = 970436] = "Vietcombank";
+  BinBankCard[BinBankCard["VietinBank"] = 970415] = "VietinBank";
+  BinBankCard[BinBankCard["Woori_Bank"] = 970457] = "Woori_Bank";
+})(BinBankCard || (BinBankCard = {}));
+// node_modules/zca-js/dist/models/Board.js
+var BoardType;
+(function(BoardType) {
+  BoardType[BoardType["Note"] = 1] = "Note";
+  BoardType[BoardType["PinnedMessage"] = 2] = "PinnedMessage";
+  BoardType[BoardType["Poll"] = 3] = "Poll";
+})(BoardType || (BoardType = {}));
+// node_modules/zca-js/dist/models/Enum.js
+var ThreadType;
+(function(ThreadType) {
+  ThreadType[ThreadType["User"] = 0] = "User";
+  ThreadType[ThreadType["Group"] = 1] = "Group";
+})(ThreadType || (ThreadType = {}));
+var DestType;
+(function(DestType) {
+  DestType[DestType["Group"] = 1] = "Group";
+  DestType[DestType["User"] = 3] = "User";
+  DestType[DestType["Page"] = 5] = "Page";
+})(DestType || (DestType = {}));
+var Gender;
+(function(Gender) {
+  Gender[Gender["Male"] = 0] = "Male";
+  Gender[Gender["Female"] = 1] = "Female";
+})(Gender || (Gender = {}));
+var AvatarSize;
+(function(AvatarSize) {
+  AvatarSize[AvatarSize["Small"] = 120] = "Small";
+  AvatarSize[AvatarSize["Medium"] = 180] = "Medium";
+  AvatarSize[AvatarSize["Large"] = 240] = "Large";
+  AvatarSize[AvatarSize["ExtraLarge"] = 360] = "ExtraLarge";
+})(AvatarSize || (AvatarSize = {}));
+
+// node_modules/zca-js/dist/models/DeliveredMessage.js
+class UserDeliveredMessage {
+  constructor(data) {
+    this.type = ThreadType.User;
+    this.data = data;
+    this.threadId = data.deliveredUids[0];
+    this.isSelf = false;
+  }
+}
+
+class GroupDeliveredMessage {
+  constructor(uid, data) {
+    this.type = ThreadType.Group;
+    this.data = data;
+    this.threadId = data.groupId;
+    this.isSelf = data.deliveredUids.includes(uid);
+  }
+}
+// node_modules/zca-js/dist/models/FriendEvent.js
+var FriendEventType;
+(function(FriendEventType) {
+  FriendEventType[FriendEventType["ADD"] = 0] = "ADD";
+  FriendEventType[FriendEventType["REMOVE"] = 1] = "REMOVE";
+  FriendEventType[FriendEventType["REQUEST"] = 2] = "REQUEST";
+  FriendEventType[FriendEventType["UNDO_REQUEST"] = 3] = "UNDO_REQUEST";
+  FriendEventType[FriendEventType["REJECT_REQUEST"] = 4] = "REJECT_REQUEST";
+  FriendEventType[FriendEventType["SEEN_FRIEND_REQUEST"] = 5] = "SEEN_FRIEND_REQUEST";
+  FriendEventType[FriendEventType["BLOCK"] = 6] = "BLOCK";
+  FriendEventType[FriendEventType["UNBLOCK"] = 7] = "UNBLOCK";
+  FriendEventType[FriendEventType["BLOCK_CALL"] = 8] = "BLOCK_CALL";
+  FriendEventType[FriendEventType["UNBLOCK_CALL"] = 9] = "UNBLOCK_CALL";
+  FriendEventType[FriendEventType["PIN_UNPIN"] = 10] = "PIN_UNPIN";
+  FriendEventType[FriendEventType["PIN_CREATE"] = 11] = "PIN_CREATE";
+  FriendEventType[FriendEventType["UNKNOWN"] = 12] = "UNKNOWN";
+})(FriendEventType || (FriendEventType = {}));
+function initializeFriendEvent(uid, data, type) {
+  if (type == FriendEventType.ADD || type == FriendEventType.REMOVE || type == FriendEventType.BLOCK || type == FriendEventType.UNBLOCK || type == FriendEventType.BLOCK_CALL || type == FriendEventType.UNBLOCK_CALL) {
+    return {
+      type,
+      data,
+      threadId: data,
+      isSelf: ![FriendEventType.ADD, FriendEventType.REMOVE].includes(type)
+    };
+  } else if (type == FriendEventType.REJECT_REQUEST || type == FriendEventType.UNDO_REQUEST) {
+    const threadId = data.toUid;
+    return {
+      type,
+      data,
+      threadId,
+      isSelf: data.fromUid == uid
+    };
+  } else if (type == FriendEventType.REQUEST) {
+    const threadId = data.toUid;
+    return {
+      type,
+      data,
+      threadId,
+      isSelf: data.fromUid == uid
+    };
+  } else if (type == FriendEventType.SEEN_FRIEND_REQUEST) {
+    return {
+      type,
+      data,
+      threadId: uid,
+      isSelf: true
+    };
+  } else if (type == FriendEventType.PIN_CREATE) {
+    const threadId = data.conversationId;
+    return {
+      type,
+      data,
+      threadId,
+      isSelf: data.actorId == uid
+    };
+  } else if (type == FriendEventType.PIN_UNPIN) {
+    const threadId = data.conversationId;
+    return {
+      type,
+      data,
+      threadId,
+      isSelf: data.actorId == uid
+    };
+  } else {
+    return {
+      type: FriendEventType.UNKNOWN,
+      data: JSON.stringify(data),
+      threadId: "",
+      isSelf: false
+    };
+  }
+}
+// node_modules/zca-js/dist/models/Group.js
+var GroupTopicType;
+(function(GroupTopicType) {
+  GroupTopicType[GroupTopicType["Note"] = 0] = "Note";
+  GroupTopicType[GroupTopicType["Message"] = 2] = "Message";
+  GroupTopicType[GroupTopicType["Poll"] = 3] = "Poll";
+})(GroupTopicType || (GroupTopicType = {}));
+var GroupType;
+(function(GroupType) {
+  GroupType[GroupType["Group"] = 1] = "Group";
+  GroupType[GroupType["Community"] = 2] = "Community";
+})(GroupType || (GroupType = {}));
+// node_modules/zca-js/dist/models/GroupEvent.js
+var GroupEventType;
+(function(GroupEventType) {
+  GroupEventType["JOIN_REQUEST"] = "join_request";
+  GroupEventType["JOIN"] = "join";
+  GroupEventType["LEAVE"] = "leave";
+  GroupEventType["REMOVE_MEMBER"] = "remove_member";
+  GroupEventType["BLOCK_MEMBER"] = "block_member";
+  GroupEventType["UPDATE_SETTING"] = "update_setting";
+  GroupEventType["UPDATE"] = "update";
+  GroupEventType["NEW_LINK"] = "new_link";
+  GroupEventType["ADD_ADMIN"] = "add_admin";
+  GroupEventType["REMOVE_ADMIN"] = "remove_admin";
+  GroupEventType["NEW_PIN_TOPIC"] = "new_pin_topic";
+  GroupEventType["UPDATE_PIN_TOPIC"] = "update_pin_topic";
+  GroupEventType["REORDER_PIN_TOPIC"] = "reorder_pin_topic";
+  GroupEventType["UPDATE_BOARD"] = "update_board";
+  GroupEventType["REMOVE_BOARD"] = "remove_board";
+  GroupEventType["UPDATE_TOPIC"] = "update_topic";
+  GroupEventType["UNPIN_TOPIC"] = "unpin_topic";
+  GroupEventType["REMOVE_TOPIC"] = "remove_topic";
+  GroupEventType["ACCEPT_REMIND"] = "accept_remind";
+  GroupEventType["REJECT_REMIND"] = "reject_remind";
+  GroupEventType["REMIND_TOPIC"] = "remind_topic";
+  GroupEventType["UPDATE_AVATAR"] = "update_avatar";
+  GroupEventType["UNKNOWN"] = "unknown";
+})(GroupEventType || (GroupEventType = {}));
+function initializeGroupEvent(uid, data, type, act) {
+  var _a;
+  const threadId = "group_id" in data ? data.group_id : data.groupId;
+  if (type == GroupEventType.JOIN_REQUEST) {
+    return { type, act, data, threadId, isSelf: false };
+  } else if (type == GroupEventType.NEW_PIN_TOPIC || type == GroupEventType.UNPIN_TOPIC || type == GroupEventType.UPDATE_PIN_TOPIC) {
+    return {
+      type,
+      act,
+      data,
+      threadId,
+      isSelf: data.actorId == uid
+    };
+  } else if (type == GroupEventType.REORDER_PIN_TOPIC) {
+    return {
+      type,
+      act,
+      data,
+      threadId,
+      isSelf: data.actorId == uid
+    };
+  } else if (type == GroupEventType.UPDATE_BOARD || type == GroupEventType.REMOVE_BOARD) {
+    return {
+      type,
+      act,
+      data,
+      threadId,
+      isSelf: data.sourceId == uid
+    };
+  } else if (type == GroupEventType.ACCEPT_REMIND || type == GroupEventType.REJECT_REMIND) {
+    return {
+      type,
+      act,
+      data,
+      threadId,
+      isSelf: data.updateMembers.some((memberId) => memberId == uid)
+    };
+  } else if (type == GroupEventType.REMIND_TOPIC) {
+    return {
+      type,
+      act,
+      data,
+      threadId,
+      isSelf: data.creatorId == uid
+    };
+  } else {
+    const baseData = data;
+    return {
+      type,
+      act,
+      data: baseData,
+      threadId,
+      isSelf: ((_a = baseData.updateMembers) === null || _a === undefined ? undefined : _a.some((member) => member.id == uid)) || baseData.sourceId == uid
+    };
+  }
+}
+// node_modules/zca-js/dist/models/Message.js
+class UserMessage {
+  constructor(uid, data) {
+    this.type = ThreadType.User;
+    this.data = data;
+    this.threadId = data.uidFrom == "0" ? data.idTo : data.uidFrom;
+    this.isSelf = data.uidFrom == "0";
+    if (data.idTo == "0")
+      data.idTo = uid;
+    if (data.uidFrom == "0")
+      data.uidFrom = uid;
+    if (data.quote) {
+      data.quote.ownerId = String(data.quote.ownerId);
     }
   }
 }
-// src/core/bus.ts
-var import_node_events2 = require("node:events");
 
-class ChannelEventBus extends import_node_events2.EventEmitter {
-  emitMessage(msg) {
-    return this.emit("message", msg);
-  }
-  emitError(err) {
-    return this.emit("error", err);
-  }
-  emitStatus(status) {
-    return this.emit("status", status);
+class GroupMessage {
+  constructor(uid, data) {
+    this.type = ThreadType.Group;
+    this.data = data;
+    this.threadId = data.idTo;
+    this.isSelf = data.uidFrom == "0";
+    if (data.uidFrom == "0")
+      data.uidFrom = uid;
+    if (data.quote) {
+      data.quote.ownerId = String(data.quote.ownerId);
+    }
   }
 }
-// src/core/context.ts
-function createMessageContext(message, channel) {
-  return {
-    message,
-    channel,
-    reply: (text, options) => channel.sendText(message.chat.id, text, {
-      replyToId: message.id,
-      ...options
-    }),
-    replyMedia: (media, options) => channel.sendMedia(message.chat.id, media, {
-      replyToId: message.id,
-      ...options
-    }),
-    react: async (emoji) => {
-      if (channel.addReaction) {
-        await channel.addReaction(message.chat.id, message.id, emoji);
+// node_modules/zca-js/dist/models/Reaction.js
+var Reactions;
+(function(Reactions) {
+  Reactions["HEART"] = "/-heart";
+  Reactions["LIKE"] = "/-strong";
+  Reactions["HAHA"] = ":>";
+  Reactions["WOW"] = ":o";
+  Reactions["CRY"] = ":-((";
+  Reactions["ANGRY"] = ":-h";
+  Reactions["KISS"] = ":-*";
+  Reactions["TEARS_OF_JOY"] = ":')";
+  Reactions["SHIT"] = "/-shit";
+  Reactions["ROSE"] = "/-rose";
+  Reactions["BROKEN_HEART"] = "/-break";
+  Reactions["DISLIKE"] = "/-weak";
+  Reactions["LOVE"] = ";xx";
+  Reactions["CONFUSED"] = ";-/";
+  Reactions["WINK"] = ";-)";
+  Reactions["FADE"] = "/-fade";
+  Reactions["SUN"] = "/-li";
+  Reactions["BIRTHDAY"] = "/-bd";
+  Reactions["BOMB"] = "/-bome";
+  Reactions["OK"] = "/-ok";
+  Reactions["PEACE"] = "/-v";
+  Reactions["THANKS"] = "/-thanks";
+  Reactions["PUNCH"] = "/-punch";
+  Reactions["SHARE"] = "/-share";
+  Reactions["PRAY"] = "_()_";
+  Reactions["NO"] = "/-no";
+  Reactions["BAD"] = "/-bad";
+  Reactions["LOVE_YOU"] = "/-loveu";
+  Reactions["SAD"] = "--b";
+  Reactions["VERY_SAD"] = ":((";
+  Reactions["COOL"] = "x-)";
+  Reactions["NERD"] = "8-)";
+  Reactions["BIG_SMILE"] = ";-d";
+  Reactions["SUNGLASSES"] = "b-)";
+  Reactions["NEUTRAL"] = ":--|";
+  Reactions["SAD_FACE"] = "p-(";
+  Reactions["BYE"] = ":-bye";
+  Reactions["SLEEPY"] = "|-)";
+  Reactions["WIPE"] = ":wipe";
+  Reactions["DIG"] = ":-dig";
+  Reactions["ANGUISH"] = "&-(";
+  Reactions["HANDCLAP"] = ":handclap";
+  Reactions["ANGRY_FACE"] = ">-|";
+  Reactions["F_CHAIR"] = ":-f";
+  Reactions["L_CHAIR"] = ":-l";
+  Reactions["R_CHAIR"] = ":-r";
+  Reactions["SILENT"] = ";-x";
+  Reactions["SURPRISE"] = ":-o";
+  Reactions["EMBARRASSED"] = ";-s";
+  Reactions["AFRAID"] = ";-a";
+  Reactions["SAD2"] = ":-<";
+  Reactions["BIG_LAUGH"] = ":))";
+  Reactions["RICH"] = "$-)";
+  Reactions["BEER"] = "/-beer";
+  Reactions["NONE"] = "";
+})(Reactions || (Reactions = {}));
+
+class Reaction {
+  constructor(uid, data, isGroup) {
+    this.data = data;
+    this.threadId = isGroup || data.uidFrom == "0" ? data.idTo : data.uidFrom;
+    this.isSelf = data.uidFrom == "0";
+    this.isGroup = isGroup;
+    if (data.idTo == "0")
+      data.idTo = uid;
+    if (data.uidFrom == "0")
+      data.uidFrom = uid;
+  }
+}
+// node_modules/zca-js/dist/models/Reminder.js
+var ReminderRepeatMode;
+(function(ReminderRepeatMode) {
+  ReminderRepeatMode[ReminderRepeatMode["None"] = 0] = "None";
+  ReminderRepeatMode[ReminderRepeatMode["Daily"] = 1] = "Daily";
+  ReminderRepeatMode[ReminderRepeatMode["Weekly"] = 2] = "Weekly";
+  ReminderRepeatMode[ReminderRepeatMode["Monthly"] = 3] = "Monthly";
+})(ReminderRepeatMode || (ReminderRepeatMode = {}));
+// node_modules/zca-js/dist/models/SeenMessage.js
+class UserSeenMessage {
+  constructor(data) {
+    this.type = ThreadType.User;
+    this.data = data;
+    this.threadId = data.idTo;
+    this.isSelf = false;
+  }
+}
+
+class GroupSeenMessage {
+  constructor(uid, data) {
+    this.type = ThreadType.Group;
+    this.data = data;
+    this.threadId = data.groupId;
+    this.isSelf = data.seenUids.includes(uid);
+  }
+}
+// node_modules/zca-js/dist/models/Typing.js
+class UserTyping {
+  constructor(data) {
+    this.type = ThreadType.User;
+    this.data = data;
+    this.threadId = data.uid;
+    this.isSelf = false;
+  }
+}
+
+class GroupTyping {
+  constructor(data) {
+    this.type = ThreadType.Group;
+    this.data = data;
+    this.threadId = data.gid;
+    this.isSelf = false;
+  }
+}
+// node_modules/zca-js/dist/models/Undo.js
+class Undo {
+  constructor(uid, data, isGroup) {
+    this.data = data;
+    this.threadId = isGroup || data.uidFrom == "0" ? data.idTo : data.uidFrom;
+    this.isSelf = data.uidFrom == "0";
+    this.isGroup = isGroup;
+    if (data.idTo == "0")
+      data.idTo = uid;
+    if (data.uidFrom == "0")
+      data.uidFrom = uid;
+  }
+}
+// node_modules/zca-js/dist/models/ZBusiness.js
+var BusinessCategory;
+(function(BusinessCategory) {
+  BusinessCategory[BusinessCategory["Other"] = 0] = "Other";
+  BusinessCategory[BusinessCategory["RealEstate"] = 1] = "RealEstate";
+  BusinessCategory[BusinessCategory["TechnologyAndDevices"] = 2] = "TechnologyAndDevices";
+  BusinessCategory[BusinessCategory["TravelAndHospitality"] = 3] = "TravelAndHospitality";
+  BusinessCategory[BusinessCategory["EducationAndTraining"] = 4] = "EducationAndTraining";
+  BusinessCategory[BusinessCategory["ShoppingAndRetail"] = 5] = "ShoppingAndRetail";
+  BusinessCategory[BusinessCategory["CosmeticsAndBeauty"] = 6] = "CosmeticsAndBeauty";
+  BusinessCategory[BusinessCategory["RestaurantAndCafe"] = 7] = "RestaurantAndCafe";
+  BusinessCategory[BusinessCategory["AutoAndMotorbike"] = 8] = "AutoAndMotorbike";
+  BusinessCategory[BusinessCategory["FashionAndApparel"] = 9] = "FashionAndApparel";
+  BusinessCategory[BusinessCategory["FoodAndBeverage"] = 10] = "FoodAndBeverage";
+  BusinessCategory[BusinessCategory["MediaAndEntertainment"] = 11] = "MediaAndEntertainment";
+  BusinessCategory[BusinessCategory["InternalCommunications"] = 12] = "InternalCommunications";
+  BusinessCategory[BusinessCategory["Transportation"] = 13] = "Transportation";
+  BusinessCategory[BusinessCategory["Telecommunications"] = 14] = "Telecommunications";
+})(BusinessCategory || (BusinessCategory = {}));
+var BusinessCategoryName = {
+  [BusinessCategory.Other]: "Dịch vụ khác (Không hiển thị)",
+  [BusinessCategory.RealEstate]: "Bất động sản",
+  [BusinessCategory.TechnologyAndDevices]: "Công nghệ & Thiết bị",
+  [BusinessCategory.TravelAndHospitality]: "Du lịch & Lưu trú",
+  [BusinessCategory.EducationAndTraining]: "Giáo dục & Đào tạo",
+  [BusinessCategory.ShoppingAndRetail]: "Mua sắm & Bán lẻ",
+  [BusinessCategory.CosmeticsAndBeauty]: "Mỹ phẩm & Làm đẹp",
+  [BusinessCategory.RestaurantAndCafe]: "Nhà hàng & Quán",
+  [BusinessCategory.AutoAndMotorbike]: "Ô tô & Xe máy",
+  [BusinessCategory.FashionAndApparel]: "Thời trang & May mặc",
+  [BusinessCategory.FoodAndBeverage]: "Thực phẩm & Đồ uống",
+  [BusinessCategory.MediaAndEntertainment]: "Truyền thông & Giải trí",
+  [BusinessCategory.InternalCommunications]: "Truyền thông nội bộ",
+  [BusinessCategory.Transportation]: "Vận tải",
+  [BusinessCategory.Telecommunications]: "Viễn thông"
+};
+// node_modules/zca-js/dist/apis/loginQR.js
+var import_tough_cookie2 = __toESM(require_cookie2(), 1);
+import { writeFile } from "node:fs/promises";
+
+// node_modules/zca-js/dist/utils.js
+var import_crypto_js = __toESM(require_crypto_js(), 1);
+import crypto2 from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+
+// node_modules/pako/dist/pako.esm.mjs
+/*! pako 2.2.0 https://github.com/nodeca/pako @license (MIT AND Zlib) */
+var Z_FIXED$1 = 4;
+var Z_BINARY = 0;
+var Z_TEXT = 1;
+var Z_UNKNOWN$1 = 2;
+function zero$1(buf) {
+  let len = buf.length;
+  while (--len >= 0) {
+    buf[len] = 0;
+  }
+}
+var STORED_BLOCK = 0;
+var STATIC_TREES = 1;
+var DYN_TREES = 2;
+var MIN_MATCH$1 = 3;
+var MAX_MATCH$1 = 258;
+var LENGTH_CODES$1 = 29;
+var LITERALS$1 = 256;
+var L_CODES$1 = LITERALS$1 + 1 + LENGTH_CODES$1;
+var D_CODES$1 = 30;
+var BL_CODES$1 = 19;
+var HEAP_SIZE$1 = 2 * L_CODES$1 + 1;
+var MAX_BITS$1 = 15;
+var Buf_size = 16;
+var MAX_BL_BITS = 7;
+var END_BLOCK = 256;
+var REP_3_6 = 16;
+var REPZ_3_10 = 17;
+var REPZ_11_138 = 18;
+var extra_lbits = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0]);
+var extra_dbits = new Uint8Array([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13]);
+var extra_blbits = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 7]);
+var bl_order = new Uint8Array([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
+var DIST_CODE_LEN = 512;
+var static_ltree = new Array((L_CODES$1 + 2) * 2);
+zero$1(static_ltree);
+var static_dtree = new Array(D_CODES$1 * 2);
+zero$1(static_dtree);
+var _dist_code = new Array(DIST_CODE_LEN);
+zero$1(_dist_code);
+var _length_code = new Array(MAX_MATCH$1 - MIN_MATCH$1 + 1);
+zero$1(_length_code);
+var base_length = new Array(LENGTH_CODES$1);
+zero$1(base_length);
+var base_dist = new Array(D_CODES$1);
+zero$1(base_dist);
+function StaticTreeDesc(static_tree, extra_bits, extra_base, elems, max_length) {
+  this.static_tree = static_tree;
+  this.extra_bits = extra_bits;
+  this.extra_base = extra_base;
+  this.elems = elems;
+  this.max_length = max_length;
+  this.has_stree = static_tree && static_tree.length;
+}
+var static_l_desc;
+var static_d_desc;
+var static_bl_desc;
+function TreeDesc(dyn_tree, stat_desc) {
+  this.dyn_tree = dyn_tree;
+  this.max_code = 0;
+  this.stat_desc = stat_desc;
+}
+var d_code = (dist) => {
+  return dist < 256 ? _dist_code[dist] : _dist_code[256 + (dist >>> 7)];
+};
+var put_short = (s, w) => {
+  s.pending_buf[s.pending++] = w & 255;
+  s.pending_buf[s.pending++] = w >>> 8 & 255;
+};
+var send_bits = (s, value, length) => {
+  if (s.bi_valid > Buf_size - length) {
+    s.bi_buf |= value << s.bi_valid & 65535;
+    put_short(s, s.bi_buf);
+    s.bi_buf = value >> Buf_size - s.bi_valid;
+    s.bi_valid += length - Buf_size;
+  } else {
+    s.bi_buf |= value << s.bi_valid & 65535;
+    s.bi_valid += length;
+  }
+};
+var send_code = (s, c, tree) => {
+  send_bits(s, tree[c * 2], tree[c * 2 + 1]);
+};
+var bi_reverse = (code, len) => {
+  let res = 0;
+  do {
+    res |= code & 1;
+    code >>>= 1;
+    res <<= 1;
+  } while (--len > 0);
+  return res >>> 1;
+};
+var bi_flush = (s) => {
+  if (s.bi_valid === 16) {
+    put_short(s, s.bi_buf);
+    s.bi_buf = 0;
+    s.bi_valid = 0;
+  } else if (s.bi_valid >= 8) {
+    s.pending_buf[s.pending++] = s.bi_buf & 255;
+    s.bi_buf >>= 8;
+    s.bi_valid -= 8;
+  }
+};
+var gen_bitlen = (s, desc) => {
+  const tree = desc.dyn_tree;
+  const max_code = desc.max_code;
+  const stree = desc.stat_desc.static_tree;
+  const has_stree = desc.stat_desc.has_stree;
+  const extra = desc.stat_desc.extra_bits;
+  const base = desc.stat_desc.extra_base;
+  const max_length = desc.stat_desc.max_length;
+  let h;
+  let n, m;
+  let bits;
+  let xbits;
+  let f;
+  let overflow = 0;
+  for (bits = 0;bits <= MAX_BITS$1; bits++) {
+    s.bl_count[bits] = 0;
+  }
+  tree[s.heap[s.heap_max] * 2 + 1] = 0;
+  for (h = s.heap_max + 1;h < HEAP_SIZE$1; h++) {
+    n = s.heap[h];
+    bits = tree[tree[n * 2 + 1] * 2 + 1] + 1;
+    if (bits > max_length) {
+      bits = max_length;
+      overflow++;
+    }
+    tree[n * 2 + 1] = bits;
+    if (n > max_code) {
+      continue;
+    }
+    s.bl_count[bits]++;
+    xbits = 0;
+    if (n >= base) {
+      xbits = extra[n - base];
+    }
+    f = tree[n * 2];
+    s.opt_len += f * (bits + xbits);
+    if (has_stree) {
+      s.static_len += f * (stree[n * 2 + 1] + xbits);
+    }
+  }
+  if (overflow === 0) {
+    return;
+  }
+  do {
+    bits = max_length - 1;
+    while (s.bl_count[bits] === 0) {
+      bits--;
+    }
+    s.bl_count[bits]--;
+    s.bl_count[bits + 1] += 2;
+    s.bl_count[max_length]--;
+    overflow -= 2;
+  } while (overflow > 0);
+  for (bits = max_length;bits !== 0; bits--) {
+    n = s.bl_count[bits];
+    while (n !== 0) {
+      m = s.heap[--h];
+      if (m > max_code) {
+        continue;
+      }
+      if (tree[m * 2 + 1] !== bits) {
+        s.opt_len += (bits - tree[m * 2 + 1]) * tree[m * 2];
+        tree[m * 2 + 1] = bits;
+      }
+      n--;
+    }
+  }
+};
+var gen_codes = (tree, max_code, bl_count) => {
+  const next_code = new Array(MAX_BITS$1 + 1);
+  let code = 0;
+  let bits;
+  let n;
+  for (bits = 1;bits <= MAX_BITS$1; bits++) {
+    code = code + bl_count[bits - 1] << 1;
+    next_code[bits] = code;
+  }
+  for (n = 0;n <= max_code; n++) {
+    let len = tree[n * 2 + 1];
+    if (len === 0) {
+      continue;
+    }
+    tree[n * 2] = bi_reverse(next_code[len]++, len);
+  }
+};
+var tr_static_init = () => {
+  let n;
+  let bits;
+  let length;
+  let code;
+  let dist;
+  const bl_count = new Array(MAX_BITS$1 + 1);
+  length = 0;
+  for (code = 0;code < LENGTH_CODES$1 - 1; code++) {
+    base_length[code] = length;
+    for (n = 0;n < 1 << extra_lbits[code]; n++) {
+      _length_code[length++] = code;
+    }
+  }
+  _length_code[length - 1] = code;
+  dist = 0;
+  for (code = 0;code < 16; code++) {
+    base_dist[code] = dist;
+    for (n = 0;n < 1 << extra_dbits[code]; n++) {
+      _dist_code[dist++] = code;
+    }
+  }
+  dist >>= 7;
+  for (;code < D_CODES$1; code++) {
+    base_dist[code] = dist << 7;
+    for (n = 0;n < 1 << extra_dbits[code] - 7; n++) {
+      _dist_code[256 + dist++] = code;
+    }
+  }
+  for (bits = 0;bits <= MAX_BITS$1; bits++) {
+    bl_count[bits] = 0;
+  }
+  n = 0;
+  while (n <= 143) {
+    static_ltree[n * 2 + 1] = 8;
+    n++;
+    bl_count[8]++;
+  }
+  while (n <= 255) {
+    static_ltree[n * 2 + 1] = 9;
+    n++;
+    bl_count[9]++;
+  }
+  while (n <= 279) {
+    static_ltree[n * 2 + 1] = 7;
+    n++;
+    bl_count[7]++;
+  }
+  while (n <= 287) {
+    static_ltree[n * 2 + 1] = 8;
+    n++;
+    bl_count[8]++;
+  }
+  gen_codes(static_ltree, L_CODES$1 + 1, bl_count);
+  for (n = 0;n < D_CODES$1; n++) {
+    static_dtree[n * 2 + 1] = 5;
+    static_dtree[n * 2] = bi_reverse(n, 5);
+  }
+  static_l_desc = new StaticTreeDesc(static_ltree, extra_lbits, LITERALS$1 + 1, L_CODES$1, MAX_BITS$1);
+  static_d_desc = new StaticTreeDesc(static_dtree, extra_dbits, 0, D_CODES$1, MAX_BITS$1);
+  static_bl_desc = new StaticTreeDesc(new Array(0), extra_blbits, 0, BL_CODES$1, MAX_BL_BITS);
+};
+var init_block = (s) => {
+  let n;
+  for (n = 0;n < L_CODES$1; n++) {
+    s.dyn_ltree[n * 2] = 0;
+  }
+  for (n = 0;n < D_CODES$1; n++) {
+    s.dyn_dtree[n * 2] = 0;
+  }
+  for (n = 0;n < BL_CODES$1; n++) {
+    s.bl_tree[n * 2] = 0;
+  }
+  s.dyn_ltree[END_BLOCK * 2] = 1;
+  s.opt_len = s.static_len = 0;
+  s.sym_next = s.matches = 0;
+};
+var bi_windup = (s) => {
+  if (s.bi_valid > 8) {
+    put_short(s, s.bi_buf);
+  } else if (s.bi_valid > 0) {
+    s.pending_buf[s.pending++] = s.bi_buf;
+  }
+  s.bi_buf = 0;
+  s.bi_valid = 0;
+};
+var smaller = (tree, n, m, depth) => {
+  const _n2 = n * 2;
+  const _m2 = m * 2;
+  return tree[_n2] < tree[_m2] || tree[_n2] === tree[_m2] && depth[n] <= depth[m];
+};
+var pqdownheap = (s, tree, k) => {
+  const v = s.heap[k];
+  let j = k << 1;
+  while (j <= s.heap_len) {
+    if (j < s.heap_len && smaller(tree, s.heap[j + 1], s.heap[j], s.depth)) {
+      j++;
+    }
+    if (smaller(tree, v, s.heap[j], s.depth)) {
+      break;
+    }
+    s.heap[k] = s.heap[j];
+    k = j;
+    j <<= 1;
+  }
+  s.heap[k] = v;
+};
+var compress_block = (s, ltree, dtree) => {
+  let dist;
+  let lc;
+  let sx = 0;
+  let code;
+  let extra;
+  if (s.sym_next !== 0) {
+    do {
+      dist = s.pending_buf[s.sym_buf + sx++] & 255;
+      dist += (s.pending_buf[s.sym_buf + sx++] & 255) << 8;
+      lc = s.pending_buf[s.sym_buf + sx++];
+      if (dist === 0) {
+        send_code(s, lc, ltree);
+      } else {
+        code = _length_code[lc];
+        send_code(s, code + LITERALS$1 + 1, ltree);
+        extra = extra_lbits[code];
+        if (extra !== 0) {
+          lc -= base_length[code];
+          send_bits(s, lc, extra);
+        }
+        dist--;
+        code = d_code(dist);
+        send_code(s, code, dtree);
+        extra = extra_dbits[code];
+        if (extra !== 0) {
+          dist -= base_dist[code];
+          send_bits(s, dist, extra);
+        }
+      }
+    } while (sx < s.sym_next);
+  }
+  send_code(s, END_BLOCK, ltree);
+};
+var build_tree = (s, desc) => {
+  const tree = desc.dyn_tree;
+  const stree = desc.stat_desc.static_tree;
+  const has_stree = desc.stat_desc.has_stree;
+  const elems = desc.stat_desc.elems;
+  let n, m;
+  let max_code = -1;
+  let node;
+  s.heap_len = 0;
+  s.heap_max = HEAP_SIZE$1;
+  for (n = 0;n < elems; n++) {
+    if (tree[n * 2] !== 0) {
+      s.heap[++s.heap_len] = max_code = n;
+      s.depth[n] = 0;
+    } else {
+      tree[n * 2 + 1] = 0;
+    }
+  }
+  while (s.heap_len < 2) {
+    node = s.heap[++s.heap_len] = max_code < 2 ? ++max_code : 0;
+    tree[node * 2] = 1;
+    s.depth[node] = 0;
+    s.opt_len--;
+    if (has_stree) {
+      s.static_len -= stree[node * 2 + 1];
+    }
+  }
+  desc.max_code = max_code;
+  for (n = s.heap_len >> 1;n >= 1; n--) {
+    pqdownheap(s, tree, n);
+  }
+  node = elems;
+  do {
+    n = s.heap[1];
+    s.heap[1] = s.heap[s.heap_len--];
+    pqdownheap(s, tree, 1);
+    m = s.heap[1];
+    s.heap[--s.heap_max] = n;
+    s.heap[--s.heap_max] = m;
+    tree[node * 2] = tree[n * 2] + tree[m * 2];
+    s.depth[node] = (s.depth[n] >= s.depth[m] ? s.depth[n] : s.depth[m]) + 1;
+    tree[n * 2 + 1] = tree[m * 2 + 1] = node;
+    s.heap[1] = node++;
+    pqdownheap(s, tree, 1);
+  } while (s.heap_len >= 2);
+  s.heap[--s.heap_max] = s.heap[1];
+  gen_bitlen(s, desc);
+  gen_codes(tree, max_code, s.bl_count);
+};
+var scan_tree = (s, tree, max_code) => {
+  let n;
+  let prevlen = -1;
+  let curlen;
+  let nextlen = tree[0 * 2 + 1];
+  let count = 0;
+  let max_count = 7;
+  let min_count = 4;
+  if (nextlen === 0) {
+    max_count = 138;
+    min_count = 3;
+  }
+  tree[(max_code + 1) * 2 + 1] = 65535;
+  for (n = 0;n <= max_code; n++) {
+    curlen = nextlen;
+    nextlen = tree[(n + 1) * 2 + 1];
+    if (++count < max_count && curlen === nextlen) {
+      continue;
+    } else if (count < min_count) {
+      s.bl_tree[curlen * 2] += count;
+    } else if (curlen !== 0) {
+      if (curlen !== prevlen) {
+        s.bl_tree[curlen * 2]++;
+      }
+      s.bl_tree[REP_3_6 * 2]++;
+    } else if (count <= 10) {
+      s.bl_tree[REPZ_3_10 * 2]++;
+    } else {
+      s.bl_tree[REPZ_11_138 * 2]++;
+    }
+    count = 0;
+    prevlen = curlen;
+    if (nextlen === 0) {
+      max_count = 138;
+      min_count = 3;
+    } else if (curlen === nextlen) {
+      max_count = 6;
+      min_count = 3;
+    } else {
+      max_count = 7;
+      min_count = 4;
+    }
+  }
+};
+var send_tree = (s, tree, max_code) => {
+  let n;
+  let prevlen = -1;
+  let curlen;
+  let nextlen = tree[0 * 2 + 1];
+  let count = 0;
+  let max_count = 7;
+  let min_count = 4;
+  if (nextlen === 0) {
+    max_count = 138;
+    min_count = 3;
+  }
+  for (n = 0;n <= max_code; n++) {
+    curlen = nextlen;
+    nextlen = tree[(n + 1) * 2 + 1];
+    if (++count < max_count && curlen === nextlen) {
+      continue;
+    } else if (count < min_count) {
+      do {
+        send_code(s, curlen, s.bl_tree);
+      } while (--count !== 0);
+    } else if (curlen !== 0) {
+      if (curlen !== prevlen) {
+        send_code(s, curlen, s.bl_tree);
+        count--;
+      }
+      send_code(s, REP_3_6, s.bl_tree);
+      send_bits(s, count - 3, 2);
+    } else if (count <= 10) {
+      send_code(s, REPZ_3_10, s.bl_tree);
+      send_bits(s, count - 3, 3);
+    } else {
+      send_code(s, REPZ_11_138, s.bl_tree);
+      send_bits(s, count - 11, 7);
+    }
+    count = 0;
+    prevlen = curlen;
+    if (nextlen === 0) {
+      max_count = 138;
+      min_count = 3;
+    } else if (curlen === nextlen) {
+      max_count = 6;
+      min_count = 3;
+    } else {
+      max_count = 7;
+      min_count = 4;
+    }
+  }
+};
+var build_bl_tree = (s) => {
+  let max_blindex;
+  scan_tree(s, s.dyn_ltree, s.l_desc.max_code);
+  scan_tree(s, s.dyn_dtree, s.d_desc.max_code);
+  build_tree(s, s.bl_desc);
+  for (max_blindex = BL_CODES$1 - 1;max_blindex >= 3; max_blindex--) {
+    if (s.bl_tree[bl_order[max_blindex] * 2 + 1] !== 0) {
+      break;
+    }
+  }
+  s.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
+  return max_blindex;
+};
+var send_all_trees = (s, lcodes, dcodes, blcodes) => {
+  let rank;
+  send_bits(s, lcodes - 257, 5);
+  send_bits(s, dcodes - 1, 5);
+  send_bits(s, blcodes - 4, 4);
+  for (rank = 0;rank < blcodes; rank++) {
+    send_bits(s, s.bl_tree[bl_order[rank] * 2 + 1], 3);
+  }
+  send_tree(s, s.dyn_ltree, lcodes - 1);
+  send_tree(s, s.dyn_dtree, dcodes - 1);
+};
+var detect_data_type = (s) => {
+  let block_mask = 4093624447;
+  let n;
+  for (n = 0;n <= 31; n++, block_mask >>>= 1) {
+    if (block_mask & 1 && s.dyn_ltree[n * 2] !== 0) {
+      return Z_BINARY;
+    }
+  }
+  if (s.dyn_ltree[9 * 2] !== 0 || s.dyn_ltree[10 * 2] !== 0 || s.dyn_ltree[13 * 2] !== 0) {
+    return Z_TEXT;
+  }
+  for (n = 32;n < LITERALS$1; n++) {
+    if (s.dyn_ltree[n * 2] !== 0) {
+      return Z_TEXT;
+    }
+  }
+  return Z_BINARY;
+};
+var static_init_done = false;
+var _tr_init$1 = (s) => {
+  if (!static_init_done) {
+    tr_static_init();
+    static_init_done = true;
+  }
+  s.l_desc = new TreeDesc(s.dyn_ltree, static_l_desc);
+  s.d_desc = new TreeDesc(s.dyn_dtree, static_d_desc);
+  s.bl_desc = new TreeDesc(s.bl_tree, static_bl_desc);
+  s.bi_buf = 0;
+  s.bi_valid = 0;
+  init_block(s);
+};
+var _tr_stored_block$1 = (s, buf, stored_len, last) => {
+  send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);
+  bi_windup(s);
+  put_short(s, stored_len);
+  put_short(s, ~stored_len);
+  if (stored_len) {
+    s.pending_buf.set(s.window.subarray(buf, buf + stored_len), s.pending);
+  }
+  s.pending += stored_len;
+};
+var _tr_align$1 = (s) => {
+  send_bits(s, STATIC_TREES << 1, 3);
+  send_code(s, END_BLOCK, static_ltree);
+  bi_flush(s);
+};
+var _tr_flush_block$1 = (s, buf, stored_len, last) => {
+  let opt_lenb, static_lenb;
+  let max_blindex = 0;
+  if (s.level > 0) {
+    if (s.strm.data_type === Z_UNKNOWN$1) {
+      s.strm.data_type = detect_data_type(s);
+    }
+    build_tree(s, s.l_desc);
+    build_tree(s, s.d_desc);
+    max_blindex = build_bl_tree(s);
+    opt_lenb = s.opt_len + 3 + 7 >>> 3;
+    static_lenb = s.static_len + 3 + 7 >>> 3;
+    if (static_lenb <= opt_lenb) {
+      opt_lenb = static_lenb;
+    }
+  } else {
+    opt_lenb = static_lenb = stored_len + 5;
+  }
+  if (stored_len + 4 <= opt_lenb && buf !== -1) {
+    _tr_stored_block$1(s, buf, stored_len, last);
+  } else if (s.strategy === Z_FIXED$1 || static_lenb === opt_lenb) {
+    send_bits(s, (STATIC_TREES << 1) + (last ? 1 : 0), 3);
+    compress_block(s, static_ltree, static_dtree);
+  } else {
+    send_bits(s, (DYN_TREES << 1) + (last ? 1 : 0), 3);
+    send_all_trees(s, s.l_desc.max_code + 1, s.d_desc.max_code + 1, max_blindex + 1);
+    compress_block(s, s.dyn_ltree, s.dyn_dtree);
+  }
+  init_block(s);
+  if (last) {
+    bi_windup(s);
+  }
+};
+var _tr_tally$1 = (s, dist, lc) => {
+  s.pending_buf[s.sym_buf + s.sym_next++] = dist;
+  s.pending_buf[s.sym_buf + s.sym_next++] = dist >> 8;
+  s.pending_buf[s.sym_buf + s.sym_next++] = lc;
+  if (dist === 0) {
+    s.dyn_ltree[lc * 2]++;
+  } else {
+    s.matches++;
+    dist--;
+    s.dyn_ltree[(_length_code[lc] + LITERALS$1 + 1) * 2]++;
+    s.dyn_dtree[d_code(dist) * 2]++;
+  }
+  return s.sym_next === s.sym_end;
+};
+var _tr_init_1 = _tr_init$1;
+var _tr_stored_block_1 = _tr_stored_block$1;
+var _tr_flush_block_1 = _tr_flush_block$1;
+var _tr_tally_1 = _tr_tally$1;
+var _tr_align_1 = _tr_align$1;
+var trees = {
+  _tr_init: _tr_init_1,
+  _tr_stored_block: _tr_stored_block_1,
+  _tr_flush_block: _tr_flush_block_1,
+  _tr_tally: _tr_tally_1,
+  _tr_align: _tr_align_1
+};
+var adler32 = (adler, buf, len, pos) => {
+  let s1 = adler & 65535 | 0, s2 = adler >>> 16 & 65535 | 0, n = 0;
+  while (len !== 0) {
+    n = len > 2000 ? 2000 : len;
+    len -= n;
+    do {
+      s1 = s1 + buf[pos++] | 0;
+      s2 = s2 + s1 | 0;
+    } while (--n);
+    s1 %= 65521;
+    s2 %= 65521;
+  }
+  return s1 | s2 << 16 | 0;
+};
+var adler32_1 = adler32;
+var makeTable = () => {
+  let c, table = [];
+  for (var n = 0;n < 256; n++) {
+    c = n;
+    for (var k = 0;k < 8; k++) {
+      c = c & 1 ? 3988292384 ^ c >>> 1 : c >>> 1;
+    }
+    table[n] = c;
+  }
+  return table;
+};
+var crcTable = new Uint32Array(makeTable());
+var crc32 = (crc, buf, len, pos) => {
+  const t = crcTable;
+  const end = pos + len;
+  crc ^= -1;
+  for (let i = pos;i < end; i++) {
+    crc = crc >>> 8 ^ t[(crc ^ buf[i]) & 255];
+  }
+  return crc ^ -1;
+};
+var crc32_1 = crc32;
+var messages = {
+  2: "need dictionary",
+  1: "stream end",
+  0: "",
+  "-1": "file error",
+  "-2": "stream error",
+  "-3": "data error",
+  "-4": "insufficient memory",
+  "-5": "buffer error",
+  "-6": "incompatible version"
+};
+var constants$2 = {
+  Z_NO_FLUSH: 0,
+  Z_PARTIAL_FLUSH: 1,
+  Z_SYNC_FLUSH: 2,
+  Z_FULL_FLUSH: 3,
+  Z_FINISH: 4,
+  Z_BLOCK: 5,
+  Z_TREES: 6,
+  Z_OK: 0,
+  Z_STREAM_END: 1,
+  Z_NEED_DICT: 2,
+  Z_ERRNO: -1,
+  Z_STREAM_ERROR: -2,
+  Z_DATA_ERROR: -3,
+  Z_MEM_ERROR: -4,
+  Z_BUF_ERROR: -5,
+  Z_NO_COMPRESSION: 0,
+  Z_BEST_SPEED: 1,
+  Z_BEST_COMPRESSION: 9,
+  Z_DEFAULT_COMPRESSION: -1,
+  Z_FILTERED: 1,
+  Z_HUFFMAN_ONLY: 2,
+  Z_RLE: 3,
+  Z_FIXED: 4,
+  Z_DEFAULT_STRATEGY: 0,
+  Z_BINARY: 0,
+  Z_TEXT: 1,
+  Z_UNKNOWN: 2,
+  Z_DEFLATED: 8
+};
+var { _tr_init, _tr_stored_block, _tr_flush_block, _tr_tally, _tr_align } = trees;
+var {
+  Z_NO_FLUSH: Z_NO_FLUSH$2,
+  Z_PARTIAL_FLUSH,
+  Z_FULL_FLUSH: Z_FULL_FLUSH$1,
+  Z_FINISH: Z_FINISH$3,
+  Z_BLOCK: Z_BLOCK$1,
+  Z_OK: Z_OK$3,
+  Z_STREAM_END: Z_STREAM_END$3,
+  Z_STREAM_ERROR: Z_STREAM_ERROR$2,
+  Z_DATA_ERROR: Z_DATA_ERROR$2,
+  Z_BUF_ERROR: Z_BUF_ERROR$2,
+  Z_DEFAULT_COMPRESSION: Z_DEFAULT_COMPRESSION$1,
+  Z_FILTERED,
+  Z_HUFFMAN_ONLY,
+  Z_RLE,
+  Z_FIXED,
+  Z_DEFAULT_STRATEGY: Z_DEFAULT_STRATEGY$1,
+  Z_UNKNOWN,
+  Z_DEFLATED: Z_DEFLATED$2
+} = constants$2;
+var MAX_MEM_LEVEL = 9;
+var MAX_WBITS$1 = 15;
+var DEF_MEM_LEVEL = 8;
+var LENGTH_CODES = 29;
+var LITERALS = 256;
+var L_CODES = LITERALS + 1 + LENGTH_CODES;
+var D_CODES = 30;
+var BL_CODES = 19;
+var HEAP_SIZE = 2 * L_CODES + 1;
+var MAX_BITS = 15;
+var MIN_MATCH = 3;
+var MAX_MATCH = 258;
+var MIN_LOOKAHEAD = MAX_MATCH + MIN_MATCH + 1;
+var PRESET_DICT = 32;
+var INIT_STATE = 42;
+var GZIP_STATE = 57;
+var EXTRA_STATE = 69;
+var NAME_STATE = 73;
+var COMMENT_STATE = 91;
+var HCRC_STATE = 103;
+var BUSY_STATE = 113;
+var FINISH_STATE = 666;
+var BS_NEED_MORE = 1;
+var BS_BLOCK_DONE = 2;
+var BS_FINISH_STARTED = 3;
+var BS_FINISH_DONE = 4;
+var OS_CODE = 3;
+var err = (strm, errorCode) => {
+  strm.msg = messages[errorCode];
+  return errorCode;
+};
+var rank = (f) => {
+  return f * 2 - (f > 4 ? 9 : 0);
+};
+var zero = (buf) => {
+  let len = buf.length;
+  while (--len >= 0) {
+    buf[len] = 0;
+  }
+};
+var slide_hash = (s) => {
+  let n, m;
+  let p;
+  let wsize = s.w_size;
+  n = s.hash_size;
+  p = n;
+  do {
+    m = s.head[--p];
+    s.head[p] = m >= wsize ? m - wsize : 0;
+  } while (--n);
+  n = wsize;
+  p = n;
+  do {
+    m = s.prev[--p];
+    s.prev[p] = m >= wsize ? m - wsize : 0;
+  } while (--n);
+};
+var HASH = (s, prev, data) => (prev << s.hash_shift ^ data) & s.hash_mask;
+var INSERT_STRING = (s, str) => {
+  let h;
+  if (s.legacy_hash) {
+    h = s.ins_h = HASH(s, s.ins_h, s.window[str + MIN_MATCH - 1]);
+  } else {
+    const w = s.window;
+    const value = w[str] | w[str + 1] << 8 | w[str + 2] << 16 | w[str + 3] << 24;
+    h = s.ins_h = Math.imul(value, 66521) + 66521 >>> 16 & s.hash_mask;
+  }
+  const hash_head = s.prev[str & s.w_mask] = s.head[h];
+  s.head[h] = str;
+  return hash_head;
+};
+var flush_pending = (strm) => {
+  const s = strm.state;
+  let len = s.pending;
+  if (len > strm.avail_out) {
+    len = strm.avail_out;
+  }
+  if (len === 0) {
+    return;
+  }
+  strm.output.set(s.pending_buf.subarray(s.pending_out, s.pending_out + len), strm.next_out);
+  strm.next_out += len;
+  s.pending_out += len;
+  strm.total_out += len;
+  strm.avail_out -= len;
+  s.pending -= len;
+  if (s.pending === 0) {
+    s.pending_out = 0;
+  }
+};
+var flush_block_only = (s, last) => {
+  _tr_flush_block(s, s.block_start >= 0 ? s.block_start : -1, s.strstart - s.block_start, last);
+  s.block_start = s.strstart;
+  flush_pending(s.strm);
+};
+var put_byte = (s, b) => {
+  s.pending_buf[s.pending++] = b;
+};
+var putShortMSB = (s, b) => {
+  s.pending_buf[s.pending++] = b >>> 8 & 255;
+  s.pending_buf[s.pending++] = b & 255;
+};
+var read_buf = (strm, buf, start, size) => {
+  let len = strm.avail_in;
+  if (len > size) {
+    len = size;
+  }
+  if (len === 0) {
+    return 0;
+  }
+  strm.avail_in -= len;
+  buf.set(strm.input.subarray(strm.next_in, strm.next_in + len), start);
+  if (strm.state.wrap === 1) {
+    strm.adler = adler32_1(strm.adler, buf, len, start);
+  } else if (strm.state.wrap === 2) {
+    strm.adler = crc32_1(strm.adler, buf, len, start);
+  }
+  strm.next_in += len;
+  strm.total_in += len;
+  return len;
+};
+var longest_match = (s, cur_match) => {
+  let chain_length = s.max_chain_length;
+  let scan = s.strstart;
+  let match;
+  let len;
+  let best_len = s.prev_length;
+  let nice_match = s.nice_match;
+  const limit = s.strstart > s.w_size - MIN_LOOKAHEAD ? s.strstart - (s.w_size - MIN_LOOKAHEAD) : 0;
+  const _win = s.window;
+  const wmask = s.w_mask;
+  const prev = s.prev;
+  const strend = s.strstart + MAX_MATCH;
+  let scan_end1 = _win[scan + best_len - 1];
+  let scan_end = _win[scan + best_len];
+  if (s.prev_length >= s.good_match) {
+    chain_length >>= 2;
+  }
+  if (nice_match > s.lookahead) {
+    nice_match = s.lookahead;
+  }
+  do {
+    match = cur_match;
+    if (_win[match + best_len] !== scan_end || _win[match + best_len - 1] !== scan_end1 || _win[match] !== _win[scan] || _win[++match] !== _win[scan + 1]) {
+      continue;
+    }
+    scan += 2;
+    match++;
+    do {} while (_win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && _win[++scan] === _win[++match] && scan < strend);
+    len = MAX_MATCH - (strend - scan);
+    scan = strend - MAX_MATCH;
+    if (len > best_len) {
+      s.match_start = cur_match;
+      best_len = len;
+      if (len >= nice_match) {
+        break;
+      }
+      scan_end1 = _win[scan + best_len - 1];
+      scan_end = _win[scan + best_len];
+    }
+  } while ((cur_match = prev[cur_match & wmask]) > limit && --chain_length !== 0);
+  if (best_len <= s.lookahead) {
+    return best_len;
+  }
+  return s.lookahead;
+};
+var fill_window = (s) => {
+  const _w_size = s.w_size;
+  let n, more, str;
+  do {
+    more = s.window_size - s.lookahead - s.strstart;
+    if (s.strstart >= _w_size + (_w_size - MIN_LOOKAHEAD)) {
+      s.window.set(s.window.subarray(_w_size, _w_size + _w_size - more), 0);
+      s.match_start -= _w_size;
+      s.strstart -= _w_size;
+      s.block_start -= _w_size;
+      if (s.insert > s.strstart) {
+        s.insert = s.strstart;
+      }
+      slide_hash(s);
+      more += _w_size;
+    }
+    if (s.strm.avail_in === 0) {
+      break;
+    }
+    n = read_buf(s.strm, s.window, s.strstart + s.lookahead, more);
+    s.lookahead += n;
+    if (!s.legacy_hash) {
+      if (s.lookahead + s.insert > MIN_MATCH) {
+        str = s.strstart - s.insert;
+        while (s.insert) {
+          INSERT_STRING(s, str);
+          str++;
+          s.insert--;
+          if (s.lookahead + s.insert <= MIN_MATCH) {
+            break;
+          }
+        }
+      }
+    } else if (s.lookahead + s.insert >= MIN_MATCH) {
+      str = s.strstart - s.insert;
+      s.ins_h = s.window[str];
+      s.ins_h = HASH(s, s.ins_h, s.window[str + 1]);
+      while (s.insert) {
+        INSERT_STRING(s, str);
+        str++;
+        s.insert--;
+        if (s.lookahead + s.insert < MIN_MATCH) {
+          break;
+        }
       }
     }
+  } while (s.lookahead < MIN_LOOKAHEAD && s.strm.avail_in !== 0);
+};
+var deflate_stored = (s, flush) => {
+  let min_block = s.pending_buf_size - 5 > s.w_size ? s.w_size : s.pending_buf_size - 5;
+  let len, left, have, last = 0;
+  let used = s.strm.avail_in;
+  do {
+    len = 65535;
+    have = s.bi_valid + 42 >> 3;
+    if (s.strm.avail_out < have) {
+      break;
+    }
+    have = s.strm.avail_out - have;
+    left = s.strstart - s.block_start;
+    if (len > left + s.strm.avail_in) {
+      len = left + s.strm.avail_in;
+    }
+    if (len > have) {
+      len = have;
+    }
+    if (len < min_block && (len === 0 && flush !== Z_FINISH$3 || flush === Z_NO_FLUSH$2 || len !== left + s.strm.avail_in)) {
+      break;
+    }
+    last = flush === Z_FINISH$3 && len === left + s.strm.avail_in ? 1 : 0;
+    _tr_stored_block(s, 0, 0, last);
+    s.pending_buf[s.pending - 4] = len;
+    s.pending_buf[s.pending - 3] = len >> 8;
+    s.pending_buf[s.pending - 2] = ~len;
+    s.pending_buf[s.pending - 1] = ~len >> 8;
+    flush_pending(s.strm);
+    if (left) {
+      if (left > len) {
+        left = len;
+      }
+      s.strm.output.set(s.window.subarray(s.block_start, s.block_start + left), s.strm.next_out);
+      s.strm.next_out += left;
+      s.strm.avail_out -= left;
+      s.strm.total_out += left;
+      s.block_start += left;
+      len -= left;
+    }
+    if (len) {
+      read_buf(s.strm, s.strm.output, s.strm.next_out, len);
+      s.strm.next_out += len;
+      s.strm.avail_out -= len;
+      s.strm.total_out += len;
+    }
+  } while (last === 0);
+  used -= s.strm.avail_in;
+  if (used) {
+    if (used >= s.w_size) {
+      s.matches = 2;
+      s.window.set(s.strm.input.subarray(s.strm.next_in - s.w_size, s.strm.next_in), 0);
+      s.strstart = s.w_size;
+      s.insert = s.strstart;
+    } else {
+      if (s.window_size - s.strstart <= used) {
+        s.strstart -= s.w_size;
+        s.window.set(s.window.subarray(s.w_size, s.w_size + s.strstart), 0);
+        if (s.matches < 2) {
+          s.matches++;
+        }
+        if (s.insert > s.strstart) {
+          s.insert = s.strstart;
+        }
+      }
+      s.window.set(s.strm.input.subarray(s.strm.next_in - used, s.strm.next_in), s.strstart);
+      s.strstart += used;
+      s.insert += used > s.w_size - s.insert ? s.w_size - s.insert : used;
+    }
+    s.block_start = s.strstart;
+  }
+  if (s.high_water < s.strstart) {
+    s.high_water = s.strstart;
+  }
+  if (last) {
+    return BS_FINISH_DONE;
+  }
+  if (flush !== Z_NO_FLUSH$2 && flush !== Z_FINISH$3 && s.strm.avail_in === 0 && s.strstart === s.block_start) {
+    return BS_BLOCK_DONE;
+  }
+  have = s.window_size - s.strstart;
+  if (s.strm.avail_in > have && s.block_start >= s.w_size) {
+    s.block_start -= s.w_size;
+    s.strstart -= s.w_size;
+    s.window.set(s.window.subarray(s.w_size, s.w_size + s.strstart), 0);
+    if (s.matches < 2) {
+      s.matches++;
+    }
+    have += s.w_size;
+    if (s.insert > s.strstart) {
+      s.insert = s.strstart;
+    }
+  }
+  if (have > s.strm.avail_in) {
+    have = s.strm.avail_in;
+  }
+  if (have) {
+    read_buf(s.strm, s.window, s.strstart, have);
+    s.strstart += have;
+    s.insert += have > s.w_size - s.insert ? s.w_size - s.insert : have;
+  }
+  if (s.high_water < s.strstart) {
+    s.high_water = s.strstart;
+  }
+  have = s.bi_valid + 42 >> 3;
+  have = s.pending_buf_size - have > 65535 ? 65535 : s.pending_buf_size - have;
+  min_block = have > s.w_size ? s.w_size : have;
+  left = s.strstart - s.block_start;
+  if (left >= min_block || (left || flush === Z_FINISH$3) && flush !== Z_NO_FLUSH$2 && s.strm.avail_in === 0 && left <= have) {
+    len = left > have ? have : left;
+    last = flush === Z_FINISH$3 && s.strm.avail_in === 0 && len === left ? 1 : 0;
+    _tr_stored_block(s, s.block_start, len, last);
+    s.block_start += len;
+    flush_pending(s.strm);
+  }
+  return last ? BS_FINISH_STARTED : BS_NEED_MORE;
+};
+var deflate_fast = (s, flush) => {
+  let hash_head;
+  let bflush;
+  for (;; ) {
+    if (s.lookahead < MIN_LOOKAHEAD) {
+      fill_window(s);
+      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH$2) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) {
+        break;
+      }
+    }
+    hash_head = 0;
+    if (s.lookahead >= MIN_MATCH) {
+      hash_head = INSERT_STRING(s, s.strstart);
+    }
+    if (hash_head !== 0 && s.strstart - hash_head <= s.w_size - MIN_LOOKAHEAD) {
+      s.match_length = longest_match(s, hash_head);
+    }
+    if (s.match_length >= MIN_MATCH) {
+      bflush = _tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH);
+      s.lookahead -= s.match_length;
+      if (s.match_length <= s.max_lazy_match && s.lookahead >= MIN_MATCH) {
+        s.match_length--;
+        do {
+          s.strstart++;
+          hash_head = INSERT_STRING(s, s.strstart);
+        } while (--s.match_length !== 0);
+        s.strstart++;
+      } else {
+        s.strstart += s.match_length;
+        s.match_length = 0;
+        if (s.legacy_hash) {
+          s.ins_h = s.window[s.strstart];
+          s.ins_h = HASH(s, s.ins_h, s.window[s.strstart + 1]);
+        }
+      }
+    } else {
+      bflush = _tr_tally(s, 0, s.window[s.strstart]);
+      s.lookahead--;
+      s.strstart++;
+    }
+    if (bflush) {
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+    }
+  }
+  s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
+  if (flush === Z_FINISH$3) {
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    return BS_FINISH_DONE;
+  }
+  if (s.sym_next) {
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+  }
+  return BS_BLOCK_DONE;
+};
+var deflate_slow = (s, flush) => {
+  let hash_head;
+  let bflush;
+  let max_insert;
+  for (;; ) {
+    if (s.lookahead < MIN_LOOKAHEAD) {
+      fill_window(s);
+      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH$2) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) {
+        break;
+      }
+    }
+    hash_head = 0;
+    if (s.lookahead >= MIN_MATCH) {
+      hash_head = INSERT_STRING(s, s.strstart);
+    }
+    s.prev_length = s.match_length;
+    s.prev_match = s.match_start;
+    s.match_length = MIN_MATCH - 1;
+    if (hash_head !== 0 && s.prev_length < s.max_lazy_match && s.strstart - hash_head <= s.w_size - MIN_LOOKAHEAD) {
+      s.match_length = longest_match(s, hash_head);
+      if (s.match_length <= 5 && (s.strategy === Z_FILTERED || s.match_length === MIN_MATCH && s.strstart - s.match_start > 4096)) {
+        s.match_length = MIN_MATCH - 1;
+      }
+    }
+    if (s.prev_length >= MIN_MATCH && s.match_length <= s.prev_length) {
+      max_insert = s.strstart + s.lookahead - MIN_MATCH;
+      bflush = _tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH);
+      s.lookahead -= s.prev_length - 1;
+      s.prev_length -= 2;
+      do {
+        if (++s.strstart <= max_insert) {
+          hash_head = INSERT_STRING(s, s.strstart);
+        }
+      } while (--s.prev_length !== 0);
+      s.match_available = 0;
+      s.match_length = MIN_MATCH - 1;
+      s.strstart++;
+      if (bflush) {
+        flush_block_only(s, false);
+        if (s.strm.avail_out === 0) {
+          return BS_NEED_MORE;
+        }
+      }
+    } else if (s.match_available) {
+      bflush = _tr_tally(s, 0, s.window[s.strstart - 1]);
+      if (bflush) {
+        flush_block_only(s, false);
+      }
+      s.strstart++;
+      s.lookahead--;
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+    } else {
+      s.match_available = 1;
+      s.strstart++;
+      s.lookahead--;
+    }
+  }
+  if (s.match_available) {
+    bflush = _tr_tally(s, 0, s.window[s.strstart - 1]);
+    s.match_available = 0;
+  }
+  s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
+  if (flush === Z_FINISH$3) {
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    return BS_FINISH_DONE;
+  }
+  if (s.sym_next) {
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+  }
+  return BS_BLOCK_DONE;
+};
+var deflate_rle = (s, flush) => {
+  let bflush;
+  let prev;
+  let scan, strend;
+  const _win = s.window;
+  for (;; ) {
+    if (s.lookahead <= MAX_MATCH) {
+      fill_window(s);
+      if (s.lookahead <= MAX_MATCH && flush === Z_NO_FLUSH$2) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) {
+        break;
+      }
+    }
+    s.match_length = 0;
+    if (s.lookahead >= MIN_MATCH && s.strstart > 0) {
+      scan = s.strstart - 1;
+      prev = _win[scan];
+      if (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan]) {
+        strend = s.strstart + MAX_MATCH;
+        do {} while (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan] && scan < strend);
+        s.match_length = MAX_MATCH - (strend - scan);
+        if (s.match_length > s.lookahead) {
+          s.match_length = s.lookahead;
+        }
+      }
+    }
+    if (s.match_length >= MIN_MATCH) {
+      bflush = _tr_tally(s, 1, s.match_length - MIN_MATCH);
+      s.lookahead -= s.match_length;
+      s.strstart += s.match_length;
+      s.match_length = 0;
+    } else {
+      bflush = _tr_tally(s, 0, s.window[s.strstart]);
+      s.lookahead--;
+      s.strstart++;
+    }
+    if (bflush) {
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+    }
+  }
+  s.insert = 0;
+  if (flush === Z_FINISH$3) {
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    return BS_FINISH_DONE;
+  }
+  if (s.sym_next) {
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+  }
+  return BS_BLOCK_DONE;
+};
+var deflate_huff = (s, flush) => {
+  let bflush;
+  for (;; ) {
+    if (s.lookahead === 0) {
+      fill_window(s);
+      if (s.lookahead === 0) {
+        if (flush === Z_NO_FLUSH$2) {
+          return BS_NEED_MORE;
+        }
+        break;
+      }
+    }
+    s.match_length = 0;
+    bflush = _tr_tally(s, 0, s.window[s.strstart]);
+    s.lookahead--;
+    s.strstart++;
+    if (bflush) {
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+    }
+  }
+  s.insert = 0;
+  if (flush === Z_FINISH$3) {
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    return BS_FINISH_DONE;
+  }
+  if (s.sym_next) {
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+  }
+  return BS_BLOCK_DONE;
+};
+function Config(good_length, max_lazy, nice_length, max_chain, func) {
+  this.good_length = good_length;
+  this.max_lazy = max_lazy;
+  this.nice_length = nice_length;
+  this.max_chain = max_chain;
+  this.func = func;
+}
+var configuration_table = [
+  new Config(0, 0, 0, 0, deflate_stored),
+  new Config(4, 4, 8, 4, deflate_fast),
+  new Config(4, 5, 16, 8, deflate_fast),
+  new Config(4, 6, 32, 32, deflate_fast),
+  new Config(4, 4, 16, 16, deflate_slow),
+  new Config(8, 16, 32, 32, deflate_slow),
+  new Config(8, 16, 128, 128, deflate_slow),
+  new Config(8, 32, 128, 256, deflate_slow),
+  new Config(32, 128, 258, 1024, deflate_slow),
+  new Config(32, 258, 258, 4096, deflate_slow)
+];
+var lm_init = (s) => {
+  s.window_size = 2 * s.w_size;
+  zero(s.head);
+  s.max_lazy_match = configuration_table[s.level].max_lazy;
+  s.good_match = configuration_table[s.level].good_length;
+  s.nice_match = configuration_table[s.level].nice_length;
+  s.max_chain_length = configuration_table[s.level].max_chain;
+  s.strstart = 0;
+  s.block_start = 0;
+  s.lookahead = 0;
+  s.insert = 0;
+  s.match_length = s.prev_length = MIN_MATCH - 1;
+  s.match_available = 0;
+  s.ins_h = 0;
+};
+function DeflateState() {
+  this.strm = null;
+  this.status = 0;
+  this.pending_buf = null;
+  this.pending_buf_size = 0;
+  this.pending_out = 0;
+  this.pending = 0;
+  this.wrap = 0;
+  this.gzhead = null;
+  this.gzindex = 0;
+  this.method = Z_DEFLATED$2;
+  this.last_flush = -1;
+  this.w_size = 0;
+  this.w_bits = 0;
+  this.w_mask = 0;
+  this.window = null;
+  this.window_size = 0;
+  this.prev = null;
+  this.head = null;
+  this.ins_h = 0;
+  this.legacy_hash = 0;
+  this.hash_size = 0;
+  this.hash_bits = 0;
+  this.hash_mask = 0;
+  this.hash_shift = 0;
+  this.block_start = 0;
+  this.match_length = 0;
+  this.prev_match = 0;
+  this.match_available = 0;
+  this.strstart = 0;
+  this.match_start = 0;
+  this.lookahead = 0;
+  this.prev_length = 0;
+  this.max_chain_length = 0;
+  this.max_lazy_match = 0;
+  this.level = 0;
+  this.strategy = 0;
+  this.good_match = 0;
+  this.nice_match = 0;
+  this.dyn_ltree = new Uint16Array(HEAP_SIZE * 2);
+  this.dyn_dtree = new Uint16Array((2 * D_CODES + 1) * 2);
+  this.bl_tree = new Uint16Array((2 * BL_CODES + 1) * 2);
+  zero(this.dyn_ltree);
+  zero(this.dyn_dtree);
+  zero(this.bl_tree);
+  this.l_desc = null;
+  this.d_desc = null;
+  this.bl_desc = null;
+  this.bl_count = new Uint16Array(MAX_BITS + 1);
+  this.heap = new Uint16Array(2 * L_CODES + 1);
+  zero(this.heap);
+  this.heap_len = 0;
+  this.heap_max = 0;
+  this.depth = new Uint16Array(2 * L_CODES + 1);
+  zero(this.depth);
+  this.sym_buf = 0;
+  this.lit_bufsize = 0;
+  this.sym_next = 0;
+  this.sym_end = 0;
+  this.opt_len = 0;
+  this.static_len = 0;
+  this.matches = 0;
+  this.insert = 0;
+  this.bi_buf = 0;
+  this.bi_valid = 0;
+}
+var deflateStateCheck = (strm) => {
+  if (!strm) {
+    return 1;
+  }
+  const s = strm.state;
+  if (!s || s.strm !== strm || s.status !== INIT_STATE && s.status !== GZIP_STATE && s.status !== EXTRA_STATE && s.status !== NAME_STATE && s.status !== COMMENT_STATE && s.status !== HCRC_STATE && s.status !== BUSY_STATE && s.status !== FINISH_STATE) {
+    return 1;
+  }
+  return 0;
+};
+var deflateResetKeep = (strm) => {
+  if (deflateStateCheck(strm)) {
+    return err(strm, Z_STREAM_ERROR$2);
+  }
+  strm.total_in = strm.total_out = 0;
+  strm.data_type = Z_UNKNOWN;
+  const s = strm.state;
+  s.pending = 0;
+  s.pending_out = 0;
+  if (s.wrap < 0) {
+    s.wrap = -s.wrap;
+  }
+  s.status = s.wrap === 2 ? GZIP_STATE : s.wrap ? INIT_STATE : BUSY_STATE;
+  strm.adler = s.wrap === 2 ? 0 : 1;
+  s.last_flush = -2;
+  _tr_init(s);
+  return Z_OK$3;
+};
+var deflateReset = (strm) => {
+  const ret = deflateResetKeep(strm);
+  if (ret === Z_OK$3) {
+    lm_init(strm.state);
+  }
+  return ret;
+};
+var deflateSetHeader = (strm, head) => {
+  if (deflateStateCheck(strm) || strm.state.wrap !== 2) {
+    return Z_STREAM_ERROR$2;
+  }
+  strm.state.gzhead = head;
+  return Z_OK$3;
+};
+var deflateInit2 = (strm, level, method, windowBits, memLevel, strategy, legacyHash) => {
+  if (!strm) {
+    return Z_STREAM_ERROR$2;
+  }
+  let wrap = 1;
+  if (level === Z_DEFAULT_COMPRESSION$1) {
+    level = 6;
+  }
+  if (windowBits < 0) {
+    wrap = 0;
+    windowBits = -windowBits;
+  } else if (windowBits > 15) {
+    wrap = 2;
+    windowBits -= 16;
+  }
+  if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method !== Z_DEFLATED$2 || windowBits < 8 || windowBits > 15 || level < 0 || level > 9 || strategy < 0 || strategy > Z_FIXED || windowBits === 8 && wrap !== 1) {
+    return err(strm, Z_STREAM_ERROR$2);
+  }
+  if (windowBits === 8) {
+    windowBits = 9;
+  }
+  const s = new DeflateState;
+  strm.state = s;
+  s.strm = strm;
+  s.status = INIT_STATE;
+  s.wrap = wrap;
+  s.gzhead = null;
+  s.w_bits = windowBits;
+  s.w_size = 1 << s.w_bits;
+  s.w_mask = s.w_size - 1;
+  s.legacy_hash = legacyHash ? 1 : 0;
+  s.hash_bits = memLevel + 7;
+  if (!s.legacy_hash && s.hash_bits < 15) {
+    s.hash_bits = 15;
+  }
+  s.hash_size = 1 << s.hash_bits;
+  s.hash_mask = s.hash_size - 1;
+  s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
+  s.window = new Uint8Array(s.w_size * 2);
+  s.head = new Uint16Array(s.hash_size);
+  s.prev = new Uint16Array(s.w_size);
+  s.lit_bufsize = 1 << memLevel + 6;
+  s.pending_buf_size = s.lit_bufsize * 4;
+  s.pending_buf = new Uint8Array(s.pending_buf_size);
+  s.sym_buf = s.lit_bufsize;
+  s.sym_end = (s.lit_bufsize - 1) * 3;
+  s.level = level;
+  s.strategy = strategy;
+  s.method = method;
+  return deflateReset(strm);
+};
+var deflateInit = (strm, level) => {
+  return deflateInit2(strm, level, Z_DEFLATED$2, MAX_WBITS$1, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY$1);
+};
+var deflate$2 = (strm, flush) => {
+  if (deflateStateCheck(strm) || flush > Z_BLOCK$1 || flush < 0) {
+    return strm ? err(strm, Z_STREAM_ERROR$2) : Z_STREAM_ERROR$2;
+  }
+  const s = strm.state;
+  if (!strm.output || strm.avail_in !== 0 && !strm.input || s.status === FINISH_STATE && flush !== Z_FINISH$3) {
+    return err(strm, strm.avail_out === 0 ? Z_BUF_ERROR$2 : Z_STREAM_ERROR$2);
+  }
+  const old_flush = s.last_flush;
+  s.last_flush = flush;
+  if (s.pending !== 0) {
+    flush_pending(strm);
+    if (strm.avail_out === 0) {
+      s.last_flush = -1;
+      return Z_OK$3;
+    }
+  } else if (strm.avail_in === 0 && rank(flush) <= rank(old_flush) && flush !== Z_FINISH$3) {
+    return err(strm, Z_BUF_ERROR$2);
+  }
+  if (s.status === FINISH_STATE && strm.avail_in !== 0) {
+    return err(strm, Z_BUF_ERROR$2);
+  }
+  if (s.status === INIT_STATE && s.wrap === 0) {
+    s.status = BUSY_STATE;
+  }
+  if (s.status === INIT_STATE) {
+    let header = Z_DEFLATED$2 + (s.w_bits - 8 << 4) << 8;
+    let level_flags = -1;
+    if (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2) {
+      level_flags = 0;
+    } else if (s.level < 6) {
+      level_flags = 1;
+    } else if (s.level === 6) {
+      level_flags = 2;
+    } else {
+      level_flags = 3;
+    }
+    header |= level_flags << 6;
+    if (s.strstart !== 0) {
+      header |= PRESET_DICT;
+    }
+    header += 31 - header % 31;
+    putShortMSB(s, header);
+    if (s.strstart !== 0) {
+      putShortMSB(s, strm.adler >>> 16);
+      putShortMSB(s, strm.adler & 65535);
+    }
+    strm.adler = 1;
+    s.status = BUSY_STATE;
+    flush_pending(strm);
+    if (s.pending !== 0) {
+      s.last_flush = -1;
+      return Z_OK$3;
+    }
+  }
+  if (s.status === GZIP_STATE) {
+    strm.adler = 0;
+    put_byte(s, 31);
+    put_byte(s, 139);
+    put_byte(s, 8);
+    if (!s.gzhead) {
+      put_byte(s, 0);
+      put_byte(s, 0);
+      put_byte(s, 0);
+      put_byte(s, 0);
+      put_byte(s, 0);
+      put_byte(s, s.level === 9 ? 2 : s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ? 4 : 0);
+      put_byte(s, OS_CODE);
+      s.status = BUSY_STATE;
+      flush_pending(strm);
+      if (s.pending !== 0) {
+        s.last_flush = -1;
+        return Z_OK$3;
+      }
+    } else {
+      put_byte(s, (s.gzhead.text ? 1 : 0) + (s.gzhead.hcrc ? 2 : 0) + (!s.gzhead.extra ? 0 : 4) + (!s.gzhead.name ? 0 : 8) + (!s.gzhead.comment ? 0 : 16));
+      put_byte(s, s.gzhead.time & 255);
+      put_byte(s, s.gzhead.time >> 8 & 255);
+      put_byte(s, s.gzhead.time >> 16 & 255);
+      put_byte(s, s.gzhead.time >> 24 & 255);
+      put_byte(s, s.level === 9 ? 2 : s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ? 4 : 0);
+      put_byte(s, s.gzhead.os & 255);
+      if (s.gzhead.extra && s.gzhead.extra.length) {
+        put_byte(s, s.gzhead.extra.length & 255);
+        put_byte(s, s.gzhead.extra.length >> 8 & 255);
+      }
+      if (s.gzhead.hcrc) {
+        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending, 0);
+      }
+      s.gzindex = 0;
+      s.status = EXTRA_STATE;
+    }
+  }
+  if (s.status === EXTRA_STATE) {
+    if (s.gzhead.extra) {
+      let beg = s.pending;
+      let left = (s.gzhead.extra.length & 65535) - s.gzindex;
+      while (s.pending + left > s.pending_buf_size) {
+        let copy = s.pending_buf_size - s.pending;
+        s.pending_buf.set(s.gzhead.extra.subarray(s.gzindex, s.gzindex + copy), s.pending);
+        s.pending = s.pending_buf_size;
+        if (s.gzhead.hcrc && s.pending > beg) {
+          strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
+        }
+        s.gzindex += copy;
+        flush_pending(strm);
+        if (s.pending !== 0) {
+          s.last_flush = -1;
+          return Z_OK$3;
+        }
+        beg = 0;
+        left -= copy;
+      }
+      let gzhead_extra = new Uint8Array(s.gzhead.extra);
+      s.pending_buf.set(gzhead_extra.subarray(s.gzindex, s.gzindex + left), s.pending);
+      s.pending += left;
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      s.gzindex = 0;
+    }
+    s.status = NAME_STATE;
+  }
+  if (s.status === NAME_STATE) {
+    if (s.gzhead.name) {
+      let beg = s.pending;
+      let val;
+      do {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          if (s.pending !== 0) {
+            s.last_flush = -1;
+            return Z_OK$3;
+          }
+          beg = 0;
+        }
+        if (s.gzindex < s.gzhead.name.length) {
+          val = s.gzhead.name.charCodeAt(s.gzindex++) & 255;
+        } else {
+          val = 0;
+        }
+        put_byte(s, val);
+      } while (val !== 0);
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      s.gzindex = 0;
+    }
+    s.status = COMMENT_STATE;
+  }
+  if (s.status === COMMENT_STATE) {
+    if (s.gzhead.comment) {
+      let beg = s.pending;
+      let val;
+      do {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          if (s.pending !== 0) {
+            s.last_flush = -1;
+            return Z_OK$3;
+          }
+          beg = 0;
+        }
+        if (s.gzindex < s.gzhead.comment.length) {
+          val = s.gzhead.comment.charCodeAt(s.gzindex++) & 255;
+        } else {
+          val = 0;
+        }
+        put_byte(s, val);
+      } while (val !== 0);
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32_1(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+    }
+    s.status = HCRC_STATE;
+  }
+  if (s.status === HCRC_STATE) {
+    if (s.gzhead.hcrc) {
+      if (s.pending + 2 > s.pending_buf_size) {
+        flush_pending(strm);
+        if (s.pending !== 0) {
+          s.last_flush = -1;
+          return Z_OK$3;
+        }
+      }
+      put_byte(s, strm.adler & 255);
+      put_byte(s, strm.adler >> 8 & 255);
+      strm.adler = 0;
+    }
+    s.status = BUSY_STATE;
+    flush_pending(strm);
+    if (s.pending !== 0) {
+      s.last_flush = -1;
+      return Z_OK$3;
+    }
+  }
+  if (strm.avail_in !== 0 || s.lookahead !== 0 || flush !== Z_NO_FLUSH$2 && s.status !== FINISH_STATE) {
+    let bstate = s.level === 0 ? deflate_stored(s, flush) : s.strategy === Z_HUFFMAN_ONLY ? deflate_huff(s, flush) : s.strategy === Z_RLE ? deflate_rle(s, flush) : configuration_table[s.level].func(s, flush);
+    if (bstate === BS_FINISH_STARTED || bstate === BS_FINISH_DONE) {
+      s.status = FINISH_STATE;
+    }
+    if (bstate === BS_NEED_MORE || bstate === BS_FINISH_STARTED) {
+      if (strm.avail_out === 0) {
+        s.last_flush = -1;
+      }
+      return Z_OK$3;
+    }
+    if (bstate === BS_BLOCK_DONE) {
+      if (flush === Z_PARTIAL_FLUSH) {
+        _tr_align(s);
+      } else if (flush !== Z_BLOCK$1) {
+        _tr_stored_block(s, 0, 0, false);
+        if (flush === Z_FULL_FLUSH$1) {
+          zero(s.head);
+          if (s.lookahead === 0) {
+            s.strstart = 0;
+            s.block_start = 0;
+            s.insert = 0;
+          }
+        }
+      }
+      flush_pending(strm);
+      if (strm.avail_out === 0) {
+        s.last_flush = -1;
+        return Z_OK$3;
+      }
+    }
+  }
+  if (flush !== Z_FINISH$3) {
+    return Z_OK$3;
+  }
+  if (s.wrap <= 0) {
+    return Z_STREAM_END$3;
+  }
+  if (s.wrap === 2) {
+    put_byte(s, strm.adler & 255);
+    put_byte(s, strm.adler >> 8 & 255);
+    put_byte(s, strm.adler >> 16 & 255);
+    put_byte(s, strm.adler >> 24 & 255);
+    put_byte(s, strm.total_in & 255);
+    put_byte(s, strm.total_in >> 8 & 255);
+    put_byte(s, strm.total_in >> 16 & 255);
+    put_byte(s, strm.total_in >> 24 & 255);
+  } else {
+    putShortMSB(s, strm.adler >>> 16);
+    putShortMSB(s, strm.adler & 65535);
+  }
+  flush_pending(strm);
+  if (s.wrap > 0) {
+    s.wrap = -s.wrap;
+  }
+  return s.pending !== 0 ? Z_OK$3 : Z_STREAM_END$3;
+};
+var deflateEnd = (strm) => {
+  if (deflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$2;
+  }
+  const status = strm.state.status;
+  strm.state = null;
+  return status === BUSY_STATE ? err(strm, Z_DATA_ERROR$2) : Z_OK$3;
+};
+var deflateSetDictionary = (strm, dictionary) => {
+  let dictLength = dictionary.length;
+  if (deflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$2;
+  }
+  const s = strm.state;
+  const wrap = s.wrap;
+  if (wrap === 2 || wrap === 1 && s.status !== INIT_STATE || s.lookahead) {
+    return Z_STREAM_ERROR$2;
+  }
+  if (wrap === 1) {
+    strm.adler = adler32_1(strm.adler, dictionary, dictLength, 0);
+  }
+  s.wrap = 0;
+  if (dictLength >= s.w_size) {
+    if (wrap === 0) {
+      zero(s.head);
+      s.strstart = 0;
+      s.block_start = 0;
+      s.insert = 0;
+    }
+    let tmpDict = new Uint8Array(s.w_size);
+    tmpDict.set(dictionary.subarray(dictLength - s.w_size, dictLength), 0);
+    dictionary = tmpDict;
+    dictLength = s.w_size;
+  }
+  const avail = strm.avail_in;
+  const next = strm.next_in;
+  const input = strm.input;
+  strm.avail_in = dictLength;
+  strm.next_in = 0;
+  strm.input = dictionary;
+  fill_window(s);
+  while (s.lookahead >= MIN_MATCH) {
+    let str = s.strstart;
+    let n = s.lookahead - (MIN_MATCH - 1);
+    do {
+      INSERT_STRING(s, str);
+      str++;
+    } while (--n);
+    s.strstart = str;
+    s.lookahead = MIN_MATCH - 1;
+    fill_window(s);
+  }
+  s.strstart += s.lookahead;
+  s.block_start = s.strstart;
+  s.insert = s.lookahead;
+  s.lookahead = 0;
+  s.match_length = s.prev_length = MIN_MATCH - 1;
+  s.match_available = 0;
+  strm.next_in = next;
+  strm.input = input;
+  strm.avail_in = avail;
+  s.wrap = wrap;
+  return Z_OK$3;
+};
+var deflateInit_1 = deflateInit;
+var deflateInit2_1 = deflateInit2;
+var deflateReset_1 = deflateReset;
+var deflateResetKeep_1 = deflateResetKeep;
+var deflateSetHeader_1 = deflateSetHeader;
+var deflate_2$1 = deflate$2;
+var deflateEnd_1 = deflateEnd;
+var deflateSetDictionary_1 = deflateSetDictionary;
+var deflateInfo = "pako deflate (from Nodeca project)";
+var deflate_1$2 = {
+  deflateInit: deflateInit_1,
+  deflateInit2: deflateInit2_1,
+  deflateReset: deflateReset_1,
+  deflateResetKeep: deflateResetKeep_1,
+  deflateSetHeader: deflateSetHeader_1,
+  deflate: deflate_2$1,
+  deflateEnd: deflateEnd_1,
+  deflateSetDictionary: deflateSetDictionary_1,
+  deflateInfo
+};
+var _has = (obj, key) => {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+};
+var assign = function(obj) {
+  const sources = Array.prototype.slice.call(arguments, 1);
+  while (sources.length) {
+    const source = sources.shift();
+    if (!source) {
+      continue;
+    }
+    if (typeof source !== "object") {
+      throw new TypeError(source + "must be non-object");
+    }
+    for (const p in source) {
+      if (_has(source, p)) {
+        obj[p] = source[p];
+      }
+    }
+  }
+  return obj;
+};
+var flattenChunks = (chunks) => {
+  let len = 0;
+  for (let i = 0, l = chunks.length;i < l; i++) {
+    len += chunks[i].length;
+  }
+  const result = new Uint8Array(len);
+  for (let i = 0, pos = 0, l = chunks.length;i < l; i++) {
+    let chunk = chunks[i];
+    result.set(chunk, pos);
+    pos += chunk.length;
+  }
+  return result;
+};
+var common = {
+  assign,
+  flattenChunks
+};
+var STR_APPLY_UIA_OK = true;
+try {
+  String.fromCharCode.apply(null, new Uint8Array(1));
+} catch (__) {
+  STR_APPLY_UIA_OK = false;
+}
+var _utf8len = new Uint8Array(256);
+for (let q = 0;q < 256; q++) {
+  _utf8len[q] = q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1;
+}
+_utf8len[254] = _utf8len[255] = 1;
+var string2buf = (str) => {
+  if (typeof TextEncoder === "function" && TextEncoder.prototype.encode) {
+    return new TextEncoder().encode(str);
+  }
+  let buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
+  for (m_pos = 0;m_pos < str_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 64512) === 55296 && m_pos + 1 < str_len) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 64512) === 56320) {
+        c = 65536 + (c - 55296 << 10) + (c2 - 56320);
+        m_pos++;
+      }
+    }
+    buf_len += c < 128 ? 1 : c < 2048 ? 2 : c < 65536 ? 3 : 4;
+  }
+  buf = new Uint8Array(buf_len);
+  for (i = 0, m_pos = 0;i < buf_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 64512) === 55296 && m_pos + 1 < str_len) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 64512) === 56320) {
+        c = 65536 + (c - 55296 << 10) + (c2 - 56320);
+        m_pos++;
+      }
+    }
+    if (c < 128) {
+      buf[i++] = c;
+    } else if (c < 2048) {
+      buf[i++] = 192 | c >>> 6;
+      buf[i++] = 128 | c & 63;
+    } else if (c < 65536) {
+      buf[i++] = 224 | c >>> 12;
+      buf[i++] = 128 | c >>> 6 & 63;
+      buf[i++] = 128 | c & 63;
+    } else {
+      buf[i++] = 240 | c >>> 18;
+      buf[i++] = 128 | c >>> 12 & 63;
+      buf[i++] = 128 | c >>> 6 & 63;
+      buf[i++] = 128 | c & 63;
+    }
+  }
+  return buf;
+};
+var buf2binstring = (buf, len) => {
+  if (len < 65534) {
+    if (buf.subarray && STR_APPLY_UIA_OK) {
+      return String.fromCharCode.apply(null, buf.length === len ? buf : buf.subarray(0, len));
+    }
+  }
+  let result = "";
+  for (let i = 0;i < len; i++) {
+    result += String.fromCharCode(buf[i]);
+  }
+  return result;
+};
+var buf2string = (buf, max) => {
+  const len = max || buf.length;
+  if (typeof TextDecoder === "function" && TextDecoder.prototype.decode) {
+    return new TextDecoder().decode(buf.subarray(0, max));
+  }
+  let i, out;
+  const utf16buf = new Array(len * 2);
+  for (out = 0, i = 0;i < len; ) {
+    let c = buf[i++];
+    if (c < 128) {
+      utf16buf[out++] = c;
+      continue;
+    }
+    let c_len = _utf8len[c];
+    if (c_len > 4) {
+      utf16buf[out++] = 65533;
+      i += c_len - 1;
+      continue;
+    }
+    c &= c_len === 2 ? 31 : c_len === 3 ? 15 : 7;
+    while (c_len > 1 && i < len) {
+      c = c << 6 | buf[i++] & 63;
+      c_len--;
+    }
+    if (c_len > 1) {
+      utf16buf[out++] = 65533;
+      continue;
+    }
+    if (c < 65536) {
+      utf16buf[out++] = c;
+    } else {
+      c -= 65536;
+      utf16buf[out++] = 55296 | c >> 10 & 1023;
+      utf16buf[out++] = 56320 | c & 1023;
+    }
+  }
+  return buf2binstring(utf16buf, out);
+};
+var utf8border = (buf, max) => {
+  max = max || buf.length;
+  if (max > buf.length) {
+    max = buf.length;
+  }
+  let pos = max - 1;
+  while (pos >= 0 && (buf[pos] & 192) === 128) {
+    pos--;
+  }
+  if (pos < 0) {
+    return max;
+  }
+  if (pos === 0) {
+    return max;
+  }
+  return pos + _utf8len[buf[pos]] > max ? pos : max;
+};
+var strings = {
+  string2buf,
+  buf2string,
+  utf8border
+};
+function ZStream() {
+  this.input = null;
+  this.next_in = 0;
+  this.avail_in = 0;
+  this.total_in = 0;
+  this.output = null;
+  this.next_out = 0;
+  this.avail_out = 0;
+  this.total_out = 0;
+  this.msg = "";
+  this.state = null;
+  this.data_type = 2;
+  this.adler = 0;
+}
+var zstream = ZStream;
+var toString$1 = Object.prototype.toString;
+var {
+  Z_NO_FLUSH: Z_NO_FLUSH$1,
+  Z_SYNC_FLUSH,
+  Z_FULL_FLUSH,
+  Z_FINISH: Z_FINISH$2,
+  Z_OK: Z_OK$2,
+  Z_STREAM_END: Z_STREAM_END$2,
+  Z_DEFAULT_COMPRESSION,
+  Z_DEFAULT_STRATEGY,
+  Z_DEFLATED: Z_DEFLATED$1
+} = constants$2;
+var defaultOptions$1 = {
+  level: Z_DEFAULT_COMPRESSION,
+  method: Z_DEFLATED$1,
+  chunkSize: 16384,
+  windowBits: 15,
+  memLevel: 8,
+  strategy: Z_DEFAULT_STRATEGY,
+  legacyHash: true
+};
+function Deflate$1(options) {
+  this.options = common.assign({}, defaultOptions$1, options || {});
+  let opt = this.options;
+  if (opt.raw && opt.windowBits > 0) {
+    opt.windowBits = -opt.windowBits;
+  } else if (opt.gzip && opt.windowBits > 0 && opt.windowBits < 16) {
+    opt.windowBits += 16;
+  }
+  this.err = 0;
+  this.msg = "";
+  this.ended = false;
+  this.chunks = [];
+  this.strm = new zstream;
+  this.strm.avail_out = 0;
+  let status = deflate_1$2.deflateInit2(this.strm, opt.level, opt.method, opt.windowBits, opt.memLevel, opt.strategy, opt.legacyHash);
+  if (status !== Z_OK$2) {
+    throw new Error(messages[status]);
+  }
+  if (opt.header) {
+    deflate_1$2.deflateSetHeader(this.strm, opt.header);
+  }
+  if (opt.dictionary) {
+    let dict;
+    if (typeof opt.dictionary === "string") {
+      dict = strings.string2buf(opt.dictionary);
+    } else if (toString$1.call(opt.dictionary) === "[object ArrayBuffer]") {
+      dict = new Uint8Array(opt.dictionary);
+    } else {
+      dict = opt.dictionary;
+    }
+    status = deflate_1$2.deflateSetDictionary(this.strm, dict);
+    if (status !== Z_OK$2) {
+      throw new Error(messages[status]);
+    }
+    this._dict_set = true;
+  }
+}
+Deflate$1.prototype.push = function(data, flush_mode) {
+  const strm = this.strm;
+  const chunkSize = this.options.chunkSize;
+  let status, _flush_mode;
+  if (this.ended) {
+    return false;
+  }
+  if (flush_mode === ~~flush_mode)
+    _flush_mode = flush_mode;
+  else
+    _flush_mode = flush_mode === true ? Z_FINISH$2 : Z_NO_FLUSH$1;
+  if (typeof data === "string") {
+    strm.input = strings.string2buf(data);
+  } else if (toString$1.call(data) === "[object ArrayBuffer]") {
+    strm.input = new Uint8Array(data);
+  } else {
+    strm.input = data;
+  }
+  strm.next_in = 0;
+  strm.avail_in = strm.input.length;
+  for (;; ) {
+    if (strm.avail_out === 0) {
+      strm.output = new Uint8Array(chunkSize);
+      strm.next_out = 0;
+      strm.avail_out = chunkSize;
+    }
+    if ((_flush_mode === Z_SYNC_FLUSH || _flush_mode === Z_FULL_FLUSH) && strm.avail_out <= 6) {
+      this.onData(strm.output.subarray(0, strm.next_out));
+      strm.avail_out = 0;
+      continue;
+    }
+    status = deflate_1$2.deflate(strm, _flush_mode);
+    if (status === Z_STREAM_END$2) {
+      if (strm.next_out > 0) {
+        this.onData(strm.output.subarray(0, strm.next_out));
+      }
+      status = deflate_1$2.deflateEnd(this.strm);
+      this.onEnd(status);
+      this.ended = true;
+      return status === Z_OK$2;
+    }
+    if (strm.avail_out === 0) {
+      this.onData(strm.output);
+      continue;
+    }
+    if (_flush_mode > 0 && strm.next_out > 0) {
+      this.onData(strm.output.subarray(0, strm.next_out));
+      strm.avail_out = 0;
+      continue;
+    }
+    if (strm.avail_in === 0)
+      break;
+  }
+  return true;
+};
+Deflate$1.prototype.onData = function(chunk) {
+  this.chunks.push(chunk);
+};
+Deflate$1.prototype.onEnd = function(status) {
+  if (status === Z_OK$2) {
+    this.result = common.flattenChunks(this.chunks);
+  }
+  this.chunks = [];
+  this.err = status;
+  this.msg = this.strm.msg;
+};
+function deflate$1(input, options) {
+  const deflator = new Deflate$1(options);
+  deflator.push(input, true);
+  if (deflator.err) {
+    throw deflator.msg || messages[deflator.err];
+  }
+  return deflator.result;
+}
+function deflateRaw$1(input, options) {
+  options = options || {};
+  options.raw = true;
+  return deflate$1(input, options);
+}
+function gzip$1(input, options) {
+  options = options || {};
+  options.gzip = true;
+  return deflate$1(input, options);
+}
+var Deflate_1$1 = Deflate$1;
+var deflate_2 = deflate$1;
+var deflateRaw_1$1 = deflateRaw$1;
+var gzip_1$1 = gzip$1;
+var constants$1 = constants$2;
+var deflate_1$1 = {
+  Deflate: Deflate_1$1,
+  deflate: deflate_2,
+  deflateRaw: deflateRaw_1$1,
+  gzip: gzip_1$1,
+  constants: constants$1
+};
+var BAD$1 = 16209;
+var TYPE$1 = 16191;
+var inffast = function inflate_fast(strm, start) {
+  let _in;
+  let last;
+  let _out;
+  let beg;
+  let end;
+  let dmax;
+  let wsize;
+  let whave;
+  let wnext;
+  let s_window;
+  let hold;
+  let bits;
+  let lcode;
+  let dcode;
+  let lmask;
+  let dmask;
+  let here;
+  let op;
+  let len;
+  let dist;
+  let from;
+  let from_source;
+  let input, output;
+  const state = strm.state;
+  _in = strm.next_in;
+  input = strm.input;
+  last = _in + (strm.avail_in - 5);
+  _out = strm.next_out;
+  output = strm.output;
+  beg = _out - (start - strm.avail_out);
+  end = _out + (strm.avail_out - 257);
+  dmax = state.dmax;
+  wsize = state.wsize;
+  whave = state.whave;
+  wnext = state.wnext;
+  s_window = state.window;
+  hold = state.hold;
+  bits = state.bits;
+  lcode = state.lencode;
+  dcode = state.distcode;
+  lmask = (1 << state.lenbits) - 1;
+  dmask = (1 << state.distbits) - 1;
+  top:
+    do {
+      if (bits < 15) {
+        hold += input[_in++] << bits;
+        bits += 8;
+        hold += input[_in++] << bits;
+        bits += 8;
+      }
+      here = lcode[hold & lmask];
+      dolen:
+        for (;; ) {
+          op = here >>> 24;
+          hold >>>= op;
+          bits -= op;
+          op = here >>> 16 & 255;
+          if (op === 0) {
+            output[_out++] = here & 65535;
+          } else if (op & 16) {
+            len = here & 65535;
+            op &= 15;
+            if (op) {
+              if (bits < op) {
+                hold += input[_in++] << bits;
+                bits += 8;
+              }
+              len += hold & (1 << op) - 1;
+              hold >>>= op;
+              bits -= op;
+            }
+            if (bits < 15) {
+              hold += input[_in++] << bits;
+              bits += 8;
+              hold += input[_in++] << bits;
+              bits += 8;
+            }
+            here = dcode[hold & dmask];
+            dodist:
+              for (;; ) {
+                op = here >>> 24;
+                hold >>>= op;
+                bits -= op;
+                op = here >>> 16 & 255;
+                if (op & 16) {
+                  dist = here & 65535;
+                  op &= 15;
+                  if (bits < op) {
+                    hold += input[_in++] << bits;
+                    bits += 8;
+                    if (bits < op) {
+                      hold += input[_in++] << bits;
+                      bits += 8;
+                    }
+                  }
+                  dist += hold & (1 << op) - 1;
+                  if (dist > dmax) {
+                    strm.msg = "invalid distance too far back";
+                    state.mode = BAD$1;
+                    break top;
+                  }
+                  hold >>>= op;
+                  bits -= op;
+                  op = _out - beg;
+                  if (dist > op) {
+                    op = dist - op;
+                    if (op > whave) {
+                      if (state.sane) {
+                        strm.msg = "invalid distance too far back";
+                        state.mode = BAD$1;
+                        break top;
+                      }
+                    }
+                    from = 0;
+                    from_source = s_window;
+                    if (wnext === 0) {
+                      from += wsize - op;
+                      if (op < len) {
+                        len -= op;
+                        do {
+                          output[_out++] = s_window[from++];
+                        } while (--op);
+                        from = _out - dist;
+                        from_source = output;
+                      }
+                    } else if (wnext < op) {
+                      from += wsize + wnext - op;
+                      op -= wnext;
+                      if (op < len) {
+                        len -= op;
+                        do {
+                          output[_out++] = s_window[from++];
+                        } while (--op);
+                        from = 0;
+                        if (wnext < len) {
+                          op = wnext;
+                          len -= op;
+                          do {
+                            output[_out++] = s_window[from++];
+                          } while (--op);
+                          from = _out - dist;
+                          from_source = output;
+                        }
+                      }
+                    } else {
+                      from += wnext - op;
+                      if (op < len) {
+                        len -= op;
+                        do {
+                          output[_out++] = s_window[from++];
+                        } while (--op);
+                        from = _out - dist;
+                        from_source = output;
+                      }
+                    }
+                    while (len > 2) {
+                      output[_out++] = from_source[from++];
+                      output[_out++] = from_source[from++];
+                      output[_out++] = from_source[from++];
+                      len -= 3;
+                    }
+                    if (len) {
+                      output[_out++] = from_source[from++];
+                      if (len > 1) {
+                        output[_out++] = from_source[from++];
+                      }
+                    }
+                  } else {
+                    from = _out - dist;
+                    do {
+                      output[_out++] = output[from++];
+                      output[_out++] = output[from++];
+                      output[_out++] = output[from++];
+                      len -= 3;
+                    } while (len > 2);
+                    if (len) {
+                      output[_out++] = output[from++];
+                      if (len > 1) {
+                        output[_out++] = output[from++];
+                      }
+                    }
+                  }
+                } else if ((op & 64) === 0) {
+                  here = dcode[(here & 65535) + (hold & (1 << op) - 1)];
+                  continue dodist;
+                } else {
+                  strm.msg = "invalid distance code";
+                  state.mode = BAD$1;
+                  break top;
+                }
+                break;
+              }
+          } else if ((op & 64) === 0) {
+            here = lcode[(here & 65535) + (hold & (1 << op) - 1)];
+            continue dolen;
+          } else if (op & 32) {
+            state.mode = TYPE$1;
+            break top;
+          } else {
+            strm.msg = "invalid literal/length code";
+            state.mode = BAD$1;
+            break top;
+          }
+          break;
+        }
+    } while (_in < last && _out < end);
+  len = bits >> 3;
+  _in -= len;
+  bits -= len << 3;
+  hold &= (1 << bits) - 1;
+  strm.next_in = _in;
+  strm.next_out = _out;
+  strm.avail_in = _in < last ? 5 + (last - _in) : 5 - (_in - last);
+  strm.avail_out = _out < end ? 257 + (end - _out) : 257 - (_out - end);
+  state.hold = hold;
+  state.bits = bits;
+  return;
+};
+var MAXBITS = 15;
+var ENOUGH_LENS$1 = 852;
+var ENOUGH_DISTS$1 = 592;
+var CODES$1 = 0;
+var LENS$1 = 1;
+var DISTS$1 = 2;
+var lbase = new Uint16Array([
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  13,
+  15,
+  17,
+  19,
+  23,
+  27,
+  31,
+  35,
+  43,
+  51,
+  59,
+  67,
+  83,
+  99,
+  115,
+  131,
+  163,
+  195,
+  227,
+  258,
+  0,
+  0
+]);
+var lext = new Uint8Array([
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  17,
+  17,
+  17,
+  17,
+  18,
+  18,
+  18,
+  18,
+  19,
+  19,
+  19,
+  19,
+  20,
+  20,
+  20,
+  20,
+  21,
+  21,
+  21,
+  21,
+  16,
+  199,
+  75
+]);
+var dbase = new Uint16Array([
+  1,
+  2,
+  3,
+  4,
+  5,
+  7,
+  9,
+  13,
+  17,
+  25,
+  33,
+  49,
+  65,
+  97,
+  129,
+  193,
+  257,
+  385,
+  513,
+  769,
+  1025,
+  1537,
+  2049,
+  3073,
+  4097,
+  6145,
+  8193,
+  12289,
+  16385,
+  24577,
+  0,
+  0
+]);
+var dext = new Uint8Array([
+  16,
+  16,
+  16,
+  16,
+  17,
+  17,
+  18,
+  18,
+  19,
+  19,
+  20,
+  20,
+  21,
+  21,
+  22,
+  22,
+  23,
+  23,
+  24,
+  24,
+  25,
+  25,
+  26,
+  26,
+  27,
+  27,
+  28,
+  28,
+  29,
+  29,
+  64,
+  64
+]);
+var inflate_table = (type, lens, lens_index, codes, table, table_index, work, opts) => {
+  const bits = opts.bits;
+  let len = 0;
+  let sym = 0;
+  let min = 0, max = 0;
+  let root = 0;
+  let curr = 0;
+  let drop = 0;
+  let left = 0;
+  let used = 0;
+  let huff = 0;
+  let incr;
+  let fill;
+  let low;
+  let mask;
+  let next;
+  let base = null;
+  let match;
+  const count = new Uint16Array(MAXBITS + 1);
+  const offs = new Uint16Array(MAXBITS + 1);
+  let extra = null;
+  let here_bits, here_op, here_val;
+  for (len = 0;len <= MAXBITS; len++) {
+    count[len] = 0;
+  }
+  for (sym = 0;sym < codes; sym++) {
+    count[lens[lens_index + sym]]++;
+  }
+  root = bits;
+  for (max = MAXBITS;max >= 1; max--) {
+    if (count[max] !== 0) {
+      break;
+    }
+  }
+  if (root > max) {
+    root = max;
+  }
+  if (max === 0) {
+    table[table_index++] = 1 << 24 | 64 << 16 | 0;
+    table[table_index++] = 1 << 24 | 64 << 16 | 0;
+    opts.bits = 1;
+    return 0;
+  }
+  for (min = 1;min < max; min++) {
+    if (count[min] !== 0) {
+      break;
+    }
+  }
+  if (root < min) {
+    root = min;
+  }
+  left = 1;
+  for (len = 1;len <= MAXBITS; len++) {
+    left <<= 1;
+    left -= count[len];
+    if (left < 0) {
+      return -1;
+    }
+  }
+  if (left > 0 && (type === CODES$1 || max !== 1)) {
+    return -1;
+  }
+  offs[1] = 0;
+  for (len = 1;len < MAXBITS; len++) {
+    offs[len + 1] = offs[len] + count[len];
+  }
+  for (sym = 0;sym < codes; sym++) {
+    if (lens[lens_index + sym] !== 0) {
+      work[offs[lens[lens_index + sym]]++] = sym;
+    }
+  }
+  if (type === CODES$1) {
+    base = extra = work;
+    match = 20;
+  } else if (type === LENS$1) {
+    base = lbase;
+    extra = lext;
+    match = 257;
+  } else {
+    base = dbase;
+    extra = dext;
+    match = 0;
+  }
+  huff = 0;
+  sym = 0;
+  len = min;
+  next = table_index;
+  curr = root;
+  drop = 0;
+  low = -1;
+  used = 1 << root;
+  mask = used - 1;
+  if (type === LENS$1 && used > ENOUGH_LENS$1 || type === DISTS$1 && used > ENOUGH_DISTS$1) {
+    return 1;
+  }
+  for (;; ) {
+    here_bits = len - drop;
+    if (work[sym] + 1 < match) {
+      here_op = 0;
+      here_val = work[sym];
+    } else if (work[sym] >= match) {
+      here_op = extra[work[sym] - match];
+      here_val = base[work[sym] - match];
+    } else {
+      here_op = 32 + 64;
+      here_val = 0;
+    }
+    incr = 1 << len - drop;
+    fill = 1 << curr;
+    min = fill;
+    do {
+      fill -= incr;
+      table[next + (huff >> drop) + fill] = here_bits << 24 | here_op << 16 | here_val | 0;
+    } while (fill !== 0);
+    incr = 1 << len - 1;
+    while (huff & incr) {
+      incr >>= 1;
+    }
+    if (incr !== 0) {
+      huff &= incr - 1;
+      huff += incr;
+    } else {
+      huff = 0;
+    }
+    sym++;
+    if (--count[len] === 0) {
+      if (len === max) {
+        break;
+      }
+      len = lens[lens_index + work[sym]];
+    }
+    if (len > root && (huff & mask) !== low) {
+      if (drop === 0) {
+        drop = root;
+      }
+      next += min;
+      curr = len - drop;
+      left = 1 << curr;
+      while (curr + drop < max) {
+        left -= count[curr + drop];
+        if (left <= 0) {
+          break;
+        }
+        curr++;
+        left <<= 1;
+      }
+      used += 1 << curr;
+      if (type === LENS$1 && used > ENOUGH_LENS$1 || type === DISTS$1 && used > ENOUGH_DISTS$1) {
+        return 1;
+      }
+      low = huff & mask;
+      table[low] = root << 24 | curr << 16 | next - table_index | 0;
+    }
+  }
+  if (huff !== 0) {
+    table[next + huff] = len - drop << 24 | 64 << 16 | 0;
+  }
+  opts.bits = root;
+  return 0;
+};
+var inftrees = inflate_table;
+var CODES = 0;
+var LENS = 1;
+var DISTS = 2;
+var {
+  Z_FINISH: Z_FINISH$1,
+  Z_BLOCK,
+  Z_TREES,
+  Z_OK: Z_OK$1,
+  Z_STREAM_END: Z_STREAM_END$1,
+  Z_NEED_DICT: Z_NEED_DICT$1,
+  Z_STREAM_ERROR: Z_STREAM_ERROR$1,
+  Z_DATA_ERROR: Z_DATA_ERROR$1,
+  Z_MEM_ERROR: Z_MEM_ERROR$1,
+  Z_BUF_ERROR: Z_BUF_ERROR$1,
+  Z_DEFLATED
+} = constants$2;
+var HEAD = 16180;
+var FLAGS = 16181;
+var TIME = 16182;
+var OS = 16183;
+var EXLEN = 16184;
+var EXTRA = 16185;
+var NAME = 16186;
+var COMMENT = 16187;
+var HCRC = 16188;
+var DICTID = 16189;
+var DICT = 16190;
+var TYPE = 16191;
+var TYPEDO = 16192;
+var STORED = 16193;
+var COPY_ = 16194;
+var COPY = 16195;
+var TABLE = 16196;
+var LENLENS = 16197;
+var CODELENS = 16198;
+var LEN_ = 16199;
+var LEN = 16200;
+var LENEXT = 16201;
+var DIST = 16202;
+var DISTEXT = 16203;
+var MATCH = 16204;
+var LIT = 16205;
+var CHECK = 16206;
+var LENGTH = 16207;
+var DONE = 16208;
+var BAD = 16209;
+var MEM = 16210;
+var SYNC = 16211;
+var ENOUGH_LENS = 852;
+var ENOUGH_DISTS = 592;
+var MAX_WBITS = 15;
+var DEF_WBITS = MAX_WBITS;
+var zswap32 = (q) => {
+  return (q >>> 24 & 255) + (q >>> 8 & 65280) + ((q & 65280) << 8) + ((q & 255) << 24);
+};
+function InflateState() {
+  this.strm = null;
+  this.mode = 0;
+  this.last = false;
+  this.wrap = 0;
+  this.havedict = false;
+  this.flags = 0;
+  this.dmax = 0;
+  this.check = 0;
+  this.total = 0;
+  this.head = null;
+  this.wbits = 0;
+  this.wsize = 0;
+  this.whave = 0;
+  this.wnext = 0;
+  this.window = null;
+  this.hold = 0;
+  this.bits = 0;
+  this.length = 0;
+  this.offset = 0;
+  this.extra = 0;
+  this.lencode = null;
+  this.distcode = null;
+  this.lenbits = 0;
+  this.distbits = 0;
+  this.ncode = 0;
+  this.nlen = 0;
+  this.ndist = 0;
+  this.have = 0;
+  this.next = null;
+  this.lens = new Uint16Array(320);
+  this.work = new Uint16Array(288);
+  this.lendyn = null;
+  this.distdyn = null;
+  this.sane = 0;
+  this.back = 0;
+  this.was = 0;
+}
+var inflateStateCheck = (strm) => {
+  if (!strm) {
+    return 1;
+  }
+  const state = strm.state;
+  if (!state || state.strm !== strm || state.mode < HEAD || state.mode > SYNC) {
+    return 1;
+  }
+  return 0;
+};
+var inflateResetKeep = (strm) => {
+  if (inflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$1;
+  }
+  const state = strm.state;
+  strm.total_in = strm.total_out = state.total = 0;
+  strm.msg = "";
+  if (state.wrap) {
+    strm.adler = state.wrap & 1;
+  }
+  state.mode = HEAD;
+  state.last = 0;
+  state.havedict = 0;
+  state.flags = -1;
+  state.dmax = 32768;
+  state.head = null;
+  state.hold = 0;
+  state.bits = 0;
+  state.lencode = state.lendyn = new Int32Array(ENOUGH_LENS);
+  state.distcode = state.distdyn = new Int32Array(ENOUGH_DISTS);
+  state.sane = 1;
+  state.back = -1;
+  return Z_OK$1;
+};
+var inflateReset = (strm) => {
+  if (inflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$1;
+  }
+  const state = strm.state;
+  state.wsize = 0;
+  state.whave = 0;
+  state.wnext = 0;
+  return inflateResetKeep(strm);
+};
+var inflateReset2 = (strm, windowBits) => {
+  let wrap;
+  if (inflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$1;
+  }
+  const state = strm.state;
+  if (windowBits < 0) {
+    wrap = 0;
+    windowBits = -windowBits;
+  } else {
+    wrap = (windowBits >> 4) + 5;
+    if (windowBits < 48) {
+      windowBits &= 15;
+    }
+  }
+  if (windowBits && (windowBits < 8 || windowBits > 15)) {
+    return Z_STREAM_ERROR$1;
+  }
+  if (state.window !== null && state.wbits !== windowBits) {
+    state.window = null;
+  }
+  state.wrap = wrap;
+  state.wbits = windowBits;
+  return inflateReset(strm);
+};
+var inflateInit2 = (strm, windowBits) => {
+  if (!strm) {
+    return Z_STREAM_ERROR$1;
+  }
+  const state = new InflateState;
+  strm.state = state;
+  state.strm = strm;
+  state.window = null;
+  state.mode = HEAD;
+  const ret = inflateReset2(strm, windowBits);
+  if (ret !== Z_OK$1) {
+    strm.state = null;
+  }
+  return ret;
+};
+var inflateInit = (strm) => {
+  return inflateInit2(strm, DEF_WBITS);
+};
+var virgin = true;
+var lenfix;
+var distfix;
+var fixedtables = (state) => {
+  if (virgin) {
+    lenfix = new Int32Array(512);
+    distfix = new Int32Array(32);
+    let sym = 0;
+    while (sym < 144) {
+      state.lens[sym++] = 8;
+    }
+    while (sym < 256) {
+      state.lens[sym++] = 9;
+    }
+    while (sym < 280) {
+      state.lens[sym++] = 7;
+    }
+    while (sym < 288) {
+      state.lens[sym++] = 8;
+    }
+    inftrees(LENS, state.lens, 0, 288, lenfix, 0, state.work, { bits: 9 });
+    sym = 0;
+    while (sym < 32) {
+      state.lens[sym++] = 5;
+    }
+    inftrees(DISTS, state.lens, 0, 32, distfix, 0, state.work, { bits: 5 });
+    virgin = false;
+  }
+  state.lencode = lenfix;
+  state.lenbits = 9;
+  state.distcode = distfix;
+  state.distbits = 5;
+};
+var updatewindow = (strm, src, end, copy) => {
+  let dist;
+  const state = strm.state;
+  if (state.window === null) {
+    state.window = new Uint8Array(1 << state.wbits);
+  }
+  if (state.wsize === 0) {
+    state.wsize = 1 << state.wbits;
+    state.wnext = 0;
+    state.whave = 0;
+  }
+  if (copy >= state.wsize) {
+    state.window.set(src.subarray(end - state.wsize, end), 0);
+    state.wnext = 0;
+    state.whave = state.wsize;
+  } else {
+    dist = state.wsize - state.wnext;
+    if (dist > copy) {
+      dist = copy;
+    }
+    state.window.set(src.subarray(end - copy, end - copy + dist), state.wnext);
+    copy -= dist;
+    if (copy) {
+      state.window.set(src.subarray(end - copy, end), 0);
+      state.wnext = copy;
+      state.whave = state.wsize;
+    } else {
+      state.wnext += dist;
+      if (state.wnext === state.wsize) {
+        state.wnext = 0;
+      }
+      if (state.whave < state.wsize) {
+        state.whave += dist;
+      }
+    }
+  }
+  return 0;
+};
+var inflate$2 = (strm, flush) => {
+  let state;
+  let input, output;
+  let next;
+  let put;
+  let have, left;
+  let hold;
+  let bits;
+  let _in, _out;
+  let copy;
+  let from;
+  let from_source;
+  let here = 0;
+  let here_bits, here_op, here_val;
+  let last_bits, last_op, last_val;
+  let len;
+  let ret;
+  const hbuf = new Uint8Array(4);
+  let opts;
+  let n;
+  const order = new Uint8Array([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
+  if (inflateStateCheck(strm) || !strm.output || !strm.input && strm.avail_in !== 0) {
+    return Z_STREAM_ERROR$1;
+  }
+  state = strm.state;
+  if (state.mode === TYPE) {
+    state.mode = TYPEDO;
+  }
+  put = strm.next_out;
+  output = strm.output;
+  left = strm.avail_out;
+  next = strm.next_in;
+  input = strm.input;
+  have = strm.avail_in;
+  hold = state.hold;
+  bits = state.bits;
+  _in = have;
+  _out = left;
+  ret = Z_OK$1;
+  inf_leave:
+    for (;; ) {
+      switch (state.mode) {
+        case HEAD:
+          if (state.wrap === 0) {
+            state.mode = TYPEDO;
+            break;
+          }
+          while (bits < 16) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          if (state.wrap & 2 && hold === 35615) {
+            if (state.wbits === 0) {
+              state.wbits = 15;
+            }
+            state.check = 0;
+            hbuf[0] = hold & 255;
+            hbuf[1] = hold >>> 8 & 255;
+            state.check = crc32_1(state.check, hbuf, 2, 0);
+            hold = 0;
+            bits = 0;
+            state.mode = FLAGS;
+            break;
+          }
+          if (state.head) {
+            state.head.done = false;
+          }
+          if (!(state.wrap & 1) || (((hold & 255) << 8) + (hold >> 8)) % 31) {
+            strm.msg = "incorrect header check";
+            state.mode = BAD;
+            break;
+          }
+          if ((hold & 15) !== Z_DEFLATED) {
+            strm.msg = "unknown compression method";
+            state.mode = BAD;
+            break;
+          }
+          hold >>>= 4;
+          bits -= 4;
+          len = (hold & 15) + 8;
+          if (state.wbits === 0) {
+            state.wbits = len;
+          }
+          if (len > 15 || len > state.wbits) {
+            strm.msg = "invalid window size";
+            state.mode = BAD;
+            break;
+          }
+          state.dmax = 1 << state.wbits;
+          state.flags = 0;
+          strm.adler = state.check = 1;
+          state.mode = hold & 512 ? DICTID : TYPE;
+          hold = 0;
+          bits = 0;
+          break;
+        case FLAGS:
+          while (bits < 16) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          state.flags = hold;
+          if ((state.flags & 255) !== Z_DEFLATED) {
+            strm.msg = "unknown compression method";
+            state.mode = BAD;
+            break;
+          }
+          if (state.flags & 57344) {
+            strm.msg = "unknown header flags set";
+            state.mode = BAD;
+            break;
+          }
+          if (state.head) {
+            state.head.text = hold >> 8 & 1;
+          }
+          if (state.flags & 512 && state.wrap & 4) {
+            hbuf[0] = hold & 255;
+            hbuf[1] = hold >>> 8 & 255;
+            state.check = crc32_1(state.check, hbuf, 2, 0);
+          }
+          hold = 0;
+          bits = 0;
+          state.mode = TIME;
+        case TIME:
+          while (bits < 32) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          if (state.head) {
+            state.head.time = hold;
+          }
+          if (state.flags & 512 && state.wrap & 4) {
+            hbuf[0] = hold & 255;
+            hbuf[1] = hold >>> 8 & 255;
+            hbuf[2] = hold >>> 16 & 255;
+            hbuf[3] = hold >>> 24 & 255;
+            state.check = crc32_1(state.check, hbuf, 4, 0);
+          }
+          hold = 0;
+          bits = 0;
+          state.mode = OS;
+        case OS:
+          while (bits < 16) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          if (state.head) {
+            state.head.xflags = hold & 255;
+            state.head.os = hold >> 8;
+          }
+          if (state.flags & 512 && state.wrap & 4) {
+            hbuf[0] = hold & 255;
+            hbuf[1] = hold >>> 8 & 255;
+            state.check = crc32_1(state.check, hbuf, 2, 0);
+          }
+          hold = 0;
+          bits = 0;
+          state.mode = EXLEN;
+        case EXLEN:
+          if (state.flags & 1024) {
+            while (bits < 16) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            state.length = hold;
+            if (state.head) {
+              state.head.extra_len = hold;
+            }
+            if (state.flags & 512 && state.wrap & 4) {
+              hbuf[0] = hold & 255;
+              hbuf[1] = hold >>> 8 & 255;
+              state.check = crc32_1(state.check, hbuf, 2, 0);
+            }
+            hold = 0;
+            bits = 0;
+          } else if (state.head) {
+            state.head.extra = null;
+          }
+          state.mode = EXTRA;
+        case EXTRA:
+          if (state.flags & 1024) {
+            copy = state.length;
+            if (copy > have) {
+              copy = have;
+            }
+            if (copy) {
+              if (state.head) {
+                len = state.head.extra_len - state.length;
+                if (!state.head.extra) {
+                  state.head.extra = new Uint8Array(state.head.extra_len);
+                }
+                state.head.extra.set(input.subarray(next, next + copy), len);
+              }
+              if (state.flags & 512 && state.wrap & 4) {
+                state.check = crc32_1(state.check, input, copy, next);
+              }
+              have -= copy;
+              next += copy;
+              state.length -= copy;
+            }
+            if (state.length) {
+              break inf_leave;
+            }
+          }
+          state.length = 0;
+          state.mode = NAME;
+        case NAME:
+          if (state.flags & 2048) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            copy = 0;
+            do {
+              len = input[next + copy++];
+              if (state.head && len && state.length < 65536) {
+                state.head.name += String.fromCharCode(len);
+              }
+            } while (len && copy < have);
+            if (state.flags & 512 && state.wrap & 4) {
+              state.check = crc32_1(state.check, input, copy, next);
+            }
+            have -= copy;
+            next += copy;
+            if (len) {
+              break inf_leave;
+            }
+          } else if (state.head) {
+            state.head.name = null;
+          }
+          state.length = 0;
+          state.mode = COMMENT;
+        case COMMENT:
+          if (state.flags & 4096) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            copy = 0;
+            do {
+              len = input[next + copy++];
+              if (state.head && len && state.length < 65536) {
+                state.head.comment += String.fromCharCode(len);
+              }
+            } while (len && copy < have);
+            if (state.flags & 512 && state.wrap & 4) {
+              state.check = crc32_1(state.check, input, copy, next);
+            }
+            have -= copy;
+            next += copy;
+            if (len) {
+              break inf_leave;
+            }
+          } else if (state.head) {
+            state.head.comment = null;
+          }
+          state.mode = HCRC;
+        case HCRC:
+          if (state.flags & 512) {
+            while (bits < 16) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            if (state.wrap & 4 && hold !== (state.check & 65535)) {
+              strm.msg = "header crc mismatch";
+              state.mode = BAD;
+              break;
+            }
+            hold = 0;
+            bits = 0;
+          }
+          if (state.head) {
+            state.head.hcrc = state.flags >> 9 & 1;
+            state.head.done = true;
+          }
+          strm.adler = state.check = 0;
+          state.mode = TYPE;
+          break;
+        case DICTID:
+          while (bits < 32) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          strm.adler = state.check = zswap32(hold);
+          hold = 0;
+          bits = 0;
+          state.mode = DICT;
+        case DICT:
+          if (state.havedict === 0) {
+            strm.next_out = put;
+            strm.avail_out = left;
+            strm.next_in = next;
+            strm.avail_in = have;
+            state.hold = hold;
+            state.bits = bits;
+            return Z_NEED_DICT$1;
+          }
+          strm.adler = state.check = 1;
+          state.mode = TYPE;
+        case TYPE:
+          if (flush === Z_BLOCK || flush === Z_TREES) {
+            break inf_leave;
+          }
+        case TYPEDO:
+          if (state.last) {
+            hold >>>= bits & 7;
+            bits -= bits & 7;
+            state.mode = CHECK;
+            break;
+          }
+          while (bits < 3) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          state.last = hold & 1;
+          hold >>>= 1;
+          bits -= 1;
+          switch (hold & 3) {
+            case 0:
+              state.mode = STORED;
+              break;
+            case 1:
+              fixedtables(state);
+              state.mode = LEN_;
+              if (flush === Z_TREES) {
+                hold >>>= 2;
+                bits -= 2;
+                break inf_leave;
+              }
+              break;
+            case 2:
+              state.mode = TABLE;
+              break;
+            case 3:
+              strm.msg = "invalid block type";
+              state.mode = BAD;
+          }
+          hold >>>= 2;
+          bits -= 2;
+          break;
+        case STORED:
+          hold >>>= bits & 7;
+          bits -= bits & 7;
+          while (bits < 32) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          if ((hold & 65535) !== (hold >>> 16 ^ 65535)) {
+            strm.msg = "invalid stored block lengths";
+            state.mode = BAD;
+            break;
+          }
+          state.length = hold & 65535;
+          hold = 0;
+          bits = 0;
+          state.mode = COPY_;
+          if (flush === Z_TREES) {
+            break inf_leave;
+          }
+        case COPY_:
+          state.mode = COPY;
+        case COPY:
+          copy = state.length;
+          if (copy) {
+            if (copy > have) {
+              copy = have;
+            }
+            if (copy > left) {
+              copy = left;
+            }
+            if (copy === 0) {
+              break inf_leave;
+            }
+            output.set(input.subarray(next, next + copy), put);
+            have -= copy;
+            next += copy;
+            left -= copy;
+            put += copy;
+            state.length -= copy;
+            break;
+          }
+          state.mode = TYPE;
+          break;
+        case TABLE:
+          while (bits < 14) {
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          state.nlen = (hold & 31) + 257;
+          hold >>>= 5;
+          bits -= 5;
+          state.ndist = (hold & 31) + 1;
+          hold >>>= 5;
+          bits -= 5;
+          state.ncode = (hold & 15) + 4;
+          hold >>>= 4;
+          bits -= 4;
+          if (state.nlen > 286 || state.ndist > 30) {
+            strm.msg = "too many length or distance symbols";
+            state.mode = BAD;
+            break;
+          }
+          state.have = 0;
+          state.mode = LENLENS;
+        case LENLENS:
+          while (state.have < state.ncode) {
+            while (bits < 3) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            state.lens[order[state.have++]] = hold & 7;
+            hold >>>= 3;
+            bits -= 3;
+          }
+          while (state.have < 19) {
+            state.lens[order[state.have++]] = 0;
+          }
+          state.lencode = state.lendyn;
+          state.lenbits = 7;
+          opts = { bits: state.lenbits };
+          ret = inftrees(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
+          state.lenbits = opts.bits;
+          if (ret) {
+            strm.msg = "invalid code lengths set";
+            state.mode = BAD;
+            break;
+          }
+          state.have = 0;
+          state.mode = CODELENS;
+        case CODELENS:
+          while (state.have < state.nlen + state.ndist) {
+            for (;; ) {
+              here = state.lencode[hold & (1 << state.lenbits) - 1];
+              here_bits = here >>> 24;
+              here_op = here >>> 16 & 255;
+              here_val = here & 65535;
+              if (here_bits <= bits) {
+                break;
+              }
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            if (here_val < 16) {
+              hold >>>= here_bits;
+              bits -= here_bits;
+              state.lens[state.have++] = here_val;
+            } else {
+              if (here_val === 16) {
+                n = here_bits + 2;
+                while (bits < n) {
+                  if (have === 0) {
+                    break inf_leave;
+                  }
+                  have--;
+                  hold += input[next++] << bits;
+                  bits += 8;
+                }
+                hold >>>= here_bits;
+                bits -= here_bits;
+                if (state.have === 0) {
+                  strm.msg = "invalid bit length repeat";
+                  state.mode = BAD;
+                  break;
+                }
+                len = state.lens[state.have - 1];
+                copy = 3 + (hold & 3);
+                hold >>>= 2;
+                bits -= 2;
+              } else if (here_val === 17) {
+                n = here_bits + 3;
+                while (bits < n) {
+                  if (have === 0) {
+                    break inf_leave;
+                  }
+                  have--;
+                  hold += input[next++] << bits;
+                  bits += 8;
+                }
+                hold >>>= here_bits;
+                bits -= here_bits;
+                len = 0;
+                copy = 3 + (hold & 7);
+                hold >>>= 3;
+                bits -= 3;
+              } else {
+                n = here_bits + 7;
+                while (bits < n) {
+                  if (have === 0) {
+                    break inf_leave;
+                  }
+                  have--;
+                  hold += input[next++] << bits;
+                  bits += 8;
+                }
+                hold >>>= here_bits;
+                bits -= here_bits;
+                len = 0;
+                copy = 11 + (hold & 127);
+                hold >>>= 7;
+                bits -= 7;
+              }
+              if (state.have + copy > state.nlen + state.ndist) {
+                strm.msg = "invalid bit length repeat";
+                state.mode = BAD;
+                break;
+              }
+              while (copy--) {
+                state.lens[state.have++] = len;
+              }
+            }
+          }
+          if (state.mode === BAD) {
+            break;
+          }
+          if (state.lens[256] === 0) {
+            strm.msg = "invalid code -- missing end-of-block";
+            state.mode = BAD;
+            break;
+          }
+          state.lenbits = 9;
+          opts = { bits: state.lenbits };
+          ret = inftrees(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
+          state.lenbits = opts.bits;
+          if (ret) {
+            strm.msg = "invalid literal/lengths set";
+            state.mode = BAD;
+            break;
+          }
+          state.distbits = 6;
+          state.distcode = state.distdyn;
+          opts = { bits: state.distbits };
+          ret = inftrees(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
+          state.distbits = opts.bits;
+          if (ret) {
+            strm.msg = "invalid distances set";
+            state.mode = BAD;
+            break;
+          }
+          state.mode = LEN_;
+          if (flush === Z_TREES) {
+            break inf_leave;
+          }
+        case LEN_:
+          state.mode = LEN;
+        case LEN:
+          if (have >= 6 && left >= 258) {
+            strm.next_out = put;
+            strm.avail_out = left;
+            strm.next_in = next;
+            strm.avail_in = have;
+            state.hold = hold;
+            state.bits = bits;
+            inffast(strm, _out);
+            put = strm.next_out;
+            output = strm.output;
+            left = strm.avail_out;
+            next = strm.next_in;
+            input = strm.input;
+            have = strm.avail_in;
+            hold = state.hold;
+            bits = state.bits;
+            if (state.mode === TYPE) {
+              state.back = -1;
+            }
+            break;
+          }
+          state.back = 0;
+          for (;; ) {
+            here = state.lencode[hold & (1 << state.lenbits) - 1];
+            here_bits = here >>> 24;
+            here_op = here >>> 16 & 255;
+            here_val = here & 65535;
+            if (here_bits <= bits) {
+              break;
+            }
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          if (here_op && (here_op & 240) === 0) {
+            last_bits = here_bits;
+            last_op = here_op;
+            last_val = here_val;
+            for (;; ) {
+              here = state.lencode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
+              here_bits = here >>> 24;
+              here_op = here >>> 16 & 255;
+              here_val = here & 65535;
+              if (last_bits + here_bits <= bits) {
+                break;
+              }
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            hold >>>= last_bits;
+            bits -= last_bits;
+            state.back += last_bits;
+          }
+          hold >>>= here_bits;
+          bits -= here_bits;
+          state.back += here_bits;
+          state.length = here_val;
+          if (here_op === 0) {
+            state.mode = LIT;
+            break;
+          }
+          if (here_op & 32) {
+            state.back = -1;
+            state.mode = TYPE;
+            break;
+          }
+          if (here_op & 64) {
+            strm.msg = "invalid literal/length code";
+            state.mode = BAD;
+            break;
+          }
+          state.extra = here_op & 15;
+          state.mode = LENEXT;
+        case LENEXT:
+          if (state.extra) {
+            n = state.extra;
+            while (bits < n) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            state.length += hold & (1 << state.extra) - 1;
+            hold >>>= state.extra;
+            bits -= state.extra;
+            state.back += state.extra;
+          }
+          state.was = state.length;
+          state.mode = DIST;
+        case DIST:
+          for (;; ) {
+            here = state.distcode[hold & (1 << state.distbits) - 1];
+            here_bits = here >>> 24;
+            here_op = here >>> 16 & 255;
+            here_val = here & 65535;
+            if (here_bits <= bits) {
+              break;
+            }
+            if (have === 0) {
+              break inf_leave;
+            }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          if ((here_op & 240) === 0) {
+            last_bits = here_bits;
+            last_op = here_op;
+            last_val = here_val;
+            for (;; ) {
+              here = state.distcode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
+              here_bits = here >>> 24;
+              here_op = here >>> 16 & 255;
+              here_val = here & 65535;
+              if (last_bits + here_bits <= bits) {
+                break;
+              }
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            hold >>>= last_bits;
+            bits -= last_bits;
+            state.back += last_bits;
+          }
+          hold >>>= here_bits;
+          bits -= here_bits;
+          state.back += here_bits;
+          if (here_op & 64) {
+            strm.msg = "invalid distance code";
+            state.mode = BAD;
+            break;
+          }
+          state.offset = here_val;
+          state.extra = here_op & 15;
+          state.mode = DISTEXT;
+        case DISTEXT:
+          if (state.extra) {
+            n = state.extra;
+            while (bits < n) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            state.offset += hold & (1 << state.extra) - 1;
+            hold >>>= state.extra;
+            bits -= state.extra;
+            state.back += state.extra;
+          }
+          if (state.offset > state.dmax) {
+            strm.msg = "invalid distance too far back";
+            state.mode = BAD;
+            break;
+          }
+          state.mode = MATCH;
+        case MATCH:
+          if (left === 0) {
+            break inf_leave;
+          }
+          copy = _out - left;
+          if (state.offset > copy) {
+            copy = state.offset - copy;
+            if (copy > state.whave) {
+              if (state.sane) {
+                strm.msg = "invalid distance too far back";
+                state.mode = BAD;
+                break;
+              }
+            }
+            if (copy > state.wnext) {
+              copy -= state.wnext;
+              from = state.wsize - copy;
+            } else {
+              from = state.wnext - copy;
+            }
+            if (copy > state.length) {
+              copy = state.length;
+            }
+            from_source = state.window;
+          } else {
+            from_source = output;
+            from = put - state.offset;
+            copy = state.length;
+          }
+          if (copy > left) {
+            copy = left;
+          }
+          left -= copy;
+          state.length -= copy;
+          do {
+            output[put++] = from_source[from++];
+          } while (--copy);
+          if (state.length === 0) {
+            state.mode = LEN;
+          }
+          break;
+        case LIT:
+          if (left === 0) {
+            break inf_leave;
+          }
+          output[put++] = state.length;
+          left--;
+          state.mode = LEN;
+          break;
+        case CHECK:
+          if (state.wrap) {
+            while (bits < 32) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold |= input[next++] << bits;
+              bits += 8;
+            }
+            _out -= left;
+            strm.total_out += _out;
+            state.total += _out;
+            if (state.wrap & 4 && _out) {
+              strm.adler = state.check = state.flags ? crc32_1(state.check, output, _out, put - _out) : adler32_1(state.check, output, _out, put - _out);
+            }
+            _out = left;
+            if (state.wrap & 4 && (state.flags ? hold : zswap32(hold)) !== state.check) {
+              strm.msg = "incorrect data check";
+              state.mode = BAD;
+              break;
+            }
+            hold = 0;
+            bits = 0;
+          }
+          state.mode = LENGTH;
+        case LENGTH:
+          if (state.wrap && state.flags) {
+            while (bits < 32) {
+              if (have === 0) {
+                break inf_leave;
+              }
+              have--;
+              hold += input[next++] << bits;
+              bits += 8;
+            }
+            if (state.wrap & 4 && hold !== (state.total & 4294967295)) {
+              strm.msg = "incorrect length check";
+              state.mode = BAD;
+              break;
+            }
+            hold = 0;
+            bits = 0;
+          }
+          state.mode = DONE;
+        case DONE:
+          ret = Z_STREAM_END$1;
+          break inf_leave;
+        case BAD:
+          ret = Z_DATA_ERROR$1;
+          break inf_leave;
+        case MEM:
+          return Z_MEM_ERROR$1;
+        case SYNC:
+        default:
+          return Z_STREAM_ERROR$1;
+      }
+    }
+  strm.next_out = put;
+  strm.avail_out = left;
+  strm.next_in = next;
+  strm.avail_in = have;
+  state.hold = hold;
+  state.bits = bits;
+  if (state.wsize || _out !== strm.avail_out && state.mode < BAD && (state.mode < CHECK || flush !== Z_FINISH$1)) {
+    if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out))
+      ;
+  }
+  _in -= strm.avail_in;
+  _out -= strm.avail_out;
+  strm.total_in += _in;
+  strm.total_out += _out;
+  state.total += _out;
+  if (state.wrap & 4 && _out) {
+    strm.adler = state.check = state.flags ? crc32_1(state.check, output, _out, strm.next_out - _out) : adler32_1(state.check, output, _out, strm.next_out - _out);
+  }
+  strm.data_type = state.bits + (state.last ? 64 : 0) + (state.mode === TYPE ? 128 : 0) + (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
+  if ((_in === 0 && _out === 0 || flush === Z_FINISH$1) && ret === Z_OK$1) {
+    ret = Z_BUF_ERROR$1;
+  }
+  return ret;
+};
+var inflateEnd = (strm) => {
+  if (inflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$1;
+  }
+  let state = strm.state;
+  if (state.window) {
+    state.window = null;
+  }
+  strm.state = null;
+  return Z_OK$1;
+};
+var inflateGetHeader = (strm, head) => {
+  if (inflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$1;
+  }
+  const state = strm.state;
+  if ((state.wrap & 2) === 0) {
+    return Z_STREAM_ERROR$1;
+  }
+  state.head = head;
+  head.done = false;
+  return Z_OK$1;
+};
+var inflateSetDictionary = (strm, dictionary) => {
+  const dictLength = dictionary.length;
+  let state;
+  let dictid;
+  let ret;
+  if (inflateStateCheck(strm)) {
+    return Z_STREAM_ERROR$1;
+  }
+  state = strm.state;
+  if (state.wrap !== 0 && state.mode !== DICT) {
+    return Z_STREAM_ERROR$1;
+  }
+  if (state.mode === DICT) {
+    dictid = 1;
+    dictid = adler32_1(dictid, dictionary, dictLength, 0);
+    if (dictid !== state.check) {
+      return Z_DATA_ERROR$1;
+    }
+  }
+  ret = updatewindow(strm, dictionary, dictLength, dictLength);
+  if (ret) {
+    state.mode = MEM;
+    return Z_MEM_ERROR$1;
+  }
+  state.havedict = 1;
+  return Z_OK$1;
+};
+var inflateReset_1 = inflateReset;
+var inflateReset2_1 = inflateReset2;
+var inflateResetKeep_1 = inflateResetKeep;
+var inflateInit_1 = inflateInit;
+var inflateInit2_1 = inflateInit2;
+var inflate_2$1 = inflate$2;
+var inflateEnd_1 = inflateEnd;
+var inflateGetHeader_1 = inflateGetHeader;
+var inflateSetDictionary_1 = inflateSetDictionary;
+var inflateInfo = "pako inflate (from Nodeca project)";
+var inflate_1$2 = {
+  inflateReset: inflateReset_1,
+  inflateReset2: inflateReset2_1,
+  inflateResetKeep: inflateResetKeep_1,
+  inflateInit: inflateInit_1,
+  inflateInit2: inflateInit2_1,
+  inflate: inflate_2$1,
+  inflateEnd: inflateEnd_1,
+  inflateGetHeader: inflateGetHeader_1,
+  inflateSetDictionary: inflateSetDictionary_1,
+  inflateInfo
+};
+function GZheader() {
+  this.text = 0;
+  this.time = 0;
+  this.xflags = 0;
+  this.os = 0;
+  this.extra = null;
+  this.extra_len = 0;
+  this.name = "";
+  this.comment = "";
+  this.hcrc = 0;
+  this.done = false;
+}
+var gzheader = GZheader;
+var toString = Object.prototype.toString;
+var {
+  Z_NO_FLUSH,
+  Z_FINISH,
+  Z_OK,
+  Z_STREAM_END,
+  Z_NEED_DICT,
+  Z_STREAM_ERROR,
+  Z_DATA_ERROR,
+  Z_MEM_ERROR,
+  Z_BUF_ERROR
+} = constants$2;
+var defaultOptions = {
+  chunkSize: 1024 * 64,
+  windowBits: 15,
+  to: ""
+};
+function Inflate$1(options) {
+  this.options = common.assign({}, defaultOptions, options || {});
+  const opt = this.options;
+  if (opt.raw && opt.windowBits >= 0 && opt.windowBits < 16) {
+    opt.windowBits = -opt.windowBits;
+    if (opt.windowBits === 0) {
+      opt.windowBits = -15;
+    }
+  }
+  if (opt.windowBits >= 0 && opt.windowBits < 16 && !(options && options.windowBits)) {
+    opt.windowBits += 32;
+  }
+  if (opt.windowBits > 15 && opt.windowBits < 48) {
+    if ((opt.windowBits & 15) === 0) {
+      opt.windowBits |= 15;
+    }
+  }
+  this.err = 0;
+  this.msg = "";
+  this.ended = false;
+  this.chunks = [];
+  this.strm = new zstream;
+  this.strm.avail_out = 0;
+  let status = inflate_1$2.inflateInit2(this.strm, opt.windowBits);
+  if (status !== Z_OK) {
+    throw new Error(messages[status]);
+  }
+  this.header = new gzheader;
+  inflate_1$2.inflateGetHeader(this.strm, this.header);
+  if (opt.dictionary) {
+    if (typeof opt.dictionary === "string") {
+      opt.dictionary = strings.string2buf(opt.dictionary);
+    } else if (toString.call(opt.dictionary) === "[object ArrayBuffer]") {
+      opt.dictionary = new Uint8Array(opt.dictionary);
+    }
+    if (opt.raw) {
+      status = inflate_1$2.inflateSetDictionary(this.strm, opt.dictionary);
+      if (status !== Z_OK) {
+        throw new Error(messages[status]);
+      }
+    }
+  }
+}
+Inflate$1.prototype.push = function(data, flush_mode) {
+  const strm = this.strm;
+  const chunkSize = this.options.chunkSize;
+  const dictionary = this.options.dictionary;
+  let status, _flush_mode, last_avail_out;
+  if (this.ended)
+    return false;
+  if (flush_mode === ~~flush_mode)
+    _flush_mode = flush_mode;
+  else
+    _flush_mode = flush_mode === true ? Z_FINISH : Z_NO_FLUSH;
+  if (toString.call(data) === "[object ArrayBuffer]") {
+    strm.input = new Uint8Array(data);
+  } else {
+    strm.input = data;
+  }
+  strm.next_in = 0;
+  strm.avail_in = strm.input.length;
+  for (;; ) {
+    if (strm.avail_out === 0) {
+      strm.output = new Uint8Array(chunkSize);
+      strm.next_out = 0;
+      strm.avail_out = chunkSize;
+    }
+    status = inflate_1$2.inflate(strm, _flush_mode);
+    if (status === Z_NEED_DICT && dictionary) {
+      status = inflate_1$2.inflateSetDictionary(strm, dictionary);
+      if (status === Z_OK) {
+        status = inflate_1$2.inflate(strm, _flush_mode);
+      } else if (status === Z_DATA_ERROR) {
+        status = Z_NEED_DICT;
+      }
+    }
+    while (strm.avail_in > 0 && status === Z_STREAM_END && strm.state.wrap & 2 && strm.state.flags !== 0 && strm.input[strm.next_in] !== 0) {
+      inflate_1$2.inflateReset(strm);
+      status = inflate_1$2.inflate(strm, _flush_mode);
+    }
+    switch (status) {
+      case Z_STREAM_ERROR:
+      case Z_DATA_ERROR:
+      case Z_NEED_DICT:
+      case Z_MEM_ERROR:
+        this.onEnd(status);
+        this.ended = true;
+        return false;
+    }
+    last_avail_out = strm.avail_out;
+    if (strm.next_out) {
+      if (strm.avail_out === 0 || status === Z_STREAM_END || _flush_mode > 0) {
+        if (this.options.to === "string") {
+          let next_out_utf8 = strings.utf8border(strm.output, strm.next_out);
+          let tail = strm.next_out - next_out_utf8;
+          let utf8str = strings.buf2string(strm.output, next_out_utf8);
+          strm.next_out = tail;
+          strm.avail_out = chunkSize - tail;
+          if (tail)
+            strm.output.set(strm.output.subarray(next_out_utf8, next_out_utf8 + tail), 0);
+          this.onData(utf8str);
+        } else {
+          this.onData(strm.output.length === strm.next_out ? strm.output : strm.output.subarray(0, strm.next_out));
+          strm.avail_out = 0;
+          strm.next_out = 0;
+        }
+      }
+    }
+    if ((status === Z_OK || status === Z_BUF_ERROR) && last_avail_out === 0)
+      continue;
+    if (status === Z_STREAM_END) {
+      status = inflate_1$2.inflateEnd(this.strm);
+      this.onEnd(status);
+      this.ended = true;
+      return true;
+    }
+    if (strm.avail_in === 0) {
+      if (_flush_mode === Z_FINISH) {
+        status = inflate_1$2.inflateEnd(this.strm);
+        this.onEnd(status === Z_OK ? Z_BUF_ERROR : status);
+        this.ended = true;
+        return false;
+      }
+      break;
+    }
+  }
+  return true;
+};
+Inflate$1.prototype.onData = function(chunk) {
+  this.chunks.push(chunk);
+};
+Inflate$1.prototype.onEnd = function(status) {
+  if (status === Z_OK) {
+    if (this.options.to === "string") {
+      this.result = this.chunks.join("");
+    } else {
+      this.result = common.flattenChunks(this.chunks);
+    }
+  }
+  this.chunks = [];
+  this.err = status;
+  this.msg = this.strm.msg;
+};
+function inflate$1(input, options) {
+  const inflator = new Inflate$1(options);
+  inflator.push(input, true);
+  if (inflator.err)
+    throw inflator.msg || messages[inflator.err];
+  return inflator.result;
+}
+function inflateRaw$1(input, options) {
+  options = options || {};
+  options.raw = true;
+  return inflate$1(input, options);
+}
+var Inflate_1$1 = Inflate$1;
+var inflate_2 = inflate$1;
+var inflateRaw_1$1 = inflateRaw$1;
+var ungzip$1 = inflate$1;
+var constants = constants$2;
+var inflate_1$1 = {
+  Inflate: Inflate_1$1,
+  inflate: inflate_2,
+  inflateRaw: inflateRaw_1$1,
+  ungzip: ungzip$1,
+  constants
+};
+var { Deflate, deflate, deflateRaw, gzip } = deflate_1$1;
+var { Inflate, inflate, inflateRaw, ungzip } = inflate_1$1;
+var Deflate_1 = Deflate;
+var deflate_1 = deflate;
+var deflateRaw_1 = deflateRaw;
+var gzip_1 = gzip;
+var Inflate_1 = Inflate;
+var inflate_1 = inflate;
+var inflateRaw_1 = inflateRaw;
+var ungzip_1 = ungzip;
+var constants_1 = constants$2;
+var pako = {
+  Deflate: Deflate_1,
+  deflate: deflate_1,
+  deflateRaw: deflateRaw_1,
+  gzip: gzip_1,
+  Inflate: Inflate_1,
+  inflate: inflate_1,
+  inflateRaw: inflateRaw_1,
+  ungzip: ungzip_1,
+  constants: constants_1
+};
+
+// node_modules/zca-js/dist/utils.js
+var import_spark_md5 = __toESM(require_spark_md5(), 1);
+var import_tough_cookie = __toESM(require_cookie2(), 1);
+var import_json_bigint = __toESM(require_json_bigint(), 1);
+
+// node_modules/zca-js/dist/context.js
+var _5_MINUTES = 5 * 60 * 1000;
+
+class CallbacksMap extends Map {
+  set(key, value, ttl = _5_MINUTES) {
+    setTimeout(() => {
+      this.delete(key);
+    }, ttl);
+    return super.set(key, value);
+  }
+}
+var createContext = (apiType = 30, apiVersion = 685) => ({
+  API_TYPE: apiType,
+  API_VERSION: apiVersion,
+  uploadCallbacks: new CallbacksMap,
+  options: {
+    selfListen: false,
+    checkUpdate: true,
+    logging: true,
+    polyfill: global.fetch
+  },
+  secretKey: null
+});
+function isContextSession(ctx) {
+  return !!ctx.secretKey;
+}
+var MAX_MESSAGES_PER_SEND = 50;
+
+// node_modules/zca-js/dist/utils.js
+var isBun = typeof Bun !== "undefined";
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+function getSignKey(type, params) {
+  const n = [];
+  for (const s in params) {
+    if (hasOwn(params, s)) {
+      n.push(s);
+    }
+  }
+  n.sort();
+  let a = "zsecure" + type;
+  for (let s = 0;s < n.length; s++)
+    a += params[n[s]];
+  return import_crypto_js.default.MD5(a).toString();
+}
+function makeURL(ctx, baseURL, params = {}, apiVersion = true) {
+  const url = new URL(baseURL);
+  for (const key in params) {
+    if (hasOwn(params, key)) {
+      url.searchParams.append(key, params[key].toString());
+    }
+  }
+  if (apiVersion) {
+    if (!url.searchParams.has("zpw_ver"))
+      url.searchParams.set("zpw_ver", ctx.API_VERSION.toString());
+    if (!url.searchParams.has("zpw_type"))
+      url.searchParams.set("zpw_type", ctx.API_TYPE.toString());
+  }
+  return url.toString();
+}
+
+class ParamsEncryptor {
+  constructor({ type, imei, firstLaunchTime }) {
+    this.zcid = null;
+    this.enc_ver = "v2";
+    this.zcid = null;
+    this.encryptKey = null;
+    this.createZcid(type, imei, firstLaunchTime);
+    this.zcid_ext = ParamsEncryptor.randomString();
+    this.createEncryptKey();
+  }
+  getEncryptKey() {
+    if (!this.encryptKey)
+      throw new ZaloApiError("getEncryptKey: didn't create encryptKey yet");
+    return this.encryptKey;
+  }
+  createZcid(type, imei, firstLaunchTime) {
+    if (!type || !imei || !firstLaunchTime)
+      throw new ZaloApiError("createZcid: missing params");
+    const msg = `${type},${imei},${firstLaunchTime}`;
+    const s = ParamsEncryptor.encodeAES("3FC4F0D2AB50057BCE0D90D9187A22B1", msg, "hex", true);
+    this.zcid = s;
+  }
+  createEncryptKey(e = 0) {
+    const t = (e, t) => {
+      const { even: n } = ParamsEncryptor.processStr(e), { even: a, odd: s } = ParamsEncryptor.processStr(t);
+      if (!n || !a || !s)
+        return false;
+      const i = n.slice(0, 8).join("") + a.slice(0, 12).join("") + s.reverse().slice(0, 12).join("");
+      return this.encryptKey = i, true;
+    };
+    if (!this.zcid || !this.zcid_ext)
+      throw new ZaloApiError("createEncryptKey: zcid or zcid_ext is null");
+    try {
+      const n = import_crypto_js.default.MD5(this.zcid_ext).toString().toUpperCase();
+      if (t(n, this.zcid) || !(e < 3))
+        return false;
+      this.createEncryptKey(e + 1);
+    } catch (_a) {
+      if (e < 3)
+        this.createEncryptKey(e + 1);
+    }
+    return true;
+  }
+  getParams() {
+    return this.zcid ? {
+      zcid: this.zcid,
+      zcid_ext: this.zcid_ext,
+      enc_ver: this.enc_ver
+    } : null;
+  }
+  static processStr(e) {
+    if (!e || typeof e != "string")
+      return {
+        even: null,
+        odd: null
+      };
+    const [t, n] = [...e].reduce((e, t, n) => (e[n % 2].push(t), e), [[], []]);
+    return {
+      even: t,
+      odd: n
+    };
+  }
+  static randomString(e, t) {
+    const n = e || 6, a = t && e && t > e ? t : 12;
+    let s = Math.floor(Math.random() * (a - n + 1)) + n;
+    if (s > 12) {
+      let e = "";
+      for (;s > 0; ) {
+        e += Math.random().toString(16).substr(2, s > 12 ? 12 : s);
+        s -= 12;
+      }
+      return e;
+    }
+    return Math.random().toString(16).substr(2, s);
+  }
+  static encodeAES(e, message, type, uppercase, s = 0) {
+    if (!message)
+      return null;
+    try {
+      {
+        const encoder = type == "hex" ? import_crypto_js.default.enc.Hex : import_crypto_js.default.enc.Base64;
+        const key = import_crypto_js.default.enc.Utf8.parse(e);
+        const cfg = {
+          words: [0, 0, 0, 0],
+          sigBytes: 16
+        };
+        const encrypted = import_crypto_js.default.AES.encrypt(message, key, {
+          iv: cfg,
+          mode: import_crypto_js.default.mode.CBC,
+          padding: import_crypto_js.default.pad.Pkcs7
+        }).ciphertext.toString(encoder);
+        return uppercase ? encrypted.toUpperCase() : encrypted;
+      }
+    } catch (_a) {
+      return s < 3 ? ParamsEncryptor.encodeAES(e, message, type, uppercase, s + 1) : null;
+    }
+  }
+}
+function decryptResp(key, data) {
+  let n = null;
+  try {
+    n = decodeRespAES(key, data);
+    const parsed = JSON.parse(n);
+    return parsed;
+  } catch (_a) {
+    return n;
+  }
+}
+function decodeRespAES(key, data) {
+  data = decodeURIComponent(data);
+  const parsedKey = import_crypto_js.default.enc.Utf8.parse(key);
+  const n = {
+    words: [0, 0, 0, 0],
+    sigBytes: 16
+  };
+  return import_crypto_js.default.AES.decrypt({
+    ciphertext: import_crypto_js.default.enc.Base64.parse(data)
+  }, parsedKey, {
+    iv: n,
+    mode: import_crypto_js.default.mode.CBC,
+    padding: import_crypto_js.default.pad.Pkcs7
+  }).toString(import_crypto_js.default.enc.Utf8);
+}
+function decodeBase64ToBuffer(data) {
+  return Buffer.from(data, "base64");
+}
+function decodeUnit8Array(data) {
+  try {
+    return new TextDecoder().decode(data);
+  } catch (_a) {
+    return null;
+  }
+}
+function encodeAES(secretKey, data, t = 0) {
+  try {
+    const key = import_crypto_js.default.enc.Base64.parse(secretKey);
+    return import_crypto_js.default.AES.encrypt(data, key, {
+      iv: import_crypto_js.default.enc.Hex.parse("00000000000000000000000000000000"),
+      mode: import_crypto_js.default.mode.CBC,
+      padding: import_crypto_js.default.pad.Pkcs7
+    }).ciphertext.toString(import_crypto_js.default.enc.Base64);
+  } catch (_a) {
+    return t < 3 ? encodeAES(secretKey, data, t + 1) : null;
+  }
+}
+function decodeAES(secretKey, data, t = 0) {
+  try {
+    data = decodeURIComponent(data);
+    const key = import_crypto_js.default.enc.Base64.parse(secretKey);
+    return import_crypto_js.default.AES.decrypt({
+      ciphertext: import_crypto_js.default.enc.Base64.parse(data)
+    }, key, {
+      iv: import_crypto_js.default.enc.Hex.parse("00000000000000000000000000000000"),
+      mode: import_crypto_js.default.mode.CBC,
+      padding: import_crypto_js.default.pad.Pkcs7
+    }).toString(import_crypto_js.default.enc.Utf8);
+  } catch (_a) {
+    return t < 3 ? decodeAES(secretKey, data, t + 1) : null;
+  }
+}
+async function getDefaultHeaders(ctx, origin = "https://chat.zalo.me") {
+  if (!ctx.cookie)
+    throw new ZaloApiError("Cookie is not available");
+  if (!ctx.userAgent)
+    throw new ZaloApiError("User agent is not available");
+  return {
+    Accept: "application/json, text/plain, */*",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept-Language": "en-US,en;q=0.9",
+    "content-type": "application/x-www-form-urlencoded",
+    Cookie: await ctx.cookie.getCookieString(origin),
+    Origin: "https://chat.zalo.me",
+    Referer: "https://chat.zalo.me/",
+    "User-Agent": ctx.userAgent
   };
 }
-// src/core/hub.ts
-class ChannelHub {
-  _channels = new Map;
-  _bus = new ChannelEventBus;
-  _messageHandlers = [];
-  register(channel) {
-    if (this._channels.has(channel.name)) {
-      throw new Error(`Channel '${channel.name}' is already registered in ChannelHub.`);
+async function request(ctx, url, options, raw = false) {
+  var _a, _b;
+  if (!ctx.cookie)
+    ctx.cookie = new import_tough_cookie.default.CookieJar;
+  const origin = new URL(url).origin;
+  const defaultHeaders = await getDefaultHeaders(ctx, origin);
+  if (!raw) {
+    if (options) {
+      options.headers = Object.assign(defaultHeaders, options.headers || {});
+    } else
+      options = { headers: defaultHeaders };
+  }
+  const _options = Object.assign(Object.assign({}, options !== null && options !== undefined ? options : {}), isBun ? {
+    proxy: (_b = (_a = ctx.options.agent) === null || _a === undefined ? undefined : _a.proxy) === null || _b === undefined ? undefined : _b.href
+  } : { agent: ctx.options.agent });
+  const response = await ctx.options.polyfill(url, _options);
+  const setCookieRaw = response.headers.get("set-cookie");
+  if (setCookieRaw && !raw) {
+    let cookieStrings;
+    if (typeof response.headers.getSetCookie === "function") {
+      cookieStrings = response.headers.getSetCookie();
+    } else {
+      cookieStrings = setCookieRaw.split(", ");
     }
-    this._channels.set(channel.name, channel);
-    channel.on("message", (msg) => {
-      this._bus.emitMessage(msg);
-      const ctx = createMessageContext(msg, channel);
-      for (const handler of this._messageHandlers) {
-        Promise.resolve(handler(ctx)).catch((err) => {
-          this._bus.emitError(err);
+    for (const cookie of cookieStrings) {
+      const parsed = import_tough_cookie.default.Cookie.parse(cookie);
+      try {
+        if (parsed)
+          await ctx.cookie.setCookie(parsed, parsed.domain != "zalo.me" ? `https://${parsed.domain}` : origin);
+      } catch (error) {
+        logger(ctx).error(error);
+      }
+    }
+  }
+  const redirectURL = response.headers.get("location");
+  if (redirectURL) {
+    const redirectOptions = Object.assign({}, options);
+    redirectOptions.method = "GET";
+    if (!raw) {
+      redirectOptions.headers = new Headers(redirectOptions.headers);
+      redirectOptions.headers.set("Referer", "https://id.zalo.me/");
+    }
+    return await request(ctx, redirectURL, redirectOptions);
+  }
+  return response;
+}
+async function getImageMetaData(ctx, filePath) {
+  if (!ctx.options.imageMetadataGetter) {
+    throw new ZaloApiMissingImageMetadataGetter;
+  }
+  const imageData = await ctx.options.imageMetadataGetter(filePath);
+  if (!imageData) {
+    throw new ZaloApiError("Failed to get image metadata");
+  }
+  const fileName = filePath.split("/").pop();
+  return {
+    fileName,
+    totalSize: imageData.size,
+    width: imageData.width,
+    height: imageData.height
+  };
+}
+async function getFileSize(filePath) {
+  return fs.promises.stat(filePath).then((s) => s.size);
+}
+async function getGifMetaData(ctx, filePath) {
+  if (!ctx.options.imageMetadataGetter) {
+    throw new ZaloApiMissingImageMetadataGetter;
+  }
+  const gifData = await ctx.options.imageMetadataGetter(filePath);
+  if (!gifData) {
+    throw new ZaloApiError("Failed to get gif metadata");
+  }
+  const fileName = path.basename(filePath);
+  return {
+    fileName,
+    totalSize: gifData.size,
+    width: gifData.width,
+    height: gifData.height
+  };
+}
+async function decodeEventData(parsed, cipherKey) {
+  if (typeof parsed.data !== "string")
+    throw new ZaloApiError(`Invalid data, expected string but got ${typeof parsed.data}`);
+  if (typeof parsed.encrypt !== "number")
+    throw new ZaloApiError(`Invalid encrypt type, expected number but got ${typeof parsed.encrypt}`);
+  if (parsed.encrypt < 0 || parsed.encrypt > 3)
+    throw new ZaloApiError(`Invalid encrypt type, expected 0-3 but got ${parsed.encrypt}`);
+  const rawData = parsed.data;
+  const encryptType = parsed.encrypt;
+  if (encryptType === 0)
+    return JSON.parse(rawData);
+  const decodedBuffer = decodeBase64ToBuffer(encryptType === 1 ? rawData : decodeURIComponent(rawData));
+  let decryptedBuffer = decodedBuffer;
+  if (encryptType !== 1) {
+    if (cipherKey && decodedBuffer.length >= 48) {
+      const algorithm = {
+        name: "AES-GCM",
+        iv: decodedBuffer.subarray(0, 16),
+        tagLength: 128,
+        additionalData: decodedBuffer.subarray(16, 32)
+      };
+      const dataSource = decodedBuffer.subarray(32);
+      const cryptoKey = await crypto2.subtle.importKey("raw", decodeBase64ToBuffer(cipherKey), algorithm, false, [
+        "decrypt"
+      ]);
+      decryptedBuffer = await crypto2.subtle.decrypt(algorithm, cryptoKey, dataSource);
+    } else {
+      throw new ZaloApiError("Invalid data length or missing cipher key");
+    }
+  }
+  const decompressedBuffer = encryptType === 3 ? new Uint8Array(decryptedBuffer) : pako.inflate(decryptedBuffer);
+  const decodedData = decodeUnit8Array(decompressedBuffer);
+  if (!decodedData)
+    return;
+  return import_json_bigint.default.parse(decodedData);
+}
+async function getMd5LargeFileObject(source, fileSize) {
+  const buffer = typeof source == "string" ? await fs.promises.readFile(source) : source.data;
+  return new Promise((resolve) => {
+    let currentChunk = 0;
+    const chunkSize = 2097152, chunks = Math.ceil(fileSize / chunkSize), spark = new import_spark_md5.default.ArrayBuffer;
+    function loadNext() {
+      const start = currentChunk * chunkSize, end = start + chunkSize >= fileSize ? fileSize : start + chunkSize;
+      spark.append(new Uint8Array(buffer.subarray(start, end)).buffer);
+      currentChunk++;
+      if (currentChunk < chunks) {
+        loadNext();
+      } else {
+        resolve({
+          currentChunk,
+          data: spark.end()
         });
       }
-    });
-    channel.on("error", (err) => {
-      this._bus.emitError(err);
-    });
-    return this;
-  }
-  getChannel(name) {
-    return this._channels.get(name);
-  }
-  listChannels() {
-    return Array.from(this._channels.keys());
-  }
-  onMessage(handler) {
-    this._messageHandlers.push(handler);
-    return this;
-  }
-  async start() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.connect());
-    await Promise.all(promises);
-  }
-  async stop() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.disconnect());
-    await Promise.all(promises);
-  }
+    }
+    loadNext();
+  });
 }
-// src/channels/zalo/adapter.ts
-class ZaloChannelAdapter extends BaseChannel {
-  name = "zalo";
-  api;
-  ownId;
-  config;
-  constructor(config = {}) {
-    super();
-    this.config = config;
-    if (config.api) {
-      this.api = config.api;
-    }
-    this.ownId = config.ownId;
+var logger = (ctx) => ({
+  verbose: (...args) => {
+    if (ctx.options.logging)
+      console.log("\x1B[35m\uD83D\uDE80 VERBOSE\x1B[0m", ...args);
+  },
+  info: (...args) => {
+    if (ctx.options.logging)
+      console.log("\x1B[34mINFO\x1B[0m", ...args);
+  },
+  warn: (...args) => {
+    if (ctx.options.logging)
+      console.log("\x1B[33mWARN\x1B[0m", ...args);
+  },
+  error: (...args) => {
+    if (ctx.options.logging)
+      console.log("\x1B[31mERROR\x1B[0m", ...args);
+  },
+  success: (...args) => {
+    if (ctx.options.logging)
+      console.log("\x1B[32mSUCCESS\x1B[0m", ...args);
+  },
+  timestamp: (...args) => {
+    const now = new Date().toISOString();
+    if (ctx.options.logging)
+      console.log(`\x1B[90m[${now}]\x1B[0m`, ...args);
   }
-  async connect() {
-    if (!this.api && this.config.credentialsPath) {
-      const fs = await import("node:fs");
-      await Promise.resolve().then(() => init_dist());
-      if (!fs.existsSync(this.config.credentialsPath)) {
-        throw new Error(`Credentials not found at ${this.config.credentialsPath}. Please run login first.`);
-      }
-      const creds = JSON.parse(fs.readFileSync(this.config.credentialsPath, "utf-8"));
-      const zalo = new Zalo;
-      this.api = await zalo.login(creds);
-    }
-    if (!this.api) {
-      throw new Error("Zalo API instance or valid credentialsPath required to connect.");
-    }
-    this.setupEventListener();
-    this.setConnected(true);
-  }
-  async disconnect() {
-    if (this.api?.listener?.stop) {
-      try {
-        this.api.listener.stop();
-      } catch {}
-    }
-    this.setConnected(false);
-  }
-  setupEventListener() {
-    if (!this.api?.listener?.on)
-      return;
-    this.api.listener.on("message", (raw) => {
-      const unified = this.normalizeMessage(raw);
-      if (unified) {
-        this.emit("message", unified);
-      }
-    });
-    if (this.api.listener.start) {
-      try {
-        this.api.listener.start();
-      } catch {}
-    }
-  }
-  normalizeMessage(raw) {
-    if (!raw)
-      return null;
-    const data = raw.data || raw;
-    const isGroup = raw.type === 1 || raw.type === "group" || Boolean(raw.isGroup);
-    const chatId = raw.threadId || data.idTo || data.threadId || "";
-    const senderId = data.uidFrom || raw.senderId || "";
-    const senderName = data.dName || data.senderName;
-    const text = typeof data.content === "string" ? data.content : data.msg || "";
-    const msgId = data.msgId || raw.msgId || String(Date.now());
-    const ts = Number(data.ts || raw.timestamp) || Date.now();
-    return {
-      id: String(msgId),
-      channel: "zalo",
-      sender: {
-        id: String(senderId),
-        name: senderName,
-        isBot: this.ownId ? String(senderId) === String(this.ownId) : false
-      },
-      chat: {
-        id: String(chatId),
-        type: isGroup ? "group" : "dm"
-      },
-      content: {
-        text
-      },
-      raw,
-      timestamp: ts
-    };
-  }
-  async sendText(chatId, text, options) {
-    if (!this.api)
-      throw new Error("Zalo adapter is not connected.");
-    const isGroup = this.config.defaultIsGroup ?? true;
-    const threadType = isGroup ? 1 : 0;
-    const payload = { msg: text, quote: options?.replyToId };
-    const res = await this.api.sendMessage(payload, chatId, threadType);
-    const resMsgId = res?.message?.msgId || res?.msgId || `z-${Date.now()}`;
-    return {
-      messageId: String(resMsgId),
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-  async sendMedia(chatId, media, _options) {
-    if (!this.api)
-      throw new Error("Zalo adapter is not connected.");
-    const isGroup = this.config.defaultIsGroup ?? true;
-    const threadType = isGroup ? 1 : 0;
-    let res;
-    if (media.type === "image") {
-      res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source] }, chatId, threadType);
-    } else if (media.type === "video" && this.api.sendVideo) {
-      res = await this.api.sendVideo({ video: media.source, msg: media.caption || "" }, chatId, threadType);
-    } else {
-      res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source] }, chatId, threadType);
-    }
-    const resMsgId = res?.message?.msgId || res?.msgId || `z-${Date.now()}`;
-    return {
-      messageId: String(resMsgId),
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-  async addReaction(chatId, messageId, emoji) {
-    if (this.api?.addReaction) {
-      await this.api.addReaction(chatId, messageId, emoji);
-    }
-  }
+});
+function getClientMessageType(msgType) {
+  if (msgType === "webchat")
+    return 1;
+  if (msgType === "chat.voice")
+    return 31;
+  if (msgType === "chat.photo")
+    return 32;
+  if (msgType === "chat.sticker")
+    return 36;
+  if (msgType === "chat.doodle")
+    return 37;
+  if (msgType === "chat.recommended")
+    return 38;
+  if (msgType === "chat.link")
+    return 38;
+  if (msgType === "chat.video.msg")
+    return 44;
+  if (msgType === "share.file")
+    return 46;
+  if (msgType === "chat.gif")
+    return 49;
+  if (msgType === "chat.location.new")
+    return 43;
+  return 1;
 }
-// src/personal/client.ts
-init_dist();
+function strPadLeft(e, t, n) {
+  const a = (e = "" + e).length;
+  return a === n ? e : a > n ? e.slice(-n) : t.repeat(n - a) + e;
+}
+function formatTime(format, timestamp = Date.now()) {
+  const date = new Date(timestamp);
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  };
+  const formatted = new Intl.DateTimeFormat("vi-VN", options).format(date);
+  if (format.includes("%H") || format.includes("%d")) {
+    return format.replace("%H", date.getHours().toString().padStart(2, "0")).replace("%M", date.getMinutes().toString().padStart(2, "0")).replace("%S", date.getSeconds().toString().padStart(2, "0")).replace("%d", date.getDate().toString().padStart(2, "0")).replace("%m", (date.getMonth() + 1).toString().padStart(2, "0")).replace("%Y", date.getFullYear().toString());
+  }
+  return formatted;
+}
+function getFullTimeFromMillisecond(e) {
+  const t = new Date(e);
+  return strPadLeft(t.getHours(), "0", 2) + ":" + strPadLeft(t.getMinutes(), "0", 2) + " " + strPadLeft(t.getDate(), "0", 2) + "/" + strPadLeft(t.getMonth() + 1, "0", 2) + "/" + t.getFullYear();
+}
+function getFileExtension(e) {
+  return path.extname(e).slice(1);
+}
+function getFileName(e) {
+  return path.basename(e);
+}
+function removeUndefinedKeys(e) {
+  for (const t in e)
+    if (e[t] === undefined)
+      delete e[t];
+  return e;
+}
+function getGroupEventType(act) {
+  if (act == "join_request")
+    return GroupEventType.JOIN_REQUEST;
+  if (act == "join")
+    return GroupEventType.JOIN;
+  if (act == "leave")
+    return GroupEventType.LEAVE;
+  if (act == "remove_member")
+    return GroupEventType.REMOVE_MEMBER;
+  if (act == "block_member")
+    return GroupEventType.BLOCK_MEMBER;
+  if (act == "update_setting")
+    return GroupEventType.UPDATE_SETTING;
+  if (act == "update_avatar")
+    return GroupEventType.UPDATE_AVATAR;
+  if (act == "update")
+    return GroupEventType.UPDATE;
+  if (act == "new_link")
+    return GroupEventType.NEW_LINK;
+  if (act == "add_admin")
+    return GroupEventType.ADD_ADMIN;
+  if (act == "remove_admin")
+    return GroupEventType.REMOVE_ADMIN;
+  if (act == "new_pin_topic")
+    return GroupEventType.NEW_PIN_TOPIC;
+  if (act == "update_pin_topic")
+    return GroupEventType.UPDATE_PIN_TOPIC;
+  if (act == "update_topic")
+    return GroupEventType.UPDATE_TOPIC;
+  if (act == "update_board")
+    return GroupEventType.UPDATE_BOARD;
+  if (act == "remove_board")
+    return GroupEventType.REMOVE_BOARD;
+  if (act == "reorder_pin_topic")
+    return GroupEventType.REORDER_PIN_TOPIC;
+  if (act == "unpin_topic")
+    return GroupEventType.UNPIN_TOPIC;
+  if (act == "remove_topic")
+    return GroupEventType.REMOVE_TOPIC;
+  if (act == "accept_remind")
+    return GroupEventType.ACCEPT_REMIND;
+  if (act == "reject_remind")
+    return GroupEventType.REJECT_REMIND;
+  if (act == "remind_topic")
+    return GroupEventType.REMIND_TOPIC;
+  return GroupEventType.UNKNOWN;
+}
+function getFriendEventType(act) {
+  if (act == "add")
+    return FriendEventType.ADD;
+  if (act == "remove")
+    return FriendEventType.REMOVE;
+  if (act == "block")
+    return FriendEventType.BLOCK;
+  if (act == "unblock")
+    return FriendEventType.UNBLOCK;
+  if (act == "block_call")
+    return FriendEventType.BLOCK_CALL;
+  if (act == "unblock_call")
+    return FriendEventType.UNBLOCK_CALL;
+  if (act == "req_v2")
+    return FriendEventType.REQUEST;
+  if (act == "reject")
+    return FriendEventType.REJECT_REQUEST;
+  if (act == "undo_req")
+    return FriendEventType.UNDO_REQUEST;
+  if (act == "seen_fr_req")
+    return FriendEventType.SEEN_FRIEND_REQUEST;
+  if (act == "pin_unpin")
+    return FriendEventType.PIN_UNPIN;
+  if (act == "pin_create")
+    return FriendEventType.PIN_CREATE;
+  return FriendEventType.UNKNOWN;
+}
+async function handleZaloResponse(ctx, response, isEncrypted = true) {
+  const result = {
+    data: null,
+    error: null
+  };
+  if (!response.ok) {
+    result.error = {
+      message: "Request failed with status code " + response.status
+    };
+    return result;
+  }
+  try {
+    const jsonData = await response.json();
+    if (jsonData.error_code != 0) {
+      result.error = {
+        message: jsonData.error_message,
+        code: jsonData.error_code
+      };
+      return result;
+    }
+    const decodedData = isEncrypted ? JSON.parse(decodeAES(ctx.secretKey, jsonData.data)) : jsonData;
+    if (decodedData.error_code != 0) {
+      result.error = {
+        message: decodedData.error_message,
+        code: decodedData.error_code
+      };
+      return result;
+    }
+    result.data = decodedData.data;
+  } catch (error) {
+    logger(ctx).error("Failed to parse response data:", error);
+    result.error = {
+      message: "Failed to parse response data"
+    };
+  }
+  return result;
+}
+async function resolveResponse(ctx, res, cb, isEncrypted) {
+  const result = await handleZaloResponse(ctx, res, isEncrypted);
+  if (result.error)
+    throw new ZaloApiError(result.error.message, result.error.code);
+  if (cb)
+    return cb(result);
+  return result.data;
+}
+function apiFactory() {
+  return (callback) => {
+    return (ctx, api) => {
+      if (!isContextSession(ctx))
+        throw new ZaloApiError("Invalid context " + JSON.stringify(ctx, null, 2));
+      const utils = {
+        makeURL(baseURL, params, apiVersion) {
+          return makeURL(ctx, baseURL, params, apiVersion);
+        },
+        encodeAES(data, t) {
+          return encodeAES(ctx.secretKey, data, t);
+        },
+        request(url, options, raw) {
+          return request(ctx, url, options, raw);
+        },
+        logger: logger(ctx),
+        resolve: (res, cb, isEncrypted) => resolveResponse(ctx, res, cb, isEncrypted)
+      };
+      return callback(api, ctx, utils);
+    };
+  };
+}
+function generateZaloUUID(userAgent) {
+  return crypto2.randomUUID() + "-" + import_crypto_js.default.MD5(userAgent).toString();
+}
+function encryptPin(pin) {
+  return crypto2.createHash("md5").update(pin).digest("hex");
+}
+function normalizeHolderName(input) {
+  if (!input)
+    return;
+  const normalized = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g, "d").toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim();
+  return normalized.length >= 5 ? normalized : undefined;
+}
 
+// node_modules/zca-js/dist/apis/loginQR.js
+var LoginQRCallbackEventType;
+(function(LoginQRCallbackEventType) {
+  LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeGenerated"] = 0] = "QRCodeGenerated";
+  LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeExpired"] = 1] = "QRCodeExpired";
+  LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeScanned"] = 2] = "QRCodeScanned";
+  LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeDeclined"] = 3] = "QRCodeDeclined";
+  LoginQRCallbackEventType[LoginQRCallbackEventType["GotLoginInfo"] = 4] = "GotLoginInfo";
+})(LoginQRCallbackEventType || (LoginQRCallbackEventType = {}));
+async function loadLoginPage(ctx) {
+  const response = await request(ctx, "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F", {
+    headers: {
+      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      "cache-control": "max-age=0",
+      priority: "u=0, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "same-site",
+      "sec-fetch-user": "?1",
+      "upgrade-insecure-requests": "1",
+      Referer: "https://chat.zalo.me/",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    method: "GET"
+  });
+  const html = await response.text();
+  const regex = /https:\/\/stc-zlogin\.zdn\.vn\/main-([\d.]+)\.js/;
+  const match = html.match(regex);
+  return match === null || match === undefined ? undefined : match[1];
+}
+async function getLoginInfo(ctx, version) {
+  const form = new URLSearchParams;
+  form.append("continue", "https://zalo.me/pc");
+  form.append("v", version);
+  return await request(ctx, "https://id.zalo.me/account/logininfo", {
+    headers: {
+      accept: "*/*",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      "content-type": "application/x-www-form-urlencoded",
+      priority: "u=1, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fzalo.me%2Fpc",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    body: form,
+    method: "POST"
+  }).then((res) => res.json()).catch(logger(ctx).error);
+}
+async function verifyClient(ctx, version) {
+  const form = new URLSearchParams;
+  form.append("type", "device");
+  form.append("continue", "https://zalo.me/pc");
+  form.append("v", version);
+  return await request(ctx, "https://id.zalo.me/account/verify-client", {
+    headers: {
+      accept: "*/*",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      "content-type": "application/x-www-form-urlencoded",
+      priority: "u=1, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fzalo.me%2Fpc",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    body: form,
+    method: "POST"
+  }).then((res) => res.json()).catch(logger(ctx).error);
+}
+async function generate(ctx, version) {
+  const form = new URLSearchParams;
+  form.append("continue", "https://zalo.me/pc");
+  form.append("v", version);
+  return await request(ctx, "https://id.zalo.me/account/authen/qr/generate", {
+    headers: {
+      accept: "*/*",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      "content-type": "application/x-www-form-urlencoded",
+      priority: "u=1, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fzalo.me%2Fpc",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    body: form,
+    method: "POST"
+  }).then((res) => res.json()).catch(logger(ctx).error);
+}
+async function saveQRCodeToFile(filepath, imageData) {
+  await writeFile(filepath, imageData, "base64");
+}
+async function waitingScan(ctx, version, code, signal) {
+  const form = new URLSearchParams;
+  form.append("code", code);
+  form.append("continue", "https://chat.zalo.me/");
+  form.append("v", version);
+  return await request(ctx, "https://id.zalo.me/account/authen/qr/waiting-scan", {
+    headers: {
+      accept: "*/*",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      "content-type": "application/x-www-form-urlencoded",
+      priority: "u=1, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    body: form,
+    method: "POST",
+    signal
+  }).then((res) => res.json()).then((data) => {
+    if (data.error_code == 8) {
+      return waitingScan(ctx, version, code, signal);
+    }
+    return data;
+  }).catch((e) => {
+    if (!signal.aborted)
+      logger(ctx).error(e);
+  });
+}
+async function waitingConfirm(ctx, version, code, signal) {
+  const form = new URLSearchParams;
+  form.append("code", code);
+  form.append("gToken", "");
+  form.append("gAction", "CONFIRM_QR");
+  form.append("continue", "https://chat.zalo.me/");
+  form.append("v", version);
+  logger(ctx).info("Please confirm on your phone");
+  return await request(ctx, "https://id.zalo.me/account/authen/qr/waiting-confirm", {
+    headers: {
+      accept: "*/*",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      "content-type": "application/x-www-form-urlencoded",
+      priority: "u=1, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    body: form,
+    method: "POST",
+    signal
+  }).then((res) => res.json()).then((data) => {
+    if (data.error_code == 8) {
+      return waitingConfirm(ctx, version, code, signal);
+    }
+    return data;
+  }).catch((e) => {
+    if (!signal.aborted)
+      logger(ctx).error(e);
+  });
+}
+async function checkSession(ctx) {
+  return await request(ctx, "https://id.zalo.me/account/checksession?continue=https%3A%2F%2Fchat.zalo.me%2Findex.html", {
+    headers: {
+      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      priority: "u=0, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "same-origin",
+      "upgrade-insecure-requests": "1",
+      Referer: "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    redirect: "manual",
+    method: "GET"
+  }).catch(logger(ctx).error);
+}
+async function getUserInfo(ctx) {
+  return await request(ctx, "https://jr.chat.zalo.me/jr/userinfo", {
+    headers: {
+      accept: "*/*",
+      "accept-language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      priority: "u=1, i",
+      "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-site",
+      Referer: "https://chat.zalo.me/",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    method: "GET"
+  }).then((res) => res.json()).catch(logger(ctx).error);
+}
+async function loginQR(ctx, options, callback) {
+  ctx.cookie = new import_tough_cookie2.CookieJar;
+  ctx.userAgent = options.userAgent;
+  return new Promise(async (resolve, reject) => {
+    var _a;
+    const controller = new AbortController;
+    let qrTimeout = null;
+    function cleanUp() {
+      controller.abort();
+      if (qrTimeout) {
+        clearTimeout(qrTimeout);
+        qrTimeout = null;
+      }
+    }
+    try {
+      let retry = function() {
+        cleanUp();
+        return resolve(loginQR(ctx, options, callback));
+      }, abort = function() {
+        cleanUp();
+        return reject(new ZaloApiLoginQRAborted);
+      };
+      if (ctx.options.logging)
+        console.log();
+      const loginVersion = await loadLoginPage(ctx);
+      if (!loginVersion)
+        throw new ZaloApiError("Cannot get API login version");
+      logger(ctx).info("Got login version:", loginVersion);
+      await getLoginInfo(ctx, loginVersion);
+      await verifyClient(ctx, loginVersion);
+      const qrGenResult = await generate(ctx, loginVersion);
+      if (!qrGenResult || !qrGenResult.data)
+        throw new ZaloApiError(`Unable to generate QRCode
+Response: ${JSON.stringify(qrGenResult, null, 2)}`);
+      const qrData = qrGenResult.data;
+      if (callback) {
+        callback({
+          type: LoginQRCallbackEventType.QRCodeGenerated,
+          data: Object.assign(Object.assign({}, qrGenResult.data), { image: qrGenResult.data.image.replace(/^data:image\/png;base64,/, "") }),
+          actions: {
+            async saveToFile(qrPath) {
+              var _a;
+              if (qrPath === undefined) {
+                qrPath = (_a = options.qrPath) !== null && _a !== undefined ? _a : "qr.png";
+              }
+              await saveQRCodeToFile(qrPath, qrData.image.replace(/^data:image\/png;base64,/, ""));
+              logger(ctx).info("Scan the QR code at", `'${qrPath}'`, "to proceed with login");
+            },
+            retry,
+            abort
+          }
+        });
+      } else {
+        const qrPath = (_a = options.qrPath) !== null && _a !== undefined ? _a : "qr.png";
+        await saveQRCodeToFile(qrPath, qrData.image.replace(/^data:image\/png;base64,/, ""));
+        logger(ctx).info("Scan the QR code at", `'${qrPath}'`, "to proceed with login");
+      }
+      qrTimeout = setTimeout(() => {
+        cleanUp();
+        logger(ctx).info("QR expired!");
+        if (callback) {
+          callback({
+            type: LoginQRCallbackEventType.QRCodeExpired,
+            data: null,
+            actions: {
+              retry,
+              abort
+            }
+          });
+        } else {
+          retry();
+        }
+      }, 1e5);
+      const scanResult = await waitingScan(ctx, loginVersion, qrGenResult.data.code, controller.signal);
+      if (!scanResult || !scanResult.data)
+        throw new ZaloApiError("Cannot get scan result");
+      if (callback) {
+        callback({
+          type: LoginQRCallbackEventType.QRCodeScanned,
+          data: scanResult.data,
+          actions: {
+            retry,
+            abort
+          }
+        });
+      }
+      const confirmResult = await waitingConfirm(ctx, loginVersion, qrGenResult.data.code, controller.signal);
+      if (!confirmResult)
+        throw new ZaloApiError("Cannot get confirm result");
+      clearTimeout(qrTimeout);
+      if (confirmResult.error_code == -13) {
+        if (callback) {
+          callback({
+            type: LoginQRCallbackEventType.QRCodeDeclined,
+            data: {
+              code: qrData.code
+            },
+            actions: {
+              retry,
+              abort
+            }
+          });
+        } else {
+          logger(ctx).error("QRCode login declined");
+          throw new ZaloApiLoginQRDeclined;
+        }
+        return;
+      } else if (confirmResult.error_code != 0) {
+        throw new ZaloApiError(`An error has occurred.
+Response: ${JSON.stringify(confirmResult, null, 2)}`);
+      }
+      const checkSessionResult = await checkSession(ctx);
+      if (!checkSessionResult)
+        throw new ZaloApiError("Cannot get session, login failed");
+      logger(ctx).info("Successfully logged into the account", scanResult.data.display_name);
+      const userInfo = await getUserInfo(ctx);
+      if (!userInfo || !userInfo.data)
+        throw new ZaloApiError("Can't get account info");
+      if (!userInfo.data.logged)
+        throw new ZaloApiError("Can't login");
+      resolve({
+        cookies: ctx.cookie.toJSON().cookies,
+        userInfo: userInfo.data.info
+      });
+    } catch (error) {
+      cleanUp();
+      reject(error);
+    }
+  });
+}
+
+// node_modules/zca-js/dist/apis/login.js
+async function login(ctx, encryptParams) {
+  const encryptedParams = await getEncryptParam(ctx, encryptParams, "getlogininfo");
+  try {
+    const response = await request(ctx, makeURL(ctx, "https://wpa.chat.zalo.me/api/login/getLoginInfo", Object.assign(Object.assign({}, encryptedParams.params), { nretry: 0 })));
+    if (!response.ok)
+      throw new ZaloApiError("Failed to fetch login info: " + response.statusText);
+    const data = await response.json();
+    if (encryptedParams.enk) {
+      const decryptedData = decryptResp(encryptedParams.enk, data.data);
+      return decryptedData != null && typeof decryptedData != "string" ? decryptedData : null;
+    }
+    return null;
+  } catch (error) {
+    logger(ctx).error("Login failed:", error);
+    throw error;
+  }
+}
+async function getServerInfo(ctx, encryptParams) {
+  const encryptedParams = await getEncryptParam(ctx, encryptParams, "getserverinfo");
+  if (!encryptedParams.params.signkey || typeof encryptedParams.params.signkey !== "string")
+    throw new ZaloApiError("Missing signkey");
+  const response = await request(ctx, makeURL(ctx, "https://wpa.chat.zalo.me/api/login/getServerInfo", {
+    imei: ctx.imei,
+    type: ctx.API_TYPE,
+    client_version: ctx.API_VERSION,
+    computer_name: "Web",
+    signkey: encryptedParams.params.signkey
+  }, false));
+  if (!response.ok)
+    throw new ZaloApiError("Failed to fetch server info: " + response.statusText);
+  const data = await response.json();
+  if (data.data == null)
+    throw new ZaloApiError("Failed to fetch server info: " + data.error_message);
+  return data.data;
+}
+async function getEncryptParam(ctx, encryptParams, type) {
+  const params = {};
+  const data = {
+    computer_name: "Web",
+    imei: ctx.imei,
+    language: ctx.language,
+    ts: Date.now()
+  };
+  const encryptedData = await _encryptParam(ctx, data, encryptParams);
+  if (encryptedData == null)
+    Object.assign(params, data);
+  else {
+    const { encrypted_params, encrypted_data } = encryptedData;
+    Object.assign(params, encrypted_params);
+    params.params = encrypted_data;
+  }
+  params.type = ctx.API_TYPE;
+  params.client_version = ctx.API_VERSION;
+  params.signkey = type == "getserverinfo" ? getSignKey(type, {
+    imei: ctx.imei,
+    type: ctx.API_TYPE,
+    client_version: ctx.API_VERSION,
+    computer_name: "Web"
+  }) : getSignKey(type, params);
+  return {
+    params,
+    enk: encryptedData ? encryptedData.enk : null
+  };
+}
+async function _encryptParam(ctx, data, encryptParams) {
+  if (encryptParams) {
+    const encryptor = new ParamsEncryptor({
+      type: ctx.API_TYPE,
+      imei: data.imei,
+      firstLaunchTime: Date.now()
+    });
+    try {
+      const stringifiedData = JSON.stringify(data);
+      const encryptedKey = encryptor.getEncryptKey();
+      const encodedData = ParamsEncryptor.encodeAES(encryptedKey, stringifiedData, "base64", false);
+      const params = encryptor.getParams();
+      return params ? {
+        encrypted_data: encodedData,
+        encrypted_params: params,
+        enk: encryptedKey
+      } : null;
+    } catch (error) {
+      throw new ZaloApiError("Failed to encrypt params: " + error);
+    }
+  }
+  return null;
+}
+
+// node_modules/zca-js/dist/zalo.js
+var import_tough_cookie3 = __toESM(require_cookie2(), 1);
+
+// node_modules/zca-js/dist/update.js
+var import_semver = __toESM(require_semver2(), 1);
+var VERSION = "2.2.0";
+var NPM_REGISTRY = "https://registry.npmjs.org/zca-js";
+async function checkUpdate(ctx) {
+  var _a, _b;
+  if (!ctx.options.checkUpdate)
+    return;
+  const _options = Object.assign({}, isBun ? {
+    proxy: (_b = (_a = ctx.options.agent) === null || _a === undefined ? undefined : _a.proxy) === null || _b === undefined ? undefined : _b.href
+  } : { agent: ctx.options.agent });
+  const response = await ctx.options.polyfill(NPM_REGISTRY, _options).catch(() => null);
+  if (!response || !response.ok)
+    return;
+  const data = await response.json().catch(() => null);
+  if (!data)
+    return;
+  const latestVersion = data["dist-tags"].latest;
+  if (import_semver.compare(VERSION, latestVersion) === -1) {
+    logger(ctx).info(`A new version of zca-js is available: ${latestVersion}`);
+  } else {
+    logger(ctx).info("zca-js is up to date");
+  }
+}
+
+// node_modules/zca-js/dist/apis/listen.js
+import EventEmitter from "events";
+
+// node_modules/ws/wrapper.mjs
+var import_stream = __toESM(require_stream(), 1);
+var import_extension = __toESM(require_extension(), 1);
+var import_permessage_deflate = __toESM(require_permessage_deflate(), 1);
+var import_receiver = __toESM(require_receiver(), 1);
+var import_sender = __toESM(require_sender(), 1);
+var import_subprotocol = __toESM(require_subprotocol(), 1);
+var import_websocket = __toESM(require_websocket(), 1);
+var import_websocket_server = __toESM(require_websocket_server(), 1);
+var wrapper_default = import_websocket.default;
+
+// node_modules/zca-js/dist/apis/listen.js
+var CloseReason;
+(function(CloseReason) {
+  CloseReason[CloseReason["ManualClosure"] = 1000] = "ManualClosure";
+  CloseReason[CloseReason["AbnormalClosure"] = 1006] = "AbnormalClosure";
+  CloseReason[CloseReason["DuplicateConnection"] = 3000] = "DuplicateConnection";
+  CloseReason[CloseReason["KickConnection"] = 3003] = "KickConnection";
+})(CloseReason || (CloseReason = {}));
+
+class Listener extends EventEmitter {
+  constructor(ctx, urls) {
+    super();
+    this.ctx = ctx;
+    this.urls = urls;
+    this.id = 0;
+    if (!ctx.cookie)
+      throw new ZaloApiError("Cookie is not available");
+    if (!ctx.userAgent)
+      throw new ZaloApiError("User agent is not available");
+    this.wsURL = makeURL(this.ctx, this.urls[0], {
+      t: Date.now()
+    });
+    this.retryCount = {};
+    this.rotateCount = 0;
+    for (const retry in ctx.settings.features.socket.retries) {
+      const { times, max } = ctx.settings.features.socket.retries[retry];
+      this.retryCount[retry] = {
+        count: 0,
+        max: max || 0,
+        times: typeof times === "number" ? [times] : times
+      };
+    }
+    this.cookie = ctx.cookie.getCookieStringSync("https://chat.zalo.me");
+    this.userAgent = ctx.userAgent;
+    this.selfListen = ctx.options.selfListen;
+    this.ws = null;
+    this.onConnectedCallback = () => {};
+    this.onClosedCallback = () => {};
+    this.onErrorCallback = () => {};
+    this.onMessageCallback = () => {};
+  }
+  onConnected(cb) {
+    this.onConnectedCallback = cb;
+  }
+  onClosed(cb) {
+    this.onClosedCallback = cb;
+  }
+  onError(cb) {
+    this.onErrorCallback = cb;
+  }
+  onMessage(cb) {
+    this.onMessageCallback = cb;
+  }
+  canRetry(code) {
+    if (!this.ctx.settings.features.socket.close_and_retry_codes.includes(code))
+      return false;
+    if (this.retryCount[code.toString()].count >= this.retryCount[code.toString()].max)
+      return false;
+    this.retryCount[code.toString()].count++;
+    const { count, max, times } = this.retryCount[code.toString()];
+    const retryTime = count - 1 < times.length ? times[count - 1] : times[times.length - 1];
+    logger(this.ctx).verbose(`Retry for code ${code} in ${retryTime}ms (${count}/${max})`);
+    return retryTime;
+  }
+  shouldRotate(code) {
+    if (!this.ctx.settings.features.socket.rotate_error_codes.includes(code))
+      return false;
+    if (this.rotateCount >= this.urls.length - 1)
+      return false;
+    return true;
+  }
+  rotateEndpoint() {
+    this.rotateCount++;
+    this.wsURL = makeURL(this.ctx, this.urls[this.rotateCount], {
+      t: Date.now()
+    });
+    logger(this.ctx).verbose(`Rotating endpoint to ${this.wsURL}`);
+  }
+  start({ retryOnClose = false } = {}) {
+    if (this.ws)
+      throw new ZaloApiError("Already started");
+    const ws = new wrapper_default(this.wsURL, {
+      headers: {
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "en-US,en;q=0.9",
+        "cache-control": "no-cache",
+        connection: "Upgrade",
+        host: new URL(this.wsURL).host,
+        origin: "https://chat.zalo.me",
+        prgama: "no-cache",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "sec-websocket-version": "13",
+        upgrade: "websocket",
+        "user-agent": this.userAgent,
+        cookie: this.cookie
+      },
+      agent: this.ctx.options.agent
+    });
+    this.ws = ws;
+    ws.onopen = () => {
+      this.onConnectedCallback();
+      this.emit("connected");
+    };
+    ws.onclose = (event) => {
+      this.reset();
+      this.emit("disconnected", event.code, event.reason);
+      const retry = retryOnClose && this.canRetry(event.code);
+      if (retry && retryOnClose) {
+        const shouldRotate = this.shouldRotate(event.code);
+        if (shouldRotate) {
+          this.rotateEndpoint();
+        }
+        setTimeout(() => {
+          this.start({ retryOnClose: true });
+        }, retry);
+      } else {
+        this.onClosedCallback(event.code, event.reason);
+        this.emit("closed", event.code, event.reason);
+      }
+    };
+    ws.onerror = (event) => {
+      this.onErrorCallback(event);
+      this.emit("error", event);
+    };
+    ws.onmessage = async (event) => {
+      const { data } = event;
+      if (!(data instanceof Buffer))
+        return;
+      const encodedHeader = data.subarray(0, 4);
+      const [version, cmd, subCmd] = getHeader(encodedHeader);
+      try {
+        const dataToDecode = data.subarray(4);
+        const decodedData = new TextDecoder("utf-8").decode(dataToDecode);
+        if (decodedData.length == 0)
+          return;
+        const parsed = JSON.parse(decodedData);
+        if (version == 1 && cmd == 1 && subCmd == 1 && hasOwn(parsed, "key")) {
+          this.cipherKey = parsed.key;
+          this.emit("cipher_key", parsed.key);
+          if (this.pingInterval)
+            clearInterval(this.pingInterval);
+          const ping = () => {
+            const payload = {
+              version: 1,
+              cmd: 2,
+              subCmd: 1,
+              data: { eventId: Date.now() }
+            };
+            this.sendWs(payload, false);
+          };
+          this.pingInterval = setInterval(() => {
+            ping();
+          }, this.ctx.settings.features.socket.ping_interval);
+        }
+        if (version == 1 && cmd == 501 && subCmd == 0) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { msgs } = parsedData;
+          for (const msg of msgs) {
+            if (typeof msg.content == "object" && hasOwn(msg.content, "deleteMsg")) {
+              const undoObject = new Undo(this.ctx.uid, msg, false);
+              if (undoObject.isSelf && !this.selfListen)
+                continue;
+              this.emit("undo", undoObject);
+            } else {
+              const messageObject = new UserMessage(this.ctx.uid, msg);
+              if (messageObject.isSelf && !this.selfListen)
+                continue;
+              this.onMessageCallback(messageObject);
+              this.emit("message", messageObject);
+            }
+          }
+        }
+        if (version == 1 && cmd == 521 && subCmd == 0) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { groupMsgs } = parsedData;
+          for (const msg of groupMsgs) {
+            if (typeof msg.content == "object" && hasOwn(msg.content, "deleteMsg")) {
+              const undoObject = new Undo(this.ctx.uid, msg, true);
+              if (undoObject.isSelf && !this.selfListen)
+                continue;
+              this.emit("undo", undoObject);
+            } else {
+              const messageObject = new GroupMessage(this.ctx.uid, msg);
+              if (messageObject.isSelf && !this.selfListen)
+                continue;
+              this.onMessageCallback(messageObject);
+              this.emit("message", messageObject);
+            }
+          }
+        }
+        if (version == 1 && cmd == 601 && subCmd == 0) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { controls } = parsedData;
+          for (const control of controls) {
+            if (control.content.act_type == "file_done") {
+              const data = {
+                fileUrl: control.content.data.url,
+                fileId: control.content.fileId
+              };
+              const uploadCallback = this.ctx.uploadCallbacks.get(String(control.content.fileId));
+              if (uploadCallback)
+                uploadCallback(data);
+              this.ctx.uploadCallbacks.delete(String(control.content.fileId));
+              this.emit("upload_attachment", data);
+            } else if (control.content.act_type == "group") {
+              if (control.content.act == "join_reject")
+                continue;
+              const groupEventData = typeof control.content.data == "string" ? JSON.parse(control.content.data) : control.content.data;
+              const groupEvent = initializeGroupEvent(this.ctx.uid, groupEventData, getGroupEventType(control.content.act), control.content.act);
+              if (groupEvent.isSelf && !this.selfListen)
+                continue;
+              this.emit("group_event", groupEvent);
+            } else if (control.content.act_type == "fr") {
+              if (control.content.act == "req")
+                continue;
+              const friendEventData = typeof control.content.data == "string" ? JSON.parse(control.content.data) : control.content.data;
+              if (typeof friendEventData == "object" && "topic" in friendEventData && typeof friendEventData.topic == "object" && "params" in friendEventData.topic) {
+                friendEventData.topic.params = JSON.parse(`${friendEventData.topic.params}`);
+              }
+              const friendEvent = initializeFriendEvent(this.ctx.uid, typeof friendEventData == "number" ? control.content.data : friendEventData, getFriendEventType(control.content.act));
+              if (friendEvent.isSelf && !this.selfListen)
+                continue;
+              this.emit("friend_event", friendEvent);
+            }
+          }
+        }
+        if (cmd == 612) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { reacts, reactGroups } = parsedData;
+          for (const react of reacts) {
+            react.content = JSON.parse(react.content);
+            const reactionObject = new Reaction(this.ctx.uid, react, false);
+            if (reactionObject.isSelf && !this.selfListen)
+              continue;
+            this.emit("reaction", reactionObject);
+          }
+          for (const reactGroup of reactGroups) {
+            reactGroup.content = JSON.parse(reactGroup.content);
+            const reactionObject = new Reaction(this.ctx.uid, reactGroup, true);
+            if (reactionObject.isSelf && !this.selfListen)
+              continue;
+            this.emit("reaction", reactionObject);
+          }
+        }
+        if (cmd == 610 || cmd == 611) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const isGroup = cmd == 611;
+          const reacts = parsedData[isGroup ? "reactGroups" : "reacts"];
+          const reactionObjects = reacts.map((react) => new Reaction(this.ctx.uid, react, isGroup));
+          this.emit("old_reactions", reactionObjects, isGroup);
+        }
+        if (cmd == 510 && subCmd == 1) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const msgs = parsedData.msgs;
+          const responseMsgs = msgs.map((msg) => new UserMessage(this.ctx.uid, msg));
+          this.emit("old_messages", responseMsgs, ThreadType.User);
+        }
+        if (cmd == 511 && subCmd == 1) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const groupMsgs = parsedData.groupMsgs;
+          const responseMsgs = groupMsgs.map((msg) => new GroupMessage(this.ctx.uid, msg));
+          this.emit("old_messages", responseMsgs, ThreadType.Group);
+        }
+        if (cmd == 602 && subCmd == 0) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { actions } = parsedData;
+          for (const action of actions) {
+            if (action.act_type == "typing") {
+              const data = JSON.parse(`{${action.data}}`);
+              if (action.act == "typing") {
+                const typingObject = new UserTyping(data);
+                this.emit("typing", typingObject);
+              } else if (action.act == "gtyping") {
+                const typingObject = new GroupTyping(data);
+                this.emit("typing", typingObject);
+              }
+            }
+          }
+        }
+        if (cmd == 502 && subCmd == 0) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { delivereds: deliveredMsgs, seens: seenMsgs } = parsedData;
+          if (Array.isArray(deliveredMsgs) && deliveredMsgs.length > 0) {
+            const deliveredObjects = deliveredMsgs.map((delivered) => new UserDeliveredMessage(delivered));
+            this.emit("delivered_messages", deliveredObjects);
+          }
+          if (Array.isArray(seenMsgs) && seenMsgs.length > 0) {
+            const seenObjects = seenMsgs.map((seen) => new UserSeenMessage(seen));
+            this.emit("seen_messages", seenObjects);
+          }
+        }
+        if (cmd == 522 && subCmd == 0) {
+          const parsedData = (await decodeEventData(parsed, this.cipherKey)).data;
+          const { delivereds: deliveredMsgs, groupSeens: groupSeenMsgs } = parsedData;
+          if (Array.isArray(deliveredMsgs) && deliveredMsgs.length > 0) {
+            let deliveredObjects = deliveredMsgs.map((delivered) => new GroupDeliveredMessage(this.ctx.uid, delivered));
+            if (!this.selfListen)
+              deliveredObjects = deliveredObjects.filter((delivered) => !delivered.isSelf);
+            this.emit("delivered_messages", deliveredObjects);
+          }
+          if (Array.isArray(groupSeenMsgs) && groupSeenMsgs.length > 0) {
+            let seenObjects = groupSeenMsgs.map((seen) => new GroupSeenMessage(this.ctx.uid, seen));
+            if (!this.selfListen)
+              seenObjects = seenObjects.filter((seen) => !seen.isSelf);
+            this.emit("seen_messages", seenObjects);
+          }
+        }
+        if (version == 1 && cmd == 3000 && subCmd == 0) {
+          logger(this.ctx).error();
+          logger(this.ctx).error("Another connection is opened, closing this one");
+          logger(this.ctx).error();
+          if (ws.readyState !== wrapper_default.CLOSED)
+            ws.close(CloseReason.DuplicateConnection);
+        }
+      } catch (error) {
+        this.onErrorCallback(error);
+        this.emit("error", error);
+      }
+    };
+  }
+  stop() {
+    if (this.ws) {
+      this.ws.close(CloseReason.ManualClosure);
+      this.reset();
+    }
+  }
+  sendWs(payload, requireId = true) {
+    if (this.ws) {
+      if (requireId)
+        payload.data["req_id"] = `req_${this.id++}`;
+      const encodedData = new TextEncoder().encode(JSON.stringify(payload.data));
+      const dataLength = encodedData.length;
+      const data = new DataView(Buffer.alloc(4 + dataLength).buffer);
+      data.setUint8(0, payload.version);
+      data.setInt32(1, payload.cmd, true);
+      data.setInt8(3, payload.subCmd);
+      encodedData.forEach((e, i) => {
+        data.setUint8(4 + i, e);
+      });
+      this.ws.send(data);
+    }
+  }
+  requestOldMessages(threadType, lastMsgId = null) {
+    const payload = {
+      version: 1,
+      cmd: threadType === ThreadType.User ? 510 : 511,
+      subCmd: 1,
+      data: { first: true, lastId: lastMsgId, preIds: [] }
+    };
+    this.sendWs(payload);
+  }
+  requestOldReactions(threadType, lastMsgId = null) {
+    const payload = {
+      version: 1,
+      cmd: threadType === ThreadType.User ? 610 : 611,
+      subCmd: 1,
+      data: { first: true, lastId: lastMsgId, preIds: [] }
+    };
+    this.sendWs(payload);
+  }
+  reset() {
+    this.ws = null;
+    this.cipherKey = undefined;
+    if (this.pingInterval)
+      clearInterval(this.pingInterval);
+  }
+}
+function getHeader(buffer) {
+  if (buffer.byteLength < 4) {
+    throw new ZaloApiError("Invalid header");
+  }
+  return [buffer[0], buffer.readUInt16LE(1), buffer[3]];
+}
+
+// node_modules/zca-js/dist/apis/acceptFriendRequest.js
+var acceptFriendRequestFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/accept`);
+  return async function acceptFriendRequest(friendId) {
+    const params = {
+      fid: friendId,
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/addGroupBlockedMember.js
+var addGroupBlockedMemberFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/blockedmems/add`);
+  return async function addGroupBlockedMember(memberId, groupId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      grid: groupId,
+      members: memberId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/addGroupDeputy.js
+var addGroupDeputyFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/admins/add`);
+  return async function addGroupDeputy(memberId, groupId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      grid: groupId,
+      members: memberId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/addPollOptions.js
+var addPollOptionsFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/option/add`);
+  return async function addPollOptions(payload) {
+    const params = {
+      poll_id: payload.pollId,
+      new_options: JSON.stringify(payload.options),
+      voted_option_ids: payload.votedOptionIds
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/addQuickMessage.js
+var addQuickMessageFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/create`);
+  return async function addQuickMessage(addPayload) {
+    const isType = !addPayload.media ? 0 : 1;
+    const params = {
+      keyword: addPayload.keyword,
+      message: {
+        title: addPayload.title,
+        params: ""
+      },
+      type: isType,
+      imei: ctx.imei
+    };
+    if (isType === 1) {
+      if (!addPayload.media)
+        throw new ZaloApiError("Media is required");
+      const uploadMedia = await api.uploadProductPhoto({
+        file: addPayload.media
+      });
+      const photoId = uploadMedia.photoId;
+      const thumbUrl = uploadMedia.thumbUrl;
+      const normalUrl = uploadMedia.normalUrl;
+      const hdUrl = uploadMedia.hdUrl;
+      params.media = {
+        items: [
+          {
+            type: 0,
+            photoId,
+            title: "",
+            width: "",
+            height: "",
+            previewThumb: thumbUrl,
+            rawUrl: normalUrl || hdUrl,
+            thumbUrl,
+            normalUrl: normalUrl || hdUrl,
+            hdUrl: hdUrl || normalUrl
+          }
+        ]
+      };
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/addReaction.js
+var addReactionFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURLs = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.reaction[0]}/api/message/reaction`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.reaction[0]}/api/group/reaction`)
+  };
+  return async function addReaction(icon, dest) {
+    const serviceURL = serviceURLs[dest.type];
+    let rType, source;
+    if (typeof icon == "object") {
+      rType = icon.rType;
+      source = icon.source;
+    } else
+      switch (icon) {
+        case Reactions.HAHA:
+          rType = 0;
+          source = 6;
+          break;
+        case Reactions.LIKE:
+          rType = 3;
+          source = 6;
+          break;
+        case Reactions.HEART:
+          rType = 5;
+          source = 6;
+          break;
+        case Reactions.WOW:
+          rType = 32;
+          source = 6;
+          break;
+        case Reactions.CRY:
+          rType = 2;
+          source = 6;
+          break;
+        case Reactions.ANGRY:
+          rType = 20;
+          source = 6;
+          break;
+        case Reactions.KISS:
+          rType = 8;
+          source = 6;
+          break;
+        case Reactions.TEARS_OF_JOY:
+          rType = 7;
+          source = 6;
+          break;
+        case Reactions.SHIT:
+          rType = 66;
+          source = 6;
+          break;
+        case Reactions.ROSE:
+          rType = 120;
+          source = 6;
+          break;
+        case Reactions.BROKEN_HEART:
+          rType = 65;
+          source = 6;
+          break;
+        case Reactions.DISLIKE:
+          rType = 4;
+          source = 6;
+          break;
+        case Reactions.LOVE:
+          rType = 29;
+          source = 6;
+          break;
+        case Reactions.CONFUSED:
+          rType = 51;
+          source = 6;
+          break;
+        case Reactions.WINK:
+          rType = 45;
+          source = 6;
+          break;
+        case Reactions.FADE:
+          rType = 121;
+          source = 6;
+          break;
+        case Reactions.SUN:
+          rType = 67;
+          source = 6;
+          break;
+        case Reactions.BIRTHDAY:
+          rType = 126;
+          source = 6;
+          break;
+        case Reactions.BOMB:
+          rType = 127;
+          source = 6;
+          break;
+        case Reactions.OK:
+          rType = 68;
+          source = 6;
+          break;
+        case Reactions.PEACE:
+          rType = 69;
+          source = 6;
+          break;
+        case Reactions.THANKS:
+          rType = 70;
+          source = 6;
+          break;
+        case Reactions.PUNCH:
+          rType = 71;
+          source = 6;
+          break;
+        case Reactions.SHARE:
+          rType = 72;
+          source = 6;
+          break;
+        case Reactions.PRAY:
+          rType = 73;
+          source = 6;
+          break;
+        case Reactions.NO:
+          rType = 131;
+          source = 6;
+          break;
+        case Reactions.BAD:
+          rType = 132;
+          source = 6;
+          break;
+        case Reactions.LOVE_YOU:
+          rType = 133;
+          source = 6;
+          break;
+        case Reactions.SAD:
+          rType = 1;
+          source = 6;
+          break;
+        case Reactions.VERY_SAD:
+          rType = 16;
+          source = 6;
+          break;
+        case Reactions.COOL:
+          rType = 21;
+          source = 6;
+          break;
+        case Reactions.NERD:
+          rType = 22;
+          source = 6;
+          break;
+        case Reactions.BIG_SMILE:
+          rType = 23;
+          source = 6;
+          break;
+        case Reactions.SUNGLASSES:
+          rType = 26;
+          source = 6;
+          break;
+        case Reactions.NEUTRAL:
+          rType = 30;
+          source = 6;
+          break;
+        case Reactions.SAD_FACE:
+          rType = 35;
+          source = 6;
+          break;
+        case Reactions.BYE:
+          rType = 36;
+          source = 6;
+          break;
+        case Reactions.SLEEPY:
+          rType = 38;
+          source = 6;
+          break;
+        case Reactions.WIPE:
+          rType = 39;
+          source = 6;
+          break;
+        case Reactions.DIG:
+          rType = 42;
+          source = 6;
+          break;
+        case Reactions.ANGUISH:
+          rType = 44;
+          source = 6;
+          break;
+        case Reactions.HANDCLAP:
+          rType = 46;
+          source = 6;
+          break;
+        case Reactions.ANGRY_FACE:
+          rType = 47;
+          source = 6;
+          break;
+        case Reactions.F_CHAIR:
+          rType = 48;
+          source = 6;
+          break;
+        case Reactions.L_CHAIR:
+          rType = 49;
+          source = 6;
+          break;
+        case Reactions.R_CHAIR:
+          rType = 50;
+          source = 6;
+          break;
+        case Reactions.SILENT:
+          rType = 52;
+          source = 6;
+          break;
+        case Reactions.SURPRISE:
+          rType = 53;
+          source = 6;
+          break;
+        case Reactions.EMBARRASSED:
+          rType = 54;
+          source = 6;
+          break;
+        case Reactions.AFRAID:
+          rType = 60;
+          source = 6;
+          break;
+        case Reactions.SAD2:
+          rType = 61;
+          source = 6;
+          break;
+        case Reactions.BIG_LAUGH:
+          rType = 62;
+          source = 6;
+          break;
+        case Reactions.RICH:
+          rType = 63;
+          source = 6;
+          break;
+        case Reactions.BEER:
+          rType = 99;
+          source = 6;
+          break;
+        default:
+          rType = -1;
+          source = 6;
+      }
+    const rIcon = typeof icon == "object" ? icon.icon : icon;
+    if (rType == undefined || source == undefined || rIcon == undefined) {
+      throw new ZaloApiError("Invalid reaction");
+    }
+    const params = {
+      react_list: [
+        {
+          message: JSON.stringify({
+            rMsg: [
+              {
+                gMsgID: parseInt(dest.data.msgId),
+                cMsgID: parseInt(dest.data.cliMsgId),
+                msgType: 1
+              }
+            ],
+            rIcon,
+            rType,
+            source
+          }),
+          clientId: Date.now()
+        }
+      ]
+    };
+    if (dest.type == ThreadType.User) {
+      params.toid = dest.threadId;
+    } else {
+      params.grid = dest.threadId;
+      params.imei = ctx.imei;
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response, (result) => {
+      if (typeof result.data.msgIds === "string") {
+        return {
+          msgIds: JSON.parse(result.data.msgIds)
+        };
+      }
+      return result.data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/addUnreadMark.js
+var addUnreadMarkFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/addUnreadMark`);
+  return async function addUnreadMark(threadId, type = ThreadType.User) {
+    const timestamp = Date.now();
+    const timestampString = timestamp.toString();
+    const isGroup = type === ThreadType.Group;
+    const requestParams = {
+      param: JSON.stringify({
+        [isGroup ? "convsGroup" : "convsUser"]: [
+          {
+            id: threadId,
+            cliMsgId: timestampString,
+            fromUid: "0",
+            ts: timestamp
+          }
+        ],
+        [isGroup ? "convsUser" : "convsGroup"]: [],
+        imei: ctx.imei
+      })
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      if (typeof data.data === "string") {
+        return {
+          data: JSON.parse(data.data),
+          status: data.status
+        };
+      }
+      return result.data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/addUserToGroup.js
+var addUserToGroupFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/invite/v2`);
+  return async function addUserToGroup(memberId, groupId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      grid: groupId,
+      members: memberId,
+      memberTypes: memberId.map(() => -1),
+      imei: ctx.imei,
+      clientLang: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/blockUser.js
+var blockUserFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/block`);
+  return async function blockUser(userId) {
+    const params = {
+      fid: userId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/blockViewFeed.js
+var blockViewFeedFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/feed/block`);
+  return async function blockViewFeed(isBlockFeed, userId) {
+    const params = {
+      fid: userId,
+      isBlockFeed: isBlockFeed ? 1 : 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/changeAccountAvatar.js
+var import_form_data = __toESM(require_form_data(), 1);
+import fs2 from "node:fs";
+var changeAccountAvatarFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/profile/upavatar`);
+  return async function changeAccountAvatar(avatarSource) {
+    const isSourceFilePath = typeof avatarSource == "string";
+    const imageMetaData = isSourceFilePath ? await getImageMetaData(ctx, avatarSource) : avatarSource.metadata;
+    const fileSize = imageMetaData.totalSize || 0;
+    const params = {
+      avatarSize: 120,
+      clientId: String(ctx.uid + formatTime("%H:%M %d/%m/%Y")),
+      language: ctx.language,
+      metaData: JSON.stringify({
+        origin: {
+          width: imageMetaData.width || 1080,
+          height: imageMetaData.height || 1080
+        },
+        processed: {
+          width: imageMetaData.width || 1080,
+          height: imageMetaData.height || 1080,
+          size: fileSize
+        }
+      })
+    };
+    const avatarData = isSourceFilePath ? fs2.readFileSync(avatarSource) : avatarSource.data;
+    const formData = new import_form_data.default;
+    formData.append("fileContent", avatarData, {
+      filename: "blob",
+      contentType: "image/jpeg"
+    });
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, {
+      params: encryptedParams
+    }), {
+      method: "POST",
+      headers: formData.getHeaders(),
+      body: formData.getBuffer()
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/changeFriendAlias.js
+var changeFriendAliasFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.alias[0]}/api/alias/update`);
+  return async function changeFriendAlias(alias, friendId) {
+    const params = {
+      friendId,
+      alias,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/changeGroupAvatar.js
+var import_form_data2 = __toESM(require_form_data(), 1);
+import fs3 from "node:fs";
+var changeGroupAvatarFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/upavatar`);
+  return async function changeGroupAvatar(avatarSource, groupId) {
+    const params = {
+      grid: groupId,
+      avatarSize: 120,
+      clientId: `g${groupId}${getFullTimeFromMillisecond(new Date().getTime())}`,
+      imei: ctx.imei
+    };
+    const isSourceFilePath = typeof avatarSource == "string";
+    const imageMetaData = isSourceFilePath ? await getImageMetaData(ctx, avatarSource) : avatarSource.metadata;
+    params.originWidth = imageMetaData.width || 1080;
+    params.originHeight = imageMetaData.height || 1080;
+    const avatarData = isSourceFilePath ? fs3.readFileSync(avatarSource) : avatarSource.data;
+    const formData = new import_form_data2.default;
+    formData.append("fileContent", avatarData, {
+      filename: "blob",
+      contentType: "image/jpeg"
+    });
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, {
+      params: encryptedParams
+    }), {
+      method: "POST",
+      headers: formData.getHeaders(),
+      body: formData.getBuffer()
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/changeGroupName.js
+var changeGroupNameFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/updateinfo`);
+  return async function changeGroupName(name, groupId) {
+    if (name.length == 0)
+      name = Date.now().toString();
+    const params = {
+      grid: groupId,
+      gname: name,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/changeGroupOwner.js
+var changeGroupOwnerFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/change-owner`);
+  return async function changeGroupOwner(memberId, groupId) {
+    const params = {
+      grid: groupId,
+      newAdminId: memberId,
+      imei: ctx.imei,
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/createAutoReply.js
+var createAutoReplyFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/create`);
+  return async function createAutoReply(payload) {
+    const uids = Array.isArray(payload.uids) ? payload.uids : [payload.uids];
+    const resultUids = payload.scope === 2 || payload.scope === 3 ? uids : [];
+    const params = {
+      cliLang: ctx.language,
+      enable: payload.isEnable,
+      content: payload.content,
+      startTime: payload.startTime,
+      endTime: payload.endTime,
+      recurrence: ["RRULE:FREQ=DAILY;"],
+      scope: payload.scope,
+      uids: resultUids
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/createBankAccount.js
+var createBankAccountFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/create`);
+  return async function createBankAccount(payload) {
+    const params = {
+      bin: payload.binBank,
+      bank_number: payload.numAccBank,
+      holder_name: normalizeHolderName(payload.nameAccBank),
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/createCatalog.js
+var createCatalogFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/create`);
+  return async function createCatalog(catalogName) {
+    const params = {
+      catalog_name: catalogName,
+      catalog_photo: ""
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/createGroup.js
+var createGroupFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/create/v2`);
+  return async function createGroup(options) {
+    if (options.members.length == 0)
+      throw new ZaloApiError("Group must have at least one member");
+    const params = {
+      clientId: Date.now(),
+      gname: String(Date.now()),
+      gdesc: null,
+      members: options.members,
+      membersTypes: options.members.map(() => -1),
+      nameChanged: 0,
+      createLink: 1,
+      clientLang: ctx.language,
+      imei: ctx.imei,
+      zsource: 601
+    };
+    if (options.name && options.name.length > 0) {
+      params.gname = options.name;
+      params.nameChanged = 1;
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "POST"
+    });
+    const data = await utils.resolve(response);
+    options.avatarSource = options.avatarSource || options.avatarPath;
+    if (options.avatarSource)
+      await api.changeGroupAvatar(options.avatarSource, data.groupId).catch(utils.logger.error);
+    return data;
+  };
+});
+
+// node_modules/zca-js/dist/apis/createNote.js
+var createNoteFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/createv2`);
+  return async function createNote(options, groupId) {
+    const params = {
+      grid: groupId,
+      type: 0,
+      color: -16777216,
+      emoji: "",
+      startTime: -1,
+      duration: -1,
+      params: JSON.stringify({
+        title: options.title
+      }),
+      repeat: 0,
+      src: 1,
+      imei: ctx.imei,
+      pinAct: options.pinAct ? 1 : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response, (result) => {
+      if (typeof result.data.params === "string") {
+        result.data.params = JSON.parse(result.data.params);
+      }
+      return result.data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/createPoll.js
+var createPollFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/create`);
+  return async function createPoll(options, groupId) {
+    var _a;
+    const params = {
+      group_id: groupId,
+      question: options.question,
+      options: options.options,
+      expired_time: (_a = options.expiredTime) !== null && _a !== undefined ? _a : 0,
+      pinAct: false,
+      allow_multi_choices: !!options.allowMultiChoices,
+      allow_add_new_option: !!options.allowAddNewOption,
+      is_hide_vote_preview: !!options.hideVotePreview,
+      is_anonymous: !!options.isAnonymous,
+      poll_type: 0,
+      src: 1,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/createProductCatalog.js
+var createProductCatalogFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/create`);
+  return async function createProductCatalog(payload) {
+    const productPhoto = payload.product_photos || [];
+    if (payload.files && payload.files.length == 0) {
+      if (payload.files.length > 5) {
+        throw new ZaloApiError("Maximum 5 media files are allowed");
+      }
+      for (const mediaFile of payload.files) {
+        const uploadMedia = await api.uploadProductPhoto({
+          file: mediaFile
+        });
+        const url = uploadMedia.normalUrl || uploadMedia.hdUrl;
+        productPhoto.push(url);
+      }
+    }
+    if (productPhoto.length > 5) {
+      throw new ZaloApiError("Maximum 5 media files are allowed");
+    }
+    const params = {
+      product_name: payload.productName,
+      price: payload.price,
+      description: payload.description,
+      product_photos: productPhoto,
+      catalog_id: payload.catalogId,
+      currency_unit: "₫",
+      create_time: Date.now()
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/createReminder.js
+var createReminderFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/create`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/createv2`)
+  };
+  return async function createReminder(options, threadId, type = ThreadType.User) {
+    var _a, _b, _c, _d, _e, _f;
+    const params = type === ThreadType.User ? {
+      objectData: JSON.stringify({
+        toUid: threadId,
+        type: 0,
+        color: -16245706,
+        emoji: (_a = options.emoji) !== null && _a !== undefined ? _a : "⏰",
+        startTime: (_b = options.startTime) !== null && _b !== undefined ? _b : Date.now(),
+        duration: -1,
+        params: { title: options.title },
+        needPin: false,
+        repeat: (_c = options.repeat) !== null && _c !== undefined ? _c : ReminderRepeatMode.None,
+        creatorUid: ctx.uid,
+        src: 1
+      }),
+      imei: ctx.imei
+    } : {
+      grid: threadId,
+      type: 0,
+      color: -16245706,
+      emoji: (_d = options.emoji) !== null && _d !== undefined ? _d : "⏰",
+      startTime: (_e = options.startTime) !== null && _e !== undefined ? _e : Date.now(),
+      duration: -1,
+      params: JSON.stringify({
+        title: options.title
+      }),
+      repeat: (_f = options.repeat) !== null && _f !== undefined ? _f : ReminderRepeatMode.None,
+      src: 1,
+      imei: ctx.imei,
+      pinAct: 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteAutoReply.js
+var deleteAutoReplyFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/delete`);
+  return async function deleteAutoReply(id) {
+    const params = {
+      cliLang: ctx.language,
+      id
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteAvatar.js
+var deleteAvatarFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/del-avatars`);
+  return async function deleteAvatar(photoId) {
+    const photoIds = Array.isArray(photoId) ? photoId : [photoId];
+    const delPhotos = photoIds.map((id) => ({ photoId: id }));
+    const params = {
+      delPhotos: JSON.stringify(delPhotos),
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteBankAccount.js
+var deleteBankAccountFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/delete`);
+  return async function deleteBankAccount(payload) {
+    const params = {
+      account_id: payload.accountId,
+      is_default: payload.isDefault,
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteCatalog.js
+var deleteCatalogFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/delete`);
+  return async function deleteCatalog(catalogId) {
+    const params = {
+      catalog_id: catalogId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteChat.js
+var deleteChatFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/deleteconver`, {
+      nretry: 0
+    }),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/deleteconver`, {
+      nretry: 0
+    })
+  };
+  return async function deleteChat(lastMessage, threadId, type = ThreadType.User) {
+    const timestampString = Date.now().toString();
+    const params = type === ThreadType.User ? {
+      toid: threadId,
+      cliMsgId: timestampString,
+      conver: lastMessage,
+      onlyMe: 1,
+      imei: ctx.imei
+    } : {
+      grid: threadId,
+      cliMsgId: timestampString,
+      conver: lastMessage,
+      onlyMe: 1,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteGroupInviteBox.js
+var deleteGroupInviteBoxFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/mdel-inv`);
+  return async function deleteGroupInviteBox(groupId, blockFutureInvite = false) {
+    const grids = Array.isArray(groupId) ? groupId : [groupId];
+    const params = {
+      invitations: JSON.stringify(grids.map((grid) => ({ grid }))),
+      block: blockFutureInvite ? 1 : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteMessage.js
+var deleteMessageFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/delete`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/deletemsg`)
+  };
+  return async function deleteMessage(dest, onlyMe = false) {
+    const { threadId, type = ThreadType.User, data } = dest;
+    const isGroup = type === ThreadType.Group;
+    const isSelf = ctx.uid == data.uidFrom;
+    if (isSelf && onlyMe === false)
+      throw new ZaloApiError("To delete your message for everyone, use undo api instead");
+    if (!isGroup && onlyMe === false)
+      throw new ZaloApiError("Can't delete message for everyone in a private chat");
+    const params = {
+      [isGroup ? "grid" : "toid"]: threadId,
+      cliMsgId: Date.now(),
+      msgs: [
+        {
+          cliMsgId: data.cliMsgId,
+          globalMsgId: data.msgId,
+          ownerId: data.uidFrom,
+          destId: threadId
+        }
+      ],
+      onlyMe: onlyMe ? 1 : 0
+    };
+    if (!isGroup) {
+      params.imei = ctx.imei;
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/deleteProductCatalog.js
+var deleteProductCatalogFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/mdelete`);
+  return async function deleteProductCatalog(payload) {
+    if (!Array.isArray(payload.productIds))
+      payload.productIds = [payload.productIds];
+    const params = {
+      product_ids: payload.productIds,
+      catalog_id: payload.catalogId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/disableGroupLink.js
+var disableGroupLinkFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/disable`);
+  return async function disableGroupLink(groupId) {
+    const params = {
+      grid: groupId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/disperseGroup.js
+var disperseGroupFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/disperse`);
+  return async function disperseGroup(groupId) {
+    const params = {
+      grid: groupId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/editNote.js
+var editNoteFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/updatev2`);
+  return async function editNote(options, groupId) {
+    const params = {
+      grid: groupId,
+      type: 0,
+      color: -16777216,
+      emoji: "",
+      startTime: -1,
+      duration: -1,
+      params: JSON.stringify({
+        title: options.title
+      }),
+      topicId: options.topicId,
+      repeat: 0,
+      imei: ctx.imei,
+      pinAct: options.pinAct ? 1 : 2
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      if (typeof data.params == "string") {
+        data.params = JSON.parse(data.params);
+      }
+      return data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/editReminder.js
+var editReminderFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/update`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/updatev2`)
+  };
+  return async function editReminder(options, threadId, type = ThreadType.User) {
+    var _a, _b, _c, _d, _e, _f;
+    const requestParams = type === ThreadType.User ? {
+      objectData: JSON.stringify({
+        toUid: threadId,
+        type: 0,
+        color: -16777216,
+        emoji: (_a = options.emoji) !== null && _a !== undefined ? _a : "",
+        startTime: (_b = options.startTime) !== null && _b !== undefined ? _b : Date.now(),
+        duration: -1,
+        params: { title: options.title },
+        needPin: false,
+        reminderId: options.topicId,
+        repeat: (_c = options.repeat) !== null && _c !== undefined ? _c : 0
+      })
+    } : {
+      grid: threadId,
+      type: 0,
+      color: -16777216,
+      emoji: (_d = options.emoji) !== null && _d !== undefined ? _d : "",
+      startTime: (_e = options.startTime) !== null && _e !== undefined ? _e : Date.now(),
+      duration: -1,
+      params: JSON.stringify({
+        title: options.title
+      }),
+      topicId: options.topicId,
+      repeat: (_f = options.repeat) !== null && _f !== undefined ? _f : 0,
+      imei: ctx.imei,
+      pinAct: 2
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/enableGroupLink.js
+var enableGroupLinkFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/new`);
+  return async function enableGroupLink(groupId) {
+    const params = {
+      grid: groupId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/fetchAccountInfo.js
+var fetchAccountInfoFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/me-v2`);
+  return async function fetchAccountInfo() {
+    const response = await utils.request(serviceURL, {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/findUser.js
+var findUserFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/profile/get`);
+  return async function findUser(phoneNumber, avatarSize = AvatarSize.Large) {
+    if (!phoneNumber)
+      throw new ZaloApiError("Missing phoneNumber");
+    if (phoneNumber.startsWith("0")) {
+      if (ctx.language == "vi")
+        phoneNumber = "84" + phoneNumber.slice(1);
+    }
+    const params = {
+      phone: phoneNumber,
+      avatar_size: avatarSize,
+      language: ctx.language,
+      imei: ctx.imei,
+      reqSrc: 40
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const finalServiceUrl = new URL(serviceURL);
+    finalServiceUrl.searchParams.append("params", encryptedParams);
+    const response = await utils.request(utils.makeURL(finalServiceUrl.toString(), {
+      params: encryptedParams
+    }));
+    return utils.resolve(response, (result) => {
+      if (result.error && result.error.code != 216)
+        throw new ZaloApiError(result.error.message, result.error.code);
+      return result.data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/findUserByUsername.js
+var findUserByUsernameFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/search/by-user-name`);
+  return async function findUserByUsername(username, avatarSize = AvatarSize.Large) {
+    const params = {
+      user_name: username,
+      avatar_size: avatarSize
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/forwardMessage.js
+var forwardMessageFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/mforward`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/mforward`)
+  };
+  return async function forwardMessage(payload, threadIds, type = ThreadType.User) {
+    var _a, _b;
+    if (!payload.message)
+      throw new ZaloApiError("Missing message content");
+    if (!threadIds || threadIds.length === 0)
+      throw new ZaloApiError("Missing thread IDs");
+    const timestamp = Date.now();
+    const clientId = timestamp.toString();
+    const msgInfo = {
+      message: payload.message,
+      reference: payload.reference ? JSON.stringify({
+        type: 3,
+        data: JSON.stringify(payload.reference)
+      }) : undefined
+    };
+    const decorLog = payload.reference ? {
+      fw: {
+        pmsg: {
+          st: 1,
+          ts: payload.reference.ts,
+          id: payload.reference.id
+        },
+        rmsg: {
+          st: 1,
+          ts: payload.reference.ts,
+          id: payload.reference.id
+        },
+        fwLvl: payload.reference.fwLvl
+      }
+    } : null;
+    let params;
+    if (type === ThreadType.User) {
+      params = {
+        toIds: threadIds.map((threadId) => {
+          var _a;
+          return {
+            clientId,
+            toUid: threadId,
+            ttl: (_a = payload.ttl) !== null && _a !== undefined ? _a : 0
+          };
+        }),
+        imei: ctx.imei,
+        ttl: (_a = payload.ttl) !== null && _a !== undefined ? _a : 0,
+        msgType: "1",
+        totalIds: threadIds.length,
+        msgInfo: JSON.stringify(msgInfo),
+        decorLog: JSON.stringify(decorLog)
+      };
+    } else {
+      params = {
+        grids: threadIds.map((threadId) => {
+          var _a;
+          return {
+            clientId,
+            grid: threadId,
+            ttl: (_a = payload.ttl) !== null && _a !== undefined ? _a : 0
+          };
+        }),
+        ttl: (_b = payload.ttl) !== null && _b !== undefined ? _b : 0,
+        msgType: "1",
+        totalIds: threadIds.length,
+        msgInfo: JSON.stringify(msgInfo),
+        decorLog: JSON.stringify(decorLog)
+      };
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAliasList.js
+var getAliasListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.alias[0]}/api/alias/list`);
+  return async function getAliasList(count = 100, page = 1) {
+    const params = {
+      page,
+      count,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAllFriends.js
+var getAllFriendsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/getfriends`);
+  return async function getAllFriends(count = 20000, page = 1, avatarSize = AvatarSize.Small) {
+    const params = {
+      incInvalid: 1,
+      page,
+      count,
+      avatar_size: avatarSize,
+      actiontime: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(utils.makeURL(serviceURL, {
+      params: encryptedParams
+    }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAllGroups.js
+var getAllGroupsFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_poll[0]}/api/group/getlg/v4`);
+  return async function getAllGroups() {
+    const response = await utils.request(serviceURL, {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getArchivedChatList.js
+var getArchivedChatListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/archivedchat/list`);
+  return async function getArchivedChatList() {
+    const params = {
+      version: 1,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAutoDeleteChat.js
+var getAutoDeleteChatFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/autodelete/getConvers`);
+  return async function getAutoDeleteChat() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAutoReplyList.js
+var getAutoReplyListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/list`);
+  return async function getAutoReplyList() {
+    const params = {
+      version: 0,
+      cliLang: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAvatarList.js
+var getAvatarListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/avatar-list`);
+  return async function getAvatarList(count = 50, page = 1) {
+    const params = {
+      page,
+      albumId: "0",
+      count,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getAvatarUrlProfile.js
+var getAvatarUrlProfileFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/avatar-url`);
+  return async function getAvatarUrlProfile(friendIds, avatarSize = AvatarSize.Large) {
+    if (!Array.isArray(friendIds))
+      friendIds = [friendIds];
+    const params = {
+      friend_ids: friendIds,
+      avatar_size: avatarSize,
+      srcReq: -1
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getBizAccount.js
+var getBizAccountFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/get-bizacc`);
+  return async function getBizAccount(friendId) {
+    const params = {
+      fid: friendId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getCatalogList.js
+var getCatalogListFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/list`);
+  return async function getCatalogList(payload) {
+    var _a, _b, _c;
+    const params = {
+      version_list_catalog: 0,
+      limit: (_a = payload === null || payload === undefined ? undefined : payload.limit) !== null && _a !== undefined ? _a : 20,
+      last_product_id: (_b = payload === null || payload === undefined ? undefined : payload.lastProductId) !== null && _b !== undefined ? _b : -1,
+      page: (_c = payload === null || payload === undefined ? undefined : payload.page) !== null && _c !== undefined ? _c : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getCloseFriends.js
+var getCloseFriendsFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/getclosedfriends`);
+  return async function getCloseFriends() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getContext.js
+var getContextFactory = apiFactory()((_, ctx) => {
+  return () => ctx;
+});
+
+// node_modules/zca-js/dist/apis/getCookie.js
+var getCookieFactory = apiFactory()((_, ctx) => {
+  return function getCookie() {
+    return ctx.cookie;
+  };
+});
+
+// node_modules/zca-js/dist/apis/getFriendBoardList.js
+var getFriendBoardListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend_board[0]}/api/friendboard/list`);
+  return async function getFriendBoardList(conversationId) {
+    const params = {
+      conversationId,
+      version: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getFriendOnlines.js
+var getFriendOnlinesFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/onlines`);
+  return async function getFriendOnlines() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      if (Array.isArray(data.onlines)) {
+        for (const online of data.onlines) {
+          if (typeof online.status === "string") {
+            const parsed = JSON.parse(online.status);
+            if (parsed && typeof parsed.status === "string") {
+              online.status = parsed.status;
+            }
+          }
+        }
+      }
+      return data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getFriendRecommendations.js
+var FriendRecommendationsType;
+(function(FriendRecommendationsType) {
+  FriendRecommendationsType[FriendRecommendationsType["RecommendedFriend"] = 1] = "RecommendedFriend";
+  FriendRecommendationsType[FriendRecommendationsType["ReceivedFriendRequest"] = 2] = "ReceivedFriendRequest";
+})(FriendRecommendationsType || (FriendRecommendationsType = {}));
+var getFriendRecommendationsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/recommendsv2/list`);
+  return async function getFriendRecommendations() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getFriendRequestStatus.js
+var getFriendRequestStatusFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/reqstatus`);
+  return async function getFriendRequestStatus(friendId) {
+    const params = {
+      fid: friendId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getFullAvatar.js
+var getFullAvatarFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/avatar`);
+  return async function getFullAvatar(friendId) {
+    const params = {
+      fid: friendId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupBlockedMember.js
+var getGroupBlockedMemberFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/blockedmems/list`);
+  return async function getGroupBlockedMember(payload, groupId) {
+    var _a, _b;
+    const params = {
+      grid: groupId,
+      page: (_a = payload.page) !== null && _a !== undefined ? _a : 1,
+      count: (_b = payload.count) !== null && _b !== undefined ? _b : 50,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupChatHistory.js
+var getGroupChatHistoryFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/history`);
+  return async function getGroupChatHistory(groupId, count = 50) {
+    const params = {
+      grid: groupId,
+      count
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, (result) => {
+      let data = result.data;
+      if (typeof data === "string") {
+        data = JSON.parse(data);
+      }
+      for (let i = 0;i < data.groupMsgs.length; i++) {
+        data.groupMsgs[i] = new GroupMessage(ctx.uid, data.groupMsgs[i]);
+      }
+      return data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupInfo.js
+var getGroupInfoFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/getmg-v2`);
+  return async function getGroupInfo(groupId) {
+    if (!Array.isArray(groupId))
+      groupId = [groupId];
+    const params = {
+      gridVerMap: JSON.stringify(groupId.reduce((acc, id) => {
+        acc[id] = 0;
+        return acc;
+      }, {}))
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupInviteBoxInfo.js
+var getGroupInviteBoxInfoFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/inv-info`);
+  return async function getGroupInviteBoxInfo(payload) {
+    var _a, _b;
+    const params = {
+      grId: payload.groupId,
+      mcount: (_a = payload.mcount) !== null && _a !== undefined ? _a : 10,
+      mpage: (_b = payload.mpage) !== null && _b !== undefined ? _b : 1
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      const topic = data.groupInfo.topic;
+      if (typeof topic.params == "string") {
+        const params = JSON.parse(topic.params);
+        if (typeof params.extra == "string") {
+          params.extra = JSON.parse(params.extra);
+        }
+        topic.params = params;
+      }
+      return data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupInviteBoxList.js
+var getGroupInviteBoxListFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/list`);
+  return async function getGroupInviteBoxList(payload) {
+    var _a, _b, _c, _d;
+    const params = {
+      mpage: (_a = payload === null || payload === undefined ? undefined : payload.mpage) !== null && _a !== undefined ? _a : 1,
+      page: (_b = payload === null || payload === undefined ? undefined : payload.page) !== null && _b !== undefined ? _b : 0,
+      invPerPage: (_c = payload === null || payload === undefined ? undefined : payload.invPerPage) !== null && _c !== undefined ? _c : 12,
+      mcount: (_d = payload === null || payload === undefined ? undefined : payload.mcount) !== null && _d !== undefined ? _d : 10,
+      lastGroupId: null,
+      avatar_size: 120,
+      member_avatar_size: 120
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupLinkDetail.js
+var getGroupLinkDetailFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/detail`);
+  return async function getGroupLinkDetail(groupId) {
+    const params = {
+      grid: groupId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupLinkInfo.js
+var getGroupLinkInfoFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/ginfo`);
+  return async function getGroupLinkInfo(payload) {
+    var _a;
+    const params = {
+      link: payload.link,
+      avatar_size: 120,
+      member_avatar_size: 120,
+      mpage: (_a = payload.memberPage) !== null && _a !== undefined ? _a : 1
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getGroupMembersInfo.js
+var getGroupMembersInfoFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/group/members`);
+  return async function getGroupMembersInfo(memberId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      friend_pversion_map: memberId.map((id) => id.endsWith("_0") ? id : `${id}_0`)
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }));
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getHiddenConversations.js
+var getHiddenConversationsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/get-all`);
+  return async function getHiddenConversations() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getLabels.js
+var getLabelsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/convlabel/get`);
+  return async function getLabels() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }));
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      const formattedData = {
+        labelData: JSON.parse(data.labelData),
+        version: data.version,
+        lastUpdateTime: data.lastUpdateTime
+      };
+      return formattedData;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getListBank.js
+var getListBankFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/conf`);
+  return async function getListBank() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getListBankAccount.js
+var getListBankAccountFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/list`);
+  return async function getListBankAccount(page = 0, limit = 20) {
+    const params = {
+      page,
+      limit
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getListBoard.js
+var getListBoardFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/list`);
+  return async function getListBoard(options, groupId) {
+    var _a, _b;
+    const requestParams = {
+      group_id: groupId,
+      board_type: 0,
+      page: (_a = options.page) !== null && _a !== undefined ? _a : 1,
+      count: (_b = options.count) !== null && _b !== undefined ? _b : 20,
+      last_id: 0,
+      last_type: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      data.items.forEach((item) => {
+        if (item.boardType != BoardType.Poll) {
+          const detailData = item.data;
+          if (typeof detailData.params === "string") {
+            detailData.params = JSON.parse(detailData.params);
+          }
+        }
+      });
+      return data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getListDevice.js
+var getListDeviceFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.aext[0]}/api/devices/linked`);
+  return async function getListDevice() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getListReminder.js
+var getListReminderFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/list`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/listReminder`)
+  };
+  return async function getListReminder(options, threadId, type = ThreadType.User) {
+    var _a, _b, _c, _d;
+    const requestParams = Object.assign({ objectData: JSON.stringify(type === ThreadType.User ? {
+      uid: threadId,
+      board_type: 1,
+      page: (_a = options.page) !== null && _a !== undefined ? _a : 1,
+      count: (_b = options.count) !== null && _b !== undefined ? _b : 20,
+      last_id: 0,
+      last_type: 0
+    } : {
+      group_id: threadId,
+      board_type: 1,
+      page: (_c = options.page) !== null && _c !== undefined ? _c : 1,
+      count: (_d = options.count) !== null && _d !== undefined ? _d : 20,
+      last_id: 0,
+      last_type: 0
+    }) }, type === ThreadType.Group && { imei: ctx.imei });
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL[type], { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, (result) => {
+      return JSON.parse(result.data);
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getMultiUsersByPhones.js
+var getMultiUsersByPhonesFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/profile/multiget`);
+  return async function getMultiUsersByPhones(phoneNumbers, avatarSize = AvatarSize.Large) {
+    if (!phoneNumbers)
+      throw new ZaloApiError("Missing phoneNumbers");
+    if (!Array.isArray(phoneNumbers))
+      phoneNumbers = [phoneNumbers];
+    phoneNumbers = phoneNumbers.map((phone) => {
+      if (phone.startsWith("0")) {
+        if (ctx.language == "vi")
+          phone = "84" + phone.slice(1);
+      }
+      return phone;
+    });
+    const params = {
+      phones: phoneNumbers,
+      avatar_size: avatarSize,
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getMute.js
+var getMuteFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/getmute`);
+  return async function getMute() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getOwnId.js
+var getOwnIdFactory = apiFactory()((_, ctx) => {
+  return () => ctx.uid;
+});
+
+// node_modules/zca-js/dist/apis/getPendingGroupMembers.js
+var getPendingGroupMembersFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/pending-mems/list`);
+  return async function getPendingGroupMembers(groupId) {
+    const params = {
+      grid: groupId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getPinConversations.js
+var getPinConversationsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/pinconvers/list`);
+  return async function getPinConversations() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getPollDetail.js
+var getPollDetailFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/detail`);
+  return async function getPollDetail(pollId) {
+    if (!pollId)
+      throw new ZaloApiError("Missing poll id");
+    const params = {
+      poll_id: pollId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getProductCatalogList.js
+var getProductCatalogListFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/list`);
+  return async function getProductCatalogList(payload) {
+    var _a, _b, _c, _d;
+    const params = {
+      catalog_id: payload.catalogId,
+      limit: (_a = payload.limit) !== null && _a !== undefined ? _a : 100,
+      version_catalog: (_b = payload.versionCatalog) !== null && _b !== undefined ? _b : 0,
+      last_product_id: (_c = payload.lastProductId) !== null && _c !== undefined ? _c : -1,
+      page: (_d = payload.page) !== null && _d !== undefined ? _d : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getQR.js
+var getQRFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/mget-qr`);
+  return async function getQR(userId) {
+    if (typeof userId == "string")
+      userId = [userId];
+    const params = {
+      fids: userId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getQuickMessageList.js
+var getQuickMessageListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/list`);
+  return async function getQuickMessageList() {
+    const params = {
+      version: 0,
+      lang: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getRelatedFriendGroup.js
+var getRelatedFriendGroupFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/group/related`);
+  return async function getRelatedFriendGroup(friendId) {
+    const friendIds = Array.isArray(friendId) ? friendId : [friendId];
+    const params = {
+      friend_ids: JSON.stringify(friendIds),
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getReminder.js
+var getReminderFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/getReminder`);
+  return async function getReminder(reminderId) {
+    const params = {
+      eventId: reminderId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getReminderResponses.js
+var getReminderResponsesFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/listResponseEvent`);
+  return async function getReminderResponses(reminderId) {
+    const params = {
+      eventId: reminderId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getSentFriendRequest.js
+var getSentFriendRequestFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/requested/list`);
+  return async function getSentFriendRequest() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getSettings.js
+var getSettingsFactory = apiFactory()((_api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`https://wpa.chat.zalo.me/api/setting/me`);
+  return async function getSettings() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getStickerCategoryDetail.js
+var getStickerCategoryDetailFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker[0]}/api/message/sticker/category/sticker_detail`);
+  return async function getStickerCategoryDetail(cateId) {
+    const params = {
+      cid: cateId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/getStickers.js
+var getStickersFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker}/api/message/sticker`);
+  return async function getStickers(keyword) {
+    if (!keyword)
+      throw new ZaloApiError("Missing keyword");
+    const params = {
+      keyword,
+      gif: 1,
+      guggy: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const finalServiceUrl = new URL(serviceURL);
+    finalServiceUrl.pathname = finalServiceUrl.pathname + "/suggest/stickers";
+    const response = await utils.request(utils.makeURL(finalServiceUrl.toString(), {
+      params: encryptedParams
+    }));
+    return utils.resolve(response, (result) => {
+      const suggestions = result.data;
+      const stickerIds = [];
+      if (suggestions.sugg_sticker)
+        suggestions.sugg_sticker.forEach((sticker) => stickerIds.push(sticker.sticker_id));
+      return stickerIds;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getStickersDetail.js
+var getStickersDetailFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker}/api/message/sticker/sticker_detail`);
+  return async function getStickersDetail(stickerIds) {
+    if (!stickerIds)
+      throw new ZaloApiError("Missing sticker id");
+    if (!Array.isArray(stickerIds))
+      stickerIds = [stickerIds];
+    if (stickerIds.length == 0)
+      throw new ZaloApiError("Missing sticker id");
+    const stickers = [];
+    const tasks = stickerIds.map((stickerId) => getStickerDetail(stickerId));
+    const tasksResult = await Promise.allSettled(tasks);
+    tasksResult.forEach((result) => {
+      if (result.status === "fulfilled")
+        stickers.push(result.value);
+    });
+    return stickers;
+  };
+  async function getStickerDetail(stickerId) {
+    const params = {
+      sid: stickerId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(utils.makeURL(serviceURL, {
+      params: encryptedParams
+    }));
+    return resolveResponse(ctx, response);
+  }
+});
+
+// node_modules/zca-js/dist/apis/getUnreadMark.js
+var getUnreadMarkFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/getUnreadMark`);
+  return async function getUnreadMark() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      if (typeof data.data === "string") {
+        return {
+          data: JSON.parse(data.data),
+          status: data.status
+        };
+      }
+      return data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/getUserInfo.js
+var getUserInfoFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/friend/getprofiles/v2`);
+  return async function getUserInfo(userId, avatarSize = AvatarSize.Small) {
+    if (!userId)
+      throw new ZaloApiError("Missing user id");
+    if (!Array.isArray(userId))
+      userId = [userId];
+    userId = userId.map((id) => {
+      if (id.split("_").length > 1) {
+        return id;
+      }
+      return `${id}_0`;
+    });
+    const params = {
+      phonebook_version: ctx.extraVer.phonebook,
+      friend_pversion_map: userId,
+      avatar_size: avatarSize,
+      language: ctx.language,
+      show_online_status: 1,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/inviteUserToGroups.js
+var inviteUserToGroupsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/invite/multi`);
+  return async function inviteUserToGroups(userId, groupId) {
+    const params = {
+      grids: Array.isArray(groupId) ? groupId : [groupId],
+      member: userId,
+      memberType: -1,
+      srcInteraction: 2,
+      clientLang: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/joinGroupInviteBox.js
+var joinGroupInviteBoxFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/inv-box/join`);
+  return async function joinGroupInviteBox(groupId) {
+    const params = {
+      grid: groupId,
+      lang: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/joinGroupLink.js
+var joinGroupLinkFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/link/join`);
+  return async function joinGroupLink(link) {
+    const params = {
+      link,
+      clientLang: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/keepAlive.js
+var keepAliveFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.chat[0]}/keepalive`);
+  return async function keepAlive() {
+    const params = {
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response, undefined, false);
+  };
+});
+
+// node_modules/zca-js/dist/apis/lastOnline.js
+var lastOnlineFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/lastOnline`);
+  return async function lastOnline(uid) {
+    const params = {
+      uid,
+      conv_type: 1,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/leaveGroup.js
+var leaveGroupFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/leave`);
+  return async function leaveGroup(groupId, silent = false) {
+    const requestParams = {
+      grids: [groupId],
+      imei: ctx.imei,
+      silent: silent ? 1 : 0,
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/lockPoll.js
+var lockPollFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/end`);
+  return async function lockPoll(pollId) {
+    const params = {
+      poll_id: pollId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/lostFocus.js
+var lostFocusFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/changefgtobg`);
+  return async function lostFocus() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/parseLink.js
+var parseLinkFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/parselink`);
+  return async function parseLink(link) {
+    const params = {
+      link,
+      version: 1,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/registerCatalog.js
+var registerCatalogFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/register`);
+  return async function registerCatalog(enable) {
+    const params = {
+      enable: enable ? 1 : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/rejectFriendRequest.js
+var rejectFriendRequestFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/reject`);
+  return async function rejectFriendRequest(friendId) {
+    const params = {
+      fid: friendId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeFriend.js
+var removeFriendFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/remove`);
+  return async function removeFriend(friendId) {
+    const params = {
+      fid: friendId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeFriendAlias.js
+var removeFriendAliasFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.alias[0]}/api/alias/remove`);
+  return async function removeFriendAlias(friendId) {
+    const params = {
+      friendId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeGroupBlockedMember.js
+var removeGroupBlockedMemberFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/blockedmems/remove`);
+  return async function removeGroupBlockedMember(memberId, groupId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      grid: groupId,
+      members: memberId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeGroupDeputy.js
+var removeGroupDeputyFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/admins/remove`);
+  return async function removeGroupDeputy(memberId, groupId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      grid: groupId,
+      members: memberId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeQuickMessage.js
+var removeQuickMessageFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/delete`);
+  return async function removeQuickMessage(itemIds) {
+    const idsArray = Array.isArray(itemIds) ? itemIds : [itemIds];
+    const params = {
+      itemIds: idsArray
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeReminder.js
+var removeReminderFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/oneone/remove`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group_board[0]}/api/board/topic/remove`)
+  };
+  return async function removeReminder(reminderId, threadId, type = ThreadType.User) {
+    const params = type === ThreadType.User ? {
+      uid: threadId,
+      reminderId
+    } : {
+      grid: threadId,
+      topicId: reminderId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeUnreadMark.js
+var removeUnreadMarkFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/removeUnreadMark`);
+  return async function removeUnreadMark(threadId, type = ThreadType.User) {
+    const timestamp = Date.now();
+    const isGroup = type === ThreadType.Group;
+    const requestParams = {
+      param: JSON.stringify({
+        [isGroup ? "convsGroup" : "convsUser"]: [threadId],
+        [isGroup ? "convsUser" : "convsGroup"]: [],
+        [isGroup ? "convsGroupData" : "convsUserData"]: [
+          {
+            id: threadId,
+            ts: timestamp
+          }
+        ],
+        [isGroup ? "convsUserData" : "convsGroupData"]: []
+      })
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response, (result) => {
+      const data = result.data;
+      if (typeof data.data === "string") {
+        return {
+          data: JSON.parse(data.data),
+          status: data.status
+        };
+      }
+      return result.data;
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis/removeUserFromGroup.js
+var removeUserFromGroupFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/kickout`);
+  return async function removeUserFromGroup(memberId, groupId) {
+    if (!Array.isArray(memberId))
+      memberId = [memberId];
+    const params = {
+      grid: groupId,
+      members: memberId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/resetHiddenConversPin.js
+var resetHiddenConversPinFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/reset`);
+  return async function resetHiddenConversPin() {
+    const params = {};
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/reuseAvatar.js
+var reuseAvatarFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/reuse-avatar`);
+  return async function reuseAvatar(photoId) {
+    const params = {
+      photoId,
+      isPostSocial: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/reviewPendingMemberRequest.js
+var ReviewPendingMemberRequestStatus;
+(function(ReviewPendingMemberRequestStatus) {
+  ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["SUCCESS"] = 0] = "SUCCESS";
+  ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["NOT_IN_PENDING_LIST"] = 170] = "NOT_IN_PENDING_LIST";
+  ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["ALREADY_IN_GROUP"] = 178] = "ALREADY_IN_GROUP";
+  ReviewPendingMemberRequestStatus[ReviewPendingMemberRequestStatus["INSUFFICIENT_PERMISSION"] = 166] = "INSUFFICIENT_PERMISSION";
+})(ReviewPendingMemberRequestStatus || (ReviewPendingMemberRequestStatus = {}));
+var reviewPendingMemberRequestFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/pending-mems/review`);
+  return async function reviewPendingMemberRequest(payload, groupId) {
+    if (!Array.isArray(payload.members))
+      payload.members = [payload.members];
+    const params = {
+      grid: groupId,
+      members: payload.members,
+      isApprove: payload.isApprove ? 1 : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/scanURL.js
+var scanURLFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/scanurl`);
+  return async function scanURL(url) {
+    const params = {
+      url
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/searchSticker.js
+var searchStickerFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.sticker[0]}/api/message/sticker/search`);
+  return async function searchSticker(keyword, limit = 50) {
+    const params = {
+      keyword,
+      limit,
+      srcType: 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendBankCard.js
+var sendBankCardFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/card`);
+  return async function sendBankCard(payload, threadId, type = ThreadType.User) {
+    var _a;
+    const params = {
+      binBank: payload.binBank,
+      numAccBank: payload.numAccBank,
+      nameAccBank: ((_a = payload.nameAccBank) === null || _a === undefined ? undefined : _a.toUpperCase()) || "---",
+      cliMsgId: Date.now().toString(),
+      tsMsg: Date.now(),
+      destUid: threadId,
+      destType: type === ThreadType.Group ? 1 : 0
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendCard.js
+var sendCardFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/forward`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/forward`)
+  };
+  return async function sendCard(options, threadId, type = ThreadType.User) {
+    var _a;
+    const data = await api.getQR(options.userId);
+    const QRCodeURL = data[options.userId];
+    const clientId = Date.now().toString();
+    const params = {
+      ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
+      msgType: 6,
+      clientId,
+      msgInfo: {
+        contactUid: options.userId,
+        qrCodeUrl: QRCodeURL
+      }
+    };
+    if (options.phoneNumber) {
+      params.msgInfo.phone = options.phoneNumber;
+    }
+    if (type == ThreadType.Group) {
+      params.visibility = 0;
+      params.grid = threadId;
+    } else {
+      params.toId = threadId;
+      params.imei = ctx.imei;
+    }
+    const msgInfoStringified = JSON.stringify(params.msgInfo);
+    params.msgInfo = msgInfoStringified;
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendDeliveredEvent.js
+var sendDeliveredEventFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/deliveredv2`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/deliveredv2`)
+  };
+  return async function sendDeliveredEvent(isSeen, messages, type = ThreadType.User) {
+    if (!messages)
+      throw new ZaloApiError("messages are missing or not in a valid array format.");
+    if (!Array.isArray(messages))
+      messages = [messages];
+    if (messages.length === 0 || messages.length > MAX_MESSAGES_PER_SEND)
+      throw new ZaloApiError("messages must contain between 1 and 50 messages.");
+    const idTo = messages[0].idTo;
+    if (type === ThreadType.Group && !messages.every((msg) => msg.idTo === idTo))
+      throw new ZaloApiError("All messages must have the same idTo for Group thread");
+    const msgInfos = Object.assign({ seen: isSeen ? 1 : 0, data: messages.map((msg) => ({
+      cmi: msg.cliMsgId,
+      gmi: msg.msgId,
+      si: msg.uidFrom,
+      di: msg.idTo === ctx.uid ? "0" : msg.idTo,
+      mt: msg.msgType,
+      st: msg.st || msg.st === 0 ? 0 : -1,
+      at: msg.at || msg.at === 0 ? 0 : -1,
+      cmd: msg.cmd || msg.cmd === 0 ? 0 : -1,
+      ts: parseInt(`${msg.ts}`) || parseInt(`${msg.ts}`) === 0 ? 0 : -1
+    })) }, type === ThreadType.User ? {} : { grid: idTo });
+    const params = Object.assign({ msgInfos: JSON.stringify(msgInfos) }, type === ThreadType.User ? {} : { imei: ctx.imei });
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendFriendRequest.js
+var sendFriendRequestFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/sendreq`);
+  return async function sendFriendRequest(msg, userId) {
+    const params = {
+      toid: userId,
+      msg,
+      reqsrc: 30,
+      imei: ctx.imei,
+      language: ctx.language,
+      srcParams: JSON.stringify({
+        uidTo: userId
+      })
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendLink.js
+var sendLinkFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/link`, {
+      nretry: 0
+    }),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/sendlink`, {
+      nretry: 0
+    })
+  };
+  return async function sendLink(options, threadId, type = ThreadType.User) {
+    var _a;
+    const res = await api.parseLink(options.link);
+    const params = {
+      msg: options.msg && options.msg.trim() ? options.msg.includes(options.link) ? options.msg : options.msg + " " + options.link : options.link,
+      href: res.data.href,
+      src: res.data.src,
+      title: res.data.title,
+      desc: res.data.desc,
+      thumb: res.data.thumb,
+      type: 2,
+      media: JSON.stringify(res.data.media),
+      ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
+      clientId: Date.now()
+    };
+    if (type == ThreadType.Group) {
+      params.grid = threadId;
+      params.imei = ctx.imei;
+    } else {
+      params.toId = threadId;
+      params.mentionInfo = "";
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendMessage.js
+var import_form_data3 = __toESM(require_form_data(), 1);
+import fs4 from "node:fs/promises";
+var attachmentUrlType = {
+  image: "photo_original/send?",
+  gif: "gif?",
+  video: "asyncfile/msg?",
+  others: "asyncfile/msg?"
+};
+function prepareQMSGAttach(quote) {
+  const quoteData = quote;
+  if (typeof quoteData.content == "string")
+    return quoteData.propertyExt;
+  if (quoteData.msgType == "chat.todo")
+    return {
+      properties: {
+        color: 0,
+        size: 0,
+        type: 0,
+        subType: 0,
+        ext: '{"shouldParseLinkOrContact":0}'
+      }
+    };
+  return Object.assign(Object.assign({}, quoteData.content), { thumbUrl: quoteData.content.thumb, oriUrl: quoteData.content.href, normalUrl: quoteData.content.href });
+}
+function prepareQMSG(quote) {
+  const quoteData = quote;
+  if (quoteData.msgType == "chat.todo" && typeof quoteData.content == "object" && typeof quoteData.content.params == "string") {
+    return JSON.parse(quoteData.content.params).item.content;
+  }
+  return "";
+}
+var TextStyle;
+(function(TextStyle) {
+  TextStyle["Bold"] = "b";
+  TextStyle["Italic"] = "i";
+  TextStyle["Underline"] = "u";
+  TextStyle["StrikeThrough"] = "s";
+  TextStyle["Red"] = "c_db342e";
+  TextStyle["Orange"] = "c_f27806";
+  TextStyle["Yellow"] = "c_f7b503";
+  TextStyle["Green"] = "c_15a85f";
+  TextStyle["Small"] = "f_13";
+  TextStyle["Big"] = "f_18";
+  TextStyle["UnorderedList"] = "lst_1";
+  TextStyle["OrderedList"] = "lst_2";
+  TextStyle["Indent"] = "ind_$";
+})(TextStyle || (TextStyle = {}));
+var Urgency;
+(function(Urgency) {
+  Urgency[Urgency["Default"] = 0] = "Default";
+  Urgency[Urgency["Important"] = 1] = "Important";
+  Urgency[Urgency["Urgent"] = 2] = "Urgent";
+})(Urgency || (Urgency = {}));
+var sendMessageFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURLs = {
+    message: {
+      [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message`, {
+        nretry: 0
+      }),
+      [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group`, {
+        nretry: 0
+      })
+    },
+    attachment: {
+      [ThreadType.User]: `${api.zpwServiceMap.file[0]}/api/message/`,
+      [ThreadType.Group]: `${api.zpwServiceMap.file[0]}/api/group/`
+    }
+  };
+  const { sharefile } = ctx.settings.features;
+  function isExceedMaxFile(totalFile) {
+    return totalFile > sharefile.max_file;
+  }
+  function isExceedMaxFileSize(fileSize) {
+    return fileSize > sharefile.max_size_share_file_v3 * 1024 * 1024;
+  }
+  function getGroupLayoutId() {
+    return Date.now();
+  }
+  async function send(data) {
+    if (!Array.isArray(data))
+      data = [data];
+    const requests = [];
+    for (const each of data) {
+      requests.push((async () => {
+        const response = await utils.request(each.url, {
+          method: "POST",
+          body: each.body,
+          headers: each.headers
+        });
+        return await resolveResponse(ctx, response);
+      })());
+    }
+    return await Promise.all(requests);
+  }
+  async function upthumb(source, url) {
+    const formData = new import_form_data3.default;
+    const buffer = typeof source == "string" ? await fs4.readFile(source) : source.data;
+    formData.append("fileContent", buffer, {
+      filename: "blob",
+      contentType: "image/png"
+    });
+    const params = {
+      clientId: Date.now(),
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(utils.makeURL(url + "upthumb?", {
+      params: encryptedParams
+    }), {
+      method: "POST",
+      headers: formData.getHeaders(),
+      body: formData.getBuffer()
+    });
+    return await resolveResponse(ctx, response);
+  }
+  function handleMentions(type, msg, mentions) {
+    let totalMentionLen = 0;
+    const mentionsFinal = Array.isArray(mentions) && type == ThreadType.Group ? mentions.filter((m) => m.pos >= 0 && m.uid && m.len > 0).map((m) => {
+      totalMentionLen += m.len;
+      return {
+        pos: m.pos,
+        uid: m.uid,
+        len: m.len,
+        type: m.uid == "-1" ? 1 : 0
+      };
+    }) : [];
+    if (totalMentionLen > msg.length) {
+      throw new ZaloApiError("Invalid mentions: total mention characters exceed message length");
+    }
+    return {
+      mentionsFinal,
+      msgFinal: msg
+    };
+  }
+  function handleStyles(params, styles) {
+    if (styles)
+      Object.assign(params, {
+        textProperties: JSON.stringify({
+          styles: styles.map((e) => {
+            var _a;
+            const styleFinal = Object.assign(Object.assign({}, e), { indentSize: undefined, st: e.st == TextStyle.Indent ? TextStyle.Indent.replace(/\$/g, `${(_a = e.indentSize) !== null && _a !== undefined ? _a : 1}0`) : e.st });
+            removeUndefinedKeys(styleFinal);
+            return styleFinal;
+          }),
+          ver: 0
+        })
+      });
+  }
+  function handleUrgency(params, urgency) {
+    if (urgency == Urgency.Important || urgency == Urgency.Urgent) {
+      Object.assign(params, { metaData: { urgency } });
+    }
+  }
+  async function handleMessage({ msg, styles, urgency, mentions, quote, ttl }, threadId, type) {
+    if (!msg || msg.length == 0)
+      throw new ZaloApiError("Missing message content");
+    const isGroupMessage = type == ThreadType.Group;
+    const { mentionsFinal, msgFinal } = handleMentions(type, msg, mentions);
+    msg = msgFinal;
+    if (quote) {
+      if (typeof quote.content != "string" && quote.msgType == "webchat") {
+        throw new ZaloApiError("This kind of `webchat` quote type is not available");
+      }
+      if (quote.msgType == "group.poll") {
+        throw new ZaloApiError("The `group.poll` quote type is not available");
+      }
+    }
+    const isMentionsValid = mentionsFinal.length > 0 && isGroupMessage;
+    const params = quote ? {
+      toid: isGroupMessage ? undefined : threadId,
+      grid: isGroupMessage ? threadId : undefined,
+      message: msg,
+      clientId: Date.now(),
+      mentionInfo: isMentionsValid ? JSON.stringify(mentionsFinal) : undefined,
+      qmsgOwner: quote.uidFrom,
+      qmsgId: quote.msgId,
+      qmsgCliId: quote.cliMsgId,
+      qmsgType: getClientMessageType(quote.msgType),
+      qmsgTs: quote.ts,
+      qmsg: typeof quote.content == "string" ? quote.content : prepareQMSG(quote),
+      imei: isGroupMessage ? undefined : ctx.imei,
+      visibility: isGroupMessage ? 0 : undefined,
+      qmsgAttach: isGroupMessage ? JSON.stringify(prepareQMSGAttach(quote)) : undefined,
+      qmsgTTL: quote.ttl,
+      ttl: ttl !== null && ttl !== undefined ? ttl : 0
+    } : {
+      message: msg,
+      clientId: Date.now(),
+      mentionInfo: isMentionsValid ? JSON.stringify(mentionsFinal) : undefined,
+      imei: isGroupMessage ? undefined : ctx.imei,
+      ttl: ttl !== null && ttl !== undefined ? ttl : 0,
+      visibility: isGroupMessage ? 0 : undefined,
+      toid: isGroupMessage ? undefined : threadId,
+      grid: isGroupMessage ? threadId : undefined
+    };
+    handleStyles(params, styles);
+    handleUrgency(params, urgency);
+    removeUndefinedKeys(params);
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const finalServiceUrl = new URL(serviceURLs.message[type]);
+    if (quote) {
+      finalServiceUrl.pathname = finalServiceUrl.pathname + "/quote";
+    } else {
+      finalServiceUrl.pathname = finalServiceUrl.pathname + "/" + (isGroupMessage ? params.mentionInfo ? "mention" : "sendmsg" : "sms");
+    }
+    return {
+      url: finalServiceUrl.toString(),
+      body: new URLSearchParams({ params: encryptedParams })
+    };
+  }
+  async function handleAttachment({ msg, attachments, mentions, quote, ttl, urgency }, threadId, type) {
+    if (!attachments)
+      throw new ZaloApiError("Missing attachments");
+    if (!Array.isArray(attachments))
+      attachments = [attachments];
+    if (attachments.length == 0)
+      throw new ZaloApiError("Missing attachments");
+    const firstSource = attachments[0];
+    const isFilePath = typeof firstSource == "string";
+    const firstExtFile = getFileExtension(isFilePath ? firstSource : firstSource.filename);
+    const isSingleFile = attachments.length == 1;
+    const isGroupMessage = type == ThreadType.Group;
+    const canBeDesc = isSingleFile && ["jpg", "jpeg", "png", "webp"].includes(firstExtFile);
+    const gifFiles = attachments.filter((e) => getFileExtension(typeof e == "string" ? e : e.filename) == "gif");
+    attachments = attachments.filter((e) => getFileExtension(typeof e == "string" ? e : e.filename) != "gif");
+    const uploadAttachment = attachments.length == 0 ? [] : await api.uploadAttachment(attachments, threadId, type);
+    const attachmentsData = [];
+    let indexInGroupLayout = 0;
+    const groupLayoutId = getGroupLayoutId().toString();
+    const { mentionsFinal, msgFinal } = handleMentions(type, msg, mentions);
+    msg = msgFinal;
+    const isMentionsValid = mentionsFinal.length > 0 && isGroupMessage && attachments.length == 1;
+    const isMultiFile = attachments.length > 1;
+    let clientId = Date.now();
+    for (const attachment of uploadAttachment) {
+      let data;
+      switch (attachment.fileType) {
+        case "image": {
+          data = {
+            fileType: attachment.fileType,
+            params: {
+              photoId: attachment.photoId,
+              clientId: (clientId++).toString(),
+              desc: msg,
+              width: attachment.width,
+              height: attachment.height,
+              toid: isGroupMessage ? undefined : String(threadId),
+              grid: isGroupMessage ? String(threadId) : undefined,
+              rawUrl: attachment.normalUrl,
+              hdUrl: attachment.hdUrl,
+              thumbUrl: attachment.thumbUrl,
+              oriUrl: isGroupMessage ? attachment.normalUrl : undefined,
+              normalUrl: isGroupMessage ? undefined : attachment.normalUrl,
+              hdSize: String(attachment.totalSize),
+              zsource: -1,
+              ttl: ttl !== null && ttl !== undefined ? ttl : 0,
+              jcp: '{"convertible":"jxl"}',
+              groupLayoutId: isMultiFile ? groupLayoutId : undefined,
+              isGroupLayout: isMultiFile ? 1 : undefined,
+              idInGroup: isMultiFile ? indexInGroupLayout++ : undefined,
+              totalItemInGroup: isMultiFile ? uploadAttachment.length : undefined,
+              extMsgProp: isMultiFile ? `{"groupMediaMsg":{"groupLayoutId":"${groupLayoutId}"}}` : undefined,
+              mentionInfo: isMentionsValid && canBeDesc && !quote ? JSON.stringify(mentionsFinal) : undefined
+            },
+            body: new URLSearchParams
+          };
+          break;
+        }
+        case "video": {
+          data = {
+            fileType: attachment.fileType,
+            params: {
+              fileId: attachment.fileId,
+              checksum: attachment.checksum,
+              checksumSha: "",
+              extention: getFileExtension(attachment.fileName),
+              totalSize: attachment.totalSize,
+              fileName: attachment.fileName,
+              clientId: attachment.clientFileId,
+              fType: 1,
+              fileCount: 0,
+              fdata: "{}",
+              toid: isGroupMessage ? undefined : String(threadId),
+              grid: isGroupMessage ? String(threadId) : undefined,
+              fileUrl: attachment.fileUrl,
+              zsource: -1,
+              ttl: ttl !== null && ttl !== undefined ? ttl : 0
+            },
+            body: new URLSearchParams
+          };
+          break;
+        }
+        case "others": {
+          data = {
+            fileType: attachment.fileType,
+            params: {
+              fileId: attachment.fileId,
+              checksum: attachment.checksum,
+              checksumSha: "",
+              extention: getFileExtension(attachment.fileName),
+              totalSize: attachment.totalSize,
+              fileName: attachment.fileName,
+              clientId: attachment.clientFileId,
+              fType: 1,
+              fileCount: 0,
+              fdata: "{}",
+              toid: isGroupMessage ? undefined : String(threadId),
+              grid: isGroupMessage ? String(threadId) : undefined,
+              fileUrl: attachment.fileUrl,
+              zsource: -1,
+              ttl: ttl !== null && ttl !== undefined ? ttl : 0
+            },
+            body: new URLSearchParams
+          };
+          break;
+        }
+      }
+      handleUrgency(data.params, urgency);
+      removeUndefinedKeys(data.params);
+      const encryptedParams = utils.encodeAES(JSON.stringify(data.params));
+      if (!encryptedParams)
+        throw new ZaloApiError("Failed to encrypt message");
+      data.body.append("params", encryptedParams);
+      attachmentsData.push(data);
+    }
+    for (const gif of gifFiles) {
+      const isFilePath = typeof gif == "string";
+      const gifData = isFilePath ? await getGifMetaData(ctx, gif) : Object.assign(Object.assign({}, gif.metadata), { fileName: gif.filename });
+      if (isExceedMaxFileSize(gifData.totalSize))
+        throw new ZaloApiError(`File ${isFilePath ? getFileName(gif) : gif.filename} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
+      const _upthumb = await upthumb(gif, serviceURLs.attachment[ThreadType.User]);
+      const formData = new import_form_data3.default;
+      formData.append("chunkContent", isFilePath ? await fs4.readFile(gif) : gif.data, {
+        filename: isFilePath ? getFileName(gif) : gif.filename,
+        contentType: "application/octet-stream"
+      });
+      const params = {
+        clientId: Date.now().toString(),
+        fileName: gifData.fileName,
+        totalSize: gifData.totalSize,
+        width: gifData.width,
+        height: gifData.height,
+        msg,
+        type: 1,
+        ttl: ttl !== null && ttl !== undefined ? ttl : 0,
+        visibility: isGroupMessage ? 0 : undefined,
+        toid: isGroupMessage ? undefined : threadId,
+        grid: isGroupMessage ? threadId : undefined,
+        thumb: _upthumb.url,
+        checksum: (await getMd5LargeFileObject(gif, gifData.totalSize)).data,
+        totalChunk: 1,
+        chunkId: 1
+      };
+      handleUrgency(params, urgency);
+      removeUndefinedKeys(params);
+      const encryptedParams = utils.encodeAES(JSON.stringify(params));
+      if (!encryptedParams)
+        throw new ZaloApiError("Failed to encrypt message");
+      attachmentsData.push({
+        query: {
+          params: encryptedParams,
+          type: "1"
+        },
+        body: formData.getBuffer(),
+        headers: formData.getHeaders(),
+        fileType: "gif"
+      });
+    }
+    const responses = [];
+    for (const data of attachmentsData) {
+      responses.push({
+        url: utils.makeURL(serviceURLs.attachment[type] + attachmentUrlType[data.fileType], Object.assign({
+          nretry: "0"
+        }, data.query || {})),
+        body: data.body,
+        headers: data.fileType == "gif" ? data.headers : {}
+      });
+    }
+    return responses;
+  }
+  return async function sendMessage(message, threadId, type = ThreadType.User) {
+    if (!message)
+      throw new ZaloApiError("Missing message content");
+    if (!threadId)
+      throw new ZaloApiError("Missing threadId");
+    if (typeof message == "string")
+      message = { msg: message };
+    let { msg, attachments, mentions } = message;
+    const { quote, ttl, styles, urgency } = message;
+    if (attachments && !Array.isArray(attachments)) {
+      attachments = [attachments];
+    }
+    if (!msg && (!attachments || attachments && attachments.length == 0))
+      throw new ZaloApiError("Missing message content");
+    if (attachments && isExceedMaxFile(attachments.length))
+      throw new ZaloApiError("Exceed maximum file of " + sharefile.max_file);
+    const responses = {
+      message: null,
+      attachment: []
+    };
+    if (attachments && attachments.length > 0) {
+      const firstExtFile = getFileExtension(typeof attachments[0] == "string" ? attachments[0] : attachments[0].filename);
+      const isSingleFile = attachments.length == 1;
+      const canBeDesc = isSingleFile && ["jpg", "jpeg", "png", "webp"].includes(firstExtFile);
+      if (!canBeDesc && msg.length > 0 || msg.length > 0 && quote) {
+        await handleMessage(message, threadId, type).then(async (data) => {
+          responses.message = (await send(data))[0];
+        });
+        msg = "";
+        mentions = undefined;
+      }
+      const handledData = await handleAttachment({ msg, mentions, attachments, quote, ttl, styles, urgency }, threadId, type);
+      responses.attachment = await send(handledData);
+      msg = "";
+    }
+    if (msg.length > 0) {
+      const handledData = await handleMessage(message, threadId, type);
+      responses.message = (await send(handledData))[0];
+    }
+    return responses;
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendReport.js
+var ReportReason;
+(function(ReportReason) {
+  ReportReason[ReportReason["Sensitive"] = 1] = "Sensitive";
+  ReportReason[ReportReason["Annoy"] = 2] = "Annoy";
+  ReportReason[ReportReason["Fraud"] = 3] = "Fraud";
+  ReportReason[ReportReason["Other"] = 0] = "Other";
+})(ReportReason || (ReportReason = {}));
+var sendReportFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/report/abuse-v2`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/reportabuse`)
+  };
+  return async function sendReport(options, threadId, type = ThreadType.User) {
+    const params = type == ThreadType.User ? {
+      idTo: threadId,
+      objId: "person.profile",
+      reason: options.reason.toString(),
+      content: options.reason == ReportReason.Other ? options.content : undefined
+    } : {
+      uidTo: threadId,
+      type: 14,
+      reason: options.reason,
+      content: options.reason == ReportReason.Other ? options.content : "",
+      imei: ctx.imei
+    };
+    removeUndefinedKeys(params);
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendSeenEvent.js
+var sendSeenEventFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/seenv2`, {
+      nretry: 0
+    }),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/seenv2`, {
+      nretry: 0
+    })
+  };
+  return async function sendSeenEvent(messages, type = ThreadType.User) {
+    if (!messages)
+      throw new ZaloApiError("messages are missing or not in a valid array format.");
+    if (!Array.isArray(messages))
+      messages = [messages];
+    if (messages.length === 0 || messages.length > MAX_MESSAGES_PER_SEND)
+      throw new ZaloApiError("messages must contain between 1 and 50 messages.");
+    const isGroup = type === ThreadType.Group;
+    const threadId = isGroup ? messages[0].idTo : messages[0].uidFrom;
+    const msgInfos = {
+      data: messages.map((msg) => {
+        const curThreadId = isGroup ? msg.idTo : msg.uidFrom;
+        if (curThreadId !== threadId) {
+          throw new ZaloApiError("All messages must belong to the same thread.");
+        }
+        return {
+          cmi: msg.cliMsgId,
+          gmi: msg.msgId,
+          si: msg.uidFrom,
+          di: msg.idTo === ctx.uid ? "0" : msg.idTo,
+          mt: msg.msgType,
+          st: msg.st || msg.st === 0 ? 0 : -1,
+          at: msg.at || msg.at === 0 ? 0 : -1,
+          cmd: msg.cmd || msg.cmd === 0 ? 0 : -1,
+          ts: parseInt(`${msg.ts}`) || parseInt(`${msg.ts}`) === 0 ? 0 : -1
+        };
+      }),
+      [isGroup ? "grid" : "senderId"]: threadId
+    };
+    const params = Object.assign({ msgInfos: JSON.stringify(msgInfos) }, isGroup ? { imei: ctx.imei } : {});
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendSticker.js
+var sendStickerFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/sticker`, {
+      nretry: "0"
+    }),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/sticker`, {
+      nretry: "0"
+    })
+  };
+  return async function sendSticker(sticker, threadId, type = ThreadType.User) {
+    if (!sticker)
+      throw new ZaloApiError("Missing sticker");
+    if (!threadId)
+      throw new ZaloApiError("Missing threadId");
+    if (!sticker.id)
+      throw new ZaloApiError("Missing sticker id");
+    if (sticker.cateId === undefined || sticker.cateId === null)
+      throw new ZaloApiError("Missing sticker cateId");
+    if (!sticker.type)
+      throw new ZaloApiError("Missing sticker type");
+    const isGroupMessage = type === ThreadType.Group;
+    const params = {
+      stickerId: sticker.id,
+      cateId: sticker.cateId,
+      type: sticker.type,
+      clientId: Date.now(),
+      imei: ctx.imei,
+      zsource: 101,
+      toid: isGroupMessage ? undefined : threadId,
+      grid: isGroupMessage ? threadId : undefined
+    };
+    removeUndefinedKeys(params);
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendTypingEvent.js
+var sendTypingEventFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/typing`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/typing`)
+  };
+  return async function sendTypingEvent(threadId, type = ThreadType.User, destType = DestType.User) {
+    if (!threadId)
+      throw new ZaloApiError("Missing threadId");
+    const params = Object.assign(Object.assign({ [type === ThreadType.User ? "toid" : "grid"]: threadId }, type === ThreadType.User ? { destType } : {}), { imei: ctx.imei });
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendVideo.js
+var sendVideoFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/forward`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/forward`)
+  };
+  return async function sendVideo(options, threadId, type = ThreadType.User) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    let fileSize = 0;
+    const clientId = Date.now();
+    try {
+      const headResponse = await utils.request(options.videoUrl, { method: "HEAD" }, true);
+      if (headResponse.ok) {
+        fileSize = parseInt(headResponse.headers.get("content-length") || "0");
+      }
+    } catch (error) {
+      throw new ZaloApiError(`Unable to get video content: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    const params = type === ThreadType.User ? {
+      toId: threadId,
+      clientId: String(clientId),
+      ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
+      zsource: 704,
+      msgType: 5,
+      msgInfo: JSON.stringify({
+        videoUrl: options.videoUrl,
+        thumbUrl: options.thumbnailUrl,
+        duration: (_b = options.duration) !== null && _b !== undefined ? _b : 0,
+        width: (_c = options.width) !== null && _c !== undefined ? _c : 1280,
+        height: (_d = options.height) !== null && _d !== undefined ? _d : 720,
+        fileSize,
+        properties: {
+          color: -1,
+          size: -1,
+          type: 1003,
+          subType: 0,
+          ext: {
+            sSrcType: -1,
+            sSrcStr: "",
+            msg_warning_type: 0
+          }
+        },
+        title: (_e = options.msg) !== null && _e !== undefined ? _e : ""
+      }),
+      imei: ctx.imei
+    } : {
+      grid: threadId,
+      visibility: 0,
+      clientId: String(clientId),
+      ttl: (_f = options.ttl) !== null && _f !== undefined ? _f : 0,
+      zsource: 704,
+      msgType: 5,
+      msgInfo: JSON.stringify({
+        videoUrl: options.videoUrl,
+        thumbUrl: options.thumbnailUrl,
+        duration: (_g = options.duration) !== null && _g !== undefined ? _g : 0,
+        width: (_h = options.width) !== null && _h !== undefined ? _h : 1280,
+        height: (_j = options.height) !== null && _j !== undefined ? _j : 720,
+        fileSize,
+        properties: {
+          color: -1,
+          size: -1,
+          type: 1003,
+          subType: 0,
+          ext: {
+            sSrcType: -1,
+            sSrcStr: "",
+            msg_warning_type: 0
+          }
+        },
+        title: (_k = options.msg) !== null && _k !== undefined ? _k : ""
+      }),
+      imei: ctx.imei
+    };
+    if (type !== ThreadType.User && type !== ThreadType.Group) {
+      throw new ZaloApiError("Thread type is invalid");
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sendVoice.js
+var sendVoiceFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/message/forward`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/forward`)
+  };
+  return async function sendVoice(options, threadId, type = ThreadType.User) {
+    var _a, _b;
+    let fileSize = null;
+    const clientId = Date.now().toString();
+    try {
+      const headResponse = await utils.request(options.voiceUrl, { method: "HEAD" }, true);
+      if (headResponse.ok) {
+        fileSize = parseInt(headResponse.headers.get("content-length") || "0");
+      }
+    } catch (error) {
+      throw new ZaloApiError(`Unable to get voice content: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    const params = type === ThreadType.User ? {
+      toId: threadId,
+      ttl: (_a = options.ttl) !== null && _a !== undefined ? _a : 0,
+      zsource: -1,
+      msgType: 3,
+      clientId,
+      msgInfo: JSON.stringify({
+        voiceUrl: options.voiceUrl,
+        m4aUrl: options.voiceUrl,
+        fileSize: fileSize !== null && fileSize !== undefined ? fileSize : 0
+      }),
+      imei: ctx.imei
+    } : {
+      grid: threadId,
+      visibility: 0,
+      ttl: (_b = options.ttl) !== null && _b !== undefined ? _b : 0,
+      zsource: -1,
+      msgType: 3,
+      clientId,
+      msgInfo: JSON.stringify({
+        voiceUrl: options.voiceUrl,
+        m4aUrl: options.voiceUrl,
+        fileSize: fileSize !== null && fileSize !== undefined ? fileSize : 0
+      }),
+      imei: ctx.imei
+    };
+    if (type !== ThreadType.User && type !== ThreadType.Group) {
+      throw new ZaloApiError("Thread type is invalid");
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/setHiddenConversations.js
+var setHiddenConversationsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/add-remove`);
+  return async function setHiddenConversations(hidden, threadId, type = ThreadType.User) {
+    threadId = Array.isArray(threadId) ? threadId : [threadId];
+    if (threadId.length === 0)
+      throw new ZaloApiError("threadId is required");
+    const is_group = type === ThreadType.Group ? 1 : 0;
+    const params = {
+      [hidden ? "add_threads" : "del_threads"]: JSON.stringify(threadId.map((id) => ({
+        thread_id: id,
+        is_group
+      }))),
+      [hidden ? "del_threads" : "add_threads"]: "[]",
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/setMute.js
+var MuteDuration;
+(function(MuteDuration) {
+  MuteDuration[MuteDuration["ONE_HOUR"] = 3600] = "ONE_HOUR";
+  MuteDuration[MuteDuration["FOUR_HOURS"] = 14400] = "FOUR_HOURS";
+  MuteDuration[MuteDuration["FOREVER"] = -1] = "FOREVER";
+  MuteDuration["UNTIL_8AM"] = "until8AM";
+})(MuteDuration || (MuteDuration = {}));
+var MuteAction;
+(function(MuteAction) {
+  MuteAction[MuteAction["MUTE"] = 1] = "MUTE";
+  MuteAction[MuteAction["UNMUTE"] = 3] = "UNMUTE";
+})(MuteAction || (MuteAction = {}));
+var setMuteFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/setmute`);
+  return async function setMute(params = {}, threadID, type = ThreadType.User) {
+    const { duration = MuteDuration.FOREVER, action = MuteAction.MUTE } = params;
+    let muteDuration;
+    if (action === MuteAction.UNMUTE) {
+      muteDuration = -1;
+    } else if (duration === MuteDuration.FOREVER) {
+      muteDuration = -1;
+    } else if (duration === MuteDuration.UNTIL_8AM) {
+      const now = new Date;
+      const next8AM = new Date(now);
+      next8AM.setHours(8, 0, 0, 0);
+      if (now.getHours() >= 8) {
+        next8AM.setDate(next8AM.getDate() + 1);
+      }
+      muteDuration = Math.floor((next8AM.getTime() - now.getTime()) / 1000);
+    } else {
+      muteDuration = duration;
+    }
+    const requestParams = {
+      toid: threadID,
+      duration: muteDuration,
+      action,
+      startTime: Math.floor(Date.now() / 1000),
+      muteType: type === ThreadType.User ? 1 : 2,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(requestParams));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/setPinnedConversations.js
+var setPinnedConversationsFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/pinconvers/updatev2`);
+  return async function setPinnedConversations(pinned, threadId, type = ThreadType.User) {
+    if (typeof threadId == "string")
+      threadId = [threadId];
+    const params = {
+      actionType: pinned ? 1 : 2,
+      conversations: type == ThreadType.Group ? threadId.map((id) => `g${id}`) : threadId.map((id) => `u${id}`)
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/sharePoll.js
+var sharePollFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/share`);
+  return async function sharePoll(pollId) {
+    const params = {
+      poll_id: pollId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/unblockUser.js
+var unblockUserFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/unblock`);
+  return async function unblockUser(userId) {
+    const params = {
+      fid: userId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/undo.js
+var undoFactory = apiFactory()((api, ctx, utils) => {
+  const URLType = {
+    [ThreadType.User]: utils.makeURL(`${api.zpwServiceMap.chat[0]}/api/message/undo`),
+    [ThreadType.Group]: utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/undomsg`)
+  };
+  return async function undo(payload, threadId, type = ThreadType.User) {
+    const params = {
+      msgId: payload.msgId,
+      clientId: Date.now(),
+      cliMsgIdUndo: payload.cliMsgId
+    };
+    if (type == ThreadType.Group) {
+      params["grid"] = threadId;
+      params["visibility"] = 0;
+      params["imei"] = ctx.imei;
+    } else
+      params["toid"] = threadId;
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(URLType[type], {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/undoFriendRequest.js
+var undoFriendRequestFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.friend[0]}/api/friend/undo`);
+  return async function undoFriendRequest(friendId) {
+    const params = {
+      fid: friendId
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateActiveStatus.js
+var updateActiveStatusFactory = apiFactory()((api, ctx, utils) => {
+  const pingURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/ping`);
+  const deactiveURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/deactive`);
+  return async function updateActiveStatus(active) {
+    const params = {
+      status: active ? 1 : 0,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const targetURL = active ? pingURL : deactiveURL;
+    const response = await utils.request(utils.makeURL(targetURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateArchivedChatList.js
+var updateArchivedChatListFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/archivedchat/update`);
+  return async function updateArchivedChatList(isArchived, conversations) {
+    if (!Array.isArray(conversations)) {
+      conversations = [conversations];
+    }
+    const params = {
+      actionType: isArchived ? 0 : 1,
+      ids: conversations,
+      imei: ctx.imei,
+      version: Date.now()
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateAutoDeleteChat.js
+var ChatTTL;
+(function(ChatTTL) {
+  ChatTTL[ChatTTL["NO_DELETE"] = 0] = "NO_DELETE";
+  ChatTTL[ChatTTL["ONE_DAY"] = 86400000] = "ONE_DAY";
+  ChatTTL[ChatTTL["SEVEN_DAYS"] = 604800000] = "SEVEN_DAYS";
+  ChatTTL[ChatTTL["FOURTEEN_DAYS"] = 1209600000] = "FOURTEEN_DAYS";
+})(ChatTTL || (ChatTTL = {}));
+var updateAutoDeleteChatFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/conv/autodelete/updateConvers`);
+  return async function updateAutoDeleteChat(ttl, threadId, type = ThreadType.User) {
+    const params = {
+      threadId,
+      isGroup: type === ThreadType.Group ? 1 : 0,
+      ttl,
+      clientLang: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateAutoReply.js
+var updateAutoReplyFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.auto_reply[0]}/api/autoreply/update`);
+  return async function updateAutoReply(payload) {
+    const uids = Array.isArray(payload.uids) ? payload.uids : [payload.uids];
+    const resultUids = payload.scope === 2 || payload.scope === 3 ? uids : [];
+    const params = {
+      cliLang: ctx.language,
+      id: payload.id,
+      enable: payload.isEnable,
+      content: payload.content,
+      startTime: payload.startTime,
+      endTime: payload.endTime,
+      recurrence: ["RRULE:FREQ=DAILY;"],
+      scope: payload.scope,
+      uids: resultUids
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateBankAccount.js
+var updateBankAccountFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.zimsg[0]}/api/transfer/update`);
+  return async function updateBankAccount(payload) {
+    const params = {
+      account_id: payload.accountId,
+      bin: payload.binBank,
+      bank_number: payload.numAccBank,
+      holder_name: normalizeHolderName(payload.nameAccBank),
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateCatalog.js
+var updateCatalogFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/catalog/update`);
+  return async function updateCatalog(payload) {
+    const params = {
+      catalog_id: payload.catalogId,
+      catalog_name: payload.catalogName,
+      catalog_photo: ""
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateGroupSettings.js
+var updateGroupSettingsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/setting/update`);
+  return async function updateGroupSettings(options, groupId) {
+    const params = {
+      blockName: options.blockName ? 1 : 0,
+      signAdminMsg: options.signAdminMsg ? 1 : 0,
+      setTopicOnly: options.setTopicOnly ? 1 : 0,
+      enableMsgHistory: options.enableMsgHistory ? 1 : 0,
+      joinAppr: options.joinAppr ? 1 : 0,
+      lockCreatePost: options.lockCreatePost ? 1 : 0,
+      lockCreatePoll: options.lockCreatePoll ? 1 : 0,
+      lockSendMsg: options.lockSendMsg ? 1 : 0,
+      lockViewMember: options.lockViewMember ? 1 : 0,
+      bannFeature: 0,
+      dirtyMedia: 0,
+      banDuration: 0,
+      blocked_members: [],
+      grid: groupId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateHiddenConversPin.js
+var updateHiddenConversPinFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.conversation[0]}/api/hiddenconvers/update-pin`);
+  const pinRegex = /^\d{4}$/;
+  return async function updateHiddenConversPin(pin) {
+    if (!pinRegex.test(pin)) {
+      throw new ZaloApiError("Pin must be a 4-digit number between 0000-9999");
+    }
+    const encryptedPin = encryptPin(pin);
+    const params = {
+      new_pin: encryptedPin,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateLabels.js
+var updateLabelsFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.label[0]}/api/convlabel/update`);
+  return async function updateLabels(payload) {
+    const params = {
+      labelData: JSON.stringify(payload.labelData),
+      version: payload.version,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt message");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    const unFormatted = await utils.resolve(response);
+    return {
+      labelData: JSON.parse(unFormatted.labelData),
+      version: unFormatted.version,
+      lastUpdateTime: unFormatted.lastUpdateTime
+    };
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateLang.js
+var UpdateLangAvailableLanguages;
+(function(UpdateLangAvailableLanguages) {
+  UpdateLangAvailableLanguages["VI"] = "VI";
+  UpdateLangAvailableLanguages["EN"] = "EN";
+})(UpdateLangAvailableLanguages || (UpdateLangAvailableLanguages = {}));
+var updateLangFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/updatelang`);
+  return async function updateLang(language = UpdateLangAvailableLanguages.VI) {
+    const params = {
+      language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateProductCatalog.js
+var updateProductCatalogFactory = apiFactory()((api, _, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.catalog[0]}/api/prodcatalog/product/update`);
+  return async function updateProductCatalog(payload) {
+    const productPhoto = payload.product_photos || [];
+    if (payload.files && payload.files.length == 0) {
+      if (payload.files.length > 5) {
+        throw new ZaloApiError("Maximum 5 media files are allowed");
+      }
+      for (const mediaFile of payload.files) {
+        const uploadMedia = await api.uploadProductPhoto({
+          file: mediaFile
+        });
+        const url = uploadMedia.normalUrl || uploadMedia.hdUrl;
+        productPhoto.push(url);
+      }
+    }
+    if (productPhoto.length > 5) {
+      throw new ZaloApiError("Maximum 5 media files are allowed");
+    }
+    const params = {
+      product_id: payload.productId,
+      product_name: payload.productName,
+      price: payload.price,
+      description: payload.description,
+      product_photos: productPhoto,
+      catalog_id: payload.catalogId,
+      currency_unit: "₫",
+      create_time: payload.createTime
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateProfile.js
+var updateProfileFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/update`);
+  return async function updateProfile(payload) {
+    var _a, _b, _c, _d, _e;
+    const params = {
+      profile: JSON.stringify({
+        name: payload.profile.name,
+        dob: payload.profile.dob,
+        gender: payload.profile.gender
+      }),
+      biz: JSON.stringify({
+        desc: (_a = payload.biz) === null || _a === undefined ? undefined : _a.description,
+        cate: (_b = payload.biz) === null || _b === undefined ? undefined : _b.cate,
+        addr: (_c = payload.biz) === null || _c === undefined ? undefined : _c.address,
+        website: (_d = payload.biz) === null || _d === undefined ? undefined : _d.website,
+        email: (_e = payload.biz) === null || _e === undefined ? undefined : _e.email
+      }),
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(serviceURL, {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateProfileBio.js
+var updateProfileBioFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.profile[0]}/api/social/profile/status`);
+  return async function updateProfileBio(status) {
+    const params = {
+      status
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "POST",
+      body: new URLSearchParams({
+        params: encryptedParams
+      })
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateQuickMessage.js
+var updateQuickMessageFactory = apiFactory()((api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.quick_message[0]}/api/quickmessage/update`);
+  return async function updateQuickMessage(updatePayload, itemId) {
+    const isType = !updatePayload.media ? 0 : 1;
+    const params = {
+      itemId,
+      keyword: updatePayload.keyword,
+      message: {
+        title: updatePayload.title,
+        params: ""
+      },
+      type: isType
+    };
+    if (isType === 1) {
+      if (!updatePayload.media)
+        throw new ZaloApiError("Media is required");
+      const uploadMedia = await api.uploadProductPhoto({
+        file: updatePayload.media
+      });
+      const photoId = uploadMedia.photoId;
+      const thumbUrl = uploadMedia.thumbUrl;
+      const normalUrl = uploadMedia.normalUrl;
+      const hdUrl = uploadMedia.hdUrl;
+      params.media = {
+        items: [
+          {
+            type: 0,
+            photoId,
+            title: "",
+            width: "",
+            height: "",
+            previewThumb: thumbUrl,
+            rawUrl: normalUrl || hdUrl,
+            thumbUrl,
+            normalUrl: normalUrl || hdUrl,
+            hdUrl: hdUrl || normalUrl
+          }
+        ]
+      };
+    }
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/updateSettings.js
+var UpdateSettingsType;
+(function(UpdateSettingsType) {
+  UpdateSettingsType["ViewBirthday"] = "view_birthday";
+  UpdateSettingsType["ShowOnlineStatus"] = "show_online_status";
+  UpdateSettingsType["DisplaySeenStatus"] = "display_seen_status";
+  UpdateSettingsType["ReceiveMessage"] = "receive_message";
+  UpdateSettingsType["AcceptCall"] = "accept_stranger_call";
+  UpdateSettingsType["AddFriendViaPhone"] = "add_friend_via_phone";
+  UpdateSettingsType["AddFriendViaQR"] = "add_friend_via_qr";
+  UpdateSettingsType["AddFriendViaGroup"] = "add_friend_via_group";
+  UpdateSettingsType["AddFriendViaContact"] = "add_friend_via_contact";
+  UpdateSettingsType["DisplayOnRecommendFriend"] = "display_on_recommend_friend";
+  UpdateSettingsType["ArchivedChat"] = "archivedChatStatus";
+  UpdateSettingsType["QuickMessage"] = "quickMessageStatus";
+})(UpdateSettingsType || (UpdateSettingsType = {}));
+var updateSettingsFactory = apiFactory()((_api, _ctx, utils) => {
+  const serviceURL = utils.makeURL(`https://wpa.chat.zalo.me/api/setting/update`);
+  return async function updateSettings(type, value) {
+    const params = {
+      [type]: value
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/upgradeGroupToCommunity.js
+var upgradeGroupToCommunityFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/group/upgrade/community`);
+  return async function upgradeGroupToCommunity(groupId) {
+    const params = {
+      grId: groupId,
+      language: ctx.language
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/uploadAttachment.js
+var import_form_data4 = __toESM(require_form_data(), 1);
+import fs5 from "node:fs";
+var urlType = {
+  image: "photo_original/upload",
+  video: "asyncfile/upload",
+  others: "asyncfile/upload"
+};
+var uploadAttachmentFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = `${api.zpwServiceMap.file[0]}/api`;
+  const { sharefile } = ctx.settings.features;
+  function isExceedMaxFile(totalFile) {
+    return totalFile > sharefile.max_file;
+  }
+  function isExceedMaxFileSize(fileSize) {
+    return fileSize > sharefile.max_size_share_file_v3 * 1024 * 1024;
+  }
+  function isExtensionValid(ext) {
+    return sharefile.restricted_ext_file.indexOf(ext) == -1;
+  }
+  return async function uploadAttachment(sources, threadId, type = ThreadType.User) {
+    if (!sources)
+      throw new ZaloApiError("Missing sources");
+    if (!Array.isArray(sources))
+      sources = [sources];
+    if (sources.length == 0)
+      throw new ZaloApiError("Missing sources");
+    if (isExceedMaxFile(sources.length))
+      throw new ZaloApiError("Exceed maximum file of " + sharefile.max_file);
+    if (!threadId)
+      throw new ZaloApiError("Missing threadId");
+    const chunkSize = ctx.settings.features.sharefile.chunk_size_file;
+    const isGroupMessage = type == ThreadType.Group;
+    const attachmentsData = [];
+    const url = `${serviceURL}/${isGroupMessage ? "group" : "message"}/`;
+    const typeParam = isGroupMessage ? "11" : "2";
+    let clientId = Date.now();
+    for (const source of sources) {
+      const isFilePath = typeof source == "string";
+      const isBuffer = typeof source == "object" && source.data instanceof Buffer;
+      if (!isFilePath && !isBuffer)
+        throw new ZaloApiError("Invalid source type");
+      if (!isFilePath && !source.filename)
+        throw new ZaloApiError("Missing filename");
+      if (isFilePath && !fs5.existsSync(source))
+        throw new ZaloApiError("File not found");
+      const extFile = getFileExtension(isFilePath ? source : source.filename).toLowerCase();
+      const fileName = isFilePath ? getFileName(source) : source.filename;
+      if (isExtensionValid(extFile) == false)
+        throw new ZaloApiError(`File extension "${extFile}" is not allowed`);
+      const data = {
+        filePath: isFilePath ? source : source.filename,
+        chunkContent: [],
+        params: {},
+        source
+      };
+      if (isGroupMessage)
+        data.params.grid = threadId;
+      else
+        data.params.toid = threadId;
+      switch (extFile) {
+        case "jpg":
+        case "jpeg":
+        case "png":
+        case "webp": {
+          const imageData = isFilePath ? await getImageMetaData(ctx, source) : Object.assign(Object.assign({}, source.metadata), { fileName });
+          if (isExceedMaxFileSize(imageData.totalSize))
+            throw new ZaloApiError(`File ${fileName} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
+          data.fileData = imageData;
+          data.fileType = "image";
+          data.params.totalChunk = Math.ceil(data.fileData.totalSize / chunkSize);
+          data.params.fileName = fileName;
+          data.params.clientId = clientId++;
+          data.params.totalSize = imageData.totalSize;
+          data.params.imei = ctx.imei;
+          data.params.isE2EE = 0;
+          data.params.jxl = 0;
+          data.params.chunkId = 1;
+          break;
+        }
+        case "mp4": {
+          const videoSize = isFilePath ? await getFileSize(source) : source.metadata.totalSize;
+          if (isExceedMaxFileSize(videoSize))
+            throw new ZaloApiError(`File ${fileName} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
+          data.fileType = "video";
+          data.fileData = {
+            fileName,
+            totalSize: videoSize
+          };
+          data.params.totalChunk = Math.ceil(data.fileData.totalSize / chunkSize);
+          data.params.fileName = fileName;
+          data.params.clientId = clientId++;
+          data.params.totalSize = videoSize;
+          data.params.imei = ctx.imei;
+          data.params.isE2EE = 0;
+          data.params.jxl = 0;
+          data.params.chunkId = 1;
+          break;
+        }
+        default: {
+          const fileSize = isFilePath ? await getFileSize(source) : source.metadata.totalSize;
+          if (isExceedMaxFileSize(fileSize))
+            throw new ZaloApiError(`File ${fileName} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
+          data.fileType = "others";
+          data.fileData = {
+            fileName,
+            totalSize: fileSize
+          };
+          data.params.totalChunk = Math.ceil(data.fileData.totalSize / chunkSize);
+          data.params.fileName = fileName;
+          data.params.clientId = clientId++;
+          data.params.totalSize = fileSize;
+          data.params.imei = ctx.imei;
+          data.params.isE2EE = 0;
+          data.params.jxl = 0;
+          data.params.chunkId = 1;
+          break;
+        }
+      }
+      const fileBuffer = isFilePath ? await fs5.promises.readFile(source) : source.data;
+      for (let i = 0;i < data.params.totalChunk; i++) {
+        const formData = new import_form_data4.default;
+        const slicedBuffer = fileBuffer.subarray(i * chunkSize, (i + 1) * chunkSize);
+        formData.append("chunkContent", slicedBuffer, {
+          filename: fileName,
+          contentType: "application/octet-stream"
+        });
+        data.chunkContent[i] = formData;
+      }
+      attachmentsData.push(data);
+    }
+    const requests = [], results = [];
+    for (let atmIndex = 0;atmIndex < attachmentsData.length; atmIndex++) {
+      const data = attachmentsData[atmIndex];
+      for (let i = 0;i < data.params.totalChunk; i++) {
+        const encryptedParams = utils.encodeAES(JSON.stringify(data.params));
+        if (!encryptedParams)
+          throw new ZaloApiError("Failed to encrypt message");
+        requests.push(utils.request(utils.makeURL(url + urlType[data.fileType], { type: typeParam, params: encryptedParams }), {
+          method: "POST",
+          headers: data.chunkContent[i].getHeaders(),
+          body: data.chunkContent[i].getBuffer()
+        }).then(async (response) => {
+          const resData = await resolveResponse(ctx, response);
+          if (resData && resData.fileId != "-1" && resData.photoId != "-1")
+            await new Promise((resolve) => {
+              if (data.fileType == "video" || data.fileType == "others") {
+                const uploadCallback = async (wsData) => {
+                  const result = Object.assign(Object.assign(Object.assign({ fileType: data.fileType }, resData), wsData), { totalSize: data.fileData.totalSize, fileName: data.fileData.fileName, checksum: (await getMd5LargeFileObject(data.source, data.fileData.totalSize)).data });
+                  results[atmIndex] = result;
+                  resolve();
+                };
+                ctx.uploadCallbacks.set(resData.fileId.toString(), uploadCallback);
+              }
+              if (data.fileType == "image") {
+                const result = {
+                  fileType: "image",
+                  width: data.fileData.width,
+                  height: data.fileData.height,
+                  totalSize: data.fileData.totalSize,
+                  hdSize: data.fileData.totalSize,
+                  finished: resData.finished,
+                  normalUrl: resData.normalUrl,
+                  hdUrl: resData.hdUrl,
+                  thumbUrl: resData.thumbUrl,
+                  chunkId: resData.chunkId,
+                  photoId: resData.photoId,
+                  clientFileId: resData.clientFileId
+                };
+                results[atmIndex] = result;
+                resolve();
+              }
+            });
+        }));
+        data.params.chunkId++;
+      }
+    }
+    await Promise.all(requests);
+    return results;
+  };
+});
+
+// node_modules/zca-js/dist/apis/uploadProductPhoto.js
+var import_form_data5 = __toESM(require_form_data(), 1);
+import fs6 from "node:fs";
+var uploadProductPhotoFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/product/upload/photo`);
+  return async function uploadProductPhoto(payload) {
+    const isSourceFilePath = typeof payload.file == "string";
+    const fileMetaData = isSourceFilePath ? await getImageMetaData(ctx, payload.file) : payload.file.metadata;
+    const fileSize = fileMetaData.totalSize || 0;
+    const fileBuffer = isSourceFilePath ? await fs6.promises.readFile(payload.file) : payload.file.data;
+    const formData = new import_form_data5.default;
+    formData.append("chunkContent", fileBuffer, {
+      filename: "undefined",
+      contentType: "application/octet-stream"
+    });
+    const params = {
+      totalChunk: 1,
+      fileName: `Base64_Img_Picker_${Date.now()}.jpg`,
+      clientId: Date.now(),
+      totalSize: fileSize,
+      imei: ctx.imei,
+      chunkId: 1,
+      toid: ctx.loginInfo.send2me_id,
+      featureId: 1
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, {
+      params: encryptedParams
+    }), {
+      method: "POST",
+      headers: formData.getHeaders(),
+      body: formData.getBuffer()
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/votePoll.js
+var votePollFactory = apiFactory()((api, ctx, utils) => {
+  const serviceURL = utils.makeURL(`${api.zpwServiceMap.group[0]}/api/poll/vote`);
+  return async function votePoll(pollId, optionId) {
+    if (!Array.isArray(optionId))
+      optionId = [optionId];
+    const params = {
+      poll_id: pollId,
+      option_ids: optionId,
+      imei: ctx.imei
+    };
+    const encryptedParams = utils.encodeAES(JSON.stringify(params));
+    if (!encryptedParams)
+      throw new ZaloApiError("Failed to encrypt params");
+    const response = await utils.request(utils.makeURL(serviceURL, { params: encryptedParams }), {
+      method: "GET"
+    });
+    return utils.resolve(response);
+  };
+});
+
+// node_modules/zca-js/dist/apis/custom.js
+var customFactory = apiFactory()((api, ctx, utils) => {
+  return function custom(name, callback) {
+    Object.defineProperty(api, name, {
+      value: function(props) {
+        return callback({ ctx, utils, props });
+      },
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
+  };
+});
+
+// node_modules/zca-js/dist/apis.js
+class API {
+  constructor(ctx, zpwServiceMap, wsUrls) {
+    this.zpwServiceMap = zpwServiceMap;
+    this.listener = new Listener(ctx, wsUrls);
+    this.acceptFriendRequest = acceptFriendRequestFactory(ctx, this);
+    this.addGroupBlockedMember = addGroupBlockedMemberFactory(ctx, this);
+    this.addGroupDeputy = addGroupDeputyFactory(ctx, this);
+    this.addPollOptions = addPollOptionsFactory(ctx, this);
+    this.addQuickMessage = addQuickMessageFactory(ctx, this);
+    this.addReaction = addReactionFactory(ctx, this);
+    this.addUnreadMark = addUnreadMarkFactory(ctx, this);
+    this.addUserToGroup = addUserToGroupFactory(ctx, this);
+    this.blockUser = blockUserFactory(ctx, this);
+    this.blockViewFeed = blockViewFeedFactory(ctx, this);
+    this.changeAccountAvatar = changeAccountAvatarFactory(ctx, this);
+    this.changeFriendAlias = changeFriendAliasFactory(ctx, this);
+    this.changeGroupAvatar = changeGroupAvatarFactory(ctx, this);
+    this.changeGroupName = changeGroupNameFactory(ctx, this);
+    this.changeGroupOwner = changeGroupOwnerFactory(ctx, this);
+    this.createAutoReply = createAutoReplyFactory(ctx, this);
+    this.createBankAccount = createBankAccountFactory(ctx, this);
+    this.createCatalog = createCatalogFactory(ctx, this);
+    this.createGroup = createGroupFactory(ctx, this);
+    this.createNote = createNoteFactory(ctx, this);
+    this.createPoll = createPollFactory(ctx, this);
+    this.createProductCatalog = createProductCatalogFactory(ctx, this);
+    this.createReminder = createReminderFactory(ctx, this);
+    this.deleteAutoReply = deleteAutoReplyFactory(ctx, this);
+    this.deleteAvatar = deleteAvatarFactory(ctx, this);
+    this.deleteBankAccount = deleteBankAccountFactory(ctx, this);
+    this.deleteCatalog = deleteCatalogFactory(ctx, this);
+    this.deleteChat = deleteChatFactory(ctx, this);
+    this.deleteGroupInviteBox = deleteGroupInviteBoxFactory(ctx, this);
+    this.deleteMessage = deleteMessageFactory(ctx, this);
+    this.deleteProductCatalog = deleteProductCatalogFactory(ctx, this);
+    this.disableGroupLink = disableGroupLinkFactory(ctx, this);
+    this.disperseGroup = disperseGroupFactory(ctx, this);
+    this.editNote = editNoteFactory(ctx, this);
+    this.editReminder = editReminderFactory(ctx, this);
+    this.enableGroupLink = enableGroupLinkFactory(ctx, this);
+    this.fetchAccountInfo = fetchAccountInfoFactory(ctx, this);
+    this.findUser = findUserFactory(ctx, this);
+    this.findUserByUsername = findUserByUsernameFactory(ctx, this);
+    this.forwardMessage = forwardMessageFactory(ctx, this);
+    this.getAliasList = getAliasListFactory(ctx, this);
+    this.getAllFriends = getAllFriendsFactory(ctx, this);
+    this.getAllGroups = getAllGroupsFactory(ctx, this);
+    this.getArchivedChatList = getArchivedChatListFactory(ctx, this);
+    this.getAutoDeleteChat = getAutoDeleteChatFactory(ctx, this);
+    this.getAutoReplyList = getAutoReplyListFactory(ctx, this);
+    this.getAvatarList = getAvatarListFactory(ctx, this);
+    this.getAvatarUrlProfile = getAvatarUrlProfileFactory(ctx, this);
+    this.getBizAccount = getBizAccountFactory(ctx, this);
+    this.getCatalogList = getCatalogListFactory(ctx, this);
+    this.getCloseFriends = getCloseFriendsFactory(ctx, this);
+    this.getContext = getContextFactory(ctx, this);
+    this.getCookie = getCookieFactory(ctx, this);
+    this.getFriendBoardList = getFriendBoardListFactory(ctx, this);
+    this.getFriendOnlines = getFriendOnlinesFactory(ctx, this);
+    this.getFriendRecommendations = getFriendRecommendationsFactory(ctx, this);
+    this.getFriendRequestStatus = getFriendRequestStatusFactory(ctx, this);
+    this.getFullAvatar = getFullAvatarFactory(ctx, this);
+    this.getGroupBlockedMember = getGroupBlockedMemberFactory(ctx, this);
+    this.getGroupChatHistory = getGroupChatHistoryFactory(ctx, this);
+    this.getGroupInfo = getGroupInfoFactory(ctx, this);
+    this.getGroupInviteBoxInfo = getGroupInviteBoxInfoFactory(ctx, this);
+    this.getGroupInviteBoxList = getGroupInviteBoxListFactory(ctx, this);
+    this.getGroupLinkDetail = getGroupLinkDetailFactory(ctx, this);
+    this.getGroupLinkInfo = getGroupLinkInfoFactory(ctx, this);
+    this.getGroupMembersInfo = getGroupMembersInfoFactory(ctx, this);
+    this.getHiddenConversations = getHiddenConversationsFactory(ctx, this);
+    this.getLabels = getLabelsFactory(ctx, this);
+    this.getListBank = getListBankFactory(ctx, this);
+    this.getListBankAccount = getListBankAccountFactory(ctx, this);
+    this.getListBoard = getListBoardFactory(ctx, this);
+    this.getListDevice = getListDeviceFactory(ctx, this);
+    this.getListReminder = getListReminderFactory(ctx, this);
+    this.getMultiUsersByPhones = getMultiUsersByPhonesFactory(ctx, this);
+    this.getMute = getMuteFactory(ctx, this);
+    this.getOwnId = getOwnIdFactory(ctx, this);
+    this.getPendingGroupMembers = getPendingGroupMembersFactory(ctx, this);
+    this.getPinConversations = getPinConversationsFactory(ctx, this);
+    this.getPollDetail = getPollDetailFactory(ctx, this);
+    this.getProductCatalogList = getProductCatalogListFactory(ctx, this);
+    this.getQR = getQRFactory(ctx, this);
+    this.getQuickMessageList = getQuickMessageListFactory(ctx, this);
+    this.getRelatedFriendGroup = getRelatedFriendGroupFactory(ctx, this);
+    this.getReminder = getReminderFactory(ctx, this);
+    this.getReminderResponses = getReminderResponsesFactory(ctx, this);
+    this.getSentFriendRequest = getSentFriendRequestFactory(ctx, this);
+    this.getSettings = getSettingsFactory(ctx, this);
+    this.getStickerCategoryDetail = getStickerCategoryDetailFactory(ctx, this);
+    this.getStickers = getStickersFactory(ctx, this);
+    this.getStickersDetail = getStickersDetailFactory(ctx, this);
+    this.getUnreadMark = getUnreadMarkFactory(ctx, this);
+    this.getUserInfo = getUserInfoFactory(ctx, this);
+    this.inviteUserToGroups = inviteUserToGroupsFactory(ctx, this);
+    this.joinGroupInviteBox = joinGroupInviteBoxFactory(ctx, this);
+    this.joinGroupLink = joinGroupLinkFactory(ctx, this);
+    this.keepAlive = keepAliveFactory(ctx, this);
+    this.lastOnline = lastOnlineFactory(ctx, this);
+    this.leaveGroup = leaveGroupFactory(ctx, this);
+    this.lockPoll = lockPollFactory(ctx, this);
+    this.lostFocus = lostFocusFactory(ctx, this);
+    this.parseLink = parseLinkFactory(ctx, this);
+    this.registerCatalog = registerCatalogFactory(ctx, this);
+    this.rejectFriendRequest = rejectFriendRequestFactory(ctx, this);
+    this.removeFriend = removeFriendFactory(ctx, this);
+    this.removeFriendAlias = removeFriendAliasFactory(ctx, this);
+    this.removeGroupBlockedMember = removeGroupBlockedMemberFactory(ctx, this);
+    this.removeGroupDeputy = removeGroupDeputyFactory(ctx, this);
+    this.removeQuickMessage = removeQuickMessageFactory(ctx, this);
+    this.removeReminder = removeReminderFactory(ctx, this);
+    this.removeUnreadMark = removeUnreadMarkFactory(ctx, this);
+    this.removeUserFromGroup = removeUserFromGroupFactory(ctx, this);
+    this.resetHiddenConversPin = resetHiddenConversPinFactory(ctx, this);
+    this.reuseAvatar = reuseAvatarFactory(ctx, this);
+    this.reviewPendingMemberRequest = reviewPendingMemberRequestFactory(ctx, this);
+    this.scanURL = scanURLFactory(ctx, this);
+    this.searchSticker = searchStickerFactory(ctx, this);
+    this.sendBankCard = sendBankCardFactory(ctx, this);
+    this.sendCard = sendCardFactory(ctx, this);
+    this.sendDeliveredEvent = sendDeliveredEventFactory(ctx, this);
+    this.sendFriendRequest = sendFriendRequestFactory(ctx, this);
+    this.sendLink = sendLinkFactory(ctx, this);
+    this.sendMessage = sendMessageFactory(ctx, this);
+    this.sendReport = sendReportFactory(ctx, this);
+    this.sendSeenEvent = sendSeenEventFactory(ctx, this);
+    this.sendSticker = sendStickerFactory(ctx, this);
+    this.sendTypingEvent = sendTypingEventFactory(ctx, this);
+    this.sendVideo = sendVideoFactory(ctx, this);
+    this.sendVoice = sendVoiceFactory(ctx, this);
+    this.setHiddenConversations = setHiddenConversationsFactory(ctx, this);
+    this.setMute = setMuteFactory(ctx, this);
+    this.setPinnedConversations = setPinnedConversationsFactory(ctx, this);
+    this.sharePoll = sharePollFactory(ctx, this);
+    this.unblockUser = unblockUserFactory(ctx, this);
+    this.undo = undoFactory(ctx, this);
+    this.undoFriendRequest = undoFriendRequestFactory(ctx, this);
+    this.updateActiveStatus = updateActiveStatusFactory(ctx, this);
+    this.updateArchivedChatList = updateArchivedChatListFactory(ctx, this);
+    this.updateAutoDeleteChat = updateAutoDeleteChatFactory(ctx, this);
+    this.updateAutoReply = updateAutoReplyFactory(ctx, this);
+    this.updateBankAccount = updateBankAccountFactory(ctx, this);
+    this.updateCatalog = updateCatalogFactory(ctx, this);
+    this.updateGroupSettings = updateGroupSettingsFactory(ctx, this);
+    this.updateHiddenConversPin = updateHiddenConversPinFactory(ctx, this);
+    this.updateLabels = updateLabelsFactory(ctx, this);
+    this.updateLang = updateLangFactory(ctx, this);
+    this.updateProductCatalog = updateProductCatalogFactory(ctx, this);
+    this.updateProfile = updateProfileFactory(ctx, this);
+    this.updateProfileBio = updateProfileBioFactory(ctx, this);
+    this.updateQuickMessage = updateQuickMessageFactory(ctx, this);
+    this.updateSettings = updateSettingsFactory(ctx, this);
+    this.upgradeGroupToCommunity = upgradeGroupToCommunityFactory(ctx, this);
+    this.uploadAttachment = uploadAttachmentFactory(ctx, this);
+    this.uploadProductPhoto = uploadProductPhotoFactory(ctx, this);
+    this.votePoll = votePollFactory(ctx, this);
+    this.custom = customFactory(ctx, this);
+  }
+}
+
+// node_modules/zca-js/dist/zalo.js
+class Zalo {
+  constructor(options = {}) {
+    this.options = options;
+    this.enableEncryptParam = true;
+  }
+  parseCookies(cookie) {
+    const cookieArr = Array.isArray(cookie) ? cookie : cookie.cookies;
+    cookieArr.forEach((e, i) => {
+      if (typeof e.domain == "string" && e.domain.startsWith("."))
+        cookieArr[i].domain = e.domain.slice(1);
+    });
+    const jar = new import_tough_cookie3.default.CookieJar;
+    for (const each of cookieArr) {
+      try {
+        const cookieObj = import_tough_cookie3.default.Cookie.fromJSON(Object.assign(Object.assign({}, each), { key: each.key || each.name }));
+        if (cookieObj) {
+          const domain = cookieObj.domain || "chat.zalo.me";
+          const url = `https://${domain.startsWith(".") ? domain.slice(1) : domain}`;
+          jar.setCookieSync(cookieObj, url);
+        }
+      } catch (error) {
+        logger({
+          options: {
+            logging: this.options.logging
+          }
+        }).error("Failed to set cookie:", error);
+      }
+    }
+    return jar;
+  }
+  validateParams(credentials) {
+    if (!credentials.imei || !credentials.cookie || !credentials.userAgent) {
+      throw new ZaloApiError("Missing required params");
+    }
+  }
+  async login(credentials) {
+    const ctx = createContext(this.options.apiType, this.options.apiVersion);
+    Object.assign(ctx.options, this.options);
+    return this.loginCookie(ctx, credentials);
+  }
+  async loginCookie(ctx, credentials) {
+    await checkUpdate(ctx);
+    this.validateParams(credentials);
+    ctx.imei = credentials.imei;
+    ctx.cookie = this.parseCookies(credentials.cookie);
+    ctx.userAgent = credentials.userAgent;
+    ctx.language = credentials.language || "vi";
+    const loginData = await login(ctx, this.enableEncryptParam);
+    const serverInfo = await getServerInfo(ctx, this.enableEncryptParam);
+    const loginInfo = loginData === null || loginData === undefined ? undefined : loginData.data;
+    if (!loginData || !loginInfo || !serverInfo)
+      throw new ZaloApiError("Đăng nhập thất bại");
+    ctx.secretKey = loginInfo.zpw_enk;
+    ctx.uid = loginInfo.uid;
+    ctx.settings = serverInfo.setttings || serverInfo.settings;
+    ctx.extraVer = serverInfo.extra_ver;
+    ctx.loginInfo = loginInfo;
+    if (!isContextSession(ctx))
+      throw new ZaloApiError("Khởi tạo ngữ cảnh thất bại.");
+    logger(ctx).info("Logged in as", loginInfo.uid);
+    return new API(ctx, loginInfo.zpw_service_map_v3, loginInfo.zpw_ws);
+  }
+  async loginQR(options, callback) {
+    if (!options)
+      options = {};
+    if (!options.userAgent)
+      options.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0";
+    if (!options.language)
+      options.language = "vi";
+    const ctx = createContext(this.options.apiType, this.options.apiVersion);
+    Object.assign(ctx.options, this.options);
+    const loginQRResult = await loginQR(ctx, options, callback);
+    if (!loginQRResult)
+      throw new ZaloApiError("Unable to login with QRCode");
+    const imei = generateZaloUUID(options.userAgent);
+    if (callback) {
+      callback({
+        type: LoginQRCallbackEventType.GotLoginInfo,
+        data: {
+          cookie: loginQRResult.cookies,
+          imei,
+          userAgent: options.userAgent
+        },
+        actions: null
+      });
+    }
+    return this.loginCookie(ctx, {
+      cookie: loginQRResult.cookies,
+      imei,
+      userAgent: options.userAgent,
+      language: options.language
+    });
+  }
+}
+// src/config/env.ts
+var import_dotenv = __toESM(require_main(), 1);
+import path2 from "node:path";
+import_dotenv.default.config();
+var CONFIG = {
+  PERSONAL: {
+    CRED_PATH: process.env.ZALO_CRED_PATH || path2.resolve("./credentials.json"),
+    DEFAULT_PREFIX: "!"
+  },
+  OA: {
+    APP_ID: process.env.ZALO_OA_APP_ID || "",
+    APP_SECRET: process.env.ZALO_OA_APP_SECRET || "",
+    ACCESS_TOKEN: process.env.ZALO_OA_ACCESS_TOKEN || "",
+    REFRESH_TOKEN: process.env.ZALO_OA_REFRESH_TOKEN || "",
+    BASE_URL: "https://openapi.zalo.me/v3.0/oa"
+  }
+};
+
+// src/personal/client.ts
 class ZaloPersonalBot {
   api;
   constructor(apiInstance) {
@@ -38293,169 +37079,13 @@ class ZaloPersonalBot {
     return await this.api.custom(service, endpoint, body);
   }
 }
-// src/config/env.ts
-var import_node_path2 = __toESM(require("node:path"), 1);
-var import_dotenv = __toESM(require_main(), 1);
-import_dotenv.default.config();
-var CONFIG = {
-  PERSONAL: {
-    CRED_PATH: process.env.ZALO_CRED_PATH || import_node_path2.default.resolve("./credentials.json"),
-    DEFAULT_PREFIX: "!"
-  },
-  OA: {
-    APP_ID: process.env.ZALO_OA_APP_ID || "",
-    APP_SECRET: process.env.ZALO_OA_APP_SECRET || "",
-    ACCESS_TOKEN: process.env.ZALO_OA_ACCESS_TOKEN || "",
-    REFRESH_TOKEN: process.env.ZALO_OA_REFRESH_TOKEN || "",
-    BASE_URL: "https://openapi.zalo.me/v3.0/oa"
-  }
-};
 
-// src/oa/client.ts
-class ZaloOABot {
-  accessToken;
-  baseUrl;
-  constructor(accessToken = CONFIG.OA.ACCESS_TOKEN) {
-    this.accessToken = accessToken;
-    this.baseUrl = CONFIG.OA.BASE_URL;
-  }
-  setAccessToken(token) {
-    this.accessToken = token;
-  }
-  async request(endpoint, options = {}) {
-    const url = `${this.baseUrl}${endpoint}`;
-    const headers = {
-      "Content-Type": "application/json",
-      access_token: this.accessToken,
-      ...options.headers || {}
-    };
-    const res = await fetch(url, { ...options, headers });
-    return await res.json();
-  }
-  async sendConsultantText(userId, text) {
-    return await this.request("/message/cs", {
-      method: "POST",
-      body: JSON.stringify({ recipient: { user_id: userId }, message: { text } })
-    });
-  }
-  async sendConsultantImage(userId, attachmentId, text = "") {
-    return await this.request("/message/cs", {
-      method: "POST",
-      body: JSON.stringify({
-        recipient: { user_id: userId },
-        message: {
-          text,
-          attachment: {
-            type: "template",
-            payload: {
-              template_type: "media",
-              elements: [{ media_type: "image", attachment_id: attachmentId }]
-            }
-          }
-        }
-      })
-    });
-  }
-  async sendTransactionMessage(userId, templateId, templateData) {
-    return await this.request("/message/transaction", {
-      method: "POST",
-      body: JSON.stringify({
-        recipient: { user_id: userId },
-        message: {
-          attachment: {
-            type: "template",
-            payload: {
-              template_type: "transaction",
-              template_id: templateId,
-              template_data: templateData
-            }
-          }
-        }
-      })
-    });
-  }
-  async sendPromotionMessage(userId, templateId, templateData) {
-    return await this.request("/message/promotion", {
-      method: "POST",
-      body: JSON.stringify({
-        recipient: { user_id: userId },
-        message: {
-          attachment: {
-            type: "template",
-            payload: {
-              template_type: "promotion",
-              template_id: templateId,
-              template_data: templateData
-            }
-          }
-        }
-      })
-    });
-  }
-  async getProfile(userId) {
-    return await this.request(`/user/detail?data=${encodeURIComponent(JSON.stringify({ user_id: userId }))}`, {
-      method: "GET"
-    });
-  }
-  async getFollowers(offset = 0, count = 50) {
-    return await this.request(`/user/getlist?data=${encodeURIComponent(JSON.stringify({ offset, count }))}`, {
-      method: "GET"
-    });
-  }
-  async getTags() {
-    return await this.request("/tag/gettagsofoa", { method: "GET" });
-  }
-  async tagUser(userId, tagName) {
-    return await this.request("/tag/taguser", {
-      method: "POST",
-      body: JSON.stringify({ user_id: userId, tag_name: tagName })
-    });
-  }
-  async removeTag(userId, tagName) {
-    return await this.request("/tag/rmuserfromtag", {
-      method: "POST",
-      body: JSON.stringify({ user_id: userId, tag_name: tagName })
-    });
-  }
-  async uploadImage(imageBlob) {
-    const formData = new FormData;
-    formData.append("file", imageBlob);
-    const res = await fetch("https://openapi.zalo.me/v2.0/oa/upload/image", {
-      method: "POST",
-      headers: { access_token: this.accessToken },
-      body: formData
-    });
-    return await res.json();
-  }
-  async refreshAccessToken(refreshToken = CONFIG.OA.REFRESH_TOKEN) {
-    const params = new URLSearchParams({
-      app_id: CONFIG.OA.APP_ID,
-      grant_type: "refresh_token",
-      refresh_token: refreshToken
-    });
-    const res = await fetch("https://oauth.zaloapp.com/v4/oa/access_token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        secret_key: CONFIG.OA.APP_SECRET
-      },
-      body: params.toString()
-    });
-    const data = await res.json();
-    if (data.access_token) {
-      this.accessToken = data.access_token;
-    }
-    return data;
-  }
-}
 // src/personal/index.ts
-init_dist();
-var import_node_fs6 = __toESM(require("node:fs"), 1);
 async function initPersonalBot() {
-  if (!import_node_fs6.default.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
+  if (!fs7.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
     throw new Error(`Chưa có file ${CONFIG.PERSONAL.CRED_PATH}. Chạy 'bun run login:personal' để quét mã QR.`);
   }
-  const creds = JSON.parse(import_node_fs6.default.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
+  const creds = JSON.parse(fs7.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
   const bot = new ZaloPersonalBot(api);
@@ -38463,773 +37093,6 @@ async function initPersonalBot() {
   console.log(`[Personal Bot] Đã đăng nhập. Bot UID: ${ownId}`);
   return { bot, api };
 }
-// src/oa/index.ts
-function initOABot() {
-  return new ZaloOABot;
-}
-// src/channels/telegram/adapter.ts
-class TelegramChannelAdapter extends BaseChannel {
-  name = "telegram";
-  config;
-  apiRoot;
-  pollTimer = null;
-  lastUpdateId = 0;
-  isPolling = false;
-  constructor(config) {
-    super();
-    this.config = config;
-    this.apiRoot = config.apiRoot || "https://api.telegram.org";
-  }
-  async connect() {
-    if (!this.config.botToken) {
-      throw new Error("Telegram botToken is required.");
-    }
-    this.setConnected(true);
-    if (this.config.autoStart !== false) {
-      this.startPolling();
-    }
-  }
-  async disconnect() {
-    this.stopPolling();
-    this.setConnected(false);
-  }
-  normalizeUpdate(update) {
-    if (!update)
-      return null;
-    const msg = update.message || update.edited_message || update.channel_post;
-    if (!msg)
-      return null;
-    const chatType = msg.chat.type === "private" ? "dm" : msg.chat.type === "channel" ? "channel" : "group";
-    const senderName = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(" ");
-    return {
-      id: String(msg.message_id),
-      channel: "telegram",
-      sender: {
-        id: String(msg.from?.id ?? ""),
-        name: senderName || undefined,
-        username: msg.from?.username,
-        isBot: Boolean(msg.from?.is_bot)
-      },
-      chat: {
-        id: String(msg.chat.id),
-        type: chatType,
-        title: msg.chat.title
-      },
-      content: {
-        text: msg.text || msg.caption || "",
-        replyToId: msg.reply_to_message?.message_id ? String(msg.reply_to_message.message_id) : undefined
-      },
-      raw: update,
-      timestamp: (msg.date || Math.floor(Date.now() / 1000)) * 1000
-    };
-  }
-  async callApi(method, body) {
-    const url = `${this.apiRoot}/bot${this.config.botToken}/${method}`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Telegram API ${method} failed: ${res.status} ${errText}`);
-    }
-    const data = await res.json();
-    if (!data.ok) {
-      throw new Error(`Telegram API ${method} error: ${data.description}`);
-    }
-    return data.result;
-  }
-  startPolling() {
-    if (this.isPolling)
-      return;
-    this.isPolling = true;
-    const interval = this.config.pollIntervalMs || 1000;
-    const poll = async () => {
-      if (!this.isPolling)
-        return;
-      try {
-        const updates = await this.callApi("getUpdates", {
-          offset: this.lastUpdateId + 1,
-          timeout: 10
-        });
-        if (Array.isArray(updates)) {
-          for (const u of updates) {
-            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
-            const unified = this.normalizeUpdate(u);
-            if (unified) {
-              this.emit("message", unified);
-            }
-          }
-        }
-      } catch (err) {
-        this.emit("error", err);
-      } finally {
-        if (this.isPolling) {
-          this.pollTimer = setTimeout(poll, interval);
-        }
-      }
-    };
-    poll();
-  }
-  stopPolling() {
-    this.isPolling = false;
-    if (this.pollTimer) {
-      clearTimeout(this.pollTimer);
-      this.pollTimer = null;
-    }
-  }
-  async sendText(chatId, text, options) {
-    const payload = {
-      chat_id: chatId,
-      text
-    };
-    if (options?.replyToId) {
-      payload.reply_to_message_id = Number(options.replyToId);
-    }
-    const res = await this.callApi("sendMessage", payload);
-    return {
-      messageId: String(res.message_id),
-      chatId,
-      timestamp: res.date * 1000
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : "sendDocument";
-    const payload = {
-      chat_id: chatId,
-      caption: media.caption
-    };
-    if (typeof media.source === "string") {
-      if (media.type === "image")
-        payload.photo = media.source;
-      else if (media.type === "video")
-        payload.video = media.source;
-      else
-        payload.document = media.source;
-    }
-    if (options?.replyToId) {
-      payload.reply_to_message_id = Number(options.replyToId);
-    }
-    const res = await this.callApi(method, payload);
-    return {
-      messageId: String(res.message_id),
-      chatId,
-      timestamp: (res.date || Date.now()) * 1000
-    };
-  }
-  async addReaction(chatId, messageId, emoji) {
-    await this.callApi("setMessageReaction", {
-      chat_id: chatId,
-      message_id: Number(messageId),
-      reaction: [{ type: "emoji", emoji }]
-    });
-  }
-}
-// src/channels/discord/adapter.ts
-class DiscordChannelAdapter extends BaseChannel {
-  name = "discord";
-  config;
-  apiBase = "https://discord.com/api/v10";
-  constructor(config) {
-    super();
-    this.config = config;
-  }
-  async connect() {
-    if (!this.config.botToken)
-      throw new Error("Discord botToken is required.");
-    await this.callApi("GET", "/users/@me");
-    this.setConnected(true);
-  }
-  async disconnect() {
-    this.setConnected(false);
-  }
-  normalizeEvent(event) {
-    if (!event || event.type !== 0 && !event.content && !event.author) {
-      if (!event?.content && !event?.d?.content)
-        return null;
-    }
-    const msg = event.d || event;
-    if (!msg.content && !msg.attachments?.length)
-      return null;
-    if (msg.author?.bot)
-      return null;
-    const isDm = !msg.guild_id;
-    return {
-      id: String(msg.id),
-      channel: "discord",
-      sender: {
-        id: String(msg.author?.id ?? ""),
-        name: msg.author?.global_name || msg.author?.username,
-        username: msg.author?.username,
-        isBot: Boolean(msg.author?.bot),
-        avatarUrl: msg.author?.avatar ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png` : undefined
-      },
-      chat: {
-        id: String(msg.channel_id),
-        type: isDm ? "dm" : "channel",
-        title: undefined
-      },
-      content: {
-        text: msg.content || "",
-        attachments: (msg.attachments || []).map((a) => ({
-          type: a.content_type?.startsWith("image/") ? "image" : a.content_type?.startsWith("video/") ? "video" : "file",
-          url: a.url,
-          filename: a.filename,
-          mimeType: a.content_type,
-          size: a.size
-        })),
-        replyToId: msg.message_reference?.message_id ? String(msg.message_reference.message_id) : undefined
-      },
-      raw: event,
-      timestamp: msg.timestamp ? Date.parse(msg.timestamp) : Date.now()
-    };
-  }
-  async callApi(method, path, body) {
-    const res = await fetch(`${this.apiBase}${path}`, {
-      method,
-      headers: {
-        Authorization: `Bot ${this.config.botToken}`,
-        "Content-Type": "application/json"
-      },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Discord API ${method} ${path} failed: ${res.status} ${errText}`);
-    }
-    if (res.status === 204)
-      return null;
-    return res.json();
-  }
-  async sendText(chatId, text, options) {
-    const payload = { content: text };
-    if (options?.replyToId) {
-      payload.message_reference = { message_id: options.replyToId };
-    }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload);
-    return {
-      messageId: String(res.id),
-      chatId,
-      timestamp: Date.parse(res.timestamp) || Date.now()
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    const payload = {
-      content: media.caption || ""
-    };
-    if (typeof media.source === "string") {
-      payload.embeds = [{ image: { url: media.source } }];
-    }
-    if (options?.replyToId) {
-      payload.message_reference = { message_id: options.replyToId };
-    }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload);
-    return {
-      messageId: String(res.id),
-      chatId,
-      timestamp: Date.parse(res.timestamp) || Date.now()
-    };
-  }
-  async addReaction(chatId, messageId, emoji) {
-    const encoded = encodeURIComponent(emoji);
-    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
-  }
-}
-// src/channels/slack/adapter.ts
-class SlackChannelAdapter extends BaseChannel {
-  name = "slack";
-  config;
-  apiBase = "https://slack.com/api";
-  constructor(config) {
-    super();
-    this.config = config;
-  }
-  async connect() {
-    if (!this.config.botToken)
-      throw new Error("Slack botToken is required.");
-    await this.callApi("auth.test", {});
-    this.setConnected(true);
-  }
-  async disconnect() {
-    this.setConnected(false);
-  }
-  normalizeEvent(event) {
-    const msg = event.event || event;
-    if (!msg || msg.type !== "message")
-      return null;
-    if (msg.subtype === "bot_message" || msg.bot_id)
-      return null;
-    const isDm = msg.channel_type === "im" || msg.channel && msg.channel.startsWith("D");
-    return {
-      id: String(msg.client_msg_id || msg.ts),
-      channel: "slack",
-      sender: {
-        id: String(msg.user || ""),
-        isBot: Boolean(msg.bot_id)
-      },
-      chat: {
-        id: String(msg.channel),
-        type: isDm ? "dm" : "channel"
-      },
-      content: {
-        text: msg.text || "",
-        replyToId: msg.thread_ts ? String(msg.thread_ts) : undefined
-      },
-      raw: event,
-      timestamp: msg.ts ? parseFloat(msg.ts) * 1000 : Date.now()
-    };
-  }
-  async callApi(method, body) {
-    const res = await fetch(`${this.apiBase}/${method}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.config.botToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Slack API ${method} failed: ${res.status} ${errText}`);
-    }
-    const data = await res.json();
-    if (!data.ok) {
-      throw new Error(`Slack API ${method} error: ${data.error}`);
-    }
-    return data;
-  }
-  async sendText(chatId, text, options) {
-    const payload = {
-      channel: chatId,
-      text
-    };
-    if (options?.replyToId) {
-      payload.thread_ts = options.replyToId;
-    }
-    const res = await this.callApi("chat.postMessage", payload);
-    return {
-      messageId: String(res.ts),
-      chatId,
-      timestamp: parseFloat(res.ts) * 1000
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    const payload = {
-      channel: chatId,
-      text: media.caption || "Attachment"
-    };
-    if (options?.replyToId) {
-      payload.thread_ts = options.replyToId;
-    }
-    const res = await this.callApi("chat.postMessage", payload);
-    return {
-      messageId: String(res.ts),
-      chatId,
-      timestamp: parseFloat(res.ts) * 1000
-    };
-  }
-  async addReaction(chatId, messageId, emoji) {
-    const cleanName = emoji.replace(/:/g, "");
-    await this.callApi("reactions.add", {
-      channel: chatId,
-      timestamp: messageId,
-      name: cleanName
-    });
-  }
-}
-// src/bridges/mcp/index.ts
-function getChannelHubMcpTools() {
-  return [
-    {
-      name: "channelhub_list_channels",
-      description: "List all active channels registered in ChannelHub (e.g. zalo, telegram, discord, slack).",
-      parameters: {
-        type: "object",
-        properties: {}
-      }
-    },
-    {
-      name: "channelhub_send_message",
-      description: "Send a text message or reply to a specific chat on a registered channel.",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "text"],
-        properties: {
-          channel: {
-            type: "string",
-            description: "Channel name (e.g. 'zalo', 'telegram', 'discord', 'slack')"
-          },
-          chatId: {
-            type: "string",
-            description: "Target chat/thread/channel ID"
-          },
-          text: {
-            type: "string",
-            description: "Message body text"
-          },
-          replyToId: {
-            type: "string",
-            description: "Optional message ID to reply to"
-          }
-        }
-      }
-    },
-    {
-      name: "channelhub_add_reaction",
-      description: "React to a message with an emoji.",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "messageId", "emoji"],
-        properties: {
-          channel: { type: "string" },
-          chatId: { type: "string" },
-          messageId: { type: "string" },
-          emoji: { type: "string" }
-        }
-      }
-    }
-  ];
-}
-async function handleChannelHubMcpCall(hub, toolName, args) {
-  try {
-    switch (toolName) {
-      case "channelhub_list_channels": {
-        const channels = hub.listChannels();
-        return {
-          content: [{ type: "text", text: JSON.stringify({ channels }, null, 2) }]
-        };
-      }
-      case "channelhub_send_message": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found or not active.`);
-        const res = await ch.sendText(args.chatId, args.text, { replyToId: args.replyToId });
-        return {
-          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
-        };
-      }
-      case "channelhub_add_reaction": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found.`);
-        if (!ch.addReaction)
-          throw new Error(`Channel '${args.channel}' does not support reactions.`);
-        await ch.addReaction(args.chatId, args.messageId, args.emoji);
-        return {
-          content: [{ type: "text", text: JSON.stringify({ success: true }) }]
-        };
-      }
-      default:
-        throw new Error(`Unknown tool: ${toolName}`);
-    }
-  } catch (err) {
-    return {
-      isError: true,
-      content: [{ type: "text", text: err.message || String(err) }]
-    };
-  }
-}
-// src/bridges/webhook/index.ts
-var import_node_http = require("node:http");
-
-class WebhookBridge {
-  hub;
-  config;
-  server = null;
-  sseClients = new Set;
-  constructor(hub, config = {}) {
-    this.hub = hub;
-    this.config = {
-      port: config.port ?? 8788,
-      host: config.host ?? "0.0.0.0",
-      pathPrefix: config.pathPrefix ?? ""
-    };
-    hub.onMessage(async (ctx) => {
-      this.broadcastSse(ctx.message);
-    });
-  }
-  async start() {
-    this.server = import_node_http.createServer((req, res) => this.handle(req, res));
-    await new Promise((resolve) => {
-      this.server.listen(this.config.port, this.config.host, () => resolve());
-    });
-  }
-  async stop() {
-    for (const client of this.sseClients) {
-      client.end();
-    }
-    this.sseClients.clear();
-    if (this.server) {
-      await new Promise((resolve, reject) => {
-        this.server.close((err) => err ? reject(err) : resolve());
-      });
-      this.server = null;
-    }
-  }
-  path(req) {
-    const url = req.url || "/";
-    const bare = url.split("?")[0];
-    return bare.startsWith(this.config.pathPrefix) ? bare.slice(this.config.pathPrefix.length) || "/" : bare;
-  }
-  async handle(req, res) {
-    const p = this.path(req);
-    try {
-      if (req.method === "GET" && p === "/health") {
-        return this.json(res, 200, { ok: true });
-      }
-      if (req.method === "GET" && p === "/channels") {
-        return this.json(res, 200, { channels: this.hub.listChannels() });
-      }
-      if (req.method === "POST" && p === "/send") {
-        const body = await this.readJson(req);
-        const ch = this.hub.getChannel(body.channel);
-        if (!ch)
-          return this.json(res, 404, { error: `Channel '${body.channel}' not found` });
-        const result = await ch.sendText(body.chatId, body.text, { replyToId: body.replyToId });
-        return this.json(res, 200, result);
-      }
-      if (req.method === "POST" && p === "/react") {
-        const body = await this.readJson(req);
-        const ch = this.hub.getChannel(body.channel);
-        if (!ch)
-          return this.json(res, 404, { error: `Channel '${body.channel}' not found` });
-        if (!ch.addReaction)
-          return this.json(res, 400, { error: "Channel does not support reactions" });
-        await ch.addReaction(body.chatId, body.messageId, body.emoji);
-        return this.json(res, 200, { success: true });
-      }
-      if (req.method === "GET" && p === "/events") {
-        return this.handleSse(res);
-      }
-      this.json(res, 404, { error: "Not found" });
-    } catch (err) {
-      this.json(res, 500, { error: err.message || String(err) });
-    }
-  }
-  handleSse(res) {
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    });
-    res.write(`data: ${JSON.stringify({ type: "connected" })}
-
-`);
-    this.sseClients.add(res);
-    res.on("close", () => this.sseClients.delete(res));
-  }
-  broadcastSse(msg) {
-    const payload = `data: ${JSON.stringify(msg)}
-
-`;
-    for (const client of this.sseClients) {
-      client.write(payload);
-    }
-  }
-  json(res, status, body) {
-    const data = JSON.stringify(body);
-    res.writeHead(status, {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(data)
-    });
-    res.end(data);
-  }
-  readJson(req) {
-    return new Promise((resolve, reject) => {
-      const chunks = [];
-      req.on("data", (c) => chunks.push(c));
-      req.on("end", () => {
-        try {
-          resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}"));
-        } catch (err) {
-          reject(err);
-        }
-      });
-      req.on("error", reject);
-    });
-  }
-}
-// src/commands/modules/general.ts
-init_dist();
-var heartCommand = {
-  name: "heart",
-  description: "Thả tim vào tin nhắn được gửi",
-  execute: async ({ bot, msg, threadId, isGroup }) => {
-    if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HEART, isGroup);
-    }
-  }
+export {
+  initPersonalBot
 };
-var hahaCommand = {
-  name: "haha",
-  description: "Thả icon haha vào tin nhắn",
-  execute: async ({ bot, msg, threadId, isGroup }) => {
-    if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HAHA, isGroup);
-    }
-  }
-};
-var pingCommand = {
-  name: "ping",
-  description: "Kiểm tra độ trễ và trạng thái bot",
-  execute: async ({ bot, threadId, isGroup }) => {
-    await bot.sendText(threadId, "Pong! ZaloHub module online ⚡", [], isGroup);
-  }
-};
-
-// src/commands/modules/group.ts
-var kickCommand = {
-  name: "kick",
-  description: "Kích thành viên khỏi nhóm theo tag @mention",
-  groupOnly: true,
-  execute: async ({ bot, msg, threadId }) => {
-    if (!msg.mentions || msg.mentions.length === 0) {
-      await bot.sendText(threadId, "Cần tag người cần kick: !kick @user", [], true);
-      return;
-    }
-    for (const target of msg.mentions) {
-      console.log(`[Mod] Kicking UID: ${target.uid} from group ${threadId}`);
-      await bot.removeUserFromGroup(threadId, target.uid);
-    }
-    await bot.sendText(threadId, "Đã xử lý kick thành viên vi phạm.", [], true);
-  }
-};
-var renameCommand = {
-  name: "rename",
-  description: "Đổi tên nhóm chat",
-  groupOnly: true,
-  execute: async ({ bot, args, threadId }) => {
-    const newName = args.join(" ").trim();
-    if (!newName) {
-      await bot.sendText(threadId, "Cú pháp: !rename <Tên mới>", [], true);
-      return;
-    }
-    await bot.changeGroupName(threadId, newName);
-    await bot.sendText(threadId, `Đã đổi tên nhóm thành: ${newName}`, [], true);
-  }
-};
-var groupInfoCommand = {
-  name: "groupinfo",
-  description: "Xem thông tin phòng chat chi tiết",
-  groupOnly: true,
-  execute: async ({ bot, threadId }) => {
-    const info = await bot.getGroupInfo(threadId);
-    const gData = info?.gridInfoMap?.[threadId];
-    if (gData) {
-      const text = `Tên: ${gData.name}
-Thành viên: ${gData.totalMember}/${gData.maxMember}
-Trưởng nhóm UID: ${gData.creatorId}`;
-      await bot.sendText(threadId, text, [], true);
-    }
-  }
-};
-
-// src/commands/modules/reaction.ts
-init_dist();
-var EMOJI_TO_REACTION = {
-  "❤️": Reactions.HEART,
-  "\uD83D\uDC96": Reactions.HEART,
-  "\uD83D\uDC4D": Reactions.LIKE,
-  "\uD83D\uDE06": Reactions.HAHA,
-  "\uD83D\uDE02": Reactions.TEARS_OF_JOY,
-  "\uD83D\uDE2E": Reactions.WOW,
-  "\uD83D\uDE2D": Reactions.CRY,
-  "\uD83D\uDE21": Reactions.ANGRY,
-  "\uD83D\uDE18": Reactions.KISS,
-  "\uD83D\uDCA9": Reactions.SHIT,
-  "\uD83C\uDF39": Reactions.ROSE,
-  "\uD83D\uDC94": Reactions.BROKEN_HEART,
-  "\uD83D\uDC4E": Reactions.DISLIKE,
-  "\uD83D\uDE0D": Reactions.LOVE,
-  "\uD83E\uDD14": Reactions.CONFUSED,
-  "\uD83D\uDE09": Reactions.WINK,
-  "☀️": Reactions.SUN,
-  "\uD83C\uDF82": Reactions.BIRTHDAY,
-  "\uD83D\uDCA3": Reactions.BOMB,
-  "\uD83D\uDC4C": Reactions.OK,
-  "✌️": Reactions.PEACE,
-  "\uD83D\uDE4F": Reactions.PRAY,
-  "\uD83D\uDC4F": Reactions.HANDCLAP,
-  "\uD83D\uDE0E": Reactions.SUNGLASSES,
-  "\uD83D\uDC4B": Reactions.BYE,
-  "\uD83D\uDE34": Reactions.SLEEPY,
-  heart: Reactions.HEART,
-  like: Reactions.LIKE,
-  haha: Reactions.HAHA,
-  wow: Reactions.WOW,
-  cry: Reactions.CRY,
-  angry: Reactions.ANGRY
-};
-var reactCommand = {
-  name: "react",
-  aliases: ["emoji", "drop"],
-  description: "Thả emoji vào tin nhắn: !react ❤️ hoặc quote tin nhắn rồi gõ !react \uD83D\uDE02",
-  execute: async ({ bot, msg, args, threadId, isGroup }) => {
-    const emojiInput = args[0] || "❤️";
-    const reactionCode = EMOJI_TO_REACTION[emojiInput] || emojiInput;
-    if (msg.quote && msg.quote.msgId && msg.quote.cliMsgId) {
-      await bot.addReaction(threadId, msg.quote.msgId, msg.quote.cliMsgId, reactionCode, isGroup);
-      return;
-    }
-    if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, reactionCode, isGroup);
-    }
-  }
-};
-
-// src/commands/router.ts
-class CommandRouter {
-  commands = new Map;
-  constructor() {
-    this.register(pingCommand);
-    this.register(heartCommand);
-    this.register(hahaCommand);
-    this.register(kickCommand);
-    this.register(renameCommand);
-    this.register(groupInfoCommand);
-    this.register(reactCommand);
-  }
-  register(cmd) {
-    this.commands.set(cmd.name.toLowerCase(), cmd);
-    if (cmd.aliases) {
-      for (const alias of cmd.aliases) {
-        this.commands.set(alias.toLowerCase(), cmd);
-      }
-    }
-  }
-  async handleMessage(bot, msg) {
-    const content = typeof msg.content === "string" ? msg.content.trim() : "";
-    const prefix = CONFIG.PERSONAL.DEFAULT_PREFIX;
-    if (!content.startsWith(prefix))
-      return;
-    const parts = content.slice(prefix.length).trim().split(/\s+/);
-    const commandName = parts[0]?.toLowerCase();
-    const args = parts.slice(1);
-    const command = this.commands.get(commandName);
-    if (!command)
-      return;
-    const isGroup = msg.type === 1;
-    const threadId = msg.threadId;
-    if (command.groupOnly && !isGroup) {
-      await bot.sendText(threadId, "Lệnh này chỉ dùng được trong nhóm chat.", [], false);
-      return;
-    }
-    const ctx = {
-      bot,
-      msg,
-      args,
-      isGroup,
-      threadId
-    };
-    try {
-      await command.execute(ctx);
-    } catch (err) {
-      console.error(`[Router Error] Lỗi lệnh ${commandName}:`, err);
-      await bot.sendText(threadId, `Lỗi khi thực thi lệnh: ${err.message}`, [], isGroup);
-    }
-  }
-}
-
-// src/index.ts
-init_dist();

@@ -36,6 +36,14 @@
       "import": "./dist/channels/slack/index.js",
       "types": "./dist/channels/slack/index.d.ts"
     },
+    "./mcp": {
+      "import": "./dist/bridges/mcp/index.js",
+      "types": "./dist/bridges/mcp/index.d.ts"
+    },
+    "./webhook": {
+      "import": "./dist/bridges/webhook/index.js",
+      "types": "./dist/bridges/webhook/index.d.ts"
+    },
     "./personal": {
       "import": "./dist/personal/index.js",
       "types": "./dist/personal/index.d.ts"

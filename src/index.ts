@@ -10,7 +10,15 @@ export type { TelegramAdapterConfig } from "./channels/telegram/types";
 export { DiscordChannelAdapter, type DiscordAdapterConfig } from "./channels/discord/index";
 export { SlackChannelAdapter, type SlackAdapterConfig } from "./channels/slack/index";
 
-// 3. Backward Compatibility with ZaloHub v1
+// 3. AI & Protocol Bridges
+export {
+  getChannelHubMcpTools,
+  handleChannelHubMcpCall,
+  type McpToolDefinition,
+} from "./bridges/mcp/index";
+export { WebhookBridge, type WebhookBridgeConfig } from "./bridges/webhook/index";
+
+// 4. Backward Compatibility with ZaloHub v1
 export { ZaloPersonalBot } from "./personal/client";
 export { ZaloOABot } from "./oa/client";
 export { initPersonalBot } from "./personal/index";

@@ -12,6 +12,8 @@ await $`bun build src/channels/zalo/index.ts --outfile ./dist/channels/zalo/inde
 await $`bun build src/channels/telegram/index.ts --outfile ./dist/channels/telegram/index.js --format esm --target node`;
 await $`bun build src/channels/discord/index.ts --outfile ./dist/channels/discord/index.js --format esm --target node`;
 await $`bun build src/channels/slack/index.ts --outfile ./dist/channels/slack/index.js --format esm --target node`;
+await $`bun build src/bridges/mcp/index.ts --outfile ./dist/bridges/mcp/index.js --format esm --target node`;
+await $`bun build src/bridges/webhook/index.ts --outfile ./dist/bridges/webhook/index.js --format esm --target node`;
 await $`bun build src/personal/index.ts --outfile ./dist/personal/index.js --format esm --target node`;
 await $`bun build src/oa/index.ts --outfile ./dist/oa/index.js --format esm --target node`;
 

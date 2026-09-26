@@ -1,79 +1,123 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test, mock, beforeEach } from "bun:test";
 import { ZaloChannelAdapter } from "../src/channels/zalo/adapter";
-import type { UnifiedMessage } from "../src/core/types";
 
-describe("ZaloChannelAdapter", () => {
-  test("normalizes incoming Zalo message event to UnifiedMessage", async () => {
-    let capturedHandler: ((msg: any) => void) | null = null;
-    const mockListener = {
-      on: (event: string, fn: any) => {
-        if (event === "message") capturedHandler = fn;
+function makeRaw(overrides: Record<string, any> = {}) {
+  return {
+    type: 1,
+    threadId: "g-1",
+    data: {
+      msgId: "m-1",
+      cliMsgId: "c-1",
+      uidFrom: "u-1",
+      dName: "Alice",
+      content: "hello",
+      ts: 1700000000000,
+      idTo: "g-1",
+    },
+    ...overrides,
+  };
+}
+
+describe("ZaloChannelAdapter refinements", () => {
+  let sendMessage: ReturnType<typeof mock>;
+  let addReaction: ReturnType<typeof mock>;
+  let listenerOn: ReturnType<typeof mock>;
+  let listenerStart: ReturnType<typeof mock>;
+  let api: any;
+  let adapter: ZaloChannelAdapter;
+
+  beforeEach(async () => {
+    sendMessage = mock(async () => ({ message: { msgId: "out-1" } }));
+    addReaction = mock(async () => undefined);
+    const handlers: Record<string, Function> = {};
+    listenerOn = mock((event: string, fn: Function) => {
+      handlers[event] = fn;
+    });
+    listenerStart = mock(() => undefined);
+    api = {
+      sendMessage,
+      addReaction,
+      listener: {
+        on: listenerOn,
+        start: listenerStart,
+        stop: mock(() => undefined),
+        _emit(event: string, payload: any) {
+          handlers[event]?.(payload);
+        },
       },
-      start: () => {},
-      stop: () => {},
     };
-
-    const mockApi = {
-      listener: mockListener,
-      sendMessage: async (_payload: any, _threadId: string, _type: any) => ({
-        msgId: "z-123",
-      }),
-      addReaction: async () => {},
-    };
-
-    const adapter = new ZaloChannelAdapter({
-      api: mockApi,
-      ownId: "bot-99",
-    });
-
-    let received: UnifiedMessage | null = null;
-    adapter.on("message", (msg) => {
-      received = msg;
-    });
-
+    adapter = new ZaloChannelAdapter({ api, ownId: "bot-1", minDelayMs: 0, maxDelayMs: 0 });
     await adapter.connect();
-    expect(adapter.isConnected()).toBe(true);
-
-    // Simulate incoming raw Zalo personal message
-    capturedHandler?.({
-      data: {
-        msgId: "raw-msg-01",
-        msgType: "chat.message",
-        uidFrom: "user-456",
-        dName: "Alice",
-        idTo: "group-789",
-        content: "Xin chao ChannelHub!",
-        ts: "1727337600000",
-      },
-      threadId: "group-789",
-      type: 1, // Group
-    });
-
-    expect(received).not.toBeNull();
-    expect(received?.channel).toBe("zalo");
-    expect(received?.sender.id).toBe("user-456");
-    expect(received?.sender.name).toBe("Alice");
-    expect(received?.chat.id).toBe("group-789");
-    expect(received?.chat.type).toBe("group");
-    expect(received?.content.text).toBe("Xin chao ChannelHub!");
   });
 
-  test("dispatches sendText with proper thread type", async () => {
-    let sentArgs: any = null;
-    const mockApi = {
-      listener: { on: () => {}, start: () => {}, stop: () => {} },
-      sendMessage: async (payload: any, threadId: string, type: any) => {
-        sentArgs = { payload, threadId, type };
-        return { message: { msgId: "sent-99" } };
-      },
-    };
+  test("caches ThreadType from inbound group message and uses it on send", async () => {
+    api.listener._emit("message", makeRaw({ type: 1, threadId: "g-1" }));
+    await adapter.sendText("g-1", "pong");
+    expect(sendMessage.mock.calls[0][2]).toBe(1);
+  });
 
-    const adapter = new ZaloChannelAdapter({ api: mockApi });
-    await adapter.connect();
-    const res = await adapter.sendText("group-123", "test reply");
+  test("caches ThreadType from inbound DM and uses type 0 on send", async () => {
+    api.listener._emit(
+      "message",
+      makeRaw({
+        type: 0,
+        threadId: "u-9",
+        data: {
+          msgId: "m-dm",
+          cliMsgId: "c-dm",
+          uidFrom: "u-9",
+          dName: "Bob",
+          content: "hi",
+          ts: Date.now(),
+          idTo: "bot-1",
+        },
+      }),
+    );
+    await adapter.sendText("u-9", "pong");
+    expect(sendMessage.mock.calls[0][2]).toBe(0);
+  });
 
-    expect(sentArgs.threadId).toBe("group-123");
-    expect(sentArgs.payload.msg).toBe("test reply");
-    expect(res.chatId).toBe("group-123");
+  test("reply builds full quote object from message cache", async () => {
+    api.listener._emit("message", makeRaw());
+    await adapter.sendText("g-1", "replying", { replyToId: "m-1" });
+    const payload = sendMessage.mock.calls[0][0];
+    expect(payload.quote).toEqual(
+      expect.objectContaining({
+        msgId: "m-1",
+        cliMsgId: "c-1",
+        uidFrom: "u-1",
+        content: "hello",
+      }),
+    );
+  });
+
+  test("maps unicode emoji to Zalo reaction and passes cliMsgId", async () => {
+    api.listener._emit("message", makeRaw());
+    await adapter.addReaction("g-1", "m-1", "❤️");
+    expect(addReaction).toHaveBeenCalled();
+    const args = addReaction.mock.calls[0];
+    // threadId, msgId, cliMsgId, reaction, threadType
+    expect(args[0]).toBe("g-1");
+    expect(args[1]).toBe("m-1");
+    expect(args[2]).toBe("c-1");
+    expect(args[4]).toBe(1);
+  });
+
+  test("emits session:expired on listener closed", async () => {
+    const expired = mock(() => undefined);
+    adapter.on("session:expired", expired);
+    api.listener._emit("closed", { reason: "session_expired" });
+    expect(expired).toHaveBeenCalled();
+  });
+
+  test("normalizes inbound message with cliMsgId preserved in raw cache", async () => {
+    let seen: any;
+    adapter.on("message", (m: any) => {
+      seen = m;
+    });
+    api.listener._emit("message", makeRaw());
+    expect(seen.id).toBe("m-1");
+    expect(seen.chat.type).toBe("group");
+    expect(seen.content.text).toBe("hello");
   });
 });

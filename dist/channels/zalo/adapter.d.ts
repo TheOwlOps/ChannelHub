@@ -5,18 +5,29 @@ export interface ZaloAdapterConfig {
     credentialsPath?: string;
     ownId?: string;
     defaultIsGroup?: boolean;
+    minDelayMs?: number;
+    maxDelayMs?: number;
+    cacheLimit?: number;
 }
+export declare const EMOJI_TO_ZALO: Record<string, string>;
 export declare class ZaloChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
     private api;
     private ownId?;
     private config;
+    private threadTypeCache;
+    private messageCache;
+    private sendQueue;
     constructor(config?: ZaloAdapterConfig);
     connect(): Promise<void>;
     disconnect(): Promise<void>;
     private setupEventListener;
+    private recordInbound;
+    private resolveThreadType;
+    private resolveQuote;
+    private enqueueSend;
     private normalizeMessage;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
-    sendMedia(chatId: string, media: MediaPayload, _options?: SendOptions): Promise<SentMessageResult>;
+    sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
     addReaction(chatId: string, messageId: string, emoji: string): Promise<void>;
 }

@@ -37563,14 +37563,47 @@ class ChannelHub {
   }
 }
 // src/channels/zalo/adapter.ts
+var EMOJI_TO_ZALO = {
+  "❤️": "HEART",
+  "\uD83D\uDC96": "HEART",
+  "\uD83D\uDC4D": "LIKE",
+  "\uD83D\uDE06": "HAHA",
+  "\uD83D\uDE02": "TEARS_OF_JOY",
+  "\uD83D\uDE2E": "WOW",
+  "\uD83D\uDE2D": "CRY",
+  "\uD83D\uDE21": "ANGRY",
+  "\uD83D\uDE18": "KISS",
+  "\uD83D\uDCA9": "SHIT",
+  "\uD83C\uDF39": "ROSE",
+  "\uD83D\uDC94": "BROKEN_HEART",
+  "\uD83D\uDC4E": "DISLIKE",
+  "\uD83D\uDE0D": "LOVE",
+  "\uD83E\uDD14": "CONFUSED",
+  "\uD83D\uDE09": "WINK",
+  heart: "HEART",
+  like: "LIKE",
+  haha: "HAHA",
+  wow: "WOW",
+  cry: "CRY",
+  angry: "ANGRY"
+};
+
 class ZaloChannelAdapter extends BaseChannel {
   name = "zalo";
   api;
   ownId;
   config;
+  threadTypeCache = new Map;
+  messageCache = new Map;
+  sendQueue = Promise.resolve();
   constructor(config = {}) {
     super();
-    this.config = config;
+    this.config = {
+      minDelayMs: 300,
+      maxDelayMs: 800,
+      cacheLimit: 1000,
+      ...config
+    };
     if (config.api) {
       this.api = config.api;
     }
@@ -37605,9 +37638,25 @@ class ZaloChannelAdapter extends BaseChannel {
     if (!this.api?.listener?.on)
       return;
     this.api.listener.on("message", (raw) => {
+      this.recordInbound(raw);
       const unified = this.normalizeMessage(raw);
       if (unified) {
         this.emit("message", unified);
+      }
+    });
+    const onSessionDrop = (err) => {
+      this.emit("session:expired", {
+        reason: "SESSION_EXPIRED_OR_DROPPED",
+        raw: err,
+        requiresQrScan: true
+      });
+      this.setConnected(false);
+    };
+    this.api.listener.on("closed", onSessionDrop);
+    this.api.listener.on("error", (err) => {
+      const msg = String(err?.message || err);
+      if (msg.includes("1002") || msg.includes("session") || msg.includes("auth")) {
+        onSessionDrop(err);
       }
     });
     if (this.api.listener.start) {
@@ -37615,6 +37664,74 @@ class ZaloChannelAdapter extends BaseChannel {
         this.api.listener.start();
       } catch {}
     }
+  }
+  recordInbound(raw) {
+    if (!raw)
+      return;
+    const data = raw.data || raw;
+    const isGroup = raw.type === 1 || raw.type === "group" || Boolean(raw.isGroup);
+    const chatId = String(raw.threadId || data.idTo || data.threadId || "");
+    const msgId = String(data.msgId || raw.msgId || "");
+    const cliMsgId = data.cliMsgId ? String(data.cliMsgId) : undefined;
+    const uidFrom = String(data.uidFrom || raw.senderId || "");
+    const content = typeof data.content === "string" ? data.content : data.msg || "";
+    if (chatId) {
+      this.threadTypeCache.set(chatId, isGroup ? 1 : 0);
+    }
+    const cached = {
+      msgId,
+      cliMsgId,
+      uidFrom,
+      content,
+      threadId: chatId,
+      isGroup
+    };
+    const limit = this.config.cacheLimit || 1000;
+    if (this.messageCache.size >= limit) {
+      const firstKey = this.messageCache.keys().next().value;
+      if (firstKey)
+        this.messageCache.delete(firstKey);
+    }
+    if (msgId)
+      this.messageCache.set(msgId, cached);
+    if (cliMsgId)
+      this.messageCache.set(cliMsgId, cached);
+  }
+  resolveThreadType(chatId) {
+    if (this.threadTypeCache.has(chatId)) {
+      return this.threadTypeCache.get(chatId);
+    }
+    return this.config.defaultIsGroup ?? true ? 1 : 0;
+  }
+  resolveQuote(replyToId) {
+    if (!replyToId)
+      return;
+    const cached = this.messageCache.get(replyToId);
+    if (cached) {
+      return {
+        msgId: cached.msgId,
+        cliMsgId: cached.cliMsgId,
+        uidFrom: cached.uidFrom,
+        content: cached.content
+      };
+    }
+    return replyToId;
+  }
+  async enqueueSend(operation) {
+    const minDelay = this.config.minDelayMs ?? 300;
+    const maxDelay = this.config.maxDelayMs ?? 800;
+    const execute = async () => {
+      if (maxDelay > 0) {
+        const jitter = Math.floor(minDelay + Math.random() * Math.max(0, maxDelay - minDelay));
+        if (jitter > 0) {
+          await new Promise((r) => setTimeout(r, jitter));
+        }
+      }
+      return await operation();
+    };
+    const next = this.sendQueue.then(execute, execute);
+    this.sendQueue = next.catch(() => {});
+    return next;
   }
   normalizeMessage(raw) {
     if (!raw)
@@ -37649,41 +37766,52 @@ class ZaloChannelAdapter extends BaseChannel {
   async sendText(chatId, text, options) {
     if (!this.api)
       throw new Error("Zalo adapter is not connected.");
-    const isGroup = this.config.defaultIsGroup ?? true;
-    const threadType = isGroup ? 1 : 0;
-    const payload = { msg: text, quote: options?.replyToId };
-    const res = await this.api.sendMessage(payload, chatId, threadType);
-    const resMsgId = res?.message?.msgId || res?.msgId || `z-${Date.now()}`;
-    return {
-      messageId: String(resMsgId),
-      chatId,
-      timestamp: Date.now()
-    };
+    const threadType = this.resolveThreadType(chatId);
+    const quote = this.resolveQuote(options?.replyToId);
+    const payload = { msg: text, quote };
+    return await this.enqueueSend(async () => {
+      const res = await this.api.sendMessage(payload, chatId, threadType);
+      const resMsgId = res?.message?.msgId || res?.msgId || `z-${Date.now()}`;
+      return {
+        messageId: String(resMsgId),
+        chatId,
+        timestamp: Date.now()
+      };
+    });
   }
-  async sendMedia(chatId, media, _options) {
+  async sendMedia(chatId, media, options) {
     if (!this.api)
       throw new Error("Zalo adapter is not connected.");
-    const isGroup = this.config.defaultIsGroup ?? true;
-    const threadType = isGroup ? 1 : 0;
-    let res;
-    if (media.type === "image") {
-      res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source] }, chatId, threadType);
-    } else if (media.type === "video" && this.api.sendVideo) {
-      res = await this.api.sendVideo({ video: media.source, msg: media.caption || "" }, chatId, threadType);
-    } else {
-      res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source] }, chatId, threadType);
-    }
-    const resMsgId = res?.message?.msgId || res?.msgId || `z-${Date.now()}`;
-    return {
-      messageId: String(resMsgId),
-      chatId,
-      timestamp: Date.now()
-    };
+    const threadType = this.resolveThreadType(chatId);
+    const quote = this.resolveQuote(options?.replyToId);
+    return await this.enqueueSend(async () => {
+      let res;
+      if (media.type === "image") {
+        res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source], quote }, chatId, threadType);
+      } else if (media.type === "video" && this.api.sendVideo) {
+        res = await this.api.sendVideo({ video: media.source, msg: media.caption || "", quote }, chatId, threadType);
+      } else {
+        res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source], quote }, chatId, threadType);
+      }
+      const resMsgId = res?.message?.msgId || res?.msgId || `z-${Date.now()}`;
+      return {
+        messageId: String(resMsgId),
+        chatId,
+        timestamp: Date.now()
+      };
+    });
   }
   async addReaction(chatId, messageId, emoji) {
-    if (this.api?.addReaction) {
-      await this.api.addReaction(chatId, messageId, emoji);
-    }
+    if (!this.api?.addReaction)
+      return;
+    const threadType = this.resolveThreadType(chatId);
+    const isGroup = threadType === 1;
+    const reactionCode = EMOJI_TO_ZALO[emoji] || emoji;
+    const cached = this.messageCache.get(messageId);
+    const cliMsgId = cached?.cliMsgId || messageId;
+    await this.enqueueSend(async () => {
+      await this.api.addReaction(chatId, messageId, cliMsgId, reactionCode, threadType);
+    });
   }
 }
 // src/personal/client.ts

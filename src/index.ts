@@ -7,6 +7,8 @@ export * from "./core/index";
 export { ZaloChannelAdapter, type ZaloAdapterConfig } from "./channels/zalo/index";
 export { TelegramChannelAdapter } from "./channels/telegram/index";
 export type { TelegramAdapterConfig } from "./channels/telegram/types";
+export { DiscordChannelAdapter, type DiscordAdapterConfig } from "./channels/discord/index";
+export { SlackChannelAdapter, type SlackAdapterConfig } from "./channels/slack/index";
 
 // 3. Backward Compatibility with ZaloHub v1
 export { ZaloPersonalBot } from "./personal/client";

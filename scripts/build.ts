@@ -10,6 +10,8 @@ await $`bun build src/index.ts --outfile ./dist/index.cjs --format cjs --target 
 await $`bun build src/core/index.ts --outfile ./dist/core/index.js --format esm --target node`;
 await $`bun build src/channels/zalo/index.ts --outfile ./dist/channels/zalo/index.js --format esm --target node`;
 await $`bun build src/channels/telegram/index.ts --outfile ./dist/channels/telegram/index.js --format esm --target node`;
+await $`bun build src/channels/discord/index.ts --outfile ./dist/channels/discord/index.js --format esm --target node`;
+await $`bun build src/channels/slack/index.ts --outfile ./dist/channels/slack/index.js --format esm --target node`;
 await $`bun build src/personal/index.ts --outfile ./dist/personal/index.js --format esm --target node`;
 await $`bun build src/oa/index.ts --outfile ./dist/oa/index.js --format esm --target node`;
 

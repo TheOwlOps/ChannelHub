@@ -28,6 +28,14 @@
       "import": "./dist/channels/telegram/index.js",
       "types": "./dist/channels/telegram/index.d.ts"
     },
+    "./discord": {
+      "import": "./dist/channels/discord/index.js",
+      "types": "./dist/channels/discord/index.d.ts"
+    },
+    "./slack": {
+      "import": "./dist/channels/slack/index.js",
+      "types": "./dist/channels/slack/index.d.ts"
+    },
     "./personal": {
       "import": "./dist/personal/index.js",
       "types": "./dist/personal/index.d.ts"

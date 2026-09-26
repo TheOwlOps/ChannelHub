@@ -1,9 +1,19 @@
-// Public SDK entrypoint — import this in Hermes, OpenClaw, or any project
-export { ZaloPersonalBot } from "./personal/client.js";
-export { ZaloOABot } from "./oa/client.js";
-export { initPersonalBot } from "./personal/index.js";
-export { initOABot } from "./oa/index.js";
-export { CommandRouter } from "./commands/router.js";
-export type { Command, CommandContext } from "./commands/types.js";
-export { CONFIG } from "./config/env.js";
+// Root SDK Entrypoint — @theowlops/channelhub
+
+// 1. Core Abstractions & Engine
+export * from "./core/index";
+
+// 2. Channel Adapters
+export { ZaloChannelAdapter, type ZaloAdapterConfig } from "./channels/zalo/index";
+export { TelegramChannelAdapter } from "./channels/telegram/index";
+export type { TelegramAdapterConfig } from "./channels/telegram/types";
+
+// 3. Backward Compatibility with ZaloHub v1
+export { ZaloPersonalBot } from "./personal/client";
+export { ZaloOABot } from "./oa/client";
+export { initPersonalBot } from "./personal/index";
+export { initOABot } from "./oa/index";
+export { CommandRouter } from "./commands/router";
+export type { Command, CommandContext } from "./commands/types";
+export { CONFIG } from "./config/env";
 export { Zalo } from "zca-js";

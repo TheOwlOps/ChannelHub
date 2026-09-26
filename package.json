@@ -7,6 +7,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
+    "channelhub": "bin/cli.ts",
     "zalohub": "bin/cli.ts"
   },
   "exports": {
@@ -14,6 +15,18 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./zalo": {
+      "import": "./dist/channels/zalo/index.js",
+      "types": "./dist/channels/zalo/index.d.ts"
+    },
+    "./telegram": {
+      "import": "./dist/channels/telegram/index.js",
+      "types": "./dist/channels/telegram/index.d.ts"
     },
     "./personal": {
       "import": "./dist/personal/index.js",

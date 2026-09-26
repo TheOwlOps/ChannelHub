@@ -68,26 +68,29 @@
     "prepublishOnly": "bun run build"
   },
   "keywords": [
+    "channelhub",
+    "messaging",
+    "multi-channel",
     "zalo",
-    "zalo-bot",
-    "zalo-oa",
-    "zca-js",
+    "telegram",
+    "discord",
+    "slack",
+    "mcp",
+    "ai-agent",
     "hermes",
-    "hermes-agent",
     "openclaw",
     "chatbot",
-    "automation",
-    "messaging",
+    "webhook",
     "sdk"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheOwlOps/ZaloHub.git"
+    "url": "git+https://github.com/TheOwlOps/ChannelHub.git"
   },
   "bugs": {
-    "url": "https://github.com/TheOwlOps/ZaloHub/issues"
+    "url": "https://github.com/TheOwlOps/ChannelHub/issues"
   },
-  "homepage": "https://github.com/TheOwlOps/ZaloHub#readme",
+  "homepage": "https://github.com/TheOwlOps/ChannelHub#readme",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.7",

@@ -1,4 +1,4 @@
-export type ChannelType = "zalo" | "telegram" | "discord" | "slack" | string;
+export type ChannelType = "zalo" | "telegram" | "discord" | "slack" | "messenger" | string;
 export type ChatType = "dm" | "group" | "channel";
 export type MediaType = "image" | "video" | "audio" | "file";
 

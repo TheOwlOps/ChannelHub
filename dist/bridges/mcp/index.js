@@ -3,7 +3,7 @@ function getChannelHubMcpTools() {
   return [
     {
       name: "channelhub_list_channels",
-      description: "List all active channels registered in ChannelHub (e.g. zalo, telegram, discord, slack).",
+      description: "List all active channels registered in ChannelHub (e.g. zalo, telegram, discord, slack, messenger).",
       parameters: {
         type: "object",
         properties: {}
@@ -18,7 +18,7 @@ function getChannelHubMcpTools() {
         properties: {
           channel: {
             type: "string",
-            description: "Channel name (e.g. 'zalo', 'telegram', 'discord', 'slack')"
+            description: "Channel name (e.g. 'zalo', 'telegram', 'discord', 'slack', 'messenger')"
           },
           chatId: {
             type: "string",

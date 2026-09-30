@@ -4,6 +4,7 @@ export { TelegramChannelAdapter } from "./channels/telegram/index";
 export type { TelegramAdapterConfig } from "./channels/telegram/types";
 export { DiscordChannelAdapter, type DiscordAdapterConfig } from "./channels/discord/index";
 export { SlackChannelAdapter, type SlackAdapterConfig } from "./channels/slack/index";
+export { MessengerChannelAdapter, type MessengerAdapterConfig } from "./channels/messenger/index";
 export { getChannelHubMcpTools, handleChannelHubMcpCall, type McpToolDefinition, } from "./bridges/mcp/index";
 export { WebhookBridge, type WebhookBridgeConfig } from "./bridges/webhook/index";
 export { ZaloPersonalBot } from "./personal/client";

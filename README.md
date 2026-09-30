@@ -9,7 +9,7 @@
 [![Bun](https://img.shields.io/badge/Runtime-Bun%20%7C%20Node%20%7C%20Deno-black?style=flat-square)](https://bun.sh)
 [![AI Native](https://img.shields.io/badge/AI%20Agent-Universal%20MCP%20%7C%20REST-purple?style=flat-square)](#ai-agent-integrations)
 
-Unified messaging protocol & channel adapters across **Zalo**, **Telegram**, **Discord**, and **Slack**. Connect once, listen everywhere, reply with any AI framework.
+Unified messaging protocol & channel adapters across **Zalo**, **Messenger**, **Telegram**, **Discord**, and **Slack**. Connect once, listen everywhere, reply with any AI framework.
 
 [Highlights](#highlights) • [Quick Start](#quick-start) • [Channel Adapters](#channel-adapters) • [AI Integrations & MCP](#ai-agent-integrations) • [REST / SSE Webhook](#webhook-bridge)
 
@@ -17,9 +17,9 @@ Unified messaging protocol & channel adapters across **Zalo**, **Telegram**, **D
 
 ---
 
-## Highlights
+## ✨ Highlights
 
-- **Universal Multi-Channel Protocol**: Single `IChannelAdapter` contract and normalized `UnifiedMessage` across Zalo (Personal & OA), Telegram, Discord, and Slack.
+- **Universal Multi-Channel Protocol**: Single `IChannelAdapter` contract and normalized `UnifiedMessage` across Zalo (Personal & OA), Messenger, Telegram, Discord, and Slack.
 - **AI Agent Native**: First-class support for Model Context Protocol (MCP), Hermes Agent, OpenClaw, LangChain, CrewAI, and n8n/Dify.
 - **Zero Heavy Core**: Lightweight event-driven architecture running on standard Web APIs and `node:events`. Zero bloat.
 - **Universal Packaging**: Dual ESM & CommonJS outputs with complete TypeScript declaration maps (`.d.ts`).
@@ -27,7 +27,7 @@ Unified messaging protocol & channel adapters across **Zalo**, **Telegram**, **D
 
 ---
 
-## Installation
+## 🚀 Installation
 
 ```bash
 # bun (recommended)
@@ -42,7 +42,7 @@ pnpm add @theowlops/channelhub
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
 ### 1. Multi-Channel AI Bot (Native Event Loop)
 
@@ -50,12 +50,17 @@ pnpm add @theowlops/channelhub
 import { ChannelHub } from "@theowlops/channelhub";
 import { ZaloChannelAdapter } from "@theowlops/channelhub/zalo";
 import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
+import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
 
 const hub = new ChannelHub();
 
 // Register channels
 hub.register(new ZaloChannelAdapter({ credentialsPath: "./credentials.json" }));
 hub.register(new TelegramChannelAdapter({ botToken: process.env.TELEGRAM_BOT_TOKEN! }));
+hub.register(new MessengerChannelAdapter({ 
+  pageAccessToken: process.env.MESSENGER_PAGE_TOKEN!, 
+  verifyToken: "my_secret" 
+}));
 
 // Single unified message handler for all platforms
 hub.onMessage(async (ctx) => {
@@ -75,20 +80,34 @@ await hub.start();
 
 ---
 
-## Channel Adapters
+## 🔌 Channel Adapters
 
-### Zalo Adapter (`@theowlops/channelhub/zalo`)
+### 💬 Zalo Adapter (`@theowlops/channelhub/zalo`)
 Supports both reverse-engineered personal web session (`zca-js`) and Official Account (OA) OpenAPI v3.
 
 ```ts
 import { ZaloChannelAdapter } from "@theowlops/channelhub/zalo";
 
 const zalo = new ZaloChannelAdapter({
-  credentialsPath: "./credentials.json", // Generated via `channelhub login zalo`
+  credentialsPath: "./credentials.json", // Generated via `bun run login:personal`
 });
 ```
 
-### Telegram Adapter (`@theowlops/channelhub/telegram`)
+### 🔵 Messenger Adapter (`@theowlops/channelhub/messenger`)
+Supports Facebook Messenger using the official Meta Graph API (`v19.0`) for both Fanpages and Headless-Personal-Auth logic!
+
+```ts
+import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
+
+const messenger = new MessengerChannelAdapter({
+  pageAccessToken: "EAA...", // Your Page Access Token or Extracted User Token
+  verifyToken: "my_verify_secret" // For Webhook validation
+});
+```
+
+> **💡 Mẹo Đăng Nhập:** Có thể chạy lệnh `bun run login:messenger` để tự động mở Chromium, đăng nhập Facebook và bốc phiên Token một cách nhanh chóng mà không cần cấu hình lằng nhằng!
+
+### ✈️ Telegram Adapter (`@theowlops/channelhub/telegram`)
 Zero-dependency Telegram bot engine with automatic long-polling or webhook integration.
 
 ```ts
@@ -99,7 +118,7 @@ const tele = new TelegramChannelAdapter({
 });
 ```
 
-### Discord Adapter (`@theowlops/channelhub/discord`)
+### 🎮 Discord Adapter (`@theowlops/channelhub/discord`)
 Ultra-lightweight HTTP REST & gateway parser for Discord bots.
 
 ```ts
@@ -110,7 +129,7 @@ const discord = new DiscordChannelAdapter({
 });
 ```
 
-### Slack Adapter (`@theowlops/channelhub/slack`)
+### 💼 Slack Adapter (`@theowlops/channelhub/slack`)
 Socket-mode & Event API adapter for workspace enterprise bots.
 
 ```ts
@@ -123,9 +142,9 @@ const slack = new SlackChannelAdapter({
 
 ---
 
-## AI Agent Integrations
+## 🤖 AI Agent Integrations
 
-### Model Context Protocol (MCP) Server
+### 🧩 Model Context Protocol (MCP) Server
 Expose ChannelHub directly to **Claude Desktop**, **Cursor**, **Codex**, or **Hermes Agent**:
 
 ```ts
@@ -138,7 +157,7 @@ import { getChannelHubMcpTools, handleChannelHubMcpCall } from "@theowlops/chann
 // - channelhub_add_reaction
 ```
 
-### Webhook Bridge (REST & Server-Sent Events)
+### 🌉 Webhook Bridge (REST & Server-Sent Events)
 Run a local REST & SSE server for **n8n**, **Dify**, or **Flowise**:
 
 ```ts
@@ -160,20 +179,15 @@ await bridge.start();
 
 ---
 
-## Subpath Imports
+## 📦 Subpath Imports
 
 ```ts
 import { ChannelHub, BaseChannel, type UnifiedMessage } from "@theowlops/channelhub";
 import { ZaloChannelAdapter } from "@theowlops/channelhub/zalo";
+import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
 import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
 import { DiscordChannelAdapter } from "@theowlops/channelhub/discord";
 import { SlackChannelAdapter } from "@theowlops/channelhub/slack";
-import { getChannelHubMcpTools } from "@theowlops/channelhub/mcp";
 import { WebhookBridge } from "@theowlops/channelhub/webhook";
+import { getChannelHubMcpTools } from "@theowlops/channelhub/mcp";
 ```
-
----
-
-## License
-
-MIT © [TheOwlOps](https://github.com/TheOwlOps)

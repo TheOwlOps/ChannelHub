@@ -36,6 +36,10 @@
       "import": "./dist/channels/slack/index.js",
       "types": "./dist/channels/slack/index.d.ts"
     },
+    "./messenger": {
+      "import": "./dist/channels/messenger/index.js",
+      "types": "./dist/channels/messenger/index.d.ts"
+    },
     "./mcp": {
       "import": "./dist/bridges/mcp/index.js",
       "types": "./dist/bridges/mcp/index.d.ts"
@@ -61,6 +65,7 @@
   ],
   "scripts": {
     "login:personal": "bun run scripts/login_personal.ts",
+    "login:messenger": "bun run scripts/login_messenger.ts",
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
     "build": "bun run scripts/build.ts",
@@ -99,6 +104,7 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "bun-types": "latest",
+    "playwright": "^1.63.0",
     "typescript": "^5.7.0"
   },
   "engines": {

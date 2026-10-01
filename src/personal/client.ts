@@ -1,4 +1,4 @@
-import { ThreadType, Reactions } from "zca-js";
+import { ZaloThreadType as ThreadType, ZaloReactions as Reactions, type Reactions as ReactionType } from "../channels/zalo/types.js";
 import type { AttachmentSource } from "zca-js";
 
 export class ZaloPersonalBot {
@@ -81,13 +81,13 @@ export class ZaloPersonalBot {
     threadId: string,
     msgId: string,
     cliMsgId: string,
-    emojiOrReaction: Reactions | string = Reactions.HEART,
+    emojiOrReaction: ReactionType | string = Reactions.HEART,
     isGroup = true
   ) {
     const type = isGroup ? ThreadType.Group : ThreadType.User;
     
     // Unicode Emoji to Zalo Reaction code mapping
-    const unicodeMap: Record<string, Reactions> = {
+    const unicodeMap: Record<string, ReactionType> = {
       "❤️": Reactions.HEART,
       "💖": Reactions.HEART,
       "👍": Reactions.LIKE,

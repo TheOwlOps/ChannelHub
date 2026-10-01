@@ -1,3 +1,4 @@
+import http from "node:http";
 import { BaseChannel } from "../../core/adapter";
 import type {
   ChannelType,
@@ -12,6 +13,7 @@ export class MessengerChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "messenger";
   private config: MessengerAdapterConfig;
   private apiBase: string;
+  private server?: http.Server;
 
   constructor(config: MessengerAdapterConfig) {
     super();
@@ -20,7 +22,8 @@ export class MessengerChannelAdapter extends BaseChannel {
     this.apiBase = `https://graph.facebook.com/${version}`;
   }
 
-  async connect(): Promise<void> {
+  async connect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     if (!this.config.pageAccessToken) {
       throw new Error("Messenger pageAccessToken is required.");
     }
@@ -32,10 +35,69 @@ export class MessengerChannelAdapter extends BaseChannel {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
     }
+
+    if (this.config.port) {
+      const path = this.config.webhookPath || "/webhook";
+      this.server = http.createServer(async (req, res) => {
+        const url = new URL(req.url || "/", `http://${req.headers.host}`);
+        if (url.pathname !== path) {
+          res.writeHead(404).end("Not Found");
+          return;
+        }
+
+        if (req.method === "GET") {
+          const mode = url.searchParams.get("hub.mode") || "";
+          const token = url.searchParams.get("hub.verify_token") || "";
+          const challenge = url.searchParams.get("hub.challenge") || "";
+          const verified = this.verifyWebhook(mode, token, challenge);
+          if (verified) {
+            res.writeHead(200, { "Content-Type": "text/plain" }).end(verified);
+          } else {
+            res.writeHead(403).end("Forbidden");
+          }
+          return;
+        }
+
+        if (req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk) => {
+            body += chunk;
+            if (body.length > 1024 * 1024) req.destroy();
+          });
+          req.on("end", () => {
+            try {
+              const data = JSON.parse(body);
+              const msgs = this.normalizeEvent(data);
+              for (const m of msgs) {
+                this.emit("message", m);
+              }
+              res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+            } catch (err) {
+              res.writeHead(400).end("Bad Request");
+            }
+          });
+          return;
+        }
+
+        res.writeHead(405).end("Method Not Allowed");
+      });
+
+      await new Promise<void>((resolve) => {
+        this.server?.listen(this.config.port, "0.0.0.0", () => {
+          resolve();
+        });
+      });
+    }
+
     this.setConnected(true);
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
+    if (this.server) {
+      await new Promise<void>((resolve) => this.server?.close(() => resolve()));
+      this.server = undefined;
+    }
     this.setConnected(false);
   }
 

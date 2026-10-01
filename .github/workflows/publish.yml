@@ -1,15 +1,60 @@
-name: Release & Publish to NPM
+name: CI & Publish to NPM
 
 on:
   push:
+    branches: [main]
     tags:
       - 'v*'
+  pull_request:
+    branches: [main]
   release:
     types: [published]
   workflow_dispatch:
 
 jobs:
+  test-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runtime: [node, bun]
+        node-version: [18, 20, 22]
+        exclude:
+          - runtime: bun
+            node-version: 18
+          - runtime: bun
+            node-version: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        if: matrix.runtime == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build SDK artifacts
+        run: bun run build
+
+      - name: Run Bun tests
+        if: matrix.runtime == 'bun'
+        run: bun test
+
+      - name: Run Node.js clean-install smoke test
+        if: matrix.runtime == 'node'
+        run: node dist/bin/cli.js doctor
+
   publish:
+    needs: test-matrix
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -50,4 +95,5 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 

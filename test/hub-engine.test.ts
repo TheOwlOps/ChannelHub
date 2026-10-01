@@ -68,4 +68,49 @@ describe("ChannelHub", () => {
     expect(seen).toEqual(["zalo:hi"]);
     expect(zalo.sent).toEqual([{ chatId: "c-z", text: "echo:hi" }]);
   });
+
+  test("supports multiple accounts via provider and accountId", async () => {
+    const hub = new ChannelHub();
+    const tele1 = new FakeChannel("telegram");
+    Object.defineProperty(tele1, "accountId", { get: () => "bot1" });
+    const tele2 = new FakeChannel("telegram");
+    Object.defineProperty(tele2, "accountId", { get: () => "bot2" });
+
+    hub.register(tele1);
+    hub.register(tele2);
+
+    expect(hub.listChannels()).toEqual(["telegram:bot1", "telegram:bot2"]);
+    expect(hub.getChannel("telegram", "bot1")).toBe(tele1);
+    expect(hub.getChannel("telegram", "bot2")).toBe(tele2);
+    // Fallback to default
+    expect(hub.getChannel("telegram")).toBe(tele1);
+  });
+
+  test("supports async iteration for backpressure and AbortSignal cancellation", async () => {
+    const hub = new ChannelHub();
+    const ch = new FakeChannel("zalo");
+    hub.register(ch);
+    await hub.start();
+
+    const ac = new AbortController();
+
+    let count = 0;
+    const consumer = async () => {
+      for await (const ctx of hub.messages(ac.signal)) {
+        count++;
+        if (count === 2) {
+          ac.abort("done");
+        }
+      }
+    };
+
+    const runPromise = consumer();
+
+    ch.push({ id: "1", channel: "zalo", sender: { id: "u" }, chat: { id: "c1", type: "dm" }, content: { text: "t1" }, raw: {}, timestamp: 1 });
+    ch.push({ id: "2", channel: "zalo", sender: { id: "u" }, chat: { id: "c2", type: "dm" }, content: { text: "t2" }, raw: {}, timestamp: 2 });
+    
+    // Should cancel after processing the 2nd message
+    await expect(runPromise).resolves.toBeUndefined();
+    expect(count).toBe(2);
+  });
 });

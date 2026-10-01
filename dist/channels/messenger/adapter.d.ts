@@ -5,9 +5,10 @@ export declare class MessengerChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
     private config;
     private apiBase;
+    private server?;
     constructor(config: MessengerAdapterConfig);
-    connect(): Promise<void>;
-    disconnect(): Promise<void>;
+    connect(signal?: AbortSignal): Promise<void>;
+    disconnect(signal?: AbortSignal): Promise<void>;
     /**
      * Verify Facebook webhook subscription challenge
      */

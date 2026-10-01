@@ -1,7 +1,16 @@
+// src/channels/messenger/adapter.ts
+import http from "node:http";
+
 // src/core/adapter.ts
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -11,6 +20,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -33,13 +47,15 @@ class MessengerChannelAdapter extends BaseChannel {
   name = "messenger";
   config;
   apiBase;
+  server;
   constructor(config) {
     super();
     this.config = config;
     const version = config.apiVersion || "v19.0";
     this.apiBase = `https://graph.facebook.com/${version}`;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.pageAccessToken) {
       throw new Error("Messenger pageAccessToken is required.");
     }
@@ -50,9 +66,63 @@ class MessengerChannelAdapter extends BaseChannel {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
     }
+    if (this.config.port) {
+      const path = this.config.webhookPath || "/webhook";
+      this.server = http.createServer(async (req, res) => {
+        const url = new URL(req.url || "/", `http://${req.headers.host}`);
+        if (url.pathname !== path) {
+          res.writeHead(404).end("Not Found");
+          return;
+        }
+        if (req.method === "GET") {
+          const mode = url.searchParams.get("hub.mode") || "";
+          const token = url.searchParams.get("hub.verify_token") || "";
+          const challenge = url.searchParams.get("hub.challenge") || "";
+          const verified = this.verifyWebhook(mode, token, challenge);
+          if (verified) {
+            res.writeHead(200, { "Content-Type": "text/plain" }).end(verified);
+          } else {
+            res.writeHead(403).end("Forbidden");
+          }
+          return;
+        }
+        if (req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk) => {
+            body += chunk;
+            if (body.length > 1024 * 1024)
+              req.destroy();
+          });
+          req.on("end", () => {
+            try {
+              const data = JSON.parse(body);
+              const msgs = this.normalizeEvent(data);
+              for (const m of msgs) {
+                this.emit("message", m);
+              }
+              res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+            } catch (err) {
+              res.writeHead(400).end("Bad Request");
+            }
+          });
+          return;
+        }
+        res.writeHead(405).end("Method Not Allowed");
+      });
+      await new Promise((resolve) => {
+        this.server?.listen(this.config.port, "0.0.0.0", () => {
+          resolve();
+        });
+      });
+    }
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.server) {
+      await new Promise((resolve) => this.server?.close(() => resolve()));
+      this.server = undefined;
+    }
     this.setConnected(false);
   }
   verifyWebhook(mode, token, challenge) {

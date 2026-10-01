@@ -2,6 +2,12 @@
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -11,6 +17,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -197,18 +208,41 @@ class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _queue = [];
+  _waiters = [];
+  _isClosed = false;
   register(channel) {
-    if (this._channels.has(channel.name)) {
-      throw new Error(`Channel '${channel.name}' is already registered in ChannelHub.`);
+    const provider = channel.provider || channel.name;
+    const accountId = channel.accountId || "default";
+    const fullKey = `${provider}:${accountId}`;
+    if (this._channels.has(fullKey)) {
+      throw new Error(`Channel '${fullKey}' is already registered in ChannelHub.`);
     }
-    this._channels.set(channel.name, channel);
-    channel.on("message", (msg) => {
+    this._channels.set(fullKey, channel);
+    if (!this._channels.has(provider)) {
+      this._channels.set(provider, channel);
+    }
+    if (!this._channels.has(channel.name)) {
+      this._channels.set(channel.name, channel);
+    }
+    channel.on("message", async (msg) => {
       this._bus.emitMessage(msg);
       const ctx = createMessageContext(msg, channel);
+      if (this._waiters.length > 0) {
+        const waiter = this._waiters.shift();
+        waiter(ctx);
+      } else {
+        this._queue.push(ctx);
+        if (this._queue.length > 2000) {
+          this._queue.shift();
+        }
+      }
       for (const handler of this._messageHandlers) {
-        Promise.resolve(handler(ctx)).catch((err) => {
-          this._bus.emitError(err);
-        });
+        try {
+          await handler(ctx);
+        } catch (err) {
+          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
+        }
       }
     });
     channel.on("error", (err) => {
@@ -216,23 +250,84 @@ class ChannelHub {
     });
     return this;
   }
-  getChannel(name) {
-    return this._channels.get(name);
+  getChannel(providerOrKey, accountId) {
+    if (accountId) {
+      return this._channels.get(`${providerOrKey}:${accountId}`);
+    }
+    return this._channels.get(providerOrKey);
   }
   listChannels() {
-    return Array.from(this._channels.keys());
+    const seen = new Set;
+    const keys = [];
+    for (const [key, ch] of this._channels.entries()) {
+      if (!seen.has(ch)) {
+        seen.add(ch);
+        keys.push(key);
+      }
+    }
+    return keys;
   }
   onMessage(handler) {
     this._messageHandlers.push(handler);
     return this;
   }
-  async start() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.connect());
-    await Promise.all(promises);
+  on(event, handler) {
+    if (event === "message") {
+      this.onMessage(handler);
+    } else if (event === "error") {
+      this._bus.on("error", handler);
+    }
+    return this;
   }
-  async stop() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.disconnect());
-    await Promise.all(promises);
+  async* messages(signal) {
+    while (!this._isClosed && !signal?.aborted) {
+      if (this._queue.length > 0) {
+        yield this._queue.shift();
+        continue;
+      }
+      const next = await new Promise((resolve) => {
+        const onAbort = () => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(null);
+        };
+        signal?.addEventListener("abort", onAbort, { once: true });
+        this._waiters.push((ctx) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(ctx);
+        });
+      });
+      if (!next || signal?.aborted)
+        break;
+      yield next;
+    }
+  }
+  async start(signal) {
+    const connected = [];
+    const uniqueChannels = Array.from(new Set(this._channels.values()));
+    try {
+      for (const ch of uniqueChannels) {
+        if (signal?.aborted) {
+          throw signal.reason || new Error("Startup aborted");
+        }
+        await ch.connect(signal);
+        connected.push(ch);
+      }
+    } catch (err) {
+      await Promise.allSettled(connected.map((ch) => ch.disconnect()));
+      throw err;
+    }
+  }
+  async startAll(signal) {
+    return this.start(signal);
+  }
+  async stop(signal) {
+    this._isClosed = true;
+    for (const waiter of this._waiters) {
+      waiter(null);
+    }
+    this._waiters = [];
+    const uniqueChannels = Array.from(new Set(this._channels.values()));
+    await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
   }
 }
 export {

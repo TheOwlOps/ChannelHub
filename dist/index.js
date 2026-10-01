@@ -37473,6 +37473,12 @@ var require_main = __commonJS(function(exports, module) {
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -37482,6 +37488,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -37668,18 +37679,41 @@ class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _queue = [];
+  _waiters = [];
+  _isClosed = false;
   register(channel) {
-    if (this._channels.has(channel.name)) {
-      throw new Error(`Channel '${channel.name}' is already registered in ChannelHub.`);
+    const provider = channel.provider || channel.name;
+    const accountId = channel.accountId || "default";
+    const fullKey = `${provider}:${accountId}`;
+    if (this._channels.has(fullKey)) {
+      throw new Error(`Channel '${fullKey}' is already registered in ChannelHub.`);
     }
-    this._channels.set(channel.name, channel);
-    channel.on("message", (msg) => {
+    this._channels.set(fullKey, channel);
+    if (!this._channels.has(provider)) {
+      this._channels.set(provider, channel);
+    }
+    if (!this._channels.has(channel.name)) {
+      this._channels.set(channel.name, channel);
+    }
+    channel.on("message", async (msg) => {
       this._bus.emitMessage(msg);
       const ctx = createMessageContext(msg, channel);
+      if (this._waiters.length > 0) {
+        const waiter = this._waiters.shift();
+        waiter(ctx);
+      } else {
+        this._queue.push(ctx);
+        if (this._queue.length > 2000) {
+          this._queue.shift();
+        }
+      }
       for (const handler of this._messageHandlers) {
-        Promise.resolve(handler(ctx)).catch((err) => {
-          this._bus.emitError(err);
-        });
+        try {
+          await handler(ctx);
+        } catch (err) {
+          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
+        }
       }
     });
     channel.on("error", (err) => {
@@ -37687,23 +37721,84 @@ class ChannelHub {
     });
     return this;
   }
-  getChannel(name) {
-    return this._channels.get(name);
+  getChannel(providerOrKey, accountId) {
+    if (accountId) {
+      return this._channels.get(`${providerOrKey}:${accountId}`);
+    }
+    return this._channels.get(providerOrKey);
   }
   listChannels() {
-    return Array.from(this._channels.keys());
+    const seen = new Set;
+    const keys = [];
+    for (const [key, ch] of this._channels.entries()) {
+      if (!seen.has(ch)) {
+        seen.add(ch);
+        keys.push(key);
+      }
+    }
+    return keys;
   }
   onMessage(handler) {
     this._messageHandlers.push(handler);
     return this;
   }
-  async start() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.connect());
-    await Promise.all(promises);
+  on(event, handler) {
+    if (event === "message") {
+      this.onMessage(handler);
+    } else if (event === "error") {
+      this._bus.on("error", handler);
+    }
+    return this;
   }
-  async stop() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.disconnect());
-    await Promise.all(promises);
+  async* messages(signal) {
+    while (!this._isClosed && !signal?.aborted) {
+      if (this._queue.length > 0) {
+        yield this._queue.shift();
+        continue;
+      }
+      const next = await new Promise((resolve) => {
+        const onAbort = () => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(null);
+        };
+        signal?.addEventListener("abort", onAbort, { once: true });
+        this._waiters.push((ctx) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(ctx);
+        });
+      });
+      if (!next || signal?.aborted)
+        break;
+      yield next;
+    }
+  }
+  async start(signal) {
+    const connected = [];
+    const uniqueChannels = Array.from(new Set(this._channels.values()));
+    try {
+      for (const ch of uniqueChannels) {
+        if (signal?.aborted) {
+          throw signal.reason || new Error("Startup aborted");
+        }
+        await ch.connect(signal);
+        connected.push(ch);
+      }
+    } catch (err) {
+      await Promise.allSettled(connected.map((ch) => ch.disconnect()));
+      throw err;
+    }
+  }
+  async startAll(signal) {
+    return this.start(signal);
+  }
+  async stop(signal) {
+    this._isClosed = true;
+    for (const waiter of this._waiters) {
+      waiter(null);
+    }
+    this._waiters = [];
+    const uniqueChannels = Array.from(new Set(this._channels.values()));
+    await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
   }
 }
 // src/channels/zalo/adapter.ts
@@ -37970,47 +38065,108 @@ class ZaloChannelAdapter extends BaseChannel {
     } catch {}
   }
 }
+// src/channels/zalo/types.ts
+var ZaloThreadType;
+((ZaloThreadType) => {
+  ZaloThreadType[ZaloThreadType["User"] = 0] = "User";
+  ZaloThreadType[ZaloThreadType["Group"] = 1] = "Group";
+})(ZaloThreadType ||= {});
+var ZaloReactions = {
+  HEART: "/-heart",
+  LIKE: "/-strong",
+  HAHA: ":>",
+  WOW: ":o",
+  CRY: ":-((",
+  ANGRY: ":-h",
+  KISS: ":-*",
+  TEARS_OF_JOY: ":')",
+  SHIT: "/-shit",
+  ROSE: "/-rose",
+  BROKEN_HEART: "/-break",
+  DISLIKE: "/-weak",
+  LOVE: ";xx",
+  CONFUSED: ";-/",
+  WINK: ";-)",
+  FADE: "/-fade",
+  SUN: "/-li",
+  BIRTHDAY: "/-bd",
+  BOMB: "/-bome",
+  OK: "/-ok",
+  PEACE: "/-v",
+  THANKS: "/-thanks",
+  PUNCH: "/-punch",
+  SHARE: "/-share",
+  PRAY: "_()_",
+  NO: "/-no",
+  BAD: "/-bad",
+  LOVE_YOU: "/-loveu",
+  SAD: "--b",
+  VERY_SAD: ":((",
+  COOL: "x-)",
+  NERD: "8-)",
+  BIG_SMILE: ";-d",
+  SUNGLASSES: "b-)",
+  NEUTRAL: ":--|",
+  SAD_FACE: "p-(",
+  BYE: ":-bye",
+  SLEEPY: "|-)",
+  WIPE: ":wipe",
+  DIG: ":-dig",
+  ANGUISH: "&-(",
+  HANDCLAP: ":handclap",
+  ANGRY_FACE: ">-|",
+  F_CHAIR: ":-f",
+  L_CHAIR: ":-l",
+  R_CHAIR: ":-r",
+  SILENT: ";-x",
+  SURPRISE: ":-o",
+  EMBARRASSED: ";-s",
+  AFRAID: ";-a",
+  SAD2: ":-<",
+  BIG_LAUGH: ":))",
+  RICH: "$-)",
+  BEER: "/-beer",
+  NONE: ""
+};
 // src/personal/client.ts
-init_dist();
-
 class ZaloPersonalBot {
   api;
   constructor(apiInstance) {
     this.api = apiInstance;
   }
-  async sendMessage(message, threadId, type = ThreadType.Group) {
+  async sendMessage(message, threadId, type = 1 /* Group */) {
     return await this.api.sendMessage(message, threadId, type);
   }
   async sendText(threadId, text, mentions = [], isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendMessage({ msg: text, mentions }, threadId, type);
   }
   async sendImage(threadId, imagePath, caption = "", isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     const attachments = Array.isArray(imagePath) ? imagePath : [imagePath];
     return await this.api.sendMessage({ msg: caption, attachments }, threadId, type);
   }
   async sendVideo(threadId, videoPath, caption = "", isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendVideo({ video: videoPath, msg: caption }, threadId, type);
   }
   async sendVoice(threadId, voicePath, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendVoice(voicePath, threadId, type);
   }
   async sendLink(threadId, link, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendLink(link, threadId, type);
   }
   async sendCard(threadId, cardPayload, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendCard(cardPayload, threadId, type);
   }
   async sendBankCard(threadId, payload, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendBankCard(payload, threadId, type);
   }
-  async forwardMessage(threadId, msgId, type = ThreadType.Group) {
+  async forwardMessage(threadId, msgId, type = 1 /* Group */) {
     return await this.api.forwardMessage(msgId, threadId, type);
   }
   async recallMessage(msgObj) {
@@ -38019,7 +38175,7 @@ class ZaloPersonalBot {
   async deleteMessage(msgObj, onlyMe = false) {
     return await this.api.deleteMessage(msgObj, onlyMe);
   }
-  async deleteChat(threadId, type = ThreadType.Group) {
+  async deleteChat(threadId, type = 1 /* Group */) {
     return await this.api.deleteChat(threadId, type);
   }
   async parseLink(link) {
@@ -38028,35 +38184,35 @@ class ZaloPersonalBot {
   async scanURL(url) {
     return await this.api.scanURL(url);
   }
-  async addReaction(threadId, msgId, cliMsgId, emojiOrReaction = Reactions.HEART, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+  async addReaction(threadId, msgId, cliMsgId, emojiOrReaction = ZaloReactions.HEART, isGroup = true) {
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     const unicodeMap = {
-      "❤️": Reactions.HEART,
-      "\uD83D\uDC96": Reactions.HEART,
-      "\uD83D\uDC4D": Reactions.LIKE,
-      "\uD83D\uDE06": Reactions.HAHA,
-      "\uD83D\uDE02": Reactions.TEARS_OF_JOY,
-      "\uD83D\uDE2E": Reactions.WOW,
-      "\uD83D\uDE2D": Reactions.CRY,
-      "\uD83D\uDE21": Reactions.ANGRY,
-      "\uD83D\uDE18": Reactions.KISS,
-      "\uD83D\uDCA9": Reactions.SHIT,
-      "\uD83C\uDF39": Reactions.ROSE,
-      "\uD83D\uDC94": Reactions.BROKEN_HEART,
-      "\uD83D\uDC4E": Reactions.DISLIKE,
-      "\uD83D\uDE0D": Reactions.LOVE,
-      "\uD83E\uDD14": Reactions.CONFUSED,
-      "\uD83D\uDE09": Reactions.WINK,
-      "☀️": Reactions.SUN,
-      "\uD83C\uDF82": Reactions.BIRTHDAY,
-      "\uD83D\uDCA3": Reactions.BOMB,
-      "\uD83D\uDC4C": Reactions.OK,
-      "✌️": Reactions.PEACE,
-      "\uD83D\uDE4F": Reactions.PRAY,
-      "\uD83D\uDC4F": Reactions.HANDCLAP,
-      "\uD83D\uDE0E": Reactions.SUNGLASSES,
-      "\uD83D\uDC4B": Reactions.BYE,
-      "\uD83D\uDE34": Reactions.SLEEPY
+      "❤️": ZaloReactions.HEART,
+      "\uD83D\uDC96": ZaloReactions.HEART,
+      "\uD83D\uDC4D": ZaloReactions.LIKE,
+      "\uD83D\uDE06": ZaloReactions.HAHA,
+      "\uD83D\uDE02": ZaloReactions.TEARS_OF_JOY,
+      "\uD83D\uDE2E": ZaloReactions.WOW,
+      "\uD83D\uDE2D": ZaloReactions.CRY,
+      "\uD83D\uDE21": ZaloReactions.ANGRY,
+      "\uD83D\uDE18": ZaloReactions.KISS,
+      "\uD83D\uDCA9": ZaloReactions.SHIT,
+      "\uD83C\uDF39": ZaloReactions.ROSE,
+      "\uD83D\uDC94": ZaloReactions.BROKEN_HEART,
+      "\uD83D\uDC4E": ZaloReactions.DISLIKE,
+      "\uD83D\uDE0D": ZaloReactions.LOVE,
+      "\uD83E\uDD14": ZaloReactions.CONFUSED,
+      "\uD83D\uDE09": ZaloReactions.WINK,
+      "☀️": ZaloReactions.SUN,
+      "\uD83C\uDF82": ZaloReactions.BIRTHDAY,
+      "\uD83D\uDCA3": ZaloReactions.BOMB,
+      "\uD83D\uDC4C": ZaloReactions.OK,
+      "✌️": ZaloReactions.PEACE,
+      "\uD83D\uDE4F": ZaloReactions.PRAY,
+      "\uD83D\uDC4F": ZaloReactions.HANDCLAP,
+      "\uD83D\uDE0E": ZaloReactions.SUNGLASSES,
+      "\uD83D\uDC4B": ZaloReactions.BYE,
+      "\uD83D\uDE34": ZaloReactions.SLEEPY
     };
     const targetReaction = unicodeMap[emojiOrReaction] || emojiOrReaction;
     return await this.api.addReaction(targetReaction, {
@@ -38066,30 +38222,30 @@ class ZaloPersonalBot {
     });
   }
   async sendTypingEvent(threadId, isTyping = true, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendTypingEvent(threadId, isTyping, type);
   }
   async sendSeenEvent(threadId, msgId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendSeenEvent(threadId, msgId, type);
   }
   async sendDeliveredEvent(threadId, msgId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendDeliveredEvent(threadId, msgId, type);
   }
   async addUnreadMark(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.addUnreadMark(threadId, type);
   }
   async removeUnreadMark(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.removeUnreadMark(threadId, type);
   }
   async getUnreadMark() {
     return await this.api.getUnreadMark();
   }
   async sendSticker(threadId, stickerDetail, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendSticker(stickerDetail, threadId, type);
   }
   async getStickers(keyword) {
@@ -38104,7 +38260,7 @@ class ZaloPersonalBot {
   async getStickerCategoryDetail(cateId) {
     return await this.api.getStickerCategoryDetail(cateId);
   }
-  async uploadAttachment(filePath, threadId, type = ThreadType.Group) {
+  async uploadAttachment(filePath, threadId, type = 1 /* Group */) {
     return await this.api.uploadAttachment(filePath, threadId, type);
   }
   async createGroup(name, members = []) {
@@ -38216,38 +38372,38 @@ class ZaloPersonalBot {
     return await this.api.getPollDetail(pollId);
   }
   async createNote(threadId, title, content, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.createNote({ title, content }, threadId, type);
   }
   async editNote(noteId, title, content, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.editNote(noteId, { title, content }, threadId, type);
   }
   async getListBoard(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getListBoard(threadId, type);
   }
   async getFriendBoardList(friendId) {
     return await this.api.getFriendBoardList(friendId);
   }
   async createReminder(threadId, content, remindTime, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.createReminder({ content, remindTime }, threadId, type);
   }
   async editReminder(reminderId, content, remindTime, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.editReminder(reminderId, { content, remindTime }, threadId, type);
   }
   async removeReminder(reminderId, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.removeReminder(reminderId, threadId, type);
   }
   async getReminder(reminderId, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getReminder(reminderId, threadId, type);
   }
   async getListReminder(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getListReminder(threadId, type);
   }
   async getReminderResponses(reminderId) {
@@ -38359,22 +38515,22 @@ class ZaloPersonalBot {
     return await this.api.getGroupChatHistory(groupId, count);
   }
   async setMute(threadId, duration = -1, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.setMute(threadId, duration, type);
   }
   async getMute(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getMute(threadId, type);
   }
   async setPinnedConversations(threadId, isPin = true, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.setPinnedConversations(threadId, isPin, type);
   }
   async getPinConversations() {
     return await this.api.getPinConversations();
   }
   async setHiddenConversations(threadId, pinCode, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.setHiddenConversations(threadId, pinCode, type);
   }
   async getHiddenConversations() {
@@ -38387,15 +38543,15 @@ class ZaloPersonalBot {
     return await this.api.resetHiddenConversPin();
   }
   async updateAutoDeleteChat(threadId, ttl, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.updateAutoDeleteChat(threadId, ttl, type);
   }
   async getAutoDeleteChat(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getAutoDeleteChat(threadId, type);
   }
   async updateArchivedChatList(threadId, isArchive = true, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.updateArchivedChatList(threadId, isArchive, type);
   }
   async getArchivedChatList() {
@@ -38669,12 +38825,12 @@ class ZaloOABot {
   }
 }
 // src/personal/index.ts
-init_dist();
 import fs7 from "node:fs";
 async function initPersonalBot() {
   if (!fs7.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
     throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
+  await Promise.resolve().then(() => init_dist());
   const creds = JSON.parse(fs7.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
@@ -38760,6 +38916,16 @@ class TelegramChannelAdapter extends BaseChannel {
     }
     return data.result;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   startPolling() {
     if (this.isPolling)
       return;
@@ -38775,11 +38941,11 @@ class TelegramChannelAdapter extends BaseChannel {
         });
         if (Array.isArray(updates)) {
           for (const u of updates) {
-            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
             const unified = this.normalizeUpdate(u);
             if (unified) {
-              this.emit("message", unified);
+              await this.dispatchMessage(unified);
             }
+            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
           }
         }
       } catch (err) {
@@ -38873,17 +39039,69 @@ class DiscordChannelAdapter extends BaseChannel {
   name = "discord";
   config;
   apiBase = "https://discord.com/api/v10";
+  ws;
+  heartbeatTimer;
+  sequence = null;
   constructor(config) {
     super();
     this.config = config;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Discord botToken is required.");
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
+    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
+      this.connectGateway();
+    }
   }
-  async disconnect() {
+  connectGateway() {
+    const ws = new globalThis.WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+    this.ws = ws;
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data.toString());
+        if (data.s !== null)
+          this.sequence = data.s;
+        if (data.op === 10) {
+          const interval = data.d.heartbeat_interval;
+          this.heartbeatTimer = setInterval(() => {
+            ws.send(JSON.stringify({ op: 1, d: this.sequence }));
+          }, interval);
+          ws.send(JSON.stringify({
+            op: 2,
+            d: {
+              token: this.config.botToken,
+              intents: this.config.intents ?? 33280,
+              properties: {
+                os: process.platform,
+                browser: "channelhub",
+                device: "channelhub"
+              }
+            }
+          }));
+        }
+        if (data.op === 0 && data.t === "MESSAGE_CREATE") {
+          const msg = this.normalizeEvent(data.d);
+          if (msg)
+            this.emit("message", msg);
+        }
+      } catch (err) {}
+    };
+    ws.onclose = () => {
+      if (this.heartbeatTimer)
+        clearInterval(this.heartbeatTimer);
+    };
+  }
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.heartbeatTimer)
+      clearInterval(this.heartbeatTimer);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
   normalizeEvent(event) {
@@ -38996,17 +39214,52 @@ class SlackChannelAdapter extends BaseChannel {
   name = "slack";
   config;
   apiBase = "https://slack.com/api";
+  ws;
   constructor(config) {
     super();
     this.config = config;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Slack botToken is required.");
     await this.callApi("auth.test", {});
+    if (this.config.appToken) {
+      const res = await fetch("https://slack.com/api/apps.connections.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.config.appToken}` }
+      });
+      const data = await res.json();
+      if (data.ok && data.url) {
+        this.ws = new globalThis.WebSocket(data.url);
+        this.ws.onopen = () => this.emit("status", { status: "connected" });
+        this.ws.onmessage = (e) => {
+          try {
+            const payload = JSON.parse(e.data.toString());
+            if (payload.type === "hello")
+              return;
+            if (payload.envelope_id) {
+              this.ws?.send(JSON.stringify({ envelope_id: payload.envelope_id }));
+            }
+            if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
+              const msg = this.normalizeEvent(payload.payload);
+              if (msg)
+                this.emit("message", msg);
+            }
+          } catch (err) {}
+        };
+        this.ws.onerror = (e) => this.emit("error", new Error("Slack Socket Error"));
+        this.ws.onclose = () => this.emit("status", { status: "disconnected" });
+      }
+    }
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
   normalizeEvent(event) {
@@ -39107,17 +39360,20 @@ class SlackChannelAdapter extends BaseChannel {
   }
 }
 // src/channels/messenger/adapter.ts
+import http from "node:http";
 class MessengerChannelAdapter extends BaseChannel {
   name = "messenger";
   config;
   apiBase;
+  server;
   constructor(config) {
     super();
     this.config = config;
     const version = config.apiVersion || "v19.0";
     this.apiBase = `https://graph.facebook.com/${version}`;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.pageAccessToken) {
       throw new Error("Messenger pageAccessToken is required.");
     }
@@ -39128,9 +39384,63 @@ class MessengerChannelAdapter extends BaseChannel {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
     }
+    if (this.config.port) {
+      const path = this.config.webhookPath || "/webhook";
+      this.server = http.createServer(async (req, res) => {
+        const url = new URL(req.url || "/", `http://${req.headers.host}`);
+        if (url.pathname !== path) {
+          res.writeHead(404).end("Not Found");
+          return;
+        }
+        if (req.method === "GET") {
+          const mode = url.searchParams.get("hub.mode") || "";
+          const token = url.searchParams.get("hub.verify_token") || "";
+          const challenge = url.searchParams.get("hub.challenge") || "";
+          const verified = this.verifyWebhook(mode, token, challenge);
+          if (verified) {
+            res.writeHead(200, { "Content-Type": "text/plain" }).end(verified);
+          } else {
+            res.writeHead(403).end("Forbidden");
+          }
+          return;
+        }
+        if (req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk) => {
+            body += chunk;
+            if (body.length > 1024 * 1024)
+              req.destroy();
+          });
+          req.on("end", () => {
+            try {
+              const data = JSON.parse(body);
+              const msgs = this.normalizeEvent(data);
+              for (const m of msgs) {
+                this.emit("message", m);
+              }
+              res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+            } catch (err) {
+              res.writeHead(400).end("Bad Request");
+            }
+          });
+          return;
+        }
+        res.writeHead(405).end("Method Not Allowed");
+      });
+      await new Promise((resolve) => {
+        this.server?.listen(this.config.port, "0.0.0.0", () => {
+          resolve();
+        });
+      });
+    }
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.server) {
+      await new Promise((resolve) => this.server?.close(() => resolve()));
+      this.server = undefined;
+    }
     this.setConnected(false);
   }
   verifyWebhook(mode, token, challenge) {
@@ -39897,13 +40207,12 @@ class WebhookBridge {
   }
 }
 // src/commands/modules/general.ts
-init_dist();
 var heartCommand = {
   name: "heart",
   description: "React with heart to the message",
   execute: async ({ bot, msg, threadId, isGroup }) => {
     if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HEART, isGroup);
+      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, ZaloReactions.HEART, isGroup);
     }
   }
 };
@@ -39912,7 +40221,7 @@ var hahaCommand = {
   description: "React with laugh to the message",
   execute: async ({ bot, msg, threadId, isGroup }) => {
     if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HAHA, isGroup);
+      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, ZaloReactions.HAHA, isGroup);
     }
   }
 };
@@ -39972,40 +40281,39 @@ Owner UID: ${gData.creatorId}`;
 };
 
 // src/commands/modules/reaction.ts
-init_dist();
 var EMOJI_TO_REACTION = {
-  "❤️": Reactions.HEART,
-  "\uD83D\uDC96": Reactions.HEART,
-  "\uD83D\uDC4D": Reactions.LIKE,
-  "\uD83D\uDE06": Reactions.HAHA,
-  "\uD83D\uDE02": Reactions.TEARS_OF_JOY,
-  "\uD83D\uDE2E": Reactions.WOW,
-  "\uD83D\uDE2D": Reactions.CRY,
-  "\uD83D\uDE21": Reactions.ANGRY,
-  "\uD83D\uDE18": Reactions.KISS,
-  "\uD83D\uDCA9": Reactions.SHIT,
-  "\uD83C\uDF39": Reactions.ROSE,
-  "\uD83D\uDC94": Reactions.BROKEN_HEART,
-  "\uD83D\uDC4E": Reactions.DISLIKE,
-  "\uD83D\uDE0D": Reactions.LOVE,
-  "\uD83E\uDD14": Reactions.CONFUSED,
-  "\uD83D\uDE09": Reactions.WINK,
-  "☀️": Reactions.SUN,
-  "\uD83C\uDF82": Reactions.BIRTHDAY,
-  "\uD83D\uDCA3": Reactions.BOMB,
-  "\uD83D\uDC4C": Reactions.OK,
-  "✌️": Reactions.PEACE,
-  "\uD83D\uDE4F": Reactions.PRAY,
-  "\uD83D\uDC4F": Reactions.HANDCLAP,
-  "\uD83D\uDE0E": Reactions.SUNGLASSES,
-  "\uD83D\uDC4B": Reactions.BYE,
-  "\uD83D\uDE34": Reactions.SLEEPY,
-  heart: Reactions.HEART,
-  like: Reactions.LIKE,
-  haha: Reactions.HAHA,
-  wow: Reactions.WOW,
-  cry: Reactions.CRY,
-  angry: Reactions.ANGRY
+  "❤️": ZaloReactions.HEART,
+  "\uD83D\uDC96": ZaloReactions.HEART,
+  "\uD83D\uDC4D": ZaloReactions.LIKE,
+  "\uD83D\uDE06": ZaloReactions.HAHA,
+  "\uD83D\uDE02": ZaloReactions.TEARS_OF_JOY,
+  "\uD83D\uDE2E": ZaloReactions.WOW,
+  "\uD83D\uDE2D": ZaloReactions.CRY,
+  "\uD83D\uDE21": ZaloReactions.ANGRY,
+  "\uD83D\uDE18": ZaloReactions.KISS,
+  "\uD83D\uDCA9": ZaloReactions.SHIT,
+  "\uD83C\uDF39": ZaloReactions.ROSE,
+  "\uD83D\uDC94": ZaloReactions.BROKEN_HEART,
+  "\uD83D\uDC4E": ZaloReactions.DISLIKE,
+  "\uD83D\uDE0D": ZaloReactions.LOVE,
+  "\uD83E\uDD14": ZaloReactions.CONFUSED,
+  "\uD83D\uDE09": ZaloReactions.WINK,
+  "☀️": ZaloReactions.SUN,
+  "\uD83C\uDF82": ZaloReactions.BIRTHDAY,
+  "\uD83D\uDCA3": ZaloReactions.BOMB,
+  "\uD83D\uDC4C": ZaloReactions.OK,
+  "✌️": ZaloReactions.PEACE,
+  "\uD83D\uDE4F": ZaloReactions.PRAY,
+  "\uD83D\uDC4F": ZaloReactions.HANDCLAP,
+  "\uD83D\uDE0E": ZaloReactions.SUNGLASSES,
+  "\uD83D\uDC4B": ZaloReactions.BYE,
+  "\uD83D\uDE34": ZaloReactions.SLEEPY,
+  heart: ZaloReactions.HEART,
+  like: ZaloReactions.LIKE,
+  haha: ZaloReactions.HAHA,
+  wow: ZaloReactions.WOW,
+  cry: ZaloReactions.CRY,
+  angry: ZaloReactions.ANGRY
 };
 var reactCommand = {
   name: "react",
@@ -40076,9 +40384,6 @@ class CommandRouter {
     }
   }
 }
-
-// src/index.ts
-init_dist();
 export {
   BaseChannel,
   CONFIG,
@@ -40091,10 +40396,11 @@ export {
   SmartStreamer,
   TelegramChannelAdapter,
   WebhookBridge,
-  Zalo,
   ZaloChannelAdapter,
   ZaloOABot,
   ZaloPersonalBot,
+  ZaloReactions,
+  ZaloThreadType,
   createMessageContext,
   getChannelHubMcpTools,
   handleChannelHubMcpCall,

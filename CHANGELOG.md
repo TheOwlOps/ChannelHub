@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.3] - 2026-10-01
+
+### Added
+- **Core Contract**: Added `AbortSignal` to `connect`, `disconnect`, `sendText`, `sendMedia` in `IChannelAdapter`.
+- **Core Contract**: Upgraded `EventEmitter` to async queue with backpressure using `AsyncIterable` in `hub.messages()`.
+- **Core Contract**: Handlers via `hub.onMessage()` now safely await and process sequentially.
+- **Core Contract**: Identifiers are now `(provider, accountId)`, supporting multiple bots of the same type.
+- **Inbound Ingestion**: Slack Socket Mode WebSocket ingestion.
+- **Inbound Ingestion**: Discord Gateway WebSocket ingestion.
+- **Inbound Ingestion**: Messenger built-in webhook HTTP ingestion server.
+- **CI**: Added GitHub Actions test matrix across Node 18, 20, 22, and Bun.
+
+### Changed
+- **Dependencies**: Removed `crypto-js` and `zca-js` from production dependencies. `zca-js` and `@modelcontextprotocol/sdk` are now optional peer dependencies to drastically reduce install size.
+
+---
+
 ## [1.4.2] - 2026-10-01
 
 ### Fixed

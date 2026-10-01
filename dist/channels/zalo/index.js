@@ -37474,6 +37474,12 @@ var require_main = __commonJS(function(exports, module) {
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -37483,6 +37489,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -37764,47 +37775,109 @@ class ZaloChannelAdapter extends BaseChannel {
     } catch {}
   }
 }
+// src/channels/zalo/types.ts
+var ZaloThreadType;
+((ZaloThreadType) => {
+  ZaloThreadType[ZaloThreadType["User"] = 0] = "User";
+  ZaloThreadType[ZaloThreadType["Group"] = 1] = "Group";
+})(ZaloThreadType ||= {});
+var ZaloReactions = {
+  HEART: "/-heart",
+  LIKE: "/-strong",
+  HAHA: ":>",
+  WOW: ":o",
+  CRY: ":-((",
+  ANGRY: ":-h",
+  KISS: ":-*",
+  TEARS_OF_JOY: ":')",
+  SHIT: "/-shit",
+  ROSE: "/-rose",
+  BROKEN_HEART: "/-break",
+  DISLIKE: "/-weak",
+  LOVE: ";xx",
+  CONFUSED: ";-/",
+  WINK: ";-)",
+  FADE: "/-fade",
+  SUN: "/-li",
+  BIRTHDAY: "/-bd",
+  BOMB: "/-bome",
+  OK: "/-ok",
+  PEACE: "/-v",
+  THANKS: "/-thanks",
+  PUNCH: "/-punch",
+  SHARE: "/-share",
+  PRAY: "_()_",
+  NO: "/-no",
+  BAD: "/-bad",
+  LOVE_YOU: "/-loveu",
+  SAD: "--b",
+  VERY_SAD: ":((",
+  COOL: "x-)",
+  NERD: "8-)",
+  BIG_SMILE: ";-d",
+  SUNGLASSES: "b-)",
+  NEUTRAL: ":--|",
+  SAD_FACE: "p-(",
+  BYE: ":-bye",
+  SLEEPY: "|-)",
+  WIPE: ":wipe",
+  DIG: ":-dig",
+  ANGUISH: "&-(",
+  HANDCLAP: ":handclap",
+  ANGRY_FACE: ">-|",
+  F_CHAIR: ":-f",
+  L_CHAIR: ":-l",
+  R_CHAIR: ":-r",
+  SILENT: ";-x",
+  SURPRISE: ":-o",
+  EMBARRASSED: ";-s",
+  AFRAID: ";-a",
+  SAD2: ":-<",
+  BIG_LAUGH: ":))",
+  RICH: "$-)",
+  BEER: "/-beer",
+  NONE: ""
+};
+var Reactions2 = ZaloReactions;
 // src/personal/client.ts
-init_dist();
-
 class ZaloPersonalBot {
   api;
   constructor(apiInstance) {
     this.api = apiInstance;
   }
-  async sendMessage(message, threadId, type = ThreadType.Group) {
+  async sendMessage(message, threadId, type = 1 /* Group */) {
     return await this.api.sendMessage(message, threadId, type);
   }
   async sendText(threadId, text, mentions = [], isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendMessage({ msg: text, mentions }, threadId, type);
   }
   async sendImage(threadId, imagePath, caption = "", isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     const attachments = Array.isArray(imagePath) ? imagePath : [imagePath];
     return await this.api.sendMessage({ msg: caption, attachments }, threadId, type);
   }
   async sendVideo(threadId, videoPath, caption = "", isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendVideo({ video: videoPath, msg: caption }, threadId, type);
   }
   async sendVoice(threadId, voicePath, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendVoice(voicePath, threadId, type);
   }
   async sendLink(threadId, link, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendLink(link, threadId, type);
   }
   async sendCard(threadId, cardPayload, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendCard(cardPayload, threadId, type);
   }
   async sendBankCard(threadId, payload, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendBankCard(payload, threadId, type);
   }
-  async forwardMessage(threadId, msgId, type = ThreadType.Group) {
+  async forwardMessage(threadId, msgId, type = 1 /* Group */) {
     return await this.api.forwardMessage(msgId, threadId, type);
   }
   async recallMessage(msgObj) {
@@ -37813,7 +37886,7 @@ class ZaloPersonalBot {
   async deleteMessage(msgObj, onlyMe = false) {
     return await this.api.deleteMessage(msgObj, onlyMe);
   }
-  async deleteChat(threadId, type = ThreadType.Group) {
+  async deleteChat(threadId, type = 1 /* Group */) {
     return await this.api.deleteChat(threadId, type);
   }
   async parseLink(link) {
@@ -37822,35 +37895,35 @@ class ZaloPersonalBot {
   async scanURL(url) {
     return await this.api.scanURL(url);
   }
-  async addReaction(threadId, msgId, cliMsgId, emojiOrReaction = Reactions.HEART, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+  async addReaction(threadId, msgId, cliMsgId, emojiOrReaction = ZaloReactions.HEART, isGroup = true) {
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     const unicodeMap = {
-      "❤️": Reactions.HEART,
-      "\uD83D\uDC96": Reactions.HEART,
-      "\uD83D\uDC4D": Reactions.LIKE,
-      "\uD83D\uDE06": Reactions.HAHA,
-      "\uD83D\uDE02": Reactions.TEARS_OF_JOY,
-      "\uD83D\uDE2E": Reactions.WOW,
-      "\uD83D\uDE2D": Reactions.CRY,
-      "\uD83D\uDE21": Reactions.ANGRY,
-      "\uD83D\uDE18": Reactions.KISS,
-      "\uD83D\uDCA9": Reactions.SHIT,
-      "\uD83C\uDF39": Reactions.ROSE,
-      "\uD83D\uDC94": Reactions.BROKEN_HEART,
-      "\uD83D\uDC4E": Reactions.DISLIKE,
-      "\uD83D\uDE0D": Reactions.LOVE,
-      "\uD83E\uDD14": Reactions.CONFUSED,
-      "\uD83D\uDE09": Reactions.WINK,
-      "☀️": Reactions.SUN,
-      "\uD83C\uDF82": Reactions.BIRTHDAY,
-      "\uD83D\uDCA3": Reactions.BOMB,
-      "\uD83D\uDC4C": Reactions.OK,
-      "✌️": Reactions.PEACE,
-      "\uD83D\uDE4F": Reactions.PRAY,
-      "\uD83D\uDC4F": Reactions.HANDCLAP,
-      "\uD83D\uDE0E": Reactions.SUNGLASSES,
-      "\uD83D\uDC4B": Reactions.BYE,
-      "\uD83D\uDE34": Reactions.SLEEPY
+      "❤️": ZaloReactions.HEART,
+      "\uD83D\uDC96": ZaloReactions.HEART,
+      "\uD83D\uDC4D": ZaloReactions.LIKE,
+      "\uD83D\uDE06": ZaloReactions.HAHA,
+      "\uD83D\uDE02": ZaloReactions.TEARS_OF_JOY,
+      "\uD83D\uDE2E": ZaloReactions.WOW,
+      "\uD83D\uDE2D": ZaloReactions.CRY,
+      "\uD83D\uDE21": ZaloReactions.ANGRY,
+      "\uD83D\uDE18": ZaloReactions.KISS,
+      "\uD83D\uDCA9": ZaloReactions.SHIT,
+      "\uD83C\uDF39": ZaloReactions.ROSE,
+      "\uD83D\uDC94": ZaloReactions.BROKEN_HEART,
+      "\uD83D\uDC4E": ZaloReactions.DISLIKE,
+      "\uD83D\uDE0D": ZaloReactions.LOVE,
+      "\uD83E\uDD14": ZaloReactions.CONFUSED,
+      "\uD83D\uDE09": ZaloReactions.WINK,
+      "☀️": ZaloReactions.SUN,
+      "\uD83C\uDF82": ZaloReactions.BIRTHDAY,
+      "\uD83D\uDCA3": ZaloReactions.BOMB,
+      "\uD83D\uDC4C": ZaloReactions.OK,
+      "✌️": ZaloReactions.PEACE,
+      "\uD83D\uDE4F": ZaloReactions.PRAY,
+      "\uD83D\uDC4F": ZaloReactions.HANDCLAP,
+      "\uD83D\uDE0E": ZaloReactions.SUNGLASSES,
+      "\uD83D\uDC4B": ZaloReactions.BYE,
+      "\uD83D\uDE34": ZaloReactions.SLEEPY
     };
     const targetReaction = unicodeMap[emojiOrReaction] || emojiOrReaction;
     return await this.api.addReaction(targetReaction, {
@@ -37860,30 +37933,30 @@ class ZaloPersonalBot {
     });
   }
   async sendTypingEvent(threadId, isTyping = true, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendTypingEvent(threadId, isTyping, type);
   }
   async sendSeenEvent(threadId, msgId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendSeenEvent(threadId, msgId, type);
   }
   async sendDeliveredEvent(threadId, msgId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendDeliveredEvent(threadId, msgId, type);
   }
   async addUnreadMark(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.addUnreadMark(threadId, type);
   }
   async removeUnreadMark(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.removeUnreadMark(threadId, type);
   }
   async getUnreadMark() {
     return await this.api.getUnreadMark();
   }
   async sendSticker(threadId, stickerDetail, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.sendSticker(stickerDetail, threadId, type);
   }
   async getStickers(keyword) {
@@ -37898,7 +37971,7 @@ class ZaloPersonalBot {
   async getStickerCategoryDetail(cateId) {
     return await this.api.getStickerCategoryDetail(cateId);
   }
-  async uploadAttachment(filePath, threadId, type = ThreadType.Group) {
+  async uploadAttachment(filePath, threadId, type = 1 /* Group */) {
     return await this.api.uploadAttachment(filePath, threadId, type);
   }
   async createGroup(name, members = []) {
@@ -38010,38 +38083,38 @@ class ZaloPersonalBot {
     return await this.api.getPollDetail(pollId);
   }
   async createNote(threadId, title, content, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.createNote({ title, content }, threadId, type);
   }
   async editNote(noteId, title, content, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.editNote(noteId, { title, content }, threadId, type);
   }
   async getListBoard(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getListBoard(threadId, type);
   }
   async getFriendBoardList(friendId) {
     return await this.api.getFriendBoardList(friendId);
   }
   async createReminder(threadId, content, remindTime, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.createReminder({ content, remindTime }, threadId, type);
   }
   async editReminder(reminderId, content, remindTime, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.editReminder(reminderId, { content, remindTime }, threadId, type);
   }
   async removeReminder(reminderId, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.removeReminder(reminderId, threadId, type);
   }
   async getReminder(reminderId, threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getReminder(reminderId, threadId, type);
   }
   async getListReminder(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getListReminder(threadId, type);
   }
   async getReminderResponses(reminderId) {
@@ -38153,22 +38226,22 @@ class ZaloPersonalBot {
     return await this.api.getGroupChatHistory(groupId, count);
   }
   async setMute(threadId, duration = -1, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.setMute(threadId, duration, type);
   }
   async getMute(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getMute(threadId, type);
   }
   async setPinnedConversations(threadId, isPin = true, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.setPinnedConversations(threadId, isPin, type);
   }
   async getPinConversations() {
     return await this.api.getPinConversations();
   }
   async setHiddenConversations(threadId, pinCode, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.setHiddenConversations(threadId, pinCode, type);
   }
   async getHiddenConversations() {
@@ -38181,15 +38254,15 @@ class ZaloPersonalBot {
     return await this.api.resetHiddenConversPin();
   }
   async updateAutoDeleteChat(threadId, ttl, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.updateAutoDeleteChat(threadId, ttl, type);
   }
   async getAutoDeleteChat(threadId, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.getAutoDeleteChat(threadId, type);
   }
   async updateArchivedChatList(threadId, isArchive = true, isGroup = true) {
-    const type = isGroup ? ThreadType.Group : ThreadType.User;
+    const type = isGroup ? 1 /* Group */ : 0 /* User */;
     return await this.api.updateArchivedChatList(threadId, isArchive, type);
   }
   async getArchivedChatList() {
@@ -38463,12 +38536,12 @@ class ZaloOABot {
   }
 }
 // src/personal/index.ts
-init_dist();
 import fs7 from "node:fs";
 async function initPersonalBot() {
   if (!fs7.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
     throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
+  await Promise.resolve().then(() => init_dist());
   const creds = JSON.parse(fs7.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
@@ -38483,9 +38556,12 @@ function initOABot() {
 }
 export {
   EMOJI_TO_ZALO,
+  Reactions2 as Reactions,
   ZaloChannelAdapter,
   ZaloOABot,
   ZaloPersonalBot,
+  ZaloReactions,
+  ZaloThreadType,
   initOABot,
   initPersonalBot
 };

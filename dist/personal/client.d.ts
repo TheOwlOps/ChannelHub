@@ -1,4 +1,4 @@
-import { ThreadType, Reactions } from "zca-js";
+import { ZaloThreadType as ThreadType, type Reactions as ReactionType } from "../channels/zalo/types.js";
 export declare class ZaloPersonalBot {
     api: any;
     constructor(apiInstance: any);
@@ -16,7 +16,7 @@ export declare class ZaloPersonalBot {
     deleteChat(threadId: string, type?: ThreadType): Promise<any>;
     parseLink(link: string): Promise<any>;
     scanURL(url: string): Promise<any>;
-    addReaction(threadId: string, msgId: string, cliMsgId: string, emojiOrReaction?: Reactions | string, isGroup?: boolean): Promise<any>;
+    addReaction(threadId: string, msgId: string, cliMsgId: string, emojiOrReaction?: ReactionType | string, isGroup?: boolean): Promise<any>;
     sendTypingEvent(threadId: string, isTyping?: boolean, isGroup?: boolean): Promise<any>;
     sendSeenEvent(threadId: string, msgId: string, isGroup?: boolean): Promise<any>;
     sendDeliveredEvent(threadId: string, msgId: string, isGroup?: boolean): Promise<any>;

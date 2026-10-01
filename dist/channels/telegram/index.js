@@ -2,6 +2,12 @@
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -11,6 +17,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -101,6 +112,16 @@ class TelegramChannelAdapter extends BaseChannel {
     }
     return data.result;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   startPolling() {
     if (this.isPolling)
       return;
@@ -116,11 +137,11 @@ class TelegramChannelAdapter extends BaseChannel {
         });
         if (Array.isArray(updates)) {
           for (const u of updates) {
-            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
             const unified = this.normalizeUpdate(u);
             if (unified) {
-              this.emit("message", unified);
+              await this.dispatchMessage(unified);
             }
+            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
           }
         }
       } catch (err) {

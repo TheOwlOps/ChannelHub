@@ -18,18 +18,54 @@ export class SlackChannelAdapter extends BaseChannel {
   private config: SlackAdapterConfig;
   private apiBase = "https://slack.com/api";
 
+  private ws?: any;
+
   constructor(config: SlackAdapterConfig) {
     super();
     this.config = config;
   }
 
-  async connect(): Promise<void> {
+  async connect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     if (!this.config.botToken) throw new Error("Slack botToken is required.");
     await this.callApi("auth.test", {});
+    
+    if (this.config.appToken) {
+      const res = await fetch("https://slack.com/api/apps.connections.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.config.appToken}` }
+      });
+      const data = await res.json();
+      if (data.ok && data.url) {
+        this.ws = new (globalThis as any).WebSocket(data.url);
+        this.ws.onopen = () => this.emit("status", { status: "connected" });
+        this.ws.onmessage = (e: any) => {
+          try {
+            const payload = JSON.parse(e.data.toString());
+            if (payload.type === "hello") return;
+            if (payload.envelope_id) {
+              this.ws?.send(JSON.stringify({ envelope_id: payload.envelope_id }));
+            }
+            if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
+              const msg = this.normalizeEvent(payload.payload);
+              if (msg) this.emit("message", msg);
+            }
+          } catch (err) {}
+        };
+        this.ws.onerror = (e: any) => this.emit("error", new Error("Slack Socket Error"));
+        this.ws.onclose = () => this.emit("status", { status: "disconnected" });
+      }
+    }
+    
     this.setConnected(true);
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
 

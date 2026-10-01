@@ -96,6 +96,17 @@ export class TelegramChannelAdapter extends BaseChannel {
     return data.result;
   }
 
+  private async dispatchMessage(msg: UnifiedMessage): Promise<void> {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await (listener as any)(msg);
+      } catch (err: any) {
+        this.emit("error", err);
+      }
+    }
+  }
+
   private startPolling(): void {
     if (this.isPolling) return;
     this.isPolling = true;
@@ -110,11 +121,12 @@ export class TelegramChannelAdapter extends BaseChannel {
         });
         if (Array.isArray(updates)) {
           for (const u of updates) {
-            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
             const unified = this.normalizeUpdate(u);
             if (unified) {
-              this.emit("message", unified);
+              await this.dispatchMessage(unified);
             }
+            // Only advance offset after downstream has finished processing
+            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
           }
         }
       } catch (err: any) {

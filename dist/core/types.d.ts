@@ -35,6 +35,7 @@ export interface SendOptions {
     replyToId?: string;
     quote?: boolean;
     metadata?: Record<string, unknown>;
+    signal?: AbortSignal;
 }
 export interface MediaPayload {
     type: MediaType;
@@ -49,18 +50,36 @@ export interface SentMessageResult {
     timestamp: number;
 }
 export type ChannelStatus = "connected" | "disconnected" | "reconnecting";
+export interface ChannelCapabilities {
+    readonly inbound: boolean;
+    readonly outbound: boolean;
+    readonly media: readonly MediaType[];
+    readonly reactions: boolean;
+    readonly editing: boolean;
+    readonly typing: boolean;
+    readonly mode: "polling" | "webhook" | "gateway" | "outbound-only";
+}
 export interface IChannelAdapter {
     readonly name: ChannelType;
-    connect(): Promise<void>;
-    disconnect(): Promise<void>;
+    readonly provider?: ChannelType;
+    readonly accountId?: string;
+    readonly capabilities?: ChannelCapabilities;
+    connect(signal?: AbortSignal): Promise<void>;
+    disconnect(signal?: AbortSignal): Promise<void>;
     isConnected(): boolean;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
     sendGif?(chatId: string, urlOrPath: string, caption?: string, options?: SendOptions): Promise<SentMessageResult>;
     sendSticker?(chatId: string, stickerIdOrUrl: string, options?: SendOptions): Promise<SentMessageResult>;
-    addReaction?(chatId: string, messageId: string, emoji: string): Promise<void>;
-    sendTyping?(chatId: string): Promise<void>;
-    editText?(chatId: string, messageId: string, text: string): Promise<SentMessageResult>;
+    addReaction?(chatId: string, messageId: string, emoji: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
+    sendTyping?(chatId: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
+    editText?(chatId: string, messageId: string, text: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<SentMessageResult>;
     on(event: "message", handler: (msg: UnifiedMessage) => Promise<void> | void): this;
     on(event: "error", handler: (err: Error) => void): this;
     on(event: "status", handler: (status: ChannelStatus) => void): this;

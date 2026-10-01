@@ -22,19 +22,78 @@ export class DiscordChannelAdapter extends BaseChannel {
   private config: DiscordAdapterConfig;
   private apiBase = "https://discord.com/api/v10";
 
+  private ws?: any;
+  private heartbeatTimer?: any;
+  private sequence: number | null = null;
+
   constructor(config: DiscordAdapterConfig) {
     super();
     this.config = config;
   }
 
-  async connect(): Promise<void> {
+  async connect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     if (!this.config.botToken) throw new Error("Discord botToken is required.");
     // Verify token
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
+
+    if (this.config.autoStart !== false && typeof (globalThis as any).WebSocket !== "undefined") {
+      this.connectGateway();
+    }
   }
 
-  async disconnect(): Promise<void> {
+  private connectGateway(): void {
+    const ws = new (globalThis as any).WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+    this.ws = ws;
+
+    ws.onmessage = (event: any) => {
+      try {
+        const data = JSON.parse(event.data.toString());
+        if (data.s !== null) this.sequence = data.s;
+
+        // Hello Opcode 10
+        if (data.op === 10) {
+          const interval = data.d.heartbeat_interval;
+          this.heartbeatTimer = setInterval(() => {
+            ws.send(JSON.stringify({ op: 1, d: this.sequence }));
+          }, interval);
+
+          // Identify Opcode 2
+          ws.send(JSON.stringify({
+            op: 2,
+            d: {
+              token: this.config.botToken,
+              intents: this.config.intents ?? 33280, // Guilds + GuildMessages + DirectMessages + MessageContent
+              properties: {
+                os: process.platform,
+                browser: "channelhub",
+                device: "channelhub",
+              },
+            },
+          }));
+        }
+
+        // Dispatch Opcode 0
+        if (data.op === 0 && data.t === "MESSAGE_CREATE") {
+          const msg = this.normalizeEvent(data.d);
+          if (msg) this.emit("message", msg);
+        }
+      } catch (err) {}
+    };
+
+    ws.onclose = () => {
+      if (this.heartbeatTimer) clearInterval(this.heartbeatTimer);
+    };
+  }
+
+  async disconnect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
+    if (this.heartbeatTimer) clearInterval(this.heartbeatTimer);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
 

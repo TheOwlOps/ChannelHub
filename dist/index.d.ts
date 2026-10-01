@@ -14,4 +14,4 @@ export { initOABot } from "./oa/index";
 export { CommandRouter } from "./commands/router";
 export type { Command, CommandContext } from "./commands/types";
 export { CONFIG } from "./config/env";
-export { Zalo } from "zca-js";
+export { ZaloReactions, ZaloThreadType } from "./channels/zalo/index";

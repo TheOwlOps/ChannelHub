@@ -96,7 +96,7 @@ describe("Webhook Bridge", () => {
 
       // 2. GET /channels
       const channels = await fetch("http://127.0.0.1:18991/channels").then((r) => r.json());
-      expect(channels.channels).toEqual(["mock"]);
+      expect(channels.channels).toEqual(["mock:default"]);
 
       // 3. POST /send
       const sent = await fetch("http://127.0.0.1:18991/send", {

@@ -2,6 +2,12 @@
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -11,6 +17,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -33,17 +44,52 @@ class SlackChannelAdapter extends BaseChannel {
   name = "slack";
   config;
   apiBase = "https://slack.com/api";
+  ws;
   constructor(config) {
     super();
     this.config = config;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Slack botToken is required.");
     await this.callApi("auth.test", {});
+    if (this.config.appToken) {
+      const res = await fetch("https://slack.com/api/apps.connections.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.config.appToken}` }
+      });
+      const data = await res.json();
+      if (data.ok && data.url) {
+        this.ws = new globalThis.WebSocket(data.url);
+        this.ws.onopen = () => this.emit("status", { status: "connected" });
+        this.ws.onmessage = (e) => {
+          try {
+            const payload = JSON.parse(e.data.toString());
+            if (payload.type === "hello")
+              return;
+            if (payload.envelope_id) {
+              this.ws?.send(JSON.stringify({ envelope_id: payload.envelope_id }));
+            }
+            if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
+              const msg = this.normalizeEvent(payload.payload);
+              if (msg)
+                this.emit("message", msg);
+            }
+          } catch (err) {}
+        };
+        this.ws.onerror = (e) => this.emit("error", new Error("Slack Socket Error"));
+        this.ws.onclose = () => this.emit("status", { status: "disconnected" });
+      }
+    }
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
   normalizeEvent(event) {

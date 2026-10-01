@@ -1,8 +1,8 @@
 import type { Command } from "../types.js";
-import { Reactions } from "zca-js";
+import { ZaloReactions as Reactions, type Reactions as ReactionType } from "../../channels/zalo/types.js";
 
 // Common Unicode emoji mapping to Zalo Reaction icon code
-export const EMOJI_TO_REACTION: Record<string, Reactions | string> = {
+export const EMOJI_TO_REACTION: Record<string, ReactionType | string> = {
   // Frequently used
   "❤️": Reactions.HEART,
   "💖": Reactions.HEART,

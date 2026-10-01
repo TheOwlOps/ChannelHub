@@ -1,6 +1,6 @@
 {
   "name": "@theowlops/channelhub",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "ChannelHub SDK - Unified multi-channel messaging toolkit (Zalo, Telegram, Discord, Slack) for AI agents, standalone bots, and enterprise automation.",
   "module": "dist/index.js",
   "main": "dist/index.cjs",
@@ -103,15 +103,31 @@
   "homepage": "https://github.com/TheOwlOps/ChannelHub#readme",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "peerDependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
-    "dotenv": "^16.4.7",
+    "playwright": "^1.63.0",
     "zca-js": "^2.2.0"
   },
+  "peerDependenciesMeta": {
+    "@modelcontextprotocol/sdk": {
+      "optional": true
+    },
+    "playwright": {
+      "optional": true
+    },
+    "zca-js": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "@types/node": "^22.0.0",
     "bun-types": "latest",
     "playwright": "^1.63.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "zca-js": "^2.2.0"
   },
   "engines": {
     "node": ">=18.0.0"

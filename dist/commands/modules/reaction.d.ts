@@ -1,4 +1,4 @@
 import type { Command } from "../types.js";
-import { Reactions } from "zca-js";
-export declare const EMOJI_TO_REACTION: Record<string, Reactions | string>;
+import { type Reactions as ReactionType } from "../../channels/zalo/types.js";
+export declare const EMOJI_TO_REACTION: Record<string, ReactionType | string>;
 export declare const reactCommand: Command;

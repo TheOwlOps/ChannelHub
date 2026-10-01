@@ -9,9 +9,10 @@ export declare class SlackChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
     private config;
     private apiBase;
+    private ws?;
     constructor(config: SlackAdapterConfig);
-    connect(): Promise<void>;
-    disconnect(): Promise<void>;
+    connect(signal?: AbortSignal): Promise<void>;
+    disconnect(signal?: AbortSignal): Promise<void>;
     normalizeEvent(event: any): UnifiedMessage | null;
     private callApi;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;

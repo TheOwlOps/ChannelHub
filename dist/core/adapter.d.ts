@@ -2,11 +2,14 @@ import { EventEmitter } from "node:events";
 import type { ChannelType, IChannelAdapter, MediaPayload, SendOptions, SentMessageResult } from "./types";
 export declare abstract class BaseChannel extends EventEmitter implements IChannelAdapter {
     abstract readonly name: ChannelType;
+    get provider(): ChannelType;
+    get accountId(): string;
     private _connected;
     isConnected(): boolean;
     protected setConnected(value: boolean): void;
-    abstract connect(): Promise<void>;
-    abstract disconnect(): Promise<void>;
+    protected assertNotAborted(signal?: AbortSignal): void;
+    abstract connect(signal?: AbortSignal): Promise<void>;
+    abstract disconnect(signal?: AbortSignal): Promise<void>;
     abstract sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     abstract sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
     sendGif(chatId: string, urlOrPath: string, caption?: string, options?: SendOptions): Promise<SentMessageResult>;

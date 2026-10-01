@@ -1,5 +1,5 @@
 import type { Command } from "../types.js";
-import { Reactions } from "zca-js";
+import { ZaloReactions as Reactions } from "../../channels/zalo/types.js";
 
 export const heartCommand: Command = {
   name: "heart",

@@ -5,10 +5,19 @@ export declare class ChannelHub {
     private _channels;
     private _bus;
     private _messageHandlers;
+    private _queue;
+    private _waiters;
+    private _isClosed;
     register(channel: IChannelAdapter): this;
-    getChannel(name: string): IChannelAdapter | undefined;
+    getChannel(providerOrKey: string, accountId?: string): IChannelAdapter | undefined;
     listChannels(): string[];
     onMessage(handler: MessageHandler): this;
-    start(): Promise<void>;
-    stop(): Promise<void>;
+    on(event: "message" | "error", handler: any): this;
+    /**
+     * Async generator yielding incoming MessageContext with full backpressure
+     */
+    messages(signal?: AbortSignal): AsyncIterable<MessageContext>;
+    start(signal?: AbortSignal): Promise<void>;
+    startAll(signal?: AbortSignal): Promise<void>;
+    stop(signal?: AbortSignal): Promise<void>;
 }

@@ -2,6 +2,12 @@
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -11,6 +17,11 @@ class BaseChannel extends EventEmitter {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -33,17 +44,69 @@ class DiscordChannelAdapter extends BaseChannel {
   name = "discord";
   config;
   apiBase = "https://discord.com/api/v10";
+  ws;
+  heartbeatTimer;
+  sequence = null;
   constructor(config) {
     super();
     this.config = config;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Discord botToken is required.");
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
+    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
+      this.connectGateway();
+    }
   }
-  async disconnect() {
+  connectGateway() {
+    const ws = new globalThis.WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+    this.ws = ws;
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data.toString());
+        if (data.s !== null)
+          this.sequence = data.s;
+        if (data.op === 10) {
+          const interval = data.d.heartbeat_interval;
+          this.heartbeatTimer = setInterval(() => {
+            ws.send(JSON.stringify({ op: 1, d: this.sequence }));
+          }, interval);
+          ws.send(JSON.stringify({
+            op: 2,
+            d: {
+              token: this.config.botToken,
+              intents: this.config.intents ?? 33280,
+              properties: {
+                os: process.platform,
+                browser: "channelhub",
+                device: "channelhub"
+              }
+            }
+          }));
+        }
+        if (data.op === 0 && data.t === "MESSAGE_CREATE") {
+          const msg = this.normalizeEvent(data.d);
+          if (msg)
+            this.emit("message", msg);
+        }
+      } catch (err) {}
+    };
+    ws.onclose = () => {
+      if (this.heartbeatTimer)
+        clearInterval(this.heartbeatTimer);
+    };
+  }
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.heartbeatTimer)
+      clearInterval(this.heartbeatTimer);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
   normalizeEvent(event) {

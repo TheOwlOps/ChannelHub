@@ -11,6 +11,15 @@ import type {
 
 export abstract class BaseChannel extends EventEmitter implements IChannelAdapter {
   abstract readonly name: ChannelType;
+  
+  get provider(): ChannelType {
+    return this.name;
+  }
+  
+  get accountId(): string {
+    return "default";
+  }
+
   private _connected = false;
 
   isConnected(): boolean {
@@ -25,8 +34,14 @@ export abstract class BaseChannel extends EventEmitter implements IChannelAdapte
     }
   }
 
-  abstract connect(): Promise<void>;
-  abstract disconnect(): Promise<void>;
+  protected assertNotAborted(signal?: AbortSignal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
+    }
+  }
+
+  abstract connect(signal?: AbortSignal): Promise<void>;
+  abstract disconnect(signal?: AbortSignal): Promise<void>;
   abstract sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
   abstract sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
 

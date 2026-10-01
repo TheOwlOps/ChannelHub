@@ -571,18 +571,41 @@ class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _queue = [];
+  _waiters = [];
+  _isClosed = false;
   register(channel) {
-    if (this._channels.has(channel.name)) {
-      throw new Error(`Channel '${channel.name}' is already registered in ChannelHub.`);
+    const provider = channel.provider || channel.name;
+    const accountId = channel.accountId || "default";
+    const fullKey = `${provider}:${accountId}`;
+    if (this._channels.has(fullKey)) {
+      throw new Error(`Channel '${fullKey}' is already registered in ChannelHub.`);
     }
-    this._channels.set(channel.name, channel);
-    channel.on("message", (msg) => {
+    this._channels.set(fullKey, channel);
+    if (!this._channels.has(provider)) {
+      this._channels.set(provider, channel);
+    }
+    if (!this._channels.has(channel.name)) {
+      this._channels.set(channel.name, channel);
+    }
+    channel.on("message", async (msg) => {
       this._bus.emitMessage(msg);
       const ctx = createMessageContext(msg, channel);
+      if (this._waiters.length > 0) {
+        const waiter = this._waiters.shift();
+        waiter(ctx);
+      } else {
+        this._queue.push(ctx);
+        if (this._queue.length > 2000) {
+          this._queue.shift();
+        }
+      }
       for (const handler of this._messageHandlers) {
-        Promise.resolve(handler(ctx)).catch((err) => {
-          this._bus.emitError(err);
-        });
+        try {
+          await handler(ctx);
+        } catch (err) {
+          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
+        }
       }
     });
     channel.on("error", (err) => {
@@ -590,23 +613,84 @@ class ChannelHub {
     });
     return this;
   }
-  getChannel(name) {
-    return this._channels.get(name);
+  getChannel(providerOrKey, accountId) {
+    if (accountId) {
+      return this._channels.get(`${providerOrKey}:${accountId}`);
+    }
+    return this._channels.get(providerOrKey);
   }
   listChannels() {
-    return Array.from(this._channels.keys());
+    const seen = new Set;
+    const keys = [];
+    for (const [key, ch] of this._channels.entries()) {
+      if (!seen.has(ch)) {
+        seen.add(ch);
+        keys.push(key);
+      }
+    }
+    return keys;
   }
   onMessage(handler) {
     this._messageHandlers.push(handler);
     return this;
   }
-  async start() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.connect());
-    await Promise.all(promises);
+  on(event, handler) {
+    if (event === "message") {
+      this.onMessage(handler);
+    } else if (event === "error") {
+      this._bus.on("error", handler);
+    }
+    return this;
   }
-  async stop() {
-    const promises = Array.from(this._channels.values()).map((ch) => ch.disconnect());
-    await Promise.all(promises);
+  async* messages(signal) {
+    while (!this._isClosed && !signal?.aborted) {
+      if (this._queue.length > 0) {
+        yield this._queue.shift();
+        continue;
+      }
+      const next = await new Promise((resolve) => {
+        const onAbort = () => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(null);
+        };
+        signal?.addEventListener("abort", onAbort, { once: true });
+        this._waiters.push((ctx) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(ctx);
+        });
+      });
+      if (!next || signal?.aborted)
+        break;
+      yield next;
+    }
+  }
+  async start(signal) {
+    const connected = [];
+    const uniqueChannels = Array.from(new Set(this._channels.values()));
+    try {
+      for (const ch of uniqueChannels) {
+        if (signal?.aborted) {
+          throw signal.reason || new Error("Startup aborted");
+        }
+        await ch.connect(signal);
+        connected.push(ch);
+      }
+    } catch (err) {
+      await Promise.allSettled(connected.map((ch) => ch.disconnect()));
+      throw err;
+    }
+  }
+  async startAll(signal) {
+    return this.start(signal);
+  }
+  async stop(signal) {
+    this._isClosed = true;
+    for (const waiter of this._waiters) {
+      waiter(null);
+    }
+    this._waiters = [];
+    const uniqueChannels = Array.from(new Set(this._channels.values()));
+    await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
   }
 }
 
@@ -927,6 +1011,12 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
 import { EventEmitter as EventEmitter2 } from "node:events";
 
 class BaseChannel extends EventEmitter2 {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return "default";
+  }
   _connected = false;
   isConnected() {
     return this._connected;
@@ -936,6 +1026,11 @@ class BaseChannel extends EventEmitter2 {
     this._connected = value;
     if (changed) {
       this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
     }
   }
   async sendGif(chatId, urlOrPath, caption, options) {
@@ -1217,8 +1312,6 @@ class ZaloChannelAdapter extends BaseChannel {
     } catch {}
   }
 }
-// src/personal/client.ts
-import { ThreadType, Reactions } from "zca-js";
 // src/config/env.ts
 var import_dotenv = __toESM(require_main(), 1);
 import path from "node:path";
@@ -1236,8 +1329,6 @@ var CONFIG = {
     BASE_URL: "https://openapi.zalo.me/v3.0/oa"
   }
 };
-// src/personal/index.ts
-import { Zalo } from "zca-js";
 // src/channels/telegram/adapter.ts
 class TelegramChannelAdapter extends BaseChannel {
   name = "telegram";
@@ -1311,6 +1402,16 @@ class TelegramChannelAdapter extends BaseChannel {
     }
     return data.result;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   startPolling() {
     if (this.isPolling)
       return;
@@ -1326,11 +1427,11 @@ class TelegramChannelAdapter extends BaseChannel {
         });
         if (Array.isArray(updates)) {
           for (const u of updates) {
-            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
             const unified = this.normalizeUpdate(u);
             if (unified) {
-              this.emit("message", unified);
+              await this.dispatchMessage(unified);
             }
+            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
           }
         }
       } catch (err) {
@@ -1424,17 +1525,69 @@ class DiscordChannelAdapter extends BaseChannel {
   name = "discord";
   config;
   apiBase = "https://discord.com/api/v10";
+  ws;
+  heartbeatTimer;
+  sequence = null;
   constructor(config) {
     super();
     this.config = config;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Discord botToken is required.");
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
+    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
+      this.connectGateway();
+    }
   }
-  async disconnect() {
+  connectGateway() {
+    const ws = new globalThis.WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+    this.ws = ws;
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data.toString());
+        if (data.s !== null)
+          this.sequence = data.s;
+        if (data.op === 10) {
+          const interval = data.d.heartbeat_interval;
+          this.heartbeatTimer = setInterval(() => {
+            ws.send(JSON.stringify({ op: 1, d: this.sequence }));
+          }, interval);
+          ws.send(JSON.stringify({
+            op: 2,
+            d: {
+              token: this.config.botToken,
+              intents: this.config.intents ?? 33280,
+              properties: {
+                os: process.platform,
+                browser: "channelhub",
+                device: "channelhub"
+              }
+            }
+          }));
+        }
+        if (data.op === 0 && data.t === "MESSAGE_CREATE") {
+          const msg = this.normalizeEvent(data.d);
+          if (msg)
+            this.emit("message", msg);
+        }
+      } catch (err) {}
+    };
+    ws.onclose = () => {
+      if (this.heartbeatTimer)
+        clearInterval(this.heartbeatTimer);
+    };
+  }
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.heartbeatTimer)
+      clearInterval(this.heartbeatTimer);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
   normalizeEvent(event) {
@@ -1547,17 +1700,52 @@ class SlackChannelAdapter extends BaseChannel {
   name = "slack";
   config;
   apiBase = "https://slack.com/api";
+  ws;
   constructor(config) {
     super();
     this.config = config;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Slack botToken is required.");
     await this.callApi("auth.test", {});
+    if (this.config.appToken) {
+      const res = await fetch("https://slack.com/api/apps.connections.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.config.appToken}` }
+      });
+      const data = await res.json();
+      if (data.ok && data.url) {
+        this.ws = new globalThis.WebSocket(data.url);
+        this.ws.onopen = () => this.emit("status", { status: "connected" });
+        this.ws.onmessage = (e) => {
+          try {
+            const payload = JSON.parse(e.data.toString());
+            if (payload.type === "hello")
+              return;
+            if (payload.envelope_id) {
+              this.ws?.send(JSON.stringify({ envelope_id: payload.envelope_id }));
+            }
+            if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
+              const msg = this.normalizeEvent(payload.payload);
+              if (msg)
+                this.emit("message", msg);
+            }
+          } catch (err) {}
+        };
+        this.ws.onerror = (e) => this.emit("error", new Error("Slack Socket Error"));
+        this.ws.onclose = () => this.emit("status", { status: "disconnected" });
+      }
+    }
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
     this.setConnected(false);
   }
   normalizeEvent(event) {
@@ -1658,17 +1846,20 @@ class SlackChannelAdapter extends BaseChannel {
   }
 }
 // src/channels/messenger/adapter.ts
+import http from "node:http";
 class MessengerChannelAdapter extends BaseChannel {
   name = "messenger";
   config;
   apiBase;
+  server;
   constructor(config) {
     super();
     this.config = config;
     const version = config.apiVersion || "v19.0";
     this.apiBase = `https://graph.facebook.com/${version}`;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.pageAccessToken) {
       throw new Error("Messenger pageAccessToken is required.");
     }
@@ -1679,9 +1870,63 @@ class MessengerChannelAdapter extends BaseChannel {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
     }
+    if (this.config.port) {
+      const path = this.config.webhookPath || "/webhook";
+      this.server = http.createServer(async (req, res) => {
+        const url = new URL(req.url || "/", `http://${req.headers.host}`);
+        if (url.pathname !== path) {
+          res.writeHead(404).end("Not Found");
+          return;
+        }
+        if (req.method === "GET") {
+          const mode = url.searchParams.get("hub.mode") || "";
+          const token = url.searchParams.get("hub.verify_token") || "";
+          const challenge = url.searchParams.get("hub.challenge") || "";
+          const verified = this.verifyWebhook(mode, token, challenge);
+          if (verified) {
+            res.writeHead(200, { "Content-Type": "text/plain" }).end(verified);
+          } else {
+            res.writeHead(403).end("Forbidden");
+          }
+          return;
+        }
+        if (req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk) => {
+            body += chunk;
+            if (body.length > 1024 * 1024)
+              req.destroy();
+          });
+          req.on("end", () => {
+            try {
+              const data = JSON.parse(body);
+              const msgs = this.normalizeEvent(data);
+              for (const m of msgs) {
+                this.emit("message", m);
+              }
+              res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
+            } catch (err) {
+              res.writeHead(400).end("Bad Request");
+            }
+          });
+          return;
+        }
+        res.writeHead(405).end("Method Not Allowed");
+      });
+      await new Promise((resolve) => {
+        this.server?.listen(this.config.port, "0.0.0.0", () => {
+          resolve();
+        });
+      });
+    }
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    if (this.server) {
+      await new Promise((resolve) => this.server?.close(() => resolve()));
+      this.server = undefined;
+    }
     this.setConnected(false);
   }
   verifyWebhook(mode, token, challenge) {

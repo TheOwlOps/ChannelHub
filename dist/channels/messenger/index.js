@@ -130,7 +130,12 @@ class MessengerChannelAdapter extends BaseChannel {
     let blob;
     if (typeof media.source === "string") {
       const fs = await import("node:fs");
-      const buffer = fs.readFileSync(media.source);
+      const path = await import("node:path");
+      const resolvedPath = path.resolve(media.source);
+      if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+        throw new Error(`Media file not found or is invalid: ${media.source}`);
+      }
+      const buffer = fs.readFileSync(resolvedPath);
       blob = new Blob([new Uint8Array(buffer)], { type: media.mimeType || "application/octet-stream" });
     } else {
       blob = new Blob([new Uint8Array(media.source)], { type: media.mimeType || "application/octet-stream" });

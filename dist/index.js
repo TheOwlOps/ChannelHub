@@ -21752,7 +21752,7 @@ var require_combined_stream = __commonJS(function(exports, module) {
   };
 });
 
-// node_modules/mime-db/db.json
+// node_modules/form-data/node_modules/mime-types/node_modules/mime-db/db.json
 var require_db = __commonJS(function(exports, module) {
   module.exports = {
     "application/1d-interleaved-parityfec": {
@@ -30275,7 +30275,7 @@ var require_db = __commonJS(function(exports, module) {
   };
 });
 
-// node_modules/mime-types/index.js
+// node_modules/form-data/node_modules/mime-types/index.js
 var require_mime_types = __commonJS(function(exports) {
   /*!
    * mime-types
@@ -39200,7 +39200,12 @@ class MessengerChannelAdapter extends BaseChannel {
     let blob;
     if (typeof media.source === "string") {
       const fs = await import("node:fs");
-      const buffer = fs.readFileSync(media.source);
+      const path = await import("node:path");
+      const resolvedPath = path.resolve(media.source);
+      if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+        throw new Error(`Media file not found or is invalid: ${media.source}`);
+      }
+      const buffer = fs.readFileSync(resolvedPath);
       blob = new Blob([new Uint8Array(buffer)], { type: media.mimeType || "application/octet-stream" });
     } else {
       blob = new Blob([new Uint8Array(media.source)], { type: media.mimeType || "application/octet-stream" });
@@ -39355,8 +39360,10 @@ class WebhookBridge {
     this.hub = hub;
     this.config = {
       port: config.port ?? 8788,
-      host: config.host ?? "0.0.0.0",
-      pathPrefix: config.pathPrefix ?? ""
+      host: config.host ?? "127.0.0.1",
+      pathPrefix: config.pathPrefix ?? "",
+      apiKey: config.apiKey ?? process.env.CHANNELHUB_API_KEY ?? "",
+      maxBodySize: config.maxBodySize ?? 1024 * 1024
     };
     hub.onMessage(async (ctx) => {
       this.broadcastSse(ctx.message);
@@ -39385,11 +39392,30 @@ class WebhookBridge {
     const bare = url.split("?")[0];
     return bare.startsWith(this.config.pathPrefix) ? bare.slice(this.config.pathPrefix.length) || "/" : bare;
   }
+  authenticate(req) {
+    if (!this.config.apiKey)
+      return true;
+    const authHeader = req.headers["authorization"];
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.slice(7).trim();
+      if (token === this.config.apiKey)
+        return true;
+    }
+    const host = req.headers.host || "localhost";
+    const parsedUrl = new URL(req.url || "/", `http://${host}`);
+    const qKey = parsedUrl.searchParams.get("api_key");
+    if (qKey && qKey === this.config.apiKey)
+      return true;
+    return false;
+  }
   async handle(req, res) {
     const p = this.path(req);
     try {
       if (req.method === "GET" && p === "/health") {
         return this.json(res, 200, { ok: true });
+      }
+      if (!this.authenticate(req)) {
+        return this.json(res, 401, { error: "Unauthorized: Invalid or missing API key" });
       }
       if (req.method === "GET" && p === "/channels") {
         return this.json(res, 200, { channels: this.hub.listChannels() });
@@ -39417,7 +39443,8 @@ class WebhookBridge {
       }
       this.json(res, 404, { error: "Not found" });
     } catch (err) {
-      this.json(res, 500, { error: err.message || String(err) });
+      const status = err.message === "Payload too large" ? 413 : 500;
+      this.json(res, status, { error: err.message || String(err) });
     }
   }
   handleSse(res) {
@@ -39451,7 +39478,15 @@ class WebhookBridge {
   readJson(req) {
     return new Promise((resolve, reject) => {
       const chunks = [];
-      req.on("data", (c) => chunks.push(c));
+      let totalBytes = 0;
+      req.on("data", (c) => {
+        totalBytes += c.length;
+        if (totalBytes > this.config.maxBodySize) {
+          req.destroy(new Error("Payload too large"));
+          return;
+        }
+        chunks.push(c);
+      });
       req.on("end", () => {
         try {
           resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}"));

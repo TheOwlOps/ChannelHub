@@ -21752,7 +21752,7 @@ var require_combined_stream = __commonJS(function(exports, module) {
   };
 });
 
-// node_modules/mime-db/db.json
+// node_modules/form-data/node_modules/mime-types/node_modules/mime-db/db.json
 var require_db = __commonJS(function(exports, module) {
   module.exports = {
     "application/1d-interleaved-parityfec": {
@@ -30275,7 +30275,7 @@ var require_db = __commonJS(function(exports, module) {
   };
 });
 
-// node_modules/mime-types/index.js
+// node_modules/form-data/node_modules/mime-types/index.js
 var require_mime_types = __commonJS(function(exports) {
   /*!
    * mime-types

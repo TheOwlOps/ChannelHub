@@ -6,6 +6,8 @@ export interface WebhookBridgeConfig {
   port?: number;
   host?: string;
   pathPrefix?: string;
+  apiKey?: string;
+  maxBodySize?: number;
 }
 
 /**
@@ -29,8 +31,10 @@ export class WebhookBridge {
     this.hub = hub;
     this.config = {
       port: config.port ?? 8788,
-      host: config.host ?? "0.0.0.0",
+      host: config.host ?? "127.0.0.1",
       pathPrefix: config.pathPrefix ?? "",
+      apiKey: config.apiKey ?? process.env.CHANNELHUB_API_KEY ?? "",
+      maxBodySize: config.maxBodySize ?? 1024 * 1024, // 1MB payload limit
     };
 
     // Forward inbound hub messages to SSE subscribers
@@ -67,12 +71,31 @@ export class WebhookBridge {
       : bare;
   }
 
+  private authenticate(req: IncomingMessage): boolean {
+    if (!this.config.apiKey) return true;
+    const authHeader = req.headers["authorization"];
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.slice(7).trim();
+      if (token === this.config.apiKey) return true;
+    }
+    const host = req.headers.host || "localhost";
+    const parsedUrl = new URL(req.url || "/", `http://${host}`);
+    const qKey = parsedUrl.searchParams.get("api_key");
+    if (qKey && qKey === this.config.apiKey) return true;
+    return false;
+  }
+
   private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const p = this.path(req);
     try {
       if (req.method === "GET" && p === "/health") {
         return this.json(res, 200, { ok: true });
       }
+
+      if (!this.authenticate(req)) {
+        return this.json(res, 401, { error: "Unauthorized: Invalid or missing API key" });
+      }
+
       if (req.method === "GET" && p === "/channels") {
         return this.json(res, 200, { channels: this.hub.listChannels() });
       }
@@ -96,7 +119,8 @@ export class WebhookBridge {
       }
       this.json(res, 404, { error: "Not found" });
     } catch (err: any) {
-      this.json(res, 500, { error: err.message || String(err) });
+      const status = err.message === "Payload too large" ? 413 : 500;
+      this.json(res, status, { error: err.message || String(err) });
     }
   }
 
@@ -130,7 +154,17 @@ export class WebhookBridge {
   private readJson(req: IncomingMessage): Promise<any> {
     return new Promise((resolve, reject) => {
       const chunks: Buffer[] = [];
-      req.on("data", (c) => chunks.push(c));
+      let totalBytes = 0;
+
+      req.on("data", (c: Buffer) => {
+        totalBytes += c.length;
+        if (totalBytes > this.config.maxBodySize) {
+          req.destroy(new Error("Payload too large"));
+          return;
+        }
+        chunks.push(c);
+      });
+
       req.on("end", () => {
         try {
           resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}"));

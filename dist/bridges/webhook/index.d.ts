@@ -3,6 +3,8 @@ export interface WebhookBridgeConfig {
     port?: number;
     host?: string;
     pathPrefix?: string;
+    apiKey?: string;
+    maxBodySize?: number;
 }
 /**
  * HTTP / SSE bridge exposing ChannelHub over REST.
@@ -24,6 +26,7 @@ export declare class WebhookBridge {
     start(): Promise<void>;
     stop(): Promise<void>;
     private path;
+    private authenticate;
     private handle;
     private handleSse;
     private broadcastSse;

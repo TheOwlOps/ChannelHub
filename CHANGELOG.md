@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.6] - 2026-10-01
+
+### Fixed
+- **Stale Waiters Swallow**: Resolved issue where an aborted consumer left a stale callback in `_waiters`, permanently swallowing the next inbound message from the queue. Waiters are now cleanly deregistered on abort.
+- **Stop & Restart**: Hub `stop()` and `start()` sequence now properly resets the internal `_isClosed` flag so consumers can resume without immediate `done: true`.
+- **Producer Deadlock via EventEmitter**: Eliminated async memory leak where Node's synchronous `EventEmitter.emit()` queued thousands of un-awaitable handlers during bursts. Base adapters now use `await this.dispatchMessage(msg)` to ensure real backpressure propagates natively to upstream ingress (e.g. holding HTTP webhooks or polling loops).
+- **AbortSignal Pass-Down**: Fixed omission of `options.signal` in Discord `connect`, Discord `reactions/typing/edit`, Slack `connect`, Telegram `addReaction`, and Messenger `fetch` uploads. Signals now completely propagate.
+
+---
+
 ## [1.4.5] - 2026-10-01
 
 ### Fixed

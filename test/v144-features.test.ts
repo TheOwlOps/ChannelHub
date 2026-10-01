@@ -130,4 +130,89 @@ describe("v1.4.4 Complete Fixes & Verification", () => {
 
     await expect(tele.sendText("chat", "hello", { signal: ac.signal })).rejects.toThrow();
   });
+
+  test("aborted consumer removes waiter and does not swallow subsequent messages", async () => {
+    const hub = new ChannelHub();
+    const ch = new MockChannel();
+    hub.register(ch);
+    await hub.start();
+
+    const ac1 = new AbortController();
+    // Consumer 1 waits for message, but gets aborted
+    const consumer1 = (async () => {
+      for await (const msg of hub.messages(ac1.signal)) {
+        return msg;
+      }
+      return null;
+    })();
+
+    // Yield to let consumer1 register its waiter in hub
+    await new Promise((r) => setTimeout(r, 10));
+
+    // Abort consumer 1
+    ac1.abort();
+    await expect(consumer1).resolves.toBeNull();
+
+    // Now start consumer 2
+    let received: any = null;
+    const consumer2 = (async () => {
+      for await (const msg of hub.messages()) {
+        received = msg;
+        break;
+      }
+    })();
+
+    // Yield to let consumer 2 register
+    await new Promise((r) => setTimeout(r, 10));
+
+    // Push new message
+    ch.push({
+      id: "probe-1",
+      channel: "telegram",
+      sender: { id: "u" },
+      chat: { id: "c", type: "dm" },
+      content: { text: "probe-message" },
+      raw: {},
+      timestamp: Date.now(),
+    });
+
+    await consumer2;
+    expect(received).not.toBeNull();
+    expect(received.message.content.text).toBe("probe-message");
+  });
+
+  test("hub stop and restart resets _isClosed and allows messages to resume", async () => {
+    const hub = new ChannelHub();
+    const ch = new MockChannel();
+    hub.register(ch);
+
+    await hub.start();
+    await hub.stop();
+    // Restart hub
+    await hub.start();
+
+    let received: any = null;
+    const consumer = (async () => {
+      for await (const msg of hub.messages()) {
+        received = msg;
+        break;
+      }
+    })();
+
+    await new Promise((r) => setTimeout(r, 10));
+
+    ch.push({
+      id: "restart-1",
+      channel: "telegram",
+      sender: { id: "u" },
+      chat: { id: "c", type: "dm" },
+      content: { text: "after-restart" },
+      raw: {},
+      timestamp: Date.now(),
+    });
+
+    await consumer;
+    expect(received).not.toBeNull();
+    expect(received.message.content.text).toBe("after-restart");
+  });
 });

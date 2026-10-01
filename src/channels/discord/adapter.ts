@@ -45,7 +45,7 @@ export class DiscordChannelAdapter extends BaseChannel {
     this.assertNotAborted(signal);
     if (!this.config.botToken) throw new Error("Discord botToken is required.");
     // Verify token
-    await this.callApi("GET", "/users/@me");
+    await this.callApi("GET", "/users/@me", undefined, signal);
     this.setConnected(true);
 
     if (this.config.autoStart !== false) {
@@ -58,7 +58,7 @@ export class DiscordChannelAdapter extends BaseChannel {
     const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
     this.ws = ws;
 
-    ws.onmessage = (event: any) => {
+    ws.onmessage = async (event: any) => {
       try {
         const data = JSON.parse(event.data.toString());
         if (data.s !== null) this.sequence = data.s;
@@ -88,7 +88,7 @@ export class DiscordChannelAdapter extends BaseChannel {
         // Dispatch Opcode 0
         if (data.op === 0 && data.t === "MESSAGE_CREATE") {
           const msg = this.normalizeEvent(data.d);
-          if (msg) this.emit("message", msg);
+          if (msg) await this.dispatchMessage(msg);
         }
       } catch (err) {}
     };
@@ -220,17 +220,19 @@ export class DiscordChannelAdapter extends BaseChannel {
     await this.callApi(
       "PUT",
       `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`,
+      undefined,
+      options?.signal
     );
   }
 
   async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
-    await this.callApi("POST", `/channels/${chatId}/typing`, {});
+    await this.callApi("POST", `/channels/${chatId}/typing`, undefined, options?.signal);
   }
 
   async editText(chatId: string, messageId: string, text: string, options?: { signal?: AbortSignal }): Promise<SentMessageResult> {
     const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
       content: text,
-    });
+    }, options?.signal);
     return {
       messageId: String(res.id || messageId),
       chatId,

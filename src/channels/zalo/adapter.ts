@@ -124,11 +124,11 @@ export class ZaloChannelAdapter extends BaseChannel {
   private setupEventListener(): void {
     if (!this.api?.listener?.on) return;
 
-    this.api.listener.on("message", (raw: any) => {
+    this.api.listener.on("message", async (raw: any) => {
       this.recordInbound(raw);
       const unified = this.normalizeMessage(raw);
       if (unified) {
-        this.emit("message", unified);
+        await this.dispatchMessage(unified);
       }
     });
 
@@ -271,6 +271,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     text: string,
     options?: SendOptions,
   ): Promise<SentMessageResult> {
+    this.assertNotAborted(options?.signal);
     if (!this.api) throw new Error("Zalo adapter is not connected.");
 
     const threadType = this.resolveThreadType(chatId);
@@ -293,6 +294,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     media: MediaPayload,
     options?: SendOptions,
   ): Promise<SentMessageResult> {
+    this.assertNotAborted(options?.signal);
     if (!this.api) throw new Error("Zalo adapter is not connected.");
 
     const threadType = this.resolveThreadType(chatId);
@@ -354,6 +356,7 @@ export class ZaloChannelAdapter extends BaseChannel {
   }
 
   async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
+    this.assertNotAborted(options?.signal);
     if (!this.api?.sendTypingEvent) return;
     const threadType = this.resolveThreadType(chatId);
     try {

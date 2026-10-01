@@ -22,7 +22,6 @@ export declare class TelegramChannelAdapter extends BaseChannel {
     disconnect(signal?: AbortSignal): Promise<void>;
     normalizeUpdate(update: any): UnifiedMessage | null;
     private callApi;
-    private dispatchMessage;
     private startPolling;
     private stopPolling;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;

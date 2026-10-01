@@ -79,6 +79,16 @@ class BaseChannel extends import_node_events.EventEmitter {
   get provider() {
     return this.name;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   get accountId() {
     return this.config?.accountId || "default";
   }
@@ -174,12 +184,12 @@ class MessengerChannelAdapter extends BaseChannel {
             if (body.length > 1024 * 1024)
               req.destroy();
           });
-          req.on("end", () => {
+          req.on("end", async () => {
             try {
               const data = JSON.parse(body);
               const msgs = this.normalizeEvent(data);
               for (const m of msgs) {
-                this.emit("message", m);
+                await this.dispatchMessage(m);
               }
               res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
             } catch (err) {
@@ -418,6 +428,7 @@ class MessengerChannelAdapter extends BaseChannel {
       const uploadUrl = `${this.apiBase}/me/message_attachments`;
       const uploadRes = await fetch(uploadUrl, {
         method: "POST",
+        signal: options?.signal,
         headers: {
           Authorization: `Bearer ${this.config.pageAccessToken}`
         },
@@ -458,6 +469,7 @@ class MessengerChannelAdapter extends BaseChannel {
     const url = `${this.apiBase}/me/messages`;
     const response = await fetch(url, {
       method: "POST",
+      signal: options?.signal,
       headers: {
         Authorization: `Bearer ${this.config.pageAccessToken}`
       },

@@ -50,6 +50,16 @@ class BaseChannel extends import_node_events.EventEmitter {
   get provider() {
     return this.name;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   get accountId() {
     return this.config?.accountId || "default";
   }
@@ -169,16 +179,6 @@ class TelegramChannelAdapter extends BaseChannel {
       throw new Error(`Telegram API ${method} error: ${data.description}`);
     }
     return data.result;
-  }
-  async dispatchMessage(msg) {
-    const listeners = this.listeners("message");
-    for (const listener of listeners) {
-      try {
-        await listener(msg);
-      } catch (err) {
-        this.emit("error", err);
-      }
-    }
   }
   startPolling() {
     if (this.isPolling)

@@ -2963,6 +2963,16 @@ class BaseChannel extends EventEmitter {
   get provider() {
     return this.name;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   get accountId() {
     return this.config?.accountId || "default";
   }
@@ -3022,7 +3032,7 @@ class DiscordChannelAdapter extends BaseChannel {
     this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Discord botToken is required.");
-    await this.callApi("GET", "/users/@me");
+    await this.callApi("GET", "/users/@me", undefined, signal);
     this.setConnected(true);
     if (this.config.autoStart !== false) {
       this.connectGateway();
@@ -3032,7 +3042,7 @@ class DiscordChannelAdapter extends BaseChannel {
     const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
     const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
     this.ws = ws;
-    ws.onmessage = (event) => {
+    ws.onmessage = async (event) => {
       try {
         const data = JSON.parse(event.data.toString());
         if (data.s !== null)
@@ -3058,7 +3068,7 @@ class DiscordChannelAdapter extends BaseChannel {
         if (data.op === 0 && data.t === "MESSAGE_CREATE") {
           const msg = this.normalizeEvent(data.d);
           if (msg)
-            this.emit("message", msg);
+            await this.dispatchMessage(msg);
         }
       } catch (err) {}
     };
@@ -3167,15 +3177,15 @@ class DiscordChannelAdapter extends BaseChannel {
   }
   async addReaction(chatId, messageId, emoji, options) {
     const encoded = encodeURIComponent(emoji);
-    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
+    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`, undefined, options?.signal);
   }
   async sendTyping(chatId, options) {
-    await this.callApi("POST", `/channels/${chatId}/typing`, {});
+    await this.callApi("POST", `/channels/${chatId}/typing`, undefined, options?.signal);
   }
   async editText(chatId, messageId, text, options) {
     const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
       content: text
-    });
+    }, options?.signal);
     return {
       messageId: String(res.id || messageId),
       chatId,

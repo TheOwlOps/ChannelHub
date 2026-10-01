@@ -2963,6 +2963,16 @@ class BaseChannel extends EventEmitter {
   get provider() {
     return this.name;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   get accountId() {
     return this.config?.accountId || "default";
   }
@@ -3024,6 +3034,7 @@ class SlackChannelAdapter extends BaseChannel {
     if (this.config.appToken) {
       const res = await fetch("https://slack.com/api/apps.connections.open", {
         method: "POST",
+        signal,
         headers: { Authorization: `Bearer ${this.config.appToken}` }
       });
       const data = await res.json();
@@ -3031,7 +3042,7 @@ class SlackChannelAdapter extends BaseChannel {
         const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
         this.ws = new WS(data.url);
         this.ws.onopen = () => this.emit("status", { status: "connected" });
-        this.ws.onmessage = (e) => {
+        this.ws.onmessage = async (e) => {
           try {
             const payload = JSON.parse(e.data.toString());
             if (payload.type === "hello")
@@ -3042,7 +3053,7 @@ class SlackChannelAdapter extends BaseChannel {
             if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
               const msg = this.normalizeEvent(payload.payload);
               if (msg)
-                this.emit("message", msg);
+                await this.dispatchMessage(msg);
             }
           } catch (err) {}
         };

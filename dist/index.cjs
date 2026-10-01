@@ -37547,6 +37547,16 @@ class BaseChannel extends import_node_events.EventEmitter {
   get provider() {
     return this.name;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   get accountId() {
     return this.config?.accountId || "default";
   }
@@ -37834,15 +37844,19 @@ class ChannelHub {
         continue;
       }
       const next = await new Promise((resolve) => {
+        const waiter = (ctx) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(ctx);
+        };
         const onAbort = () => {
+          const idx = this._waiters.indexOf(waiter);
+          if (idx !== -1)
+            this._waiters.splice(idx, 1);
           signal?.removeEventListener("abort", onAbort);
           resolve(null);
         };
         signal?.addEventListener("abort", onAbort, { once: true });
-        this._waiters.push((ctx) => {
-          signal?.removeEventListener("abort", onAbort);
-          resolve(ctx);
-        });
+        this._waiters.push(waiter);
       });
       if (!next || signal?.aborted)
         break;
@@ -37850,6 +37864,7 @@ class ChannelHub {
     }
   }
   async start(signal) {
+    this._isClosed = false;
     const connected = [];
     const uniqueChannels = Array.from(new Set(this._channels.values()));
     try {
@@ -37964,11 +37979,11 @@ class ZaloChannelAdapter extends BaseChannel {
   setupEventListener() {
     if (!this.api?.listener?.on)
       return;
-    this.api.listener.on("message", (raw) => {
+    this.api.listener.on("message", async (raw) => {
       this.recordInbound(raw);
       const unified = this.normalizeMessage(raw);
       if (unified) {
-        this.emit("message", unified);
+        await this.dispatchMessage(unified);
       }
     });
     const onSessionDrop = (err) => {
@@ -38091,6 +38106,7 @@ class ZaloChannelAdapter extends BaseChannel {
     };
   }
   async sendText(chatId, text, options) {
+    this.assertNotAborted(options?.signal);
     if (!this.api)
       throw new Error("Zalo adapter is not connected.");
     const threadType = this.resolveThreadType(chatId);
@@ -38107,6 +38123,7 @@ class ZaloChannelAdapter extends BaseChannel {
     });
   }
   async sendMedia(chatId, media, options) {
+    this.assertNotAborted(options?.signal);
     if (!this.api)
       throw new Error("Zalo adapter is not connected.");
     const threadType = this.resolveThreadType(chatId);
@@ -38145,6 +38162,7 @@ class ZaloChannelAdapter extends BaseChannel {
     });
   }
   async sendTyping(chatId, options) {
+    this.assertNotAborted(options?.signal);
     if (!this.api?.sendTypingEvent)
       return;
     const threadType = this.resolveThreadType(chatId);
@@ -39017,16 +39035,6 @@ class TelegramChannelAdapter extends BaseChannel {
     }
     return data.result;
   }
-  async dispatchMessage(msg) {
-    const listeners = this.listeners("message");
-    for (const listener of listeners) {
-      try {
-        await listener(msg);
-      } catch (err) {
-        this.emit("error", err);
-      }
-    }
-  }
   startPolling() {
     if (this.isPolling)
       return;
@@ -39160,7 +39168,7 @@ class DiscordChannelAdapter extends BaseChannel {
     this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Discord botToken is required.");
-    await this.callApi("GET", "/users/@me");
+    await this.callApi("GET", "/users/@me", undefined, signal);
     this.setConnected(true);
     if (this.config.autoStart !== false) {
       this.connectGateway();
@@ -39170,7 +39178,7 @@ class DiscordChannelAdapter extends BaseChannel {
     const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
     const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
     this.ws = ws;
-    ws.onmessage = (event) => {
+    ws.onmessage = async (event) => {
       try {
         const data = JSON.parse(event.data.toString());
         if (data.s !== null)
@@ -39196,7 +39204,7 @@ class DiscordChannelAdapter extends BaseChannel {
         if (data.op === 0 && data.t === "MESSAGE_CREATE") {
           const msg = this.normalizeEvent(data.d);
           if (msg)
-            this.emit("message", msg);
+            await this.dispatchMessage(msg);
         }
       } catch (err) {}
     };
@@ -39305,15 +39313,15 @@ class DiscordChannelAdapter extends BaseChannel {
   }
   async addReaction(chatId, messageId, emoji, options) {
     const encoded = encodeURIComponent(emoji);
-    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
+    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`, undefined, options?.signal);
   }
   async sendTyping(chatId, options) {
-    await this.callApi("POST", `/channels/${chatId}/typing`, {});
+    await this.callApi("POST", `/channels/${chatId}/typing`, undefined, options?.signal);
   }
   async editText(chatId, messageId, text, options) {
     const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
       content: text
-    });
+    }, options?.signal);
     return {
       messageId: String(res.id || messageId),
       chatId,
@@ -39348,6 +39356,7 @@ class SlackChannelAdapter extends BaseChannel {
     if (this.config.appToken) {
       const res = await fetch("https://slack.com/api/apps.connections.open", {
         method: "POST",
+        signal,
         headers: { Authorization: `Bearer ${this.config.appToken}` }
       });
       const data = await res.json();
@@ -39355,7 +39364,7 @@ class SlackChannelAdapter extends BaseChannel {
         const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
         this.ws = new WS(data.url);
         this.ws.onopen = () => this.emit("status", { status: "connected" });
-        this.ws.onmessage = (e) => {
+        this.ws.onmessage = async (e) => {
           try {
             const payload = JSON.parse(e.data.toString());
             if (payload.type === "hello")
@@ -39366,7 +39375,7 @@ class SlackChannelAdapter extends BaseChannel {
             if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
               const msg = this.normalizeEvent(payload.payload);
               if (msg)
-                this.emit("message", msg);
+                await this.dispatchMessage(msg);
             }
           } catch (err) {}
         };
@@ -39544,12 +39553,12 @@ class MessengerChannelAdapter extends BaseChannel {
             if (body.length > 1024 * 1024)
               req.destroy();
           });
-          req.on("end", () => {
+          req.on("end", async () => {
             try {
               const data = JSON.parse(body);
               const msgs = this.normalizeEvent(data);
               for (const m of msgs) {
-                this.emit("message", m);
+                await this.dispatchMessage(m);
               }
               res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
             } catch (err) {
@@ -39788,6 +39797,7 @@ class MessengerChannelAdapter extends BaseChannel {
       const uploadUrl = `${this.apiBase}/me/message_attachments`;
       const uploadRes = await fetch(uploadUrl, {
         method: "POST",
+        signal: options?.signal,
         headers: {
           Authorization: `Bearer ${this.config.pageAccessToken}`
         },
@@ -39828,6 +39838,7 @@ class MessengerChannelAdapter extends BaseChannel {
     const url = `${this.apiBase}/me/messages`;
     const response = await fetch(url, {
       method: "POST",
+      signal: options?.signal,
       headers: {
         Authorization: `Bearer ${this.config.pageAccessToken}`
       },

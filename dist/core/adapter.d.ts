@@ -1,8 +1,9 @@
 import { EventEmitter } from "node:events";
-import type { ChannelType, IChannelAdapter, MediaPayload, SendOptions, SentMessageResult } from "./types";
+import type { ChannelType, IChannelAdapter, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "./types";
 export declare abstract class BaseChannel extends EventEmitter implements IChannelAdapter {
     abstract readonly name: ChannelType;
     get provider(): ChannelType;
+    protected dispatchMessage(msg: UnifiedMessage): Promise<void>;
     get accountId(): string;
     private _connected;
     isConnected(): boolean;

@@ -16,6 +16,17 @@ export abstract class BaseChannel extends EventEmitter implements IChannelAdapte
     return this.name;
   }
   
+    protected async dispatchMessage(msg: UnifiedMessage): Promise<void> {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await (listener as any)(msg);
+      } catch (err: any) {
+        this.emit("error", err);
+      }
+    }
+  }
+
   get accountId(): string {
     return (this as any).config?.accountId || "default";
   }

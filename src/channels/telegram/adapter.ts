@@ -109,16 +109,7 @@ export class TelegramChannelAdapter extends BaseChannel {
     return data.result;
   }
 
-  private async dispatchMessage(msg: UnifiedMessage): Promise<void> {
-    const listeners = this.listeners("message");
-    for (const listener of listeners) {
-      try {
-        await (listener as any)(msg);
-      } catch (err: any) {
-        this.emit("error", err);
-      }
-    }
-  }
+  
 
   private startPolling(): void {
     if (this.isPolling) return;

@@ -116,15 +116,18 @@ export class ChannelHub {
       }
 
       const next = await new Promise<MessageContext | null>((resolve) => {
+        const waiter = (ctx: MessageContext | null) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(ctx);
+        };
         const onAbort = () => {
+          const idx = this._waiters.indexOf(waiter);
+          if (idx !== -1) this._waiters.splice(idx, 1);
           signal?.removeEventListener("abort", onAbort);
           resolve(null);
         };
         signal?.addEventListener("abort", onAbort, { once: true });
-        this._waiters.push((ctx) => {
-          signal?.removeEventListener("abort", onAbort);
-          resolve(ctx);
-        });
+        this._waiters.push(waiter);
       });
 
       if (!next || signal?.aborted) break;
@@ -133,6 +136,7 @@ export class ChannelHub {
   }
 
   async start(signal?: AbortSignal): Promise<void> {
+    this._isClosed = false;
     const connected: IChannelAdapter[] = [];
     const uniqueChannels = Array.from(new Set(this._channels.values()));
 

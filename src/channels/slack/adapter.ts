@@ -43,6 +43,7 @@ export class SlackChannelAdapter extends BaseChannel {
     if (this.config.appToken) {
       const res = await fetch("https://slack.com/api/apps.connections.open", {
         method: "POST",
+        signal,
         headers: { Authorization: `Bearer ${this.config.appToken}` }
       });
       const data = await res.json();
@@ -50,7 +51,7 @@ export class SlackChannelAdapter extends BaseChannel {
         const WS = (globalThis as any).WebSocket || (await import("ws")).default;
         this.ws = new WS(data.url);
         this.ws.onopen = () => this.emit("status", { status: "connected" });
-        this.ws.onmessage = (e: any) => {
+        this.ws.onmessage = async (e: any) => {
           try {
             const payload = JSON.parse(e.data.toString());
             if (payload.type === "hello") return;
@@ -59,7 +60,7 @@ export class SlackChannelAdapter extends BaseChannel {
             }
             if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
               const msg = this.normalizeEvent(payload.payload);
-              if (msg) this.emit("message", msg);
+              if (msg) await this.dispatchMessage(msg);
             }
           } catch (err) {}
         };

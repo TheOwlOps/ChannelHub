@@ -5,6 +5,16 @@ class BaseChannel extends EventEmitter {
   get provider() {
     return this.name;
   }
+  async dispatchMessage(msg) {
+    const listeners = this.listeners("message");
+    for (const listener of listeners) {
+      try {
+        await listener(msg);
+      } catch (err) {
+        this.emit("error", err);
+      }
+    }
+  }
   get accountId() {
     return this.config?.accountId || "default";
   }
@@ -292,15 +302,19 @@ class ChannelHub {
         continue;
       }
       const next = await new Promise((resolve) => {
+        const waiter = (ctx) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(ctx);
+        };
         const onAbort = () => {
+          const idx = this._waiters.indexOf(waiter);
+          if (idx !== -1)
+            this._waiters.splice(idx, 1);
           signal?.removeEventListener("abort", onAbort);
           resolve(null);
         };
         signal?.addEventListener("abort", onAbort, { once: true });
-        this._waiters.push((ctx) => {
-          signal?.removeEventListener("abort", onAbort);
-          resolve(ctx);
-        });
+        this._waiters.push(waiter);
       });
       if (!next || signal?.aborted)
         break;
@@ -308,6 +322,7 @@ class ChannelHub {
     }
   }
   async start(signal) {
+    this._isClosed = false;
     const connected = [];
     const uniqueChannels = Array.from(new Set(this._channels.values()));
     try {

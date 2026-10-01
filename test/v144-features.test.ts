@@ -23,8 +23,8 @@ class MockChannel extends BaseChannel {
   async sendMedia(): Promise<any> {
     return { messageId: "1", chatId: "c", timestamp: 1 };
   }
-  push(msg: UnifiedMessage) {
-    this.emit("message", msg);
+  async push(msg: UnifiedMessage) {
+    await this.dispatchMessage(msg);
   }
 }
 
@@ -51,7 +51,7 @@ describe("v1.4.4 Complete Fixes & Verification", () => {
     // Push TOTAL_MESSAGES asynchronously
     (async () => {
       for (let i = 1; i <= TOTAL_MESSAGES; i++) {
-        ch.push({
+        await ch.push({
           id: String(i),
           channel: "telegram",
           sender: { id: "u" },
@@ -214,5 +214,50 @@ describe("v1.4.4 Complete Fixes & Verification", () => {
     await consumer;
     expect(received).not.toBeNull();
     expect(received.message.content.text).toBe("after-restart");
+  });
+  test("stop() wakes up and releases producers waiting on full queue drain without hanging", async () => {
+    const hub = new ChannelHub();
+    const ch = new MockChannel();
+    hub.register(ch);
+    await hub.start();
+
+    // Fill queue to 2,000 capacity
+    for (let i = 1; i <= 2000; i++) {
+      await ch.push({
+        id: `fill-${i}`,
+        channel: "telegram",
+        sender: { id: "u" },
+        chat: { id: "c", type: "dm" },
+        content: { text: "filler" },
+        raw: {},
+        timestamp: Date.now(),
+      });
+    }
+
+    // Now push 2,001th item which suspends
+    let producerFinished = false;
+    const producerPromise = (async () => {
+      await ch.push({
+        id: "overflow-1",
+        channel: "telegram",
+        sender: { id: "u" },
+        chat: { id: "c", type: "dm" },
+        content: { text: "blocked" },
+        raw: {},
+        timestamp: Date.now(),
+      });
+      // Yield to enter waiting state
+      await new Promise((r) => setTimeout(r, 10));
+      producerFinished = true;
+    })();
+
+    // Ensure it is waiting
+    await new Promise((r) => setTimeout(r, 20));
+    expect(producerFinished).toBe(false);
+
+    // Call stop() — should drain waiters and not hang
+    await hub.stop();
+    await producerPromise;
+    expect(producerFinished).toBe(true);
   });
 });

@@ -43,10 +43,12 @@ export class ChannelHub {
         const waiter = this._waiters.shift()!;
         waiter(ctx);
       } else {
-        while (this._queue.length >= 2000) {
+        while (this._queue.length >= 2000 && !this._isClosed) {
           await new Promise<void>((resolve) => this._queueDrainWaiters.push(resolve));
         }
-        this._queue.push(ctx);
+        if (!this._isClosed) {
+          this._queue.push(ctx);
+        }
       }
 
       // 2. Dispatch to registered callbacks awaiting sequentially
@@ -165,6 +167,11 @@ export class ChannelHub {
       waiter(null);
     }
     this._waiters = [];
+
+    while (this._queueDrainWaiters.length > 0) {
+      const drain = this._queueDrainWaiters.shift()!;
+      drain();
+    }
 
     const uniqueChannels = Array.from(new Set(this._channels.values()));
     await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));

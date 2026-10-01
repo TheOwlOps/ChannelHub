@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.8] - 2026-10-01
+
+### Fixed
+- **Stop With Full Queue**: Resolved hung/deadlocked producer promises when `stop()` is invoked while the queue is full at 2,000 items. `stop()` now flushes all `_queueDrainWaiters` and producers immediately unblock upon detecting `_isClosed`.
+- **Signal Coverage**: Covered missing AbortSignals in Slack `auth.test`, Telegram `addReaction`, and Zalo `addReaction`.
+
+### Added
+- **Test Suite**: Added test `stop() wakes up and releases producers waiting on full queue drain without hanging`.
+
+---
+
+## [1.4.7] - 2026-10-01
+
+### Fixed
+- Added AbortSignal to Slack auth.test, Telegram addReaction, and Zalo addReaction.
+
+---
+
 ## [1.4.6] - 2026-10-01
 
 ### Fixed

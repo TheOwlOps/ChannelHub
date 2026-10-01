@@ -18681,10 +18681,12 @@ class ChannelHub {
         const waiter = this._waiters.shift();
         waiter(ctx);
       } else {
-        while (this._queue.length >= 2000) {
+        while (this._queue.length >= 2000 && !this._isClosed) {
           await new Promise((resolve) => this._queueDrainWaiters.push(resolve));
         }
-        this._queue.push(ctx);
+        if (!this._isClosed) {
+          this._queue.push(ctx);
+        }
       }
       for (const handler of this._messageHandlers) {
         try {
@@ -18785,6 +18787,10 @@ class ChannelHub {
       waiter(null);
     }
     this._waiters = [];
+    while (this._queueDrainWaiters.length > 0) {
+      const drain = this._queueDrainWaiters.shift();
+      drain();
+    }
     const uniqueChannels = Array.from(new Set(this._channels.values()));
     await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
   }

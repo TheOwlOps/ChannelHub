@@ -23,7 +23,7 @@ export class DiscordChannelAdapter extends BaseChannel {
   readonly capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    media: ["image", "video", "file", "audio", "animation", "sticker"] as const,
     reactions: true,
     editing: true,
     typing: true,
@@ -48,7 +48,7 @@ export class DiscordChannelAdapter extends BaseChannel {
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
 
-    if (this.config.autoStart !== false && typeof (globalThis as any).WebSocket !== "undefined") {
+    if (this.config.autoStart !== false) {
       this.connectGateway();
     }
   }

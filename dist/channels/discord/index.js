@@ -3003,7 +3003,7 @@ class DiscordChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: true,
     typing: true,
@@ -3024,7 +3024,7 @@ class DiscordChannelAdapter extends BaseChannel {
       throw new Error("Discord botToken is required.");
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
-    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
+    if (this.config.autoStart !== false) {
       this.connectGateway();
     }
   }

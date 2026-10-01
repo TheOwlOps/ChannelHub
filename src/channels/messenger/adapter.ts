@@ -14,7 +14,7 @@ export class MessengerChannelAdapter extends BaseChannel {
   readonly capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    media: ["image", "video", "file", "audio", "animation", "sticker"] as const,
     reactions: true,
     editing: false,
     typing: true,
@@ -221,7 +221,7 @@ export class MessengerChannelAdapter extends BaseChannel {
       payload.message.reply_to = { mid: options.replyToId };
     }
 
-    const res = await this.callApi("POST", "/me/messages", payload);
+    const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
     return {
       messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
       chatId,
@@ -242,7 +242,7 @@ export class MessengerChannelAdapter extends BaseChannel {
         },
       };
       if (options?.replyToId) payload.message.reply_to = { mid: options.replyToId };
-      const res = await this.callApi("POST", "/me/messages", payload);
+      const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
       return {
         messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
         chatId,
@@ -271,7 +271,7 @@ export class MessengerChannelAdapter extends BaseChannel {
         payload.message.reply_to = { mid: options.replyToId };
       }
 
-      const res = await this.callApi("POST", "/me/messages", payload);
+      const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
       return {
         messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
         chatId,
@@ -366,7 +366,7 @@ export class MessengerChannelAdapter extends BaseChannel {
             },
           };
           if (options?.replyToId) payload.message.reply_to = { mid: options.replyToId };
-          const res = await this.callApi("POST", "/me/messages", payload);
+          const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
           return {
             messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
             chatId,
@@ -412,14 +412,13 @@ export class MessengerChannelAdapter extends BaseChannel {
     };
   }
 
-  async sendTyping(chatId: string): Promise<void> {
-    await this.callApi("POST", "/me/messages", {
-      recipient: { id: chatId },
+  async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
+    await this.callApi("POST", "/me/messages", { recipient: { id: chatId }, 
       sender_action: "typing_on",
-    });
+     }, options?.signal);
   }
 
-  private async callApi(method: string, path: string, body?: any): Promise<any> {
+  private async callApi(method: string, path: string, body?: any, signal?: AbortSignal): Promise<any> {
     const url = `${this.apiBase}${path}`;
     const headers: Record<string, string> = {
       Authorization: `Bearer ${this.config.pageAccessToken}`,

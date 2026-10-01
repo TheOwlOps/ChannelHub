@@ -3,6 +3,7 @@ import type { ChannelType, MediaPayload, SendOptions, SentMessageResult } from "
 export interface ZaloAdapterConfig {
     api?: any;
     credentialsPath?: string;
+    accountId?: string;
     ownId?: string;
     defaultIsGroup?: boolean;
     minDelayMs?: number;
@@ -15,7 +16,7 @@ export declare class ZaloChannelAdapter extends BaseChannel {
     readonly capabilities: {
         inbound: boolean;
         outbound: boolean;
-        media: readonly ["image", "video", "document", "audio", "animation", "sticker"];
+        media: readonly ["image", "video", "file", "audio", "animation", "sticker"];
         reactions: boolean;
         editing: boolean;
         typing: boolean;
@@ -28,8 +29,8 @@ export declare class ZaloChannelAdapter extends BaseChannel {
     private messageCache;
     private sendQueue;
     constructor(config?: ZaloAdapterConfig);
-    connect(): Promise<void>;
-    disconnect(): Promise<void>;
+    connect(signal?: AbortSignal): Promise<void>;
+    disconnect(signal?: AbortSignal): Promise<void>;
     private setupEventListener;
     private recordInbound;
     private resolveThreadType;
@@ -38,6 +39,10 @@ export declare class ZaloChannelAdapter extends BaseChannel {
     private normalizeMessage;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
-    addReaction(chatId: string, messageId: string, emoji: string): Promise<void>;
-    sendTyping(chatId: string): Promise<void>;
+    addReaction(chatId: string, messageId: string, emoji: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
+    sendTyping(chatId: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
 }

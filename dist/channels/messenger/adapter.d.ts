@@ -6,7 +6,7 @@ export declare class MessengerChannelAdapter extends BaseChannel {
     readonly capabilities: {
         inbound: boolean;
         outbound: boolean;
-        media: readonly ["image", "video", "document", "audio", "animation", "sticker"];
+        media: readonly ["image", "video", "file", "audio", "animation", "sticker"];
         reactions: boolean;
         editing: boolean;
         typing: boolean;
@@ -28,6 +28,8 @@ export declare class MessengerChannelAdapter extends BaseChannel {
     normalizeEvent(body: any): UnifiedMessage[];
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
-    sendTyping(chatId: string): Promise<void>;
+    sendTyping(chatId: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
     private callApi;
 }

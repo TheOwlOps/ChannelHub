@@ -45,7 +45,7 @@ class TelegramChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: true,
     typing: true,
@@ -61,16 +61,19 @@ class TelegramChannelAdapter extends BaseChannel {
     this.config = config;
     this.apiRoot = config.apiRoot || "https://api.telegram.org";
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken) {
       throw new Error("Telegram botToken is required.");
     }
+    await this.callApi("getMe", {}, signal);
     this.setConnected(true);
     if (this.config.autoStart !== false) {
       this.startPolling();
     }
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
     this.stopPolling();
     this.setConnected(false);
   }

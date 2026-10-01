@@ -3026,7 +3026,7 @@ class SlackChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio"],
+    media: ["image", "video", "file", "audio"],
     reactions: true,
     editing: true,
     typing: false,

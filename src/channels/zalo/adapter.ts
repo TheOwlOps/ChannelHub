@@ -10,6 +10,7 @@ import type {
 export interface ZaloAdapterConfig {
   api?: any;
   credentialsPath?: string;
+  accountId?: string;
   ownId?: string;
   defaultIsGroup?: boolean;
   minDelayMs?: number;
@@ -56,7 +57,7 @@ export class ZaloChannelAdapter extends BaseChannel {
   readonly capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    media: ["image", "video", "file", "audio", "animation", "sticker"] as const,
     reactions: true,
     editing: false,
     typing: true,
@@ -85,7 +86,8 @@ export class ZaloChannelAdapter extends BaseChannel {
     this.ownId = config.ownId;
   }
 
-  async connect(): Promise<void> {
+  async connect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     if (!this.api && this.config.credentialsPath) {
       const fs = await import("node:fs");
       const { Zalo } = await import("zca-js");
@@ -107,7 +109,8 @@ export class ZaloChannelAdapter extends BaseChannel {
     this.setConnected(true);
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     if (this.api?.listener?.stop) {
       try {
         this.api.listener.stop();
@@ -334,7 +337,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     });
   }
 
-  async addReaction(chatId: string, messageId: string, emoji: string): Promise<void> {
+  async addReaction(chatId: string, messageId: string, emoji: string, options?: { signal?: AbortSignal }): Promise<void> {
     if (!this.api?.addReaction) return;
 
     const threadType = this.resolveThreadType(chatId);
@@ -350,7 +353,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     });
   }
 
-  async sendTyping(chatId: string): Promise<void> {
+  async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
     if (!this.api?.sendTypingEvent) return;
     const threadType = this.resolveThreadType(chatId);
     try {

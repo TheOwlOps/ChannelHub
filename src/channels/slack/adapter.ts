@@ -19,7 +19,7 @@ export class SlackChannelAdapter extends BaseChannel {
   readonly capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio"] as const,
+    media: ["image", "video", "file", "audio"] as const,
     reactions: true,
     editing: true,
     typing: false,

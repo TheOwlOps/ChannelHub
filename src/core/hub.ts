@@ -106,7 +106,12 @@ export class ChannelHub {
   async *messages(signal?: AbortSignal): AsyncIterable<MessageContext> {
     while (!this._isClosed && !signal?.aborted) {
       if (this._queue.length > 0) {
-        yield this._queue.shift()!;
+        const item = this._queue.shift()!;
+        if (this._queueDrainWaiters.length > 0) {
+          const drain = this._queueDrainWaiters.shift()!;
+          drain();
+        }
+        yield item;
         continue;
       }
 

@@ -13,7 +13,7 @@ export class TelegramChannelAdapter extends BaseChannel {
   readonly capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    media: ["image", "video", "file", "audio", "animation", "sticker"] as const,
     reactions: true,
     editing: true,
     typing: true,
@@ -31,17 +31,20 @@ export class TelegramChannelAdapter extends BaseChannel {
     this.apiRoot = config.apiRoot || "https://api.telegram.org";
   }
 
-  async connect(): Promise<void> {
+  async connect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     if (!this.config.botToken) {
       throw new Error("Telegram botToken is required.");
     }
+    await this.callApi("getMe", {}, signal);
     this.setConnected(true);
     if (this.config.autoStart !== false) {
       this.startPolling();
     }
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect(signal?: AbortSignal): Promise<void> {
+    this.assertNotAborted(signal);
     this.stopPolling();
     this.setConnected(false);
   }

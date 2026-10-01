@@ -6,7 +6,7 @@ export declare class TelegramChannelAdapter extends BaseChannel {
     readonly capabilities: {
         inbound: boolean;
         outbound: boolean;
-        media: readonly ["image", "video", "document", "audio", "animation", "sticker"];
+        media: readonly ["image", "video", "file", "audio", "animation", "sticker"];
         reactions: boolean;
         editing: boolean;
         typing: boolean;
@@ -18,8 +18,8 @@ export declare class TelegramChannelAdapter extends BaseChannel {
     private lastUpdateId;
     private isPolling;
     constructor(config: TelegramAdapterConfig);
-    connect(): Promise<void>;
-    disconnect(): Promise<void>;
+    connect(signal?: AbortSignal): Promise<void>;
+    disconnect(signal?: AbortSignal): Promise<void>;
     normalizeUpdate(update: any): UnifiedMessage | null;
     private callApi;
     private dispatchMessage;

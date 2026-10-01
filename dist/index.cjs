@@ -37825,7 +37825,12 @@ class ChannelHub {
   async* messages(signal) {
     while (!this._isClosed && !signal?.aborted) {
       if (this._queue.length > 0) {
-        yield this._queue.shift();
+        const item = this._queue.shift();
+        if (this._queueDrainWaiters.length > 0) {
+          const drain = this._queueDrainWaiters.shift();
+          drain();
+        }
+        yield item;
         continue;
       }
       const next = await new Promise((resolve) => {
@@ -37904,7 +37909,7 @@ class ZaloChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: false,
     typing: true,
@@ -37929,7 +37934,8 @@ class ZaloChannelAdapter extends BaseChannel {
     }
     this.ownId = config.ownId;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.api && this.config.credentialsPath) {
       const fs = await import("node:fs");
       await Promise.resolve().then(() => init_dist());
@@ -37946,7 +37952,8 @@ class ZaloChannelAdapter extends BaseChannel {
     this.setupEventListener();
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
     if (this.api?.listener?.stop) {
       try {
         this.api.listener.stop();
@@ -38125,7 +38132,7 @@ class ZaloChannelAdapter extends BaseChannel {
       };
     });
   }
-  async addReaction(chatId, messageId, emoji) {
+  async addReaction(chatId, messageId, emoji, options) {
     if (!this.api?.addReaction)
       return;
     const threadType = this.resolveThreadType(chatId);
@@ -38137,7 +38144,7 @@ class ZaloChannelAdapter extends BaseChannel {
       await this.api.addReaction(chatId, messageId, cliMsgId, reactionCode, threadType);
     });
   }
-  async sendTyping(chatId) {
+  async sendTyping(chatId, options) {
     if (!this.api?.sendTypingEvent)
       return;
     const threadType = this.resolveThreadType(chatId);
@@ -38930,7 +38937,7 @@ class TelegramChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: true,
     typing: true,
@@ -38946,16 +38953,19 @@ class TelegramChannelAdapter extends BaseChannel {
     this.config = config;
     this.apiRoot = config.apiRoot || "https://api.telegram.org";
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.config.botToken) {
       throw new Error("Telegram botToken is required.");
     }
+    await this.callApi("getMe", {}, signal);
     this.setConnected(true);
     if (this.config.autoStart !== false) {
       this.startPolling();
     }
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
     this.stopPolling();
     this.setConnected(false);
   }
@@ -39131,7 +39141,7 @@ class DiscordChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: true,
     typing: true,
@@ -39152,7 +39162,7 @@ class DiscordChannelAdapter extends BaseChannel {
       throw new Error("Discord botToken is required.");
     await this.callApi("GET", "/users/@me");
     this.setConnected(true);
-    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
+    if (this.config.autoStart !== false) {
       this.connectGateway();
     }
   }
@@ -39317,7 +39327,7 @@ class SlackChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio"],
+    media: ["image", "video", "file", "audio"],
     reactions: true,
     editing: true,
     typing: false,
@@ -39479,7 +39489,7 @@ class MessengerChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: false,
     typing: true,
@@ -39660,7 +39670,7 @@ class MessengerChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message.reply_to = { mid: options.replyToId };
     }
-    const res = await this.callApi("POST", "/me/messages", payload);
+    const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
     return {
       messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
       chatId,
@@ -39680,7 +39690,7 @@ class MessengerChannelAdapter extends BaseChannel {
       };
       if (options?.replyToId)
         payload.message.reply_to = { mid: options.replyToId };
-      const res = await this.callApi("POST", "/me/messages", payload);
+      const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
       return {
         messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
         chatId,
@@ -39704,7 +39714,7 @@ class MessengerChannelAdapter extends BaseChannel {
       if (options?.replyToId) {
         payload.message.reply_to = { mid: options.replyToId };
       }
-      const res = await this.callApi("POST", "/me/messages", payload);
+      const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
       return {
         messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
         chatId,
@@ -39797,7 +39807,7 @@ class MessengerChannelAdapter extends BaseChannel {
           };
           if (options?.replyToId)
             payload.message.reply_to = { mid: options.replyToId };
-          const res = await this.callApi("POST", "/me/messages", payload);
+          const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
           return {
             messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
             chatId,
@@ -39834,13 +39844,13 @@ class MessengerChannelAdapter extends BaseChannel {
       timestamp: Date.now()
     };
   }
-  async sendTyping(chatId) {
+  async sendTyping(chatId, options) {
     await this.callApi("POST", "/me/messages", {
       recipient: { id: chatId },
       sender_action: "typing_on"
-    });
+    }, options?.signal);
   }
-  async callApi(method, path, body) {
+  async callApi(method, path, body, signal) {
     const url = `${this.apiBase}${path}`;
     const headers = {
       Authorization: `Bearer ${this.config.pageAccessToken}`,

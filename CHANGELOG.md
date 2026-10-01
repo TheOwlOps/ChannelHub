@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.5] - 2026-10-01
+
+### Fixed
+- **Backpressure Deadlock**: Resolved `_queueDrainWaiters` inside `messages()` async generator so producers never deadlock when queue exceeds 2,000 items. Verified with 2,005 items test.
+- **Contract Type Alignment**: Fixed `capabilities.media` across all adapters from `"document"` to `"file"` matching core `MediaType`.
+- **Multi-Account**: Added `accountId?: string` to `TelegramAdapterConfig` and `ZaloAdapterConfig`. Both Telegram and Zalo now support multiple bot instances registered into `ChannelHub`.
+- **Discord Node 18 Support**: Removed global `WebSocket` prerequisite check in Discord adapter, allowing pure Node 18 runtimes to use the `ws` fallback.
+- **AbortSignal Pass-down**: Integrated `AbortSignal` across `connect`, `disconnect`, `sendText`, `sendMedia`, `addReaction`, `sendTyping`, `editText` for Telegram, Zalo, and Messenger.
+
+### Added
+- **Test Suite**: Added `test/v144-features.test.ts` covering backpressure capacity > 2,000 items, capability validation against `MediaType`, multi-account registration for Telegram & Zalo, and AbortSignal cancellation.
+
+---
+
 ## [1.4.3] - 2026-10-01
 
 ### Added

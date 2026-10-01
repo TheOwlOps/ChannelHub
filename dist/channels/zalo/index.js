@@ -37542,7 +37542,7 @@ class ZaloChannelAdapter extends BaseChannel {
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "file", "audio", "animation", "sticker"],
     reactions: true,
     editing: false,
     typing: true,
@@ -37567,7 +37567,8 @@ class ZaloChannelAdapter extends BaseChannel {
     }
     this.ownId = config.ownId;
   }
-  async connect() {
+  async connect(signal) {
+    this.assertNotAborted(signal);
     if (!this.api && this.config.credentialsPath) {
       const fs = await import("node:fs");
       await Promise.resolve().then(() => init_dist());
@@ -37584,7 +37585,8 @@ class ZaloChannelAdapter extends BaseChannel {
     this.setupEventListener();
     this.setConnected(true);
   }
-  async disconnect() {
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
     if (this.api?.listener?.stop) {
       try {
         this.api.listener.stop();
@@ -37763,7 +37765,7 @@ class ZaloChannelAdapter extends BaseChannel {
       };
     });
   }
-  async addReaction(chatId, messageId, emoji) {
+  async addReaction(chatId, messageId, emoji, options) {
     if (!this.api?.addReaction)
       return;
     const threadType = this.resolveThreadType(chatId);
@@ -37775,7 +37777,7 @@ class ZaloChannelAdapter extends BaseChannel {
       await this.api.addReaction(chatId, messageId, cliMsgId, reactionCode, threadType);
     });
   }
-  async sendTyping(chatId) {
+  async sendTyping(chatId, options) {
     if (!this.api?.sendTypingEvent)
       return;
     const threadType = this.resolveThreadType(chatId);

@@ -219,7 +219,7 @@ export class TelegramChannelAdapter extends BaseChannel {
       chat_id: chatId,
       message_id: Number(messageId),
       reaction: [{ type: "emoji", emoji }],
-    });
+    }, options?.signal);
   }
 
   async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {

@@ -340,6 +340,7 @@ export class ZaloChannelAdapter extends BaseChannel {
   }
 
   async addReaction(chatId: string, messageId: string, emoji: string, options?: { signal?: AbortSignal }): Promise<void> {
+    this.assertNotAborted(options?.signal);
     if (!this.api?.addReaction) return;
 
     const threadType = this.resolveThreadType(chatId);

@@ -37833,6 +37833,7 @@ class ZaloChannelAdapter extends BaseChannel {
     });
   }
   async addReaction(chatId, messageId, emoji, options) {
+    this.assertNotAborted(options?.signal);
     if (!this.api?.addReaction)
       return;
     const threadType = this.resolveThreadType(chatId);

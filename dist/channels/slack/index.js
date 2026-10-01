@@ -3030,7 +3030,7 @@ class SlackChannelAdapter extends BaseChannel {
     this.assertNotAborted(signal);
     if (!this.config.botToken)
       throw new Error("Slack botToken is required.");
-    await this.callApi("auth.test", {});
+    await this.callApi("auth.test", {}, signal);
     if (this.config.appToken) {
       const res = await fetch("https://slack.com/api/apps.connections.open", {
         method: "POST",

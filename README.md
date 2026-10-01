@@ -152,9 +152,14 @@ import { ChannelHub } from "@theowlops/channelhub";
 import { getChannelHubMcpTools, handleChannelHubMcpCall } from "@theowlops/channelhub/mcp";
 
 // Tools provided:
-// - channelhub_list_channels
-// - channelhub_send_message
-// - channelhub_add_reaction
+// - channelhub_list_channels: Liệt kê các kênh đang hoạt động
+// - channelhub_get_status: Kiểm tra trạng thái kết nối từng kênh
+// - channelhub_send_message: Gửi tin nhắn hoặc phản hồi
+// - channelhub_send_media: Gửi ảnh, video, âm thanh hoặc file tài liệu
+// - channelhub_send_typing: Hiển thị trạng thái đang soạn tin (typing)
+// - channelhub_edit_message: Chỉnh sửa nội dung tin nhắn đã gửi
+// - channelhub_add_reaction: Thả cảm xúc emoji
+// - channelhub_broadcast: Gửi tin nhắn đồng loạt tới nhiều kênh/chatId cùng lúc
 ```
 
 ### 🌉 Webhook Bridge (REST & Server-Sent Events)

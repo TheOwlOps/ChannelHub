@@ -81,4 +81,61 @@ describe("MessengerChannelAdapter", () => {
     expect(messages[0].content.attachments?.[0].url).toBe("https://example.com/photo.jpg");
     expect(messages[0].content.attachments?.[0].type).toBe("image");
   });
+
+  test("handles exotic attachments (location, fallback, stickers)", () => {
+    const rawPayload = {
+      object: "page",
+      entry: [
+        {
+          messaging: [
+            {
+              sender: { id: "u2" },
+              message: {
+                mid: "m_loc",
+                attachments: [
+                  {
+                    type: "location",
+                    payload: { coordinates: { lat: 21.0, long: 105.8 } },
+                  },
+                  {
+                    type: "fallback",
+                    title: "Instagram Reel",
+                    url: "https://instagram.com/reel/123",
+                  },
+                ],
+                sticker_id: 369239263222822,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const msgs = adapter.normalizeEvent(rawPayload);
+    expect(msgs.length).toBe(1);
+    
+    // Check synthesized text from location + fallback
+    expect(msgs[0].content.text).toContain("Vị trí");
+    
+    // Check attachments
+    const atts = msgs[0].content.attachments!;
+    expect(atts.length).toBe(3); // sticker + location + fallback
+    
+    expect(atts[0].type).toBe("image");
+    expect(atts[0].url).toContain("369239263222822");
+
+    expect(atts[1].type).toBe("file");
+    expect(atts[1].filename).toBe("location.json");
+    expect(atts[1].url).toContain("21,105.8");
+
+    expect(atts[2].type).toBe("file");
+    expect(atts[2].filename).toBe("Instagram Reel");
+    expect(atts[2].url).toBe("https://instagram.com/reel/123");
+  });
+
+  test("rejects files > 100MB", async () => {
+    const largeBuffer = new Uint8Array(101 * 1024 * 1024); // 101 MB
+    await expect(adapter.sendMedia("test", { type: "video", source: largeBuffer }))
+      .rejects.toThrow(/100MB/);
+  });
 });

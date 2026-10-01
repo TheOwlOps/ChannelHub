@@ -59,17 +59,62 @@ export class MessengerChannelAdapter extends BaseChannel {
     for (const entry of body.entry) {
       if (!Array.isArray(entry.messaging)) continue;
       for (const event of entry.messaging) {
-        if (!event.message) continue;
+        // Handle normal messages and postbacks
+        if (!event.message && !event.postback) continue;
 
         const senderId = event.sender?.id || "";
-        const text = event.message.text || "";
-        const attachments = (event.message.attachments || []).map((att: any) => ({
-          type: att.type || "file",
-          url: att.payload?.url || "",
-        }));
+        let text = event.message?.text || event.postback?.title || event.postback?.payload || "";
+        const attachments: any[] = [];
+        
+        // Handle stickers
+        if (event.message?.sticker_id) {
+          attachments.push({
+            type: "image",
+            url: event.message?.attachments?.[0]?.payload?.url || `https://facebook.com/sticker/${event.message.sticker_id}`,
+            filename: `sticker_${event.message.sticker_id}.png`,
+          });
+        }
+
+        // Process attachments robustly
+        if (Array.isArray(event.message?.attachments)) {
+          for (const att of event.message.attachments) {
+            let type: "image" | "video" | "audio" | "file" = "file";
+            let url = att.payload?.url || att.url || "";
+            let filename = att.payload?.name || att.title || undefined;
+
+            if (att.type === "image") type = "image";
+            else if (att.type === "video") type = "video";
+            else if (att.type === "audio") type = "audio";
+            else if (att.type === "location") {
+              type = "file";
+              const lat = att.payload?.coordinates?.lat;
+              const long = att.payload?.coordinates?.long;
+              if (lat != null && long != null) {
+                url = `https://www.google.com/maps?q=${lat},${long}`;
+                filename = "location.json";
+                if (!text) text = `📍 [Vị trí chia sẻ: ${lat}, ${long}]`;
+              }
+            } else if (att.type === "fallback") {
+              type = "file";
+              if (!text) text = `🔗 [Liên kết chia sẻ: ${att.title || "URL"}]`;
+            } else {
+              type = "file";
+            }
+
+            // Sanitize filename if present
+            if (filename) {
+              filename = filename.replace(/[\/\\]/g, "_").replace(/\0/g, "");
+            }
+            
+            // Avoid duplicate sticker
+            if (att.type === "image" && att.payload?.sticker_id) continue;
+            
+            attachments.push({ type, url, filename });
+          }
+        }
 
         messages.push({
-          id: event.message.mid || `fb_${Date.now()}`,
+          id: event.message?.mid || event.postback?.mid || `fb_${Date.now()}`,
           channel: this.name,
           sender: {
             id: senderId,
@@ -82,7 +127,7 @@ export class MessengerChannelAdapter extends BaseChannel {
           content: {
             text,
             attachments,
-            replyToId: event.message.reply_to?.mid,
+            replyToId: event.message?.reply_to?.mid,
           },
           raw: event,
           timestamp: event.timestamp || Date.now(),
@@ -137,11 +182,10 @@ export class MessengerChannelAdapter extends BaseChannel {
       };
     }
 
-    // Local buffer or file path requires multipart/form-data upload
-    const formData = new FormData();
-    formData.append("recipient", JSON.stringify({ id: chatId }));
+    let buffer: Uint8Array;
+    let mimeType = media.mimeType;
+    let filename = media.filename || "file";
 
-    let blob: Blob;
     if (typeof media.source === "string") {
       const fs = await import("node:fs");
       const path = await import("node:path");
@@ -149,12 +193,91 @@ export class MessengerChannelAdapter extends BaseChannel {
       if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
         throw new Error(`Media file not found or is invalid: ${media.source}`);
       }
-      const buffer = fs.readFileSync(resolvedPath);
-      blob = new Blob([new Uint8Array(buffer)], { type: media.mimeType || "application/octet-stream" });
+      buffer = new Uint8Array(fs.readFileSync(resolvedPath));
+      if (!media.filename) {
+        filename = path.basename(resolvedPath);
+      }
     } else {
-      blob = new Blob([new Uint8Array(media.source)], { type: media.mimeType || "application/octet-stream" });
+      buffer = new Uint8Array(media.source);
     }
 
+    const fileSize = buffer.byteLength;
+
+    // Hard ceiling check for Meta Messenger (100MB)
+    if (fileSize > 100 * 1024 * 1024) {
+      throw new Error(
+        `Messenger attachment limit exceeded: File size is ${(fileSize / (1024 * 1024)).toFixed(1)}MB. Meta Messenger caps file/video uploads at 100MB. Please compress the file or provide a streaming URL.`
+      );
+    }
+
+    // Auto-detect MIME type from extension if missing
+    if (!mimeType) {
+      const ext = filename.split(".").pop()?.toLowerCase();
+      if (ext === "mp4") mimeType = "video/mp4";
+      else if (ext === "mov") mimeType = "video/quicktime";
+      else if (ext === "webm") mimeType = "video/webm";
+      else if (ext === "avi") mimeType = "video/x-msvideo";
+      else if (ext === "mkv") mimeType = "video/x-matroska";
+      else if (ext === "jpg" || ext === "jpeg") mimeType = "image/jpeg";
+      else if (ext === "png") mimeType = "image/png";
+      else if (ext === "gif") mimeType = "image/gif";
+      else if (ext === "webp") mimeType = "image/webp";
+      else if (ext === "mp3") mimeType = "audio/mpeg";
+      else if (ext === "wav") mimeType = "audio/wav";
+      else if (ext === "ogg") mimeType = "audio/ogg";
+      else if (ext === "m4a") mimeType = "audio/mp4";
+      else if (ext === "pdf") mimeType = "application/pdf";
+      else mimeType = "application/octet-stream";
+    }
+
+    const blob = new Blob([buffer as any], { type: mimeType });
+
+    // Edge case: For large files (25MB - 100MB), use Meta's Attachment Upload API first
+    if (fileSize > 25 * 1024 * 1024) {
+      const uploadFormData = new FormData();
+      uploadFormData.append(
+        "message",
+        JSON.stringify({
+          attachment: {
+            type: media.type,
+            payload: { is_reusable: true },
+          },
+        })
+      );
+      uploadFormData.append("filedata", blob, filename);
+
+      const uploadUrl = `${this.apiBase}/me/message_attachments?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+      const uploadRes = await fetch(uploadUrl, {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      if (uploadRes.ok) {
+        const uploadData = (await uploadRes.json()) as any;
+        if (uploadData.attachment_id) {
+          const payload: any = {
+            recipient: { id: chatId },
+            message: {
+              attachment: {
+                type: media.type,
+                payload: { attachment_id: uploadData.attachment_id },
+              },
+            },
+          };
+          if (options?.replyToId) payload.message.reply_to = { mid: options.replyToId };
+          const res = await this.callApi("POST", "/me/messages", payload);
+          return {
+            messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
+            chatId,
+            timestamp: Date.now(),
+          };
+        }
+      }
+    }
+
+    // Direct multipart/form-data upload for files <= 25MB
+    const formData = new FormData();
+    formData.append("recipient", JSON.stringify({ id: chatId }));
     formData.append(
       "message",
       JSON.stringify({
@@ -164,7 +287,7 @@ export class MessengerChannelAdapter extends BaseChannel {
         },
       })
     );
-    formData.append("filedata", blob, media.filename || "file");
+    formData.append("filedata", blob, filename);
 
     const url = `${this.apiBase}/me/messages?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
     const response = await fetch(url, {
@@ -177,7 +300,7 @@ export class MessengerChannelAdapter extends BaseChannel {
       throw new Error(`Messenger API Error (${response.status}): ${err}`);
     }
 
-    const res = await response.json() as any;
+    const res = (await response.json()) as any;
     return {
       messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
       chatId,

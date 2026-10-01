@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.2] - 2026-10-01
+
+### Fixed
+- **Repository Artifacts**: Tracked `dist/bin/cli.js`, `dist/bin/mcp-server.js`, and `test/clean-install.test.ts` into git for full npm/test reproducibility.
+- **Cleanup**: Removed stale local `.tgz` archive from repo.
+
+---
+
 ## [1.4.1] - 2026-10-01
 
 ### Added

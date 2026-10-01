@@ -54,8 +54,20 @@ TelegramAdapter  ZaloAdapter  Discord  Slack  MessengerAdapter
 2. **中心调度 (ChannelHub Engine)**: 统一管理适配器生命周期，路由分发 `message` 事件与 `MessageContext`。
 3. **上下文对象 (MessageContext)**: 提供简易统一的 `ctx.reply()`, `ctx.sendMedia()`, `ctx.react()` 等操作，解耦业务逻辑与通讯渠道。
 4. **外部桥接 (Bridges)**:
-   - **WebhookBridge**: 暴露统一 HTTP 接收端点供平台 Webhook 回调。
+   - **WebhookBridge**: 提供统一 HTTP 接收端点供平台 Webhook 回调。
    - **MCP Bridge**: 提供标准 MCP stdio 守护进程，让 AI 模型自主调用发信发图能力。
+
+---
+
+## 📊 渠道能力矩阵 (Capability Matrix)
+
+| 平台 (Channel) | 发送消息 (Outbound) | 接收消息 (Inbound) | 多媒体附件 | 表情回应 | 打字机流式输出 | 当前支持状态 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Zalo** | ✅ Full API (Personal/OA) | ✅ 原生轮询与监听 | ✅ 图片/视频/文档/原生表情 | ✅ 完美支持 | ✅ 分句流式缓冲 + 正在输入 | **双向稳定 (Inbound/Outbound)** |
+| **Telegram** | ✅ Full Bot API | ✅ Polling & Webhook Handler | ✅ 图片/视频/文档/原生表情 | ✅ 原生 Reaction | ✅ 原生 In-place 实时编辑 | **双向稳定 (Inbound/Outbound)** |
+| **Messenger** | ✅ Graph API v19.0 (100MB) | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ 图片/视频/文档/原生表情 | ⏳ 计划于 v2.1 | ⚡ 打字机指示器 | **稳定出向 + 标准化** |
+| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ 嵌入式与附件支持 | ✅ 原生 Reaction | ⚡ 原生 In-place 实时编辑 | **稳定出向 + 标准化** |
+| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer (`normalizeEvent`) | ✅ 文件与媒体上传 | ⏳ 计划于 v2.1 | ⚡ 打字机指示器 | **稳定出向 + 标准化** |
 
 ---
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -59,7 +59,7 @@ async function main() {
   const server = new Server(
     {
       name: "channelhub-mcp",
-      version: "1.2.0",
+      version: "1.4.1",
     },
     {
       capabilities: {

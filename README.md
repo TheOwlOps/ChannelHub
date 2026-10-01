@@ -71,6 +71,18 @@
 
 ---
 
+## 📊 Channel Capability Matrix
+
+| Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Current Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Zalo** | ✅ Full API (Personal/OA) | ✅ Native Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | **Stable Inbound/Outbound** |
+| **Telegram** | ✅ Full Bot API | ✅ Polling & Webhook Handler | ✅ Photo, Video, File, Sticker, GIF | ✅ Native Reactions | ✅ Realtime In-place Edit Stream | **Stable Inbound/Outbound** |
+| **Messenger** | ✅ Graph API v19.0 (100MB) | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Image, Video, File, Sticker, GIF | ⏳ Planned v2.1 | ⚡ Typing Indicator | **Stable Outbound + Normalizer** |
+| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Embeds & Attachments | ✅ Native Reactions | ⚡ Realtime In-place Edit Stream | **Stable Outbound + Normalizer** |
+| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer (`normalizeEvent`) | ✅ File & Media | ⏳ Planned v2.1 | ⚡ Typing Indicator | **Stable Outbound + Normalizer** |
+
+---
+
 ## 🔬 How It Works Deep Dive
 
 ### 1. Unified Message Protocol (`UnifiedMessage`)

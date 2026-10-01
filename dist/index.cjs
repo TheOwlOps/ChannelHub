@@ -39187,7 +39187,9 @@ class MessengerChannelAdapter extends BaseChannel {
     if (!this.config.pageAccessToken) {
       throw new Error("Messenger pageAccessToken is required.");
     }
-    const res = await fetch(`${this.apiBase}/me?access_token=${this.config.pageAccessToken}`);
+    const res = await fetch(`${this.apiBase}/me`, {
+      headers: { Authorization: `Bearer ${this.config.pageAccessToken}` }
+    });
     if (!res.ok) {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
@@ -39406,9 +39408,12 @@ class MessengerChannelAdapter extends BaseChannel {
         }
       }));
       uploadFormData.append("filedata", blob, filename);
-      const uploadUrl = `${this.apiBase}/me/message_attachments?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+      const uploadUrl = `${this.apiBase}/me/message_attachments`;
       const uploadRes = await fetch(uploadUrl, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.config.pageAccessToken}`
+        },
         body: uploadFormData
       });
       if (uploadRes.ok) {
@@ -39443,9 +39448,12 @@ class MessengerChannelAdapter extends BaseChannel {
       }
     }));
     formData.append("filedata", blob, filename);
-    const url = `${this.apiBase}/me/messages?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+    const url = `${this.apiBase}/me/messages`;
     const response = await fetch(url, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.config.pageAccessToken}`
+      },
       body: formData
     });
     if (!response.ok) {
@@ -39466,8 +39474,9 @@ class MessengerChannelAdapter extends BaseChannel {
     });
   }
   async callApi(method, path, body) {
-    const url = `${this.apiBase}${path}?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+    const url = `${this.apiBase}${path}`;
     const headers = {
+      Authorization: `Bearer ${this.config.pageAccessToken}`,
       "Content-Type": "application/json"
     };
     const res = await fetch(url, {
@@ -39796,6 +39805,7 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
 }
 // src/bridges/webhook/index.ts
 var import_node_http = require("node:http");
+var import_node_crypto2 = require("node:crypto");
 
 class WebhookBridge {
   hub;
@@ -39839,20 +39849,22 @@ class WebhookBridge {
     return bare.startsWith(this.config.pathPrefix) ? bare.slice(this.config.pathPrefix.length) || "/" : bare;
   }
   authenticate(req) {
-    if (!this.config.apiKey)
+    const isLoopback = this.config.host === "127.0.0.1" || this.config.host === "localhost";
+    if (!this.config.apiKey) {
+      if (!isLoopback)
+        return false;
       return true;
-    const authHeader = req.headers["authorization"];
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      const token = authHeader.slice(7).trim();
-      if (token === this.config.apiKey)
-        return true;
     }
-    const host = req.headers.host || "localhost";
-    const parsedUrl = new URL(req.url || "/", `http://${host}`);
-    const qKey = parsedUrl.searchParams.get("api_key");
-    if (qKey && qKey === this.config.apiKey)
-      return true;
-    return false;
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return false;
+    }
+    const token = authHeader.slice(7).trim();
+    const tokenBuf = Buffer.from(token);
+    const keyBuf = Buffer.from(this.config.apiKey);
+    if (tokenBuf.length !== keyBuf.length)
+      return false;
+    return import_node_crypto2.timingSafeEqual(tokenBuf, keyBuf);
   }
   async handle(req, res) {
     const p = this.path(req);
@@ -39885,12 +39897,17 @@ class WebhookBridge {
         return this.json(res, 200, { success: true });
       }
       if (req.method === "GET" && p === "/events") {
+        if (this.sseClients.size >= 50) {
+          return this.json(res, 429, { error: "Too many active SSE connections" });
+        }
         return this.handleSse(res);
       }
       this.json(res, 404, { error: "Not found" });
     } catch (err) {
-      const status = err.message === "Payload too large" ? 413 : 500;
-      this.json(res, status, { error: err.message || String(err) });
+      const isPayloadTooLarge = err.message === "Payload too large";
+      const status = isPayloadTooLarge ? 413 : 500;
+      const safeError = isPayloadTooLarge ? "Payload too large. Request body exceeds configured limit." : "An internal server error occurred while processing the request.";
+      this.json(res, status, { error: safeError });
     }
   }
   handleSse(res) {
@@ -39906,7 +39923,8 @@ class WebhookBridge {
     res.on("close", () => this.sseClients.delete(res));
   }
   broadcastSse(msg) {
-    const payload = `data: ${JSON.stringify(msg)}
+    const { raw, ...safeMessage } = msg;
+    const payload = `data: ${JSON.stringify(safeMessage)}
 
 `;
     for (const client of this.sseClients) {

@@ -1,5 +1,6 @@
 // src/bridges/webhook/index.ts
 import { createServer } from "node:http";
+import { timingSafeEqual } from "node:crypto";
 
 class WebhookBridge {
   hub;
@@ -43,20 +44,22 @@ class WebhookBridge {
     return bare.startsWith(this.config.pathPrefix) ? bare.slice(this.config.pathPrefix.length) || "/" : bare;
   }
   authenticate(req) {
-    if (!this.config.apiKey)
+    const isLoopback = this.config.host === "127.0.0.1" || this.config.host === "localhost";
+    if (!this.config.apiKey) {
+      if (!isLoopback)
+        return false;
       return true;
-    const authHeader = req.headers["authorization"];
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      const token = authHeader.slice(7).trim();
-      if (token === this.config.apiKey)
-        return true;
     }
-    const host = req.headers.host || "localhost";
-    const parsedUrl = new URL(req.url || "/", `http://${host}`);
-    const qKey = parsedUrl.searchParams.get("api_key");
-    if (qKey && qKey === this.config.apiKey)
-      return true;
-    return false;
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return false;
+    }
+    const token = authHeader.slice(7).trim();
+    const tokenBuf = Buffer.from(token);
+    const keyBuf = Buffer.from(this.config.apiKey);
+    if (tokenBuf.length !== keyBuf.length)
+      return false;
+    return timingSafeEqual(tokenBuf, keyBuf);
   }
   async handle(req, res) {
     const p = this.path(req);
@@ -89,12 +92,17 @@ class WebhookBridge {
         return this.json(res, 200, { success: true });
       }
       if (req.method === "GET" && p === "/events") {
+        if (this.sseClients.size >= 50) {
+          return this.json(res, 429, { error: "Too many active SSE connections" });
+        }
         return this.handleSse(res);
       }
       this.json(res, 404, { error: "Not found" });
     } catch (err) {
-      const status = err.message === "Payload too large" ? 413 : 500;
-      this.json(res, status, { error: err.message || String(err) });
+      const isPayloadTooLarge = err.message === "Payload too large";
+      const status = isPayloadTooLarge ? 413 : 500;
+      const safeError = isPayloadTooLarge ? "Payload too large. Request body exceeds configured limit." : "An internal server error occurred while processing the request.";
+      this.json(res, status, { error: safeError });
     }
   }
   handleSse(res) {
@@ -110,7 +118,8 @@ class WebhookBridge {
     res.on("close", () => this.sseClients.delete(res));
   }
   broadcastSse(msg) {
-    const payload = `data: ${JSON.stringify(msg)}
+    const { raw, ...safeMessage } = msg;
+    const payload = `data: ${JSON.stringify(safeMessage)}
 
 `;
     for (const client of this.sseClients) {

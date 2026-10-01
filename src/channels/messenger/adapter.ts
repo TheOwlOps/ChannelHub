@@ -25,7 +25,9 @@ export class MessengerChannelAdapter extends BaseChannel {
       throw new Error("Messenger pageAccessToken is required.");
     }
     // Verify Page Access Token
-    const res = await fetch(`${this.apiBase}/me?access_token=${this.config.pageAccessToken}`);
+    const res = await fetch(`${this.apiBase}/me`, {
+      headers: { Authorization: `Bearer ${this.config.pageAccessToken}` }
+    });
     if (!res.ok) {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
@@ -269,9 +271,12 @@ export class MessengerChannelAdapter extends BaseChannel {
       );
       uploadFormData.append("filedata", blob, filename);
 
-      const uploadUrl = `${this.apiBase}/me/message_attachments?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+      const uploadUrl = `${this.apiBase}/me/message_attachments`;
       const uploadRes = await fetch(uploadUrl, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.config.pageAccessToken}`,
+        },
         body: uploadFormData,
       });
 
@@ -313,9 +318,12 @@ export class MessengerChannelAdapter extends BaseChannel {
     );
     formData.append("filedata", blob, filename);
 
-    const url = `${this.apiBase}/me/messages?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+    const url = `${this.apiBase}/me/messages`;
     const response = await fetch(url, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.config.pageAccessToken}`,
+      },
       body: formData,
     });
 
@@ -340,8 +348,9 @@ export class MessengerChannelAdapter extends BaseChannel {
   }
 
   private async callApi(method: string, path: string, body?: any): Promise<any> {
-    const url = `${this.apiBase}${path}?access_token=${encodeURIComponent(this.config.pageAccessToken)}`;
+    const url = `${this.apiBase}${path}`;
     const headers: Record<string, string> = {
+      Authorization: `Bearer ${this.config.pageAccessToken}`,
       "Content-Type": "application/json",
     };
 

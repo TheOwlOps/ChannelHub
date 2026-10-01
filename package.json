@@ -1,15 +1,15 @@
 {
   "name": "@theowlops/channelhub",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "ChannelHub SDK - Unified multi-channel messaging toolkit (Zalo, Telegram, Discord, Slack) for AI agents, standalone bots, and enterprise automation.",
   "module": "dist/index.js",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
-    "channelhub": "bin/cli.ts",
-    "channelhub-mcp": "bin/mcp-server.ts",
-    "zalohub": "bin/cli.ts"
+    "channelhub": "./dist/bin/cli.js",
+    "channelhub-mcp": "./dist/bin/mcp-server.js",
+    "zalohub": "./dist/bin/cli.js"
   },
   "exports": {
     ".": {
@@ -60,19 +60,22 @@
   },
   "files": [
     "dist/",
-    "bin/",
     "README.md",
+    "README.vi.md",
+    "README.zh.md",
     "LICENSE"
   ],
   "scripts": {
     "login:personal": "bun run scripts/login_personal.ts",
     "login:messenger": "bun run scripts/login_messenger.ts",
-    "mcp": "bun run bin/mcp-server.ts",
+    "mcp": "node dist/bin/mcp-server.js",
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
     "build": "bun run scripts/build.ts",
     "build:check": "bun x tsc --noEmit",
-    "prepublishOnly": "bun run build"
+    "test": "bun test",
+    "test:smoke": "bun test test/clean-install.test.ts",
+    "prepublishOnly": "bun run build && bun test"
   },
   "keywords": [
     "channelhub",

@@ -40,6 +40,18 @@ ChannelHub hoạt động dựa trên mô hình **Hub & Adapter**:
 
 ---
 
+## 📊 Ma trận tính năng từng kênh (Capability Matrix)
+
+| Kênh (Channel) | Gửi tin (Outbound) | Nhận tin (Inbound) | File & Đa phương tiện | Thả cảm xúc | Typing & Streaming | Trạng thái hiện tại |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Zalo** | ✅ Full API (Cá nhân/OA) | ✅ Native Listener / Polling | ✅ Ảnh, Video, File, Sticker, GIF | ✅ Native Zalo | ✅ Typing & Sentence Stream | **Toàn diện (Inbound/Outbound)** |
+| **Telegram** | ✅ Full Bot API | ✅ Polling & Webhook Handler | ✅ Ảnh, Video, File, Sticker, GIF | ✅ Native Emoji | ✅ Realtime In-place Edit Stream | **Toàn diện (Inbound/Outbound)** |
+| **Messenger** | ✅ Graph API v19.0 (100MB) | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Ảnh, Video, File, Sticker, GIF | ⏳ Dự kiến v2.1 | ⚡ Typing Indicator | **Ổn định Outbound + Normalizer** |
+| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Embeds & Attachments | ✅ Native PUT Reaction | ⚡ Realtime In-place Edit Stream | **Ổn định Outbound + Normalizer** |
+| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer (`normalizeEvent`) | ✅ File & Media | ⏳ Dự kiến v2.1 | ⚡ Typing Indicator | **Ổn định Outbound + Normalizer** |
+
+---
+
 ## 🚀 Cài đặt
 
 ```bash

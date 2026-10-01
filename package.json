@@ -1,6 +1,6 @@
 {
   "name": "@theowlops/channelhub",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "ChannelHub SDK - Unified multi-channel messaging toolkit (Zalo, Telegram, Discord, Slack) for AI agents, standalone bots, and enterprise automation.",
   "module": "dist/index.js",
   "main": "dist/index.cjs",

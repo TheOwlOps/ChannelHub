@@ -8,6 +8,7 @@
   "type": "module",
   "bin": {
     "channelhub": "bin/cli.ts",
+    "channelhub-mcp": "bin/mcp-server.ts",
     "zalohub": "bin/cli.ts"
   },
   "exports": {
@@ -66,6 +67,7 @@
   "scripts": {
     "login:personal": "bun run scripts/login_personal.ts",
     "login:messenger": "bun run scripts/login_messenger.ts",
+    "mcp": "bun run bin/mcp-server.ts",
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
     "build": "bun run scripts/build.ts",
@@ -98,6 +100,7 @@
   "homepage": "https://github.com/TheOwlOps/ChannelHub#readme",
   "license": "MIT",
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "dotenv": "^16.4.7",
     "zca-js": "^2.2.0"
   },

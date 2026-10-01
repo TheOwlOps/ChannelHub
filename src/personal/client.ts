@@ -76,7 +76,7 @@ export class ZaloPersonalBot {
   // 2. REACTIONS & STATUS (THẢ TIM, TYPING, SEEN)
   // ==========================================
   // 3. THẢ EMOJI / REACTION VÀO TIN NHẮN
-  // emojiOrReaction: có thể truyền enum Reactions (VD: Reactions.HEART) hoặc ký tự emoji thông thường (VD: "❤️", "👍", "😆", "💩",...)
+  // emojiOrReaction: pass Reactions enum (e.g. Reactions.HEART) or standard emoji character (e.g. "❤️", "👍", "😆", "💩",...)
   async addReaction(
     threadId: string,
     msgId: string,
@@ -86,7 +86,7 @@ export class ZaloPersonalBot {
   ) {
     const type = isGroup ? ThreadType.Group : ThreadType.User;
     
-    // Mapping từ Emoji Unicode sang mã Zalo Reaction
+    // Unicode Emoji to Zalo Reaction code mapping
     const unicodeMap: Record<string, Reactions> = {
       "❤️": Reactions.HEART,
       "💖": Reactions.HEART,
@@ -527,7 +527,7 @@ export class ZaloPersonalBot {
   }
 
   // ==========================================
-  // 9. CHAT CONVERSATION SETTINGS (CÀI ĐẶT HỘI THOẠI)
+  // 9. CHAT CONVERSATION SETTINGS
   // ==========================================
   async getGroupChatHistory(groupId: string, count = 20) {
     return await this.api.getGroupChatHistory(groupId, count);
@@ -701,7 +701,7 @@ export class ZaloPersonalBot {
   }
 
   // ==========================================
-  // 14. SETTINGS & SYSTEM (CÀI ĐẶT HỆ THỐNG & TÀI KHOẢN)
+  // 14. SETTINGS & SYSTEM
   // ==========================================
   async getSettings() {
     return await this.api.getSettings();

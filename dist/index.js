@@ -38673,14 +38673,14 @@ init_dist();
 import fs7 from "node:fs";
 async function initPersonalBot() {
   if (!fs7.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
-    throw new Error(`Chưa có file ${CONFIG.PERSONAL.CRED_PATH}. Chạy 'bun run login:personal' để quét mã QR.`);
+    throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
   const creds = JSON.parse(fs7.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
   const bot = new ZaloPersonalBot(api);
   const ownId = await bot.getOwnId();
-  console.log(`[Personal Bot] Đã đăng nhập. Bot UID: ${ownId}`);
+  console.log(`[Personal Bot] Logged in successfully. Bot UID: ${ownId}`);
   return { bot, api };
 }
 // src/oa/index.ts
@@ -39177,12 +39177,12 @@ class MessengerChannelAdapter extends BaseChannel {
                 url = `https://www.google.com/maps?q=${lat},${long}`;
                 filename = "location.json";
                 if (!text)
-                  text = `\uD83D\uDCCD [Vị trí chia sẻ: ${lat}, ${long}]`;
+                  text = `\uD83D\uDCCD [Shared Location: ${lat}, ${long}]`;
               }
             } else if (att.type === "fallback") {
               type = "file";
               if (!text)
-                text = `\uD83D\uDD17 [Liên kết chia sẻ: ${att.title || "URL"}]`;
+                text = `\uD83D\uDD17 [Shared Link: ${att.title || "URL"}]`;
             } else {
               type = "file";
             }
@@ -39882,7 +39882,7 @@ class WebhookBridge {
 init_dist();
 var heartCommand = {
   name: "heart",
-  description: "Thả tim vào tin nhắn được gửi",
+  description: "React with heart to the message",
   execute: async ({ bot, msg, threadId, isGroup }) => {
     if (msg.msgId && msg.cliMsgId) {
       await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HEART, isGroup);
@@ -39891,7 +39891,7 @@ var heartCommand = {
 };
 var hahaCommand = {
   name: "haha",
-  description: "Thả icon haha vào tin nhắn",
+  description: "React with laugh to the message",
   execute: async ({ bot, msg, threadId, isGroup }) => {
     if (msg.msgId && msg.cliMsgId) {
       await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HAHA, isGroup);
@@ -39900,54 +39900,54 @@ var hahaCommand = {
 };
 var pingCommand = {
   name: "ping",
-  description: "Kiểm tra độ trễ và trạng thái bot",
+  description: "Check latency and bot health status",
   execute: async ({ bot, threadId, isGroup }) => {
-    await bot.sendText(threadId, "Pong! ZaloHub module online ⚡", [], isGroup);
+    await bot.sendText(threadId, "Pong! ChannelHub module online ⚡", [], isGroup);
   }
 };
 
 // src/commands/modules/group.ts
 var kickCommand = {
   name: "kick",
-  description: "Kích thành viên khỏi nhóm theo tag @mention",
+  description: "Kick member from group via @mention tag",
   groupOnly: true,
   execute: async ({ bot, msg, threadId }) => {
     if (!msg.mentions || msg.mentions.length === 0) {
-      await bot.sendText(threadId, "Cần tag người cần kick: !kick @user", [], true);
+      await bot.sendText(threadId, "Must tag user to kick: !kick @user", [], true);
       return;
     }
     for (const target of msg.mentions) {
       console.log(`[Mod] Kicking UID: ${target.uid} from group ${threadId}`);
       await bot.removeUserFromGroup(threadId, target.uid);
     }
-    await bot.sendText(threadId, "Đã xử lý kick thành viên vi phạm.", [], true);
+    await bot.sendText(threadId, "Member kicked successfully.", [], true);
   }
 };
 var renameCommand = {
   name: "rename",
-  description: "Đổi tên nhóm chat",
+  description: "Rename chat group",
   groupOnly: true,
   execute: async ({ bot, args, threadId }) => {
     const newName = args.join(" ").trim();
     if (!newName) {
-      await bot.sendText(threadId, "Cú pháp: !rename <Tên mới>", [], true);
+      await bot.sendText(threadId, "Usage: !rename <New Name>", [], true);
       return;
     }
     await bot.changeGroupName(threadId, newName);
-    await bot.sendText(threadId, `Đã đổi tên nhóm thành: ${newName}`, [], true);
+    await bot.sendText(threadId, `Group renamed to: ${newName}`, [], true);
   }
 };
 var groupInfoCommand = {
   name: "groupinfo",
-  description: "Xem thông tin phòng chat chi tiết",
+  description: "View detailed group chat information",
   groupOnly: true,
   execute: async ({ bot, threadId }) => {
     const info = await bot.getGroupInfo(threadId);
     const gData = info?.gridInfoMap?.[threadId];
     if (gData) {
-      const text = `Tên: ${gData.name}
-Thành viên: ${gData.totalMember}/${gData.maxMember}
-Trưởng nhóm UID: ${gData.creatorId}`;
+      const text = `Name: ${gData.name}
+Members: ${gData.totalMember}/${gData.maxMember}
+Owner UID: ${gData.creatorId}`;
       await bot.sendText(threadId, text, [], true);
     }
   }
@@ -39992,7 +39992,7 @@ var EMOJI_TO_REACTION = {
 var reactCommand = {
   name: "react",
   aliases: ["emoji", "drop"],
-  description: "Thả emoji vào tin nhắn: !react ❤️ hoặc quote tin nhắn rồi gõ !react \uD83D\uDE02",
+  description: "React to message with emoji: !react ❤️ or quote a message and type !react \uD83D\uDE02",
   execute: async ({ bot, msg, args, threadId, isGroup }) => {
     const emojiInput = args[0] || "❤️";
     const reactionCode = EMOJI_TO_REACTION[emojiInput] || emojiInput;
@@ -40040,7 +40040,7 @@ class CommandRouter {
     const isGroup = msg.type === 1;
     const threadId = msg.threadId;
     if (command.groupOnly && !isGroup) {
-      await bot.sendText(threadId, "Lệnh này chỉ dùng được trong nhóm chat.", [], false);
+      await bot.sendText(threadId, "This command can only be used in group chats.", [], false);
       return;
     }
     const ctx = {
@@ -40053,8 +40053,8 @@ class CommandRouter {
     try {
       await command.execute(ctx);
     } catch (err) {
-      console.error(`[Router Error] Lỗi lệnh ${commandName}:`, err);
-      await bot.sendText(threadId, `Lỗi khi thực thi lệnh: ${err.message}`, [], isGroup);
+      console.error(`[Router Error] Command error ${commandName}:`, err);
+      await bot.sendText(threadId, `Error executing command: ${err.message}`, [], isGroup);
     }
   }
 }

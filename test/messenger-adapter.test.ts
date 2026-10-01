@@ -115,7 +115,7 @@ describe("MessengerChannelAdapter", () => {
     expect(msgs.length).toBe(1);
     
     // Check synthesized text from location + fallback
-    expect(msgs[0].content.text).toContain("Vị trí");
+    expect(msgs[0].content.text).toContain("Shared Location");
     
     // Check attachments
     const atts = msgs[0].content.attachments!;

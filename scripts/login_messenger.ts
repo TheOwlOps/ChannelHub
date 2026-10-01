@@ -19,9 +19,9 @@ const OUT_PATH = path.resolve(process.cwd(), "messenger.credentials.json");
 
 async function main() {
   console.log("==================================================");
-  console.log("  ChannelHub - Trình Đăng Nhập Facebook & Messenger");
+  console.log("  ChannelHub - Facebook & Messenger Login Wizard");
   console.log("==================================================");
-  console.log("1. Đang mở trình duyệt Chromium...");
+  console.log("1. Launching Chromium browser...");
 
   // Launch browser in visible (headful) mode so user can interact
   const browser = await chromium.launch({
@@ -36,13 +36,13 @@ async function main() {
   });
 
   const page = await context.newPage();
-  console.log("2. Đang tải trang đăng nhập Facebook...");
+  console.log("2. Loading Facebook login page...");
   await page.goto("https://www.facebook.com/", { waitUntil: "domcontentloaded" });
 
-  console.log("\n[HƯỚNG DẪN]:");
-  console.log("- Nhập tài khoản, mật khẩu trên cửa sổ trình duyệt.");
-  console.log("- Hoặc quét mã QR / phê duyệt xác thực trên ứng dụng Facebook di động.");
-  console.log("- Hệ thống đang chờ phiên đăng nhập...\n");
+  console.log("\n[INSTRUCTIONS]:");
+  console.log("- Enter username and password in the browser window.");
+  console.log("- Or scan QR code / approve authentication on mobile Facebook app.");
+  console.log("- Waiting for authenticated login session...\n");
 
   let loggedInUserId = "";
 
@@ -54,7 +54,7 @@ async function main() {
 
       if (cUserCookie && cUserCookie.value) {
         loggedInUserId = cUserCookie.value;
-        console.log(`[SUCCESS] Phát hiện đăng nhập thành công cho User ID: ${loggedInUserId}`);
+        console.log(`[SUCCESS] Detected authenticated session for User ID: ${loggedInUserId}`);
         break;
       }
     } catch {
@@ -63,7 +63,7 @@ async function main() {
     await new Promise((r) => setTimeout(r, 1500));
   }
 
-  console.log("3. Đang trích xuất AppState / Cookies cho tài khoản cá nhân...");
+  console.log("3. Extracting AppState / Cookies for personal account...");
   const rawCookies = await context.cookies();
   const appState = rawCookies.map((c) => ({
     key: c.name,
@@ -75,7 +75,7 @@ async function main() {
     lastAccessed: new Date().toISOString(),
   }));
 
-  console.log("4. Đang quét danh sách Fanpage quản lý...");
+  console.log("4. Scanning managed Fanpages...");
   const fanpages: Array<{ id: string; name: string; accessToken?: string }> = [];
 
   try {
@@ -103,7 +103,7 @@ async function main() {
       }
     }
   } catch (err) {
-    console.log("Không thể quét tự động Fanpage từ DOM, bỏ qua bước này:", err);
+    console.log("Could not auto-scan Fanpages from DOM, skipping step:", err);
   }
 
   const credentials: MessengerCredentials = {
@@ -116,14 +116,14 @@ async function main() {
   };
 
   fs.writeFileSync(OUT_PATH, JSON.stringify(credentials, null, 2), "utf-8");
-  console.log(`\n✅ Đã lưu phiên đăng nhập tại: ${OUT_PATH}`);
-  console.log("Bạn có thể cấu hình Session này cho Messenger Channel Adapter.");
+  console.log(`\n✅ Session credentials saved to: ${OUT_PATH}`);
+  console.log("You can provide this session to the Messenger Channel Adapter.");
 
   await browser.close();
   process.exit(0);
 }
 
 main().catch((err) => {
-  console.error("Lỗi đăng nhập:", err);
+  console.error("Login failed:", err);
   process.exit(1);
 });

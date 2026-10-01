@@ -92,11 +92,11 @@ export class MessengerChannelAdapter extends BaseChannel {
               if (lat != null && long != null) {
                 url = `https://www.google.com/maps?q=${lat},${long}`;
                 filename = "location.json";
-                if (!text) text = `📍 [Vị trí chia sẻ: ${lat}, ${long}]`;
+                if (!text) text = `📍 [Shared Location: ${lat}, ${long}]`;
               }
             } else if (att.type === "fallback") {
               type = "file";
-              if (!text) text = `🔗 [Liên kết chia sẻ: ${att.title || "URL"}]`;
+              if (!text) text = `🔗 [Shared Link: ${att.title || "URL"}]`;
             } else {
               type = "file";
             }

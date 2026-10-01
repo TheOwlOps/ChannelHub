@@ -3,7 +3,7 @@ import { Reactions } from "zca-js";
 
 export const heartCommand: Command = {
   name: "heart",
-  description: "Thả tim vào tin nhắn được gửi",
+  description: "React with heart to the message",
   execute: async ({ bot, msg, threadId, isGroup }) => {
     if (msg.msgId && msg.cliMsgId) {
       await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HEART, isGroup);
@@ -13,7 +13,7 @@ export const heartCommand: Command = {
 
 export const hahaCommand: Command = {
   name: "haha",
-  description: "Thả icon haha vào tin nhắn",
+  description: "React with laugh to the message",
   execute: async ({ bot, msg, threadId, isGroup }) => {
     if (msg.msgId && msg.cliMsgId) {
       await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, Reactions.HAHA, isGroup);
@@ -23,8 +23,8 @@ export const hahaCommand: Command = {
 
 export const pingCommand: Command = {
   name: "ping",
-  description: "Kiểm tra độ trễ và trạng thái bot",
+  description: "Check latency and bot health status",
   execute: async ({ bot, threadId, isGroup }) => {
-    await bot.sendText(threadId, "Pong! ZaloHub module online ⚡", [], isGroup);
+    await bot.sendText(threadId, "Pong! ChannelHub module online ⚡", [], isGroup);
   }
 };

@@ -1,9 +1,9 @@
 import type { Command } from "../types.js";
 import { Reactions } from "zca-js";
 
-// Mapping emoji unicode phổ biến sang Zalo Reaction icon code
+// Common Unicode emoji mapping to Zalo Reaction icon code
 export const EMOJI_TO_REACTION: Record<string, Reactions | string> = {
-  // Thường dùng
+  // Frequently used
   "❤️": Reactions.HEART,
   "💖": Reactions.HEART,
   "👍": Reactions.LIKE,
@@ -42,18 +42,18 @@ export const EMOJI_TO_REACTION: Record<string, Reactions | string> = {
 export const reactCommand: Command = {
   name: "react",
   aliases: ["emoji", "drop"],
-  description: "Thả emoji vào tin nhắn: !react ❤️ hoặc quote tin nhắn rồi gõ !react 😂",
+  description: "React to message with emoji: !react ❤️ or quote a message and type !react 😂",
   execute: async ({ bot, msg, args, threadId, isGroup }) => {
     const emojiInput = args[0] || "❤️";
     const reactionCode = (EMOJI_TO_REACTION[emojiInput] || emojiInput) as any;
 
-    // Ưu tiên 1: Thả vào tin nhắn đang quote/reply
+    // Priority 1: React to quoted/replied message
     if (msg.quote && msg.quote.msgId && msg.quote.cliMsgId) {
       await bot.addReaction(threadId, msg.quote.msgId, msg.quote.cliMsgId, reactionCode, isGroup);
       return;
     }
 
-    // Ưu tiên 2: Thả thẳng vào chính tin nhắn vừa gửi lệnh
+    // Priority 2: React directly to command message
     if (msg.msgId && msg.cliMsgId) {
       await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, reactionCode, isGroup);
     }

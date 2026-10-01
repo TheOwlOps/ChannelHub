@@ -38467,14 +38467,14 @@ init_dist();
 import fs7 from "node:fs";
 async function initPersonalBot() {
   if (!fs7.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
-    throw new Error(`Chưa có file ${CONFIG.PERSONAL.CRED_PATH}. Chạy 'bun run login:personal' để quét mã QR.`);
+    throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
   const creds = JSON.parse(fs7.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
   const bot = new ZaloPersonalBot(api);
   const ownId = await bot.getOwnId();
-  console.log(`[Personal Bot] Đã đăng nhập. Bot UID: ${ownId}`);
+  console.log(`[Personal Bot] Logged in successfully. Bot UID: ${ownId}`);
   return { bot, api };
 }
 // src/oa/index.ts

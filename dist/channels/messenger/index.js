@@ -99,12 +99,12 @@ class MessengerChannelAdapter extends BaseChannel {
                 url = `https://www.google.com/maps?q=${lat},${long}`;
                 filename = "location.json";
                 if (!text)
-                  text = `\uD83D\uDCCD [Vị trí chia sẻ: ${lat}, ${long}]`;
+                  text = `\uD83D\uDCCD [Shared Location: ${lat}, ${long}]`;
               }
             } else if (att.type === "fallback") {
               type = "file";
               if (!text)
-                text = `\uD83D\uDD17 [Liên kết chia sẻ: ${att.title || "URL"}]`;
+                text = `\uD83D\uDD17 [Shared Link: ${att.title || "URL"}]`;
             } else {
               type = "file";
             }

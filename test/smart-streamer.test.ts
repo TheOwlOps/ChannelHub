@@ -64,16 +64,16 @@ describe("SmartStreamer", () => {
     });
 
     const tokens = [
-      "Câu thứ nhất kết thúc ở đây! ",
-      "Đây là câu thứ hai. ",
-      "Đoạn kết hoàn thành.",
+      "First sentence ends here! ",
+      "This is the second sentence. ",
+      "Final closing paragraph completed.",
     ];
 
     const results = await streamer.stream("z-1", makeTokens(tokens, 5));
 
     expect(sendTyping).toHaveBeenCalled();
     expect(results.length).toBeGreaterThanOrEqual(2);
-    expect(sentMessages.join(" ")).toContain("Câu thứ nhất");
-    expect(sentMessages.join(" ")).toContain("Đoạn kết");
+    expect(sentMessages.join(" ")).toContain("First sentence");
+    expect(sentMessages.join(" ")).toContain("Final closing");
   });
 });

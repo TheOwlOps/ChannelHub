@@ -43,7 +43,7 @@ export class CommandRouter {
     const threadId = msg.threadId;
 
     if (command.groupOnly && !isGroup) {
-      await bot.sendText(threadId, "Lệnh này chỉ dùng được trong nhóm chat.", [], false);
+      await bot.sendText(threadId, "This command can only be used in group chats.", [], false);
       return;
     }
 
@@ -58,8 +58,8 @@ export class CommandRouter {
     try {
       await command.execute(ctx);
     } catch (err: any) {
-      console.error(`[Router Error] Lỗi lệnh ${commandName}:`, err);
-      await bot.sendText(threadId, `Lỗi khi thực thi lệnh: ${err.message}`, [], isGroup);
+      console.error(`[Router Error] Command error ${commandName}:`, err);
+      await bot.sendText(threadId, `Error executing command: ${err.message}`, [], isGroup);
     }
   }
 }

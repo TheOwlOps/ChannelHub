@@ -5,7 +5,7 @@ import { ZaloPersonalBot } from "./client.js";
 
 export async function initPersonalBot(): Promise<{ bot: ZaloPersonalBot; api: any }> {
   if (!fs.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
-    throw new Error(`Chưa có file ${CONFIG.PERSONAL.CRED_PATH}. Chạy 'bun run login:personal' để quét mã QR.`);
+    throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
 
   const creds = JSON.parse(fs.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
@@ -14,7 +14,7 @@ export async function initPersonalBot(): Promise<{ bot: ZaloPersonalBot; api: an
 
   const bot = new ZaloPersonalBot(api);
   const ownId = await bot.getOwnId();
-  console.log(`[Personal Bot] Đã đăng nhập. Bot UID: ${ownId}`);
+  console.log(`[Personal Bot] Logged in successfully. Bot UID: ${ownId}`);
 
   return { bot, api };
 }

@@ -2,11 +2,11 @@ import type { Command } from "../types.js";
 
 export const kickCommand: Command = {
   name: "kick",
-  description: "Kích thành viên khỏi nhóm theo tag @mention",
+  description: "Kick member from group via @mention tag",
   groupOnly: true,
   execute: async ({ bot, msg, threadId }) => {
     if (!msg.mentions || msg.mentions.length === 0) {
-      await bot.sendText(threadId, "Cần tag người cần kick: !kick @user", [], true);
+      await bot.sendText(threadId, "Must tag user to kick: !kick @user", [], true);
       return;
     }
 
@@ -14,34 +14,34 @@ export const kickCommand: Command = {
       console.log(`[Mod] Kicking UID: ${target.uid} from group ${threadId}`);
       await bot.removeUserFromGroup(threadId, target.uid);
     }
-    await bot.sendText(threadId, "Đã xử lý kick thành viên vi phạm.", [], true);
+    await bot.sendText(threadId, "Member kicked successfully.", [], true);
   }
 };
 
 export const renameCommand: Command = {
   name: "rename",
-  description: "Đổi tên nhóm chat",
+  description: "Rename chat group",
   groupOnly: true,
   execute: async ({ bot, args, threadId }) => {
     const newName = args.join(" ").trim();
     if (!newName) {
-      await bot.sendText(threadId, "Cú pháp: !rename <Tên mới>", [], true);
+      await bot.sendText(threadId, "Usage: !rename <New Name>", [], true);
       return;
     }
     await bot.changeGroupName(threadId, newName);
-    await bot.sendText(threadId, `Đã đổi tên nhóm thành: ${newName}`, [], true);
+    await bot.sendText(threadId, `Group renamed to: ${newName}`, [], true);
   }
 };
 
 export const groupInfoCommand: Command = {
   name: "groupinfo",
-  description: "Xem thông tin phòng chat chi tiết",
+  description: "View detailed group chat information",
   groupOnly: true,
   execute: async ({ bot, threadId }) => {
     const info = await bot.getGroupInfo(threadId);
     const gData = info?.gridInfoMap?.[threadId];
     if (gData) {
-      const text = `Tên: ${gData.name}\nThành viên: ${gData.totalMember}/${gData.maxMember}\nTrưởng nhóm UID: ${gData.creatorId}`;
+      const text = `Name: ${gData.name}\nMembers: ${gData.totalMember}/${gData.maxMember}\nOwner UID: ${gData.creatorId}`;
       await bot.sendText(threadId, text, [], true);
     }
   }

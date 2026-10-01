@@ -10,6 +10,15 @@ import type { TelegramAdapterConfig } from "./types";
 
 export class TelegramChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "telegram";
+  readonly capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    reactions: true,
+    editing: true,
+    typing: true,
+    mode: "polling" as const,
+  };
   private config: TelegramAdapterConfig;
   private apiRoot: string;
   private pollTimer: any = null;
@@ -78,10 +87,11 @@ export class TelegramChannelAdapter extends BaseChannel {
     };
   }
 
-  private async callApi(method: string, body: Record<string, unknown>): Promise<any> {
+  private async callApi(method: string, body: Record<string, unknown>, signal?: AbortSignal): Promise<any> {
     const url = `${this.apiRoot}/bot${this.config.botToken}/${method}`;
     const res = await fetch(url, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
@@ -161,7 +171,7 @@ export class TelegramChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.reply_to_message_id = Number(options.replyToId);
     }
-    const res = await this.callApi("sendMessage", payload);
+    const res = await this.callApi("sendMessage", payload, options?.signal);
     return {
       messageId: String(res.message_id),
       chatId,
@@ -202,7 +212,7 @@ export class TelegramChannelAdapter extends BaseChannel {
       payload.reply_to_message_id = Number(options.replyToId);
     }
 
-    const res = await this.callApi(method, payload);
+    const res = await this.callApi(method, payload, options?.signal);
     return {
       messageId: String(res.message_id),
       chatId,
@@ -210,7 +220,7 @@ export class TelegramChannelAdapter extends BaseChannel {
     };
   }
 
-  async addReaction(chatId: string, messageId: string, emoji: string): Promise<void> {
+  async addReaction(chatId: string, messageId: string, emoji: string, options?: { signal?: AbortSignal }): Promise<void> {
     await this.callApi("setMessageReaction", {
       chat_id: chatId,
       message_id: Number(messageId),
@@ -218,19 +228,19 @@ export class TelegramChannelAdapter extends BaseChannel {
     });
   }
 
-  async sendTyping(chatId: string): Promise<void> {
+  async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
     await this.callApi("sendChatAction", {
       chat_id: chatId,
       action: "typing",
-    });
+    }, options?.signal);
   }
 
-  async editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult> {
+  async editText(chatId: string, messageId: string, text: string, options?: { signal?: AbortSignal }): Promise<SentMessageResult> {
     const res = await this.callApi("editMessageText", {
       chat_id: chatId,
       message_id: Number(messageId),
       text,
-    });
+    }, options?.signal);
     return {
       messageId: String(res.message_id || messageId),
       chatId,

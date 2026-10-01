@@ -17,7 +17,7 @@ export abstract class BaseChannel extends EventEmitter implements IChannelAdapte
   }
   
   get accountId(): string {
-    return "default";
+    return (this as any).config?.accountId || "default";
   }
 
   private _connected = false;

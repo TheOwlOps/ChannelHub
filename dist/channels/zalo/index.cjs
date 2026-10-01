@@ -1,8 +1,8 @@
-import { createRequire } from "node:module";
 var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 function __accessProp(key) {
   return this[key];
@@ -31,6 +31,23 @@ var __toESM = (mod, isNodeMode, target) => {
     cache.set(mod, to);
   return to;
 };
+var __toCommonJS = (from) => {
+  var entry = (__moduleCache ??= new WeakMap).get(from), desc;
+  if (entry)
+    return entry;
+  entry = __defProp({}, "__esModule", { value: true });
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (var key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(entry, key))
+        __defProp(entry, key, {
+          get: __accessProp.bind(from, key),
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+        });
+  }
+  __moduleCache.set(from, entry);
+  return entry;
+};
+var __moduleCache;
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __returnValue = (v) => v;
 function __exportSetter(name, newValue) {
@@ -56,7 +73,6 @@ var __esm = (fn, res, err) => () => {
     throw err[0];
   return res;
 };
-var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
 // node_modules/zca-js/dist/Errors/ZaloApiError.js
 var ZaloApiError;
@@ -690,9 +706,9 @@ var init_models = __esm(() => {
 });
 
 // node_modules/tough-cookie/dist/pathMatch.js
-var require_pathMatch = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.pathMatch = pathMatch;
+var require_pathMatch = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.pathMatch = pathMatch;
   function pathMatch(reqPath, cookiePath) {
     if (cookiePath === reqPath) {
       return true;
@@ -711,7 +727,7 @@ var require_pathMatch = __commonJS(function(exports) {
 });
 
 // node_modules/tldts/dist/cjs/index.js
-var require_cjs = __commonJS(function(exports) {
+var require_cjs = __commonJS(function(exports2) {
   function shareSameDomainSuffix(hostname, vhost) {
     if (hostname.endsWith(vhost)) {
       return hostname.length === vhost.length || hostname[hostname.length - vhost.length - 1] === ".";
@@ -1115,18 +1131,18 @@ var require_cjs = __commonJS(function(exports) {
     resetResult(RESULT);
     return parseImpl(url, 5, suffixLookup, options, RESULT).domainWithoutSuffix;
   }
-  exports.getDomain = getDomain;
-  exports.getDomainWithoutSuffix = getDomainWithoutSuffix;
-  exports.getHostname = getHostname;
-  exports.getPublicSuffix = getPublicSuffix;
-  exports.getSubdomain = getSubdomain;
-  exports.parse = parse;
+  exports2.getDomain = getDomain;
+  exports2.getDomainWithoutSuffix = getDomainWithoutSuffix;
+  exports2.getHostname = getHostname;
+  exports2.getPublicSuffix = getPublicSuffix;
+  exports2.getSubdomain = getSubdomain;
+  exports2.parse = parse;
 });
 
 // node_modules/tough-cookie/dist/getPublicSuffix.js
-var require_getPublicSuffix = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.getPublicSuffix = getPublicSuffix;
+var require_getPublicSuffix = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.getPublicSuffix = getPublicSuffix;
   var tldts_1 = require_cjs();
   var SPECIAL_USE_DOMAINS = ["local", "example", "invalid", "localhost", "test"];
   var SPECIAL_TREATMENT_DOMAINS = ["localhost", "invalid"];
@@ -1161,9 +1177,9 @@ var require_getPublicSuffix = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/permuteDomain.js
-var require_permuteDomain = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.permuteDomain = permuteDomain;
+var require_permuteDomain = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.permuteDomain = permuteDomain;
   var getPublicSuffix_1 = require_getPublicSuffix();
   function permuteDomain(domain, allowSpecialUseDomain) {
     const pubSuf = (0, getPublicSuffix_1.getPublicSuffix)(domain, {
@@ -1192,9 +1208,9 @@ var require_permuteDomain = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/store.js
-var require_store = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.Store = undefined;
+var require_store = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.Store = undefined;
 
   class Store {
     constructor() {
@@ -1225,20 +1241,20 @@ var require_store = __commonJS(function(exports) {
       throw new Error("getAllCookies is not implemented (therefore jar cannot be serialized)");
     }
   }
-  exports.Store = Store;
+  exports2.Store = Store;
 });
 
 // node_modules/tough-cookie/dist/utils.js
-var require_utils = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.safeToString = exports.objectToString = undefined;
-  exports.createPromiseCallback = createPromiseCallback;
-  exports.inOperator = inOperator;
+var require_utils = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.safeToString = exports2.objectToString = undefined;
+  exports2.createPromiseCallback = createPromiseCallback;
+  exports2.inOperator = inOperator;
   var objectToString = (obj) => Object.prototype.toString.call(obj);
-  exports.objectToString = objectToString;
+  exports2.objectToString = objectToString;
   var safeArrayToString = (arr, seenArrays) => {
     if (typeof arr.join !== "function")
-      return (0, exports.objectToString)(arr);
+      return (0, exports2.objectToString)(arr);
     seenArrays.add(arr);
     const mapped = arr.map((val) => val === null || val === undefined || seenArrays.has(val) ? "" : safeToStringImpl(val, seenArrays));
     return mapped.join();
@@ -1249,11 +1265,11 @@ var require_utils = __commonJS(function(exports) {
     } else if (typeof val.toString === "function") {
       return Array.isArray(val) ? safeArrayToString(val, seenArrays) : String(val);
     } else {
-      return (0, exports.objectToString)(val);
+      return (0, exports2.objectToString)(val);
     }
   };
   var safeToString = (val) => safeToStringImpl(val);
-  exports.safeToString = safeToString;
+  exports2.safeToString = safeToString;
   function createPromiseCallback(cb) {
     let callback;
     let resolve;
@@ -1304,9 +1320,9 @@ var require_utils = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/memstore.js
-var require_memstore = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.MemoryCookieStore = undefined;
+var require_memstore = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.MemoryCookieStore = undefined;
   var pathMatch_1 = require_pathMatch();
   var permuteDomain_1 = require_permuteDomain();
   var store_1 = require_store();
@@ -1441,20 +1457,20 @@ var require_memstore = __commonJS(function(exports) {
       return promiseCallback.resolve(cookies);
     }
   }
-  exports.MemoryCookieStore = MemoryCookieStore;
+  exports2.MemoryCookieStore = MemoryCookieStore;
 });
 
 // node_modules/tough-cookie/dist/validators.js
-var require_validators = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.ParameterError = undefined;
-  exports.isNonEmptyString = isNonEmptyString;
-  exports.isDate = isDate;
-  exports.isEmptyString = isEmptyString;
-  exports.isString = isString;
-  exports.isObject = isObject;
-  exports.isInteger = isInteger;
-  exports.validate = validate;
+var require_validators = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.ParameterError = undefined;
+  exports2.isNonEmptyString = isNonEmptyString;
+  exports2.isDate = isDate;
+  exports2.isEmptyString = isEmptyString;
+  exports2.isString = isString;
+  exports2.isObject = isObject;
+  exports2.isInteger = isInteger;
+  exports2.validate = validate;
   var utils_1 = require_utils();
   function isNonEmptyString(data) {
     return isString(data) && data !== "";
@@ -1490,26 +1506,26 @@ var require_validators = __commonJS(function(exports) {
 
   class ParameterError extends Error {
   }
-  exports.ParameterError = ParameterError;
+  exports2.ParameterError = ParameterError;
 });
 
 // node_modules/tough-cookie/dist/version.js
-var require_version = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.version = undefined;
-  exports.version = "5.1.2";
+var require_version = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.version = undefined;
+  exports2.version = "5.1.2";
 });
 
 // node_modules/tough-cookie/dist/cookie/constants.js
-var require_constants = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.IP_V6_REGEX_OBJECT = exports.PrefixSecurityEnum = undefined;
-  exports.PrefixSecurityEnum = {
+var require_constants = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.IP_V6_REGEX_OBJECT = exports2.PrefixSecurityEnum = undefined;
+  exports2.PrefixSecurityEnum = {
     SILENT: "silent",
     STRICT: "strict",
     DISABLED: "unsafe-disabled"
   };
-  Object.freeze(exports.PrefixSecurityEnum);
+  Object.freeze(exports2.PrefixSecurityEnum);
   var IP_V6_REGEX = `
 \\[?(?:
 (?:[a-fA-F\\d]{1,4}:){7}(?:[a-fA-F\\d]{1,4}|:)|
@@ -1522,13 +1538,13 @@ var require_constants = __commonJS(function(exports) {
 (?::(?:(?::[a-fA-F\\d]{1,4}){0,5}:(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}|(?::[a-fA-F\\d]{1,4}){1,7}|:))
 )(?:%[0-9a-zA-Z]{1,})?\\]?
 `.replace(/\s*\/\/.*$/gm, "").replace(/\n/g, "").trim();
-  exports.IP_V6_REGEX_OBJECT = new RegExp(`^${IP_V6_REGEX}$`);
+  exports2.IP_V6_REGEX_OBJECT = new RegExp(`^${IP_V6_REGEX}$`);
 });
 
 // node_modules/tough-cookie/dist/cookie/canonicalDomain.js
-var require_canonicalDomain = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.canonicalDomain = canonicalDomain;
+var require_canonicalDomain = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.canonicalDomain = canonicalDomain;
   var constants_1 = require_constants();
   function domainToASCII(domain) {
     return new URL(`http://${domain}`).hostname;
@@ -1555,18 +1571,18 @@ var require_canonicalDomain = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/formatDate.js
-var require_formatDate = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.formatDate = formatDate;
+var require_formatDate = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.formatDate = formatDate;
   function formatDate(date) {
     return date.toUTCString();
   }
 });
 
 // node_modules/tough-cookie/dist/cookie/parseDate.js
-var require_parseDate = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.parseDate = parseDate;
+var require_parseDate = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.parseDate = parseDate;
   var DATE_DELIM = /[\x09\x20-\x2F\x3B-\x40\x5B-\x60\x7B-\x7E]/;
   var MONTH_TO_NUM = {
     jan: 0,
@@ -1709,8 +1725,8 @@ var require_parseDate = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/cookie.js
-var require_cookie = __commonJS(function(exports) {
-  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+var require_cookie = __commonJS(function(exports2) {
+  var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
     if (k2 === undefined)
       k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -1725,12 +1741,12 @@ var require_cookie = __commonJS(function(exports) {
       k2 = k;
     o[k2] = m[k];
   });
-  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+  var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
   } : function(o, v) {
     o["default"] = v;
   });
-  var __importStar = exports && exports.__importStar || function(mod) {
+  var __importStar = exports2 && exports2.__importStar || function(mod) {
     if (mod && mod.__esModule)
       return mod;
     var result = {};
@@ -1742,8 +1758,8 @@ var require_cookie = __commonJS(function(exports) {
     __setModuleDefault(result, mod);
     return result;
   };
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.Cookie = undefined;
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.Cookie = undefined;
   /*!
    * Copyright (c) 2015-2020, Salesforce.com, Inc.
    * All rights reserved.
@@ -2240,7 +2256,7 @@ var require_cookie = __commonJS(function(exports) {
       return fromJSON(str);
     }
   }
-  exports.Cookie = Cookie;
+  exports2.Cookie = Cookie;
   Cookie.cookiesCreated = 0;
   Cookie.sameSiteLevel = {
     strict: 3,
@@ -2270,9 +2286,9 @@ var require_cookie = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/cookieCompare.js
-var require_cookieCompare = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.cookieCompare = cookieCompare;
+var require_cookieCompare = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.cookieCompare = cookieCompare;
   var MAX_TIME = 2147483647000;
   function cookieCompare(a, b) {
     let cmp;
@@ -2294,9 +2310,9 @@ var require_cookieCompare = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/defaultPath.js
-var require_defaultPath = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.defaultPath = defaultPath;
+var require_defaultPath = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.defaultPath = defaultPath;
   function defaultPath(path) {
     if (!path || path.slice(0, 1) !== "/") {
       return "/";
@@ -2313,9 +2329,9 @@ var require_defaultPath = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/domainMatch.js
-var require_domainMatch = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.domainMatch = domainMatch;
+var require_domainMatch = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.domainMatch = domainMatch;
   var canonicalDomain_1 = require_canonicalDomain();
   var IP_REGEX_LOWERCASE = /(?:^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$)|(?:^(?:(?:[a-f\d]{1,4}:){7}(?:[a-f\d]{1,4}|:)|(?:[a-f\d]{1,4}:){6}(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|:[a-f\d]{1,4}|:)|(?:[a-f\d]{1,4}:){5}(?::(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,2}|:)|(?:[a-f\d]{1,4}:){4}(?:(?::[a-f\d]{1,4}){0,1}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,3}|:)|(?:[a-f\d]{1,4}:){3}(?:(?::[a-f\d]{1,4}){0,2}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,4}|:)|(?:[a-f\d]{1,4}:){2}(?:(?::[a-f\d]{1,4}){0,3}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,5}|:)|(?:[a-f\d]{1,4}:){1}(?:(?::[a-f\d]{1,4}){0,4}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,6}|:)|(?::(?:(?::[a-f\d]{1,4}){0,5}:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}|(?::[a-f\d]{1,4}){1,7}|:)))$)/;
   function domainMatch(domain, cookieDomain, canonicalize) {
@@ -2352,8 +2368,8 @@ var require_domainMatch = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/cookieJar.js
-var require_cookieJar = __commonJS(function(exports) {
-  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+var require_cookieJar = __commonJS(function(exports2) {
+  var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
     if (k2 === undefined)
       k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -2368,12 +2384,12 @@ var require_cookieJar = __commonJS(function(exports) {
       k2 = k;
     o[k2] = m[k];
   });
-  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+  var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
   } : function(o, v) {
     o["default"] = v;
   });
-  var __importStar = exports && exports.__importStar || function(mod) {
+  var __importStar = exports2 && exports2.__importStar || function(mod) {
     if (mod && mod.__esModule)
       return mod;
     var result = {};
@@ -2385,8 +2401,8 @@ var require_cookieJar = __commonJS(function(exports) {
     __setModuleDefault(result, mod);
     return result;
   };
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.CookieJar = undefined;
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.CookieJar = undefined;
   var getPublicSuffix_1 = require_getPublicSuffix();
   var validators = __importStar(require_validators());
   var validators_1 = require_validators();
@@ -3014,13 +3030,13 @@ var require_cookieJar = __commonJS(function(exports) {
       return CookieJar.deserializeSync(jsonString, store);
     }
   }
-  exports.CookieJar = CookieJar;
+  exports2.CookieJar = CookieJar;
 });
 
 // node_modules/tough-cookie/dist/cookie/permutePath.js
-var require_permutePath = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.permutePath = permutePath;
+var require_permutePath = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.permutePath = permutePath;
   function permutePath(path) {
     if (path === "/") {
       return ["/"];
@@ -3040,77 +3056,77 @@ var require_permutePath = __commonJS(function(exports) {
 });
 
 // node_modules/tough-cookie/dist/cookie/index.js
-var require_cookie2 = __commonJS(function(exports) {
-  Object.defineProperty(exports, "__esModule", { value: true });
-  exports.permutePath = exports.parseDate = exports.formatDate = exports.domainMatch = exports.defaultPath = exports.CookieJar = exports.cookieCompare = exports.Cookie = exports.PrefixSecurityEnum = exports.canonicalDomain = exports.version = exports.ParameterError = exports.Store = exports.getPublicSuffix = exports.permuteDomain = exports.pathMatch = exports.MemoryCookieStore = undefined;
-  exports.parse = parse;
-  exports.fromJSON = fromJSON;
+var require_cookie2 = __commonJS(function(exports2) {
+  Object.defineProperty(exports2, "__esModule", { value: true });
+  exports2.permutePath = exports2.parseDate = exports2.formatDate = exports2.domainMatch = exports2.defaultPath = exports2.CookieJar = exports2.cookieCompare = exports2.Cookie = exports2.PrefixSecurityEnum = exports2.canonicalDomain = exports2.version = exports2.ParameterError = exports2.Store = exports2.getPublicSuffix = exports2.permuteDomain = exports2.pathMatch = exports2.MemoryCookieStore = undefined;
+  exports2.parse = parse;
+  exports2.fromJSON = fromJSON;
   var memstore_1 = require_memstore();
-  Object.defineProperty(exports, "MemoryCookieStore", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "MemoryCookieStore", { enumerable: true, get: function() {
     return memstore_1.MemoryCookieStore;
   } });
   var pathMatch_1 = require_pathMatch();
-  Object.defineProperty(exports, "pathMatch", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "pathMatch", { enumerable: true, get: function() {
     return pathMatch_1.pathMatch;
   } });
   var permuteDomain_1 = require_permuteDomain();
-  Object.defineProperty(exports, "permuteDomain", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "permuteDomain", { enumerable: true, get: function() {
     return permuteDomain_1.permuteDomain;
   } });
   var getPublicSuffix_1 = require_getPublicSuffix();
-  Object.defineProperty(exports, "getPublicSuffix", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "getPublicSuffix", { enumerable: true, get: function() {
     return getPublicSuffix_1.getPublicSuffix;
   } });
   var store_1 = require_store();
-  Object.defineProperty(exports, "Store", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "Store", { enumerable: true, get: function() {
     return store_1.Store;
   } });
   var validators_1 = require_validators();
-  Object.defineProperty(exports, "ParameterError", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "ParameterError", { enumerable: true, get: function() {
     return validators_1.ParameterError;
   } });
   var version_1 = require_version();
-  Object.defineProperty(exports, "version", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "version", { enumerable: true, get: function() {
     return version_1.version;
   } });
   var canonicalDomain_1 = require_canonicalDomain();
-  Object.defineProperty(exports, "canonicalDomain", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "canonicalDomain", { enumerable: true, get: function() {
     return canonicalDomain_1.canonicalDomain;
   } });
   var constants_1 = require_constants();
-  Object.defineProperty(exports, "PrefixSecurityEnum", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "PrefixSecurityEnum", { enumerable: true, get: function() {
     return constants_1.PrefixSecurityEnum;
   } });
   var cookie_1 = require_cookie();
-  Object.defineProperty(exports, "Cookie", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "Cookie", { enumerable: true, get: function() {
     return cookie_1.Cookie;
   } });
   var cookieCompare_1 = require_cookieCompare();
-  Object.defineProperty(exports, "cookieCompare", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "cookieCompare", { enumerable: true, get: function() {
     return cookieCompare_1.cookieCompare;
   } });
   var cookieJar_1 = require_cookieJar();
-  Object.defineProperty(exports, "CookieJar", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "CookieJar", { enumerable: true, get: function() {
     return cookieJar_1.CookieJar;
   } });
   var defaultPath_1 = require_defaultPath();
-  Object.defineProperty(exports, "defaultPath", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "defaultPath", { enumerable: true, get: function() {
     return defaultPath_1.defaultPath;
   } });
   var domainMatch_1 = require_domainMatch();
-  Object.defineProperty(exports, "domainMatch", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "domainMatch", { enumerable: true, get: function() {
     return domainMatch_1.domainMatch;
   } });
   var formatDate_1 = require_formatDate();
-  Object.defineProperty(exports, "formatDate", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "formatDate", { enumerable: true, get: function() {
     return formatDate_1.formatDate;
   } });
   var parseDate_1 = require_parseDate();
-  Object.defineProperty(exports, "parseDate", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "parseDate", { enumerable: true, get: function() {
     return parseDate_1.parseDate;
   } });
   var permutePath_1 = require_permutePath();
-  Object.defineProperty(exports, "permutePath", { enumerable: true, get: function() {
+  Object.defineProperty(exports2, "permutePath", { enumerable: true, get: function() {
     return permutePath_1.permutePath;
   } });
   var cookie_2 = require_cookie();
@@ -3123,16 +3139,16 @@ var require_cookie2 = __commonJS(function(exports) {
 });
 
 // node_modules/crypto-js/core.js
-var require_core = __commonJS(function(exports, module) {
+var require_core = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory();
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory();
     } else if (typeof define === "function" && define.amd) {
       define([], factory);
     } else {
       root.CryptoJS = factory();
     }
-  })(exports, function() {
+  })(exports2, function() {
     var CryptoJS = CryptoJS || function(Math2, undefined2) {
       var crypto2;
       if (typeof window !== "undefined" && window.crypto) {
@@ -3152,7 +3168,7 @@ var require_core = __commonJS(function(exports, module) {
       }
       if (!crypto2 && true) {
         try {
-          crypto2 = __require("crypto");
+          crypto2 = require("crypto");
         } catch (err) {}
       }
       var cryptoSecureRandomInt = function() {
@@ -3408,16 +3424,16 @@ var require_core = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/x64-core.js
-var require_x64_core = __commonJS(function(exports, module) {
+var require_x64_core = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function(undefined2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3466,16 +3482,16 @@ var require_x64_core = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/lib-typedarrays.js
-var require_lib_typedarrays = __commonJS(function(exports, module) {
+var require_lib_typedarrays = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       if (typeof ArrayBuffer != "function") {
         return;
@@ -3509,16 +3525,16 @@ var require_lib_typedarrays = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/enc-utf16.js
-var require_enc_utf16 = __commonJS(function(exports, module) {
+var require_enc_utf16 = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3573,16 +3589,16 @@ var require_enc_utf16 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/enc-base64.js
-var require_enc_base64 = __commonJS(function(exports, module) {
+var require_enc_base64 = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3653,16 +3669,16 @@ var require_enc_base64 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/enc-base64url.js
-var require_enc_base64url = __commonJS(function(exports, module) {
+var require_enc_base64url = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3740,16 +3756,16 @@ var require_enc_base64url = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/md5.js
-var require_md5 = __commonJS(function(exports, module) {
+var require_md5 = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -3917,16 +3933,16 @@ var require_md5 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/sha1.js
-var require_sha1 = __commonJS(function(exports, module) {
+var require_sha1 = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4006,16 +4022,16 @@ var require_sha1 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/sha256.js
-var require_sha256 = __commonJS(function(exports, module) {
+var require_sha256 = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4125,16 +4141,16 @@ var require_sha256 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/sha224.js
-var require_sha224 = __commonJS(function(exports, module) {
+var require_sha224 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_sha256());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_sha256());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./sha256"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4168,16 +4184,16 @@ var require_sha224 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/sha512.js
-var require_sha512 = __commonJS(function(exports, module) {
+var require_sha512 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_x64_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_x64_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4448,16 +4464,16 @@ var require_sha512 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/sha384.js
-var require_sha384 = __commonJS(function(exports, module) {
+var require_sha384 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_x64_core(), require_sha512());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_x64_core(), require_sha512());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core", "./sha512"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_x64 = C.x64;
@@ -4492,16 +4508,16 @@ var require_sha384 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/sha3.js
-var require_sha3 = __commonJS(function(exports, module) {
+var require_sha3 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_x64_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_x64_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -4684,16 +4700,16 @@ var require_sha3 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/ripemd160.js
-var require_ripemd160 = __commonJS(function(exports, module) {
+var require_ripemd160 = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function(Math2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5153,16 +5169,16 @@ var require_ripemd160 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/hmac.js
-var require_hmac = __commonJS(function(exports, module) {
+var require_hmac = __commonJS(function(exports2, module2) {
   (function(root, factory) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5215,16 +5231,16 @@ var require_hmac = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/pbkdf2.js
-var require_pbkdf2 = __commonJS(function(exports, module) {
+var require_pbkdf2 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_sha256(), require_hmac());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_sha256(), require_hmac());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./sha256", "./hmac"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5281,16 +5297,16 @@ var require_pbkdf2 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/evpkdf.js
-var require_evpkdf = __commonJS(function(exports, module) {
+var require_evpkdf = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_sha1(), require_hmac());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_sha1(), require_hmac());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./sha1", "./hmac"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5340,16 +5356,16 @@ var require_evpkdf = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/cipher-core.js
-var require_cipher_core = __commonJS(function(exports, module) {
+var require_cipher_core = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_evpkdf());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_evpkdf());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./evpkdf"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.lib.Cipher || function(undefined2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -5638,16 +5654,16 @@ var require_cipher_core = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/mode-cfb.js
-var require_mode_cfb = __commonJS(function(exports, module) {
+var require_mode_cfb = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.mode.CFB = function() {
       var CFB = CryptoJS.lib.BlockCipherMode.extend();
       CFB.Encryptor = CFB.extend({
@@ -5688,16 +5704,16 @@ var require_mode_cfb = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/mode-ctr.js
-var require_mode_ctr = __commonJS(function(exports, module) {
+var require_mode_ctr = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.mode.CTR = function() {
       var CTR = CryptoJS.lib.BlockCipherMode.extend();
       var Encryptor = CTR.Encryptor = CTR.extend({
@@ -5726,16 +5742,16 @@ var require_mode_ctr = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/mode-ctr-gladman.js
-var require_mode_ctr_gladman = __commonJS(function(exports, module) {
+var require_mode_ctr_gladman = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.mode.CTRGladman = function() {
       var CTRGladman = CryptoJS.lib.BlockCipherMode.extend();
       function incWord(word) {
@@ -5799,16 +5815,16 @@ var require_mode_ctr_gladman = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/mode-ofb.js
-var require_mode_ofb = __commonJS(function(exports, module) {
+var require_mode_ofb = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.mode.OFB = function() {
       var OFB = CryptoJS.lib.BlockCipherMode.extend();
       var Encryptor = OFB.Encryptor = OFB.extend({
@@ -5835,16 +5851,16 @@ var require_mode_ofb = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/mode-ecb.js
-var require_mode_ecb = __commonJS(function(exports, module) {
+var require_mode_ecb = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.mode.ECB = function() {
       var ECB = CryptoJS.lib.BlockCipherMode.extend();
       ECB.Encryptor = ECB.extend({
@@ -5864,16 +5880,16 @@ var require_mode_ecb = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/pad-ansix923.js
-var require_pad_ansix923 = __commonJS(function(exports, module) {
+var require_pad_ansix923 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.pad.AnsiX923 = {
       pad: function(data, blockSize) {
         var dataSigBytes = data.sigBytes;
@@ -5894,16 +5910,16 @@ var require_pad_ansix923 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/pad-iso10126.js
-var require_pad_iso10126 = __commonJS(function(exports, module) {
+var require_pad_iso10126 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.pad.Iso10126 = {
       pad: function(data, blockSize) {
         var blockSizeBytes = blockSize * 4;
@@ -5920,16 +5936,16 @@ var require_pad_iso10126 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/pad-iso97971.js
-var require_pad_iso97971 = __commonJS(function(exports, module) {
+var require_pad_iso97971 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.pad.Iso97971 = {
       pad: function(data, blockSize) {
         data.concat(CryptoJS.lib.WordArray.create([2147483648], 1));
@@ -5945,16 +5961,16 @@ var require_pad_iso97971 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/pad-zeropadding.js
-var require_pad_zeropadding = __commonJS(function(exports, module) {
+var require_pad_zeropadding = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.pad.ZeroPadding = {
       pad: function(data, blockSize) {
         var blockSizeBytes = blockSize * 4;
@@ -5977,16 +5993,16 @@ var require_pad_zeropadding = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/pad-nopadding.js
-var require_pad_nopadding = __commonJS(function(exports, module) {
+var require_pad_nopadding = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     CryptoJS.pad.NoPadding = {
       pad: function() {},
       unpad: function() {}
@@ -5996,16 +6012,16 @@ var require_pad_nopadding = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/format-hex.js
-var require_format_hex = __commonJS(function(exports, module) {
+var require_format_hex = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function(undefined2) {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -6028,16 +6044,16 @@ var require_format_hex = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/aes.js
-var require_aes = __commonJS(function(exports, module) {
+var require_aes = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -6180,16 +6196,16 @@ var require_aes = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/tripledes.js
-var require_tripledes = __commonJS(function(exports, module) {
+var require_tripledes = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -6959,16 +6975,16 @@ var require_tripledes = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/rc4.js
-var require_rc4 = __commonJS(function(exports, module) {
+var require_rc4 = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -7035,16 +7051,16 @@ var require_rc4 = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/rabbit.js
-var require_rabbit = __commonJS(function(exports, module) {
+var require_rabbit = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -7162,16 +7178,16 @@ var require_rabbit = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/rabbit-legacy.js
-var require_rabbit_legacy = __commonJS(function(exports, module) {
+var require_rabbit_legacy = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -7286,16 +7302,16 @@ var require_rabbit_legacy = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/blowfish.js
-var require_blowfish = __commonJS(function(exports, module) {
+var require_blowfish = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_enc_base64(), require_md5(), require_evpkdf(), require_cipher_core());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./enc-base64", "./md5", "./evpkdf", "./cipher-core"], factory);
     } else {
       factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     (function() {
       var C = CryptoJS;
       var C_lib = C.lib;
@@ -8473,16 +8489,16 @@ var require_blowfish = __commonJS(function(exports, module) {
 });
 
 // node_modules/crypto-js/index.js
-var require_crypto_js = __commonJS(function(exports, module) {
+var require_crypto_js = __commonJS(function(exports2, module2) {
   (function(root, factory, undef) {
-    if (typeof exports === "object") {
-      module.exports = exports = factory(require_core(), require_x64_core(), require_lib_typedarrays(), require_enc_utf16(), require_enc_base64(), require_enc_base64url(), require_md5(), require_sha1(), require_sha256(), require_sha224(), require_sha512(), require_sha384(), require_sha3(), require_ripemd160(), require_hmac(), require_pbkdf2(), require_evpkdf(), require_cipher_core(), require_mode_cfb(), require_mode_ctr(), require_mode_ctr_gladman(), require_mode_ofb(), require_mode_ecb(), require_pad_ansix923(), require_pad_iso10126(), require_pad_iso97971(), require_pad_zeropadding(), require_pad_nopadding(), require_format_hex(), require_aes(), require_tripledes(), require_rc4(), require_rabbit(), require_rabbit_legacy(), require_blowfish());
+    if (typeof exports2 === "object") {
+      module2.exports = exports2 = factory(require_core(), require_x64_core(), require_lib_typedarrays(), require_enc_utf16(), require_enc_base64(), require_enc_base64url(), require_md5(), require_sha1(), require_sha256(), require_sha224(), require_sha512(), require_sha384(), require_sha3(), require_ripemd160(), require_hmac(), require_pbkdf2(), require_evpkdf(), require_cipher_core(), require_mode_cfb(), require_mode_ctr(), require_mode_ctr_gladman(), require_mode_ofb(), require_mode_ecb(), require_pad_ansix923(), require_pad_iso10126(), require_pad_iso97971(), require_pad_zeropadding(), require_pad_nopadding(), require_format_hex(), require_aes(), require_tripledes(), require_rc4(), require_rabbit(), require_rabbit_legacy(), require_blowfish());
     } else if (typeof define === "function" && define.amd) {
       define(["./core", "./x64-core", "./lib-typedarrays", "./enc-utf16", "./enc-base64", "./enc-base64url", "./md5", "./sha1", "./sha256", "./sha224", "./sha512", "./sha384", "./sha3", "./ripemd160", "./hmac", "./pbkdf2", "./evpkdf", "./cipher-core", "./mode-cfb", "./mode-ctr", "./mode-ctr-gladman", "./mode-ofb", "./mode-ecb", "./pad-ansix923", "./pad-iso10126", "./pad-iso97971", "./pad-zeropadding", "./pad-nopadding", "./format-hex", "./aes", "./tripledes", "./rc4", "./rabbit", "./rabbit-legacy", "./blowfish"], factory);
     } else {
       root.CryptoJS = factory(root.CryptoJS);
     }
-  })(exports, function(CryptoJS) {
+  })(exports2, function(CryptoJS) {
     return CryptoJS;
   });
 });
@@ -12419,10 +12435,10 @@ var init_pako_esm = __esm(() => {
 });
 
 // node_modules/spark-md5/spark-md5.js
-var require_spark_md5 = __commonJS(function(exports, module) {
+var require_spark_md5 = __commonJS(function(exports2, module2) {
   (function(factory) {
-    if (typeof exports === "object") {
-      module.exports = factory();
+    if (typeof exports2 === "object") {
+      module2.exports = factory();
     } else if (typeof define === "function" && define.amd) {
       define(factory);
     } else {
@@ -12849,7 +12865,7 @@ var require_spark_md5 = __commonJS(function(exports, module) {
 });
 
 // node_modules/bignumber.js/bignumber.js
-var require_bignumber = __commonJS(function(exports, module) {
+var require_bignumber = __commonJS(function(exports2, module2) {
   (function(globalObject) {
     var BigNumber, isNumeric = /^-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i, { ceil: mathceil, floor: mathfloor } = Math, bignumberError = "[BigNumber Error] ", tooManyDigits = bignumberError + "Number primitive has more than 15 significant digits: ", BASE = 100000000000000, LOG_BASE = 14, MAX_SAFE_INTEGER = 9007199254740991, POWS_TEN = [1, 10, 100, 1000, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 10000000000, 100000000000, 1000000000000, 10000000000000], SQRT_BASE = 1e7, MAX = 1e9;
     function clone(configObject) {
@@ -14291,21 +14307,21 @@ var require_bignumber = __commonJS(function(exports, module) {
       define(function() {
         return BigNumber;
       });
-    } else if (typeof module != "undefined" && module.exports) {
-      module.exports = BigNumber;
+    } else if (typeof module2 != "undefined" && module2.exports) {
+      module2.exports = BigNumber;
     } else {
       if (!globalObject) {
         globalObject = typeof self != "undefined" && self ? self : window;
       }
       globalObject.BigNumber = BigNumber;
     }
-  })(exports);
+  })(exports2);
 });
 
 // node_modules/json-bigint/lib/stringify.js
-var require_stringify = __commonJS(function(exports, module) {
+var require_stringify = __commonJS(function(exports2, module2) {
   var BigNumber = require_bignumber();
-  var JSON2 = exports;
+  var JSON2 = module2.exports;
   (function() {
     function f(n) {
       return n < 10 ? "0" + n : n;
@@ -14415,7 +14431,7 @@ var require_stringify = __commonJS(function(exports, module) {
 });
 
 // node_modules/json-bigint/lib/parse.js
-var require_parse = __commonJS(function(exports, module) {
+var require_parse = __commonJS(function(exports2, module2) {
   var BigNumber = null;
   var suspectProtoRx = /(?:_|\\u005[Ff])(?:_|\\u005[Ff])(?:p|\\u0070)(?:r|\\u0072)(?:o|\\u006[Ff])(?:t|\\u0074)(?:o|\\u006[Ff])(?:_|\\u005[Ff])(?:_|\\u005[Ff])/;
   var suspectConstructorRx = /(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)/;
@@ -14685,21 +14701,21 @@ var require_parse = __commonJS(function(exports, module) {
       }({ "": result }, "") : result;
     };
   };
-  module.exports = json_parse;
+  module2.exports = json_parse;
 });
 
 // node_modules/json-bigint/index.js
-var require_json_bigint = __commonJS(function(exports, module) {
+var require_json_bigint = __commonJS(function(exports2, module2) {
   var json_stringify = require_stringify().stringify;
   var json_parse = require_parse();
-  module.exports = function(options) {
+  module2.exports = function(options) {
     return {
       parse: json_parse(options),
       stringify: json_stringify
     };
   };
-  module.exports.parse = json_parse();
-  module.exports.stringify = json_stringify;
+  module2.exports.parse = json_parse();
+  module2.exports.stringify = json_stringify;
 });
 
 // node_modules/zca-js/dist/context.js
@@ -14731,9 +14747,6 @@ var init_context = __esm(() => {
 });
 
 // node_modules/zca-js/dist/utils.js
-import crypto2 from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
 function hasOwn(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
@@ -15005,7 +15018,7 @@ async function getImageMetaData(ctx, filePath) {
   };
 }
 async function getFileSize(filePath) {
-  return fs.promises.stat(filePath).then((s) => s.size);
+  return import_node_fs.default.promises.stat(filePath).then((s) => s.size);
 }
 async function getGifMetaData(ctx, filePath) {
   if (!ctx.options.imageMetadataGetter) {
@@ -15015,7 +15028,7 @@ async function getGifMetaData(ctx, filePath) {
   if (!gifData) {
     throw new ZaloApiError("Failed to get gif metadata");
   }
-  const fileName = path.basename(filePath);
+  const fileName = import_node_path.default.basename(filePath);
   return {
     fileName,
     totalSize: gifData.size,
@@ -15045,10 +15058,10 @@ async function decodeEventData(parsed, cipherKey) {
         additionalData: decodedBuffer.subarray(16, 32)
       };
       const dataSource = decodedBuffer.subarray(32);
-      const cryptoKey = await crypto2.subtle.importKey("raw", decodeBase64ToBuffer(cipherKey), algorithm, false, [
+      const cryptoKey = await import_node_crypto.default.subtle.importKey("raw", decodeBase64ToBuffer(cipherKey), algorithm, false, [
         "decrypt"
       ]);
-      decryptedBuffer = await crypto2.subtle.decrypt(algorithm, cryptoKey, dataSource);
+      decryptedBuffer = await import_node_crypto.default.subtle.decrypt(algorithm, cryptoKey, dataSource);
     } else {
       throw new ZaloApiError("Invalid data length or missing cipher key");
     }
@@ -15060,7 +15073,7 @@ async function decodeEventData(parsed, cipherKey) {
   return import_json_bigint.default.parse(decodedData);
 }
 async function getMd5LargeFileObject(source, fileSize) {
-  const buffer = typeof source == "string" ? await fs.promises.readFile(source) : source.data;
+  const buffer = typeof source == "string" ? await import_node_fs.default.promises.readFile(source) : source.data;
   return new Promise((resolve) => {
     let currentChunk = 0;
     const chunkSize = 2097152, chunks = Math.ceil(fileSize / chunkSize), spark = new import_spark_md5.default.ArrayBuffer;
@@ -15130,10 +15143,10 @@ function getFullTimeFromMillisecond(e) {
   return strPadLeft(t.getHours(), "0", 2) + ":" + strPadLeft(t.getMinutes(), "0", 2) + " " + strPadLeft(t.getDate(), "0", 2) + "/" + strPadLeft(t.getMonth() + 1, "0", 2) + "/" + t.getFullYear();
 }
 function getFileExtension(e) {
-  return path.extname(e).slice(1);
+  return import_node_path.default.extname(e).slice(1);
 }
 function getFileName(e) {
-  return path.basename(e);
+  return import_node_path.default.basename(e);
 }
 function removeUndefinedKeys(e) {
   for (const t in e)
@@ -15283,10 +15296,10 @@ function apiFactory() {
   };
 }
 function generateZaloUUID(userAgent) {
-  return crypto2.randomUUID() + "-" + import_crypto_js.default.MD5(userAgent).toString();
+  return import_node_crypto.default.randomUUID() + "-" + import_crypto_js.default.MD5(userAgent).toString();
 }
 function encryptPin(pin) {
-  return crypto2.createHash("md5").update(pin).digest("hex");
+  return import_node_crypto.default.createHash("md5").update(pin).digest("hex");
 }
 function normalizeHolderName(input) {
   if (!input)
@@ -15294,7 +15307,7 @@ function normalizeHolderName(input) {
   const normalized = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g, "d").toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim();
   return normalized.length >= 5 ? normalized : undefined;
 }
-var import_crypto_js, import_spark_md5, import_tough_cookie, import_json_bigint, isBun, logger = (ctx) => ({
+var import_crypto_js, import_node_crypto, import_node_fs, import_node_path, import_spark_md5, import_tough_cookie, import_json_bigint, isBun, logger = (ctx) => ({
   verbose: (...args) => {
     if (ctx.options.logging)
       console.log("\x1B[35m\uD83D\uDE80 VERBOSE\x1B[0m", ...args);
@@ -15328,6 +15341,9 @@ var init_utils = __esm(() => {
   init_FriendEvent();
   init_GroupEvent();
   import_crypto_js = __toESM(require_crypto_js(), 1);
+  import_node_crypto = __toESM(require("node:crypto"), 1);
+  import_node_fs = __toESM(require("node:fs"), 1);
+  import_node_path = __toESM(require("node:path"), 1);
   import_spark_md5 = __toESM(require_spark_md5(), 1);
   import_tough_cookie = __toESM(require_cookie2(), 1);
   import_json_bigint = __toESM(require_json_bigint(), 1);
@@ -15335,7 +15351,6 @@ var init_utils = __esm(() => {
 });
 
 // node_modules/zca-js/dist/apis/loginQR.js
-import { writeFile } from "node:fs/promises";
 async function loadLoginPage(ctx) {
   const response = await request(ctx, "https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F", {
     headers: {
@@ -15432,7 +15447,7 @@ async function generate(ctx, version) {
   }).then((res) => res.json()).catch(logger(ctx).error);
 }
 async function saveQRCodeToFile(filepath, imageData) {
-  await writeFile(filepath, imageData, "base64");
+  await import_promises.writeFile(filepath, imageData, "base64");
 }
 async function waitingScan(ctx, version, code, signal) {
   const form = new URLSearchParams;
@@ -15671,13 +15686,14 @@ Response: ${JSON.stringify(confirmResult, null, 2)}`);
     }
   });
 }
-var import_tough_cookie2, LoginQRCallbackEventType;
+var import_tough_cookie2, import_promises, LoginQRCallbackEventType;
 var init_loginQR = __esm(() => {
   init_ZaloApiError();
   init_utils();
   init_ZaloApiLoginQRAborted();
   init_ZaloApiLoginQRDeclined();
   import_tough_cookie2 = __toESM(require_cookie2(), 1);
+  import_promises = require("node:fs/promises");
   (function(LoginQRCallbackEventType) {
     LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeGenerated"] = 0] = "QRCodeGenerated";
     LoginQRCallbackEventType[LoginQRCallbackEventType["QRCodeExpired"] = 1] = "QRCodeExpired";
@@ -15781,7 +15797,7 @@ var init_login = __esm(() => {
 });
 
 // node_modules/semver/internal/constants.js
-var require_constants2 = __commonJS(function(exports, module) {
+var require_constants2 = __commonJS(function(exports2, module2) {
   var SEMVER_SPEC_VERSION = "2.0.0";
   var MAX_LENGTH = 256;
   var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
@@ -15796,7 +15812,7 @@ var require_constants2 = __commonJS(function(exports, module) {
     "prepatch",
     "prerelease"
   ];
-  module.exports = {
+  module2.exports = {
     MAX_LENGTH,
     MAX_SAFE_COMPONENT_LENGTH,
     MAX_SAFE_BUILD_LENGTH,
@@ -15809,25 +15825,25 @@ var require_constants2 = __commonJS(function(exports, module) {
 });
 
 // node_modules/semver/internal/debug.js
-var require_debug = __commonJS(function(exports, module) {
+var require_debug = __commonJS(function(exports2, module2) {
   var debug = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {};
-  module.exports = debug;
+  module2.exports = debug;
 });
 
 // node_modules/semver/internal/re.js
-var require_re = __commonJS(function(exports, module) {
+var require_re = __commonJS(function(exports2, module2) {
   var {
     MAX_SAFE_COMPONENT_LENGTH,
     MAX_SAFE_BUILD_LENGTH,
     MAX_LENGTH
   } = require_constants2();
   var debug = require_debug();
-  exports = module.exports = {};
-  var re = exports.re = [];
-  var safeRe = exports.safeRe = [];
-  var src = exports.src = [];
-  var safeSrc = exports.safeSrc = [];
-  var t = exports.t = {};
+  exports2 = module2.exports = {};
+  var re = exports2.re = [];
+  var safeRe = exports2.safeRe = [];
+  var src = exports2.src = [];
+  var safeSrc = exports2.safeSrc = [];
+  var t = exports2.t = {};
   var R = 0;
   var LETTERDASHNUMBER = "[a-zA-Z0-9-]";
   var safeRegexReplacements = [
@@ -15880,18 +15896,18 @@ var require_re = __commonJS(function(exports, module) {
   createToken("COERCERTLFULL", src[t.COERCEFULL], true);
   createToken("LONETILDE", "(?:~>?)");
   createToken("TILDETRIM", `(\\s*)${src[t.LONETILDE]}\\s+`, true);
-  exports.tildeTrimReplace = "$1~";
+  exports2.tildeTrimReplace = "$1~";
   createToken("TILDE", `^${src[t.LONETILDE]}${src[t.XRANGEPLAIN]}$`);
   createToken("TILDELOOSE", `^${src[t.LONETILDE]}${src[t.XRANGEPLAINLOOSE]}$`);
   createToken("LONECARET", "(?:\\^)");
   createToken("CARETTRIM", `(\\s*)${src[t.LONECARET]}\\s+`, true);
-  exports.caretTrimReplace = "$1^";
+  exports2.caretTrimReplace = "$1^";
   createToken("CARET", `^${src[t.LONECARET]}${src[t.XRANGEPLAIN]}$`);
   createToken("CARETLOOSE", `^${src[t.LONECARET]}${src[t.XRANGEPLAINLOOSE]}$`);
   createToken("COMPARATORLOOSE", `^${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]})$|^$`);
   createToken("COMPARATOR", `^${src[t.GTLT]}\\s*(${src[t.FULLPLAIN]})$|^$`);
   createToken("COMPARATORTRIM", `(\\s*)${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]}|${src[t.XRANGEPLAIN]})`, true);
-  exports.comparatorTrimReplace = "$1$2$3";
+  exports2.comparatorTrimReplace = "$1$2$3";
   createToken("HYPHENRANGE", `^\\s*(${src[t.XRANGEPLAIN]})` + `\\s+-\\s+` + `(${src[t.XRANGEPLAIN]})` + `\\s*$`);
   createToken("HYPHENRANGELOOSE", `^\\s*(${src[t.XRANGEPLAINLOOSE]})` + `\\s+-\\s+` + `(${src[t.XRANGEPLAINLOOSE]})` + `\\s*$`);
   createToken("STAR", "(<|>)?=?\\s*\\*");
@@ -15900,7 +15916,7 @@ var require_re = __commonJS(function(exports, module) {
 });
 
 // node_modules/semver/internal/parse-options.js
-var require_parse_options = __commonJS(function(exports, module) {
+var require_parse_options = __commonJS(function(exports2, module2) {
   var looseOption = Object.freeze({ loose: true });
   var emptyOpts = Object.freeze({});
   var parseOptions = (options) => {
@@ -15912,11 +15928,11 @@ var require_parse_options = __commonJS(function(exports, module) {
     }
     return options;
   };
-  module.exports = parseOptions;
+  module2.exports = parseOptions;
 });
 
 // node_modules/semver/internal/identifiers.js
-var require_identifiers = __commonJS(function(exports, module) {
+var require_identifiers = __commonJS(function(exports2, module2) {
   var numeric = /^[0-9]+$/;
   var compareIdentifiers = (a, b) => {
     if (typeof a === "number" && typeof b === "number") {
@@ -15931,14 +15947,14 @@ var require_identifiers = __commonJS(function(exports, module) {
     return a === b ? 0 : anum && !bnum ? -1 : bnum && !anum ? 1 : a < b ? -1 : 1;
   };
   var rcompareIdentifiers = (a, b) => compareIdentifiers(b, a);
-  module.exports = {
+  module2.exports = {
     compareIdentifiers,
     rcompareIdentifiers
   };
 });
 
 // node_modules/semver/classes/semver.js
-var require_semver = __commonJS(function(exports, module) {
+var require_semver = __commonJS(function(exports2, module2) {
   var debug = require_debug();
   var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants2();
   var { safeRe: re, t } = require_re();
@@ -16216,11 +16232,11 @@ var require_semver = __commonJS(function(exports, module) {
       return this;
     }
   }
-  module.exports = SemVer;
+  module2.exports = SemVer;
 });
 
 // node_modules/semver/functions/parse.js
-var require_parse2 = __commonJS(function(exports, module) {
+var require_parse2 = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var parse = (version, options, throwErrors = false) => {
     if (version instanceof SemVer) {
@@ -16235,31 +16251,31 @@ var require_parse2 = __commonJS(function(exports, module) {
       throw er;
     }
   };
-  module.exports = parse;
+  module2.exports = parse;
 });
 
 // node_modules/semver/functions/valid.js
-var require_valid = __commonJS(function(exports, module) {
+var require_valid = __commonJS(function(exports2, module2) {
   var parse = require_parse2();
   var valid = (version, options) => {
     const v = parse(version, options);
     return v ? v.version : null;
   };
-  module.exports = valid;
+  module2.exports = valid;
 });
 
 // node_modules/semver/functions/clean.js
-var require_clean = __commonJS(function(exports, module) {
+var require_clean = __commonJS(function(exports2, module2) {
   var parse = require_parse2();
   var clean = (version, options) => {
     const s = parse(version.trim().replace(/^[=v]+/, ""), options);
     return s ? s.version : null;
   };
-  module.exports = clean;
+  module2.exports = clean;
 });
 
 // node_modules/semver/functions/inc.js
-var require_inc = __commonJS(function(exports, module) {
+var require_inc = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var inc = (version, release, options, identifier, identifierBase) => {
     if (typeof options === "string") {
@@ -16273,11 +16289,11 @@ var require_inc = __commonJS(function(exports, module) {
       return null;
     }
   };
-  module.exports = inc;
+  module2.exports = inc;
 });
 
 // node_modules/semver/functions/diff.js
-var require_diff = __commonJS(function(exports, module) {
+var require_diff = __commonJS(function(exports2, module2) {
   var parse = require_parse2();
   var diff = (version1, version2) => {
     const v1 = parse(version1, null, true);
@@ -16314,130 +16330,130 @@ var require_diff = __commonJS(function(exports, module) {
     }
     return "prerelease";
   };
-  module.exports = diff;
+  module2.exports = diff;
 });
 
 // node_modules/semver/functions/major.js
-var require_major = __commonJS(function(exports, module) {
+var require_major = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var major = (a, loose) => new SemVer(a, loose).major;
-  module.exports = major;
+  module2.exports = major;
 });
 
 // node_modules/semver/functions/minor.js
-var require_minor = __commonJS(function(exports, module) {
+var require_minor = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var minor = (a, loose) => new SemVer(a, loose).minor;
-  module.exports = minor;
+  module2.exports = minor;
 });
 
 // node_modules/semver/functions/patch.js
-var require_patch = __commonJS(function(exports, module) {
+var require_patch = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var patch = (a, loose) => new SemVer(a, loose).patch;
-  module.exports = patch;
+  module2.exports = patch;
 });
 
 // node_modules/semver/functions/prerelease.js
-var require_prerelease = __commonJS(function(exports, module) {
+var require_prerelease = __commonJS(function(exports2, module2) {
   var parse = require_parse2();
   var prerelease = (version, options) => {
     const parsed = parse(version, options);
     return parsed && parsed.prerelease.length ? parsed.prerelease : null;
   };
-  module.exports = prerelease;
+  module2.exports = prerelease;
 });
 
 // node_modules/semver/functions/compare.js
-var require_compare = __commonJS(function(exports, module) {
+var require_compare = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var compare = (a, b, loose) => new SemVer(a, loose).compare(new SemVer(b, loose));
-  module.exports = compare;
+  module2.exports = compare;
 });
 
 // node_modules/semver/functions/rcompare.js
-var require_rcompare = __commonJS(function(exports, module) {
+var require_rcompare = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var rcompare = (a, b, loose) => compare(b, a, loose);
-  module.exports = rcompare;
+  module2.exports = rcompare;
 });
 
 // node_modules/semver/functions/compare-loose.js
-var require_compare_loose = __commonJS(function(exports, module) {
+var require_compare_loose = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var compareLoose = (a, b) => compare(a, b, true);
-  module.exports = compareLoose;
+  module2.exports = compareLoose;
 });
 
 // node_modules/semver/functions/compare-build.js
-var require_compare_build = __commonJS(function(exports, module) {
+var require_compare_build = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var compareBuild = (a, b, loose) => {
     const versionA = new SemVer(a, loose);
     const versionB = new SemVer(b, loose);
     return versionA.compare(versionB) || versionA.compareBuild(versionB);
   };
-  module.exports = compareBuild;
+  module2.exports = compareBuild;
 });
 
 // node_modules/semver/functions/sort.js
-var require_sort = __commonJS(function(exports, module) {
+var require_sort = __commonJS(function(exports2, module2) {
   var compareBuild = require_compare_build();
   var sort = (list, loose) => list.sort((a, b) => compareBuild(a, b, loose));
-  module.exports = sort;
+  module2.exports = sort;
 });
 
 // node_modules/semver/functions/rsort.js
-var require_rsort = __commonJS(function(exports, module) {
+var require_rsort = __commonJS(function(exports2, module2) {
   var compareBuild = require_compare_build();
   var rsort = (list, loose) => list.sort((a, b) => compareBuild(b, a, loose));
-  module.exports = rsort;
+  module2.exports = rsort;
 });
 
 // node_modules/semver/functions/gt.js
-var require_gt = __commonJS(function(exports, module) {
+var require_gt = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var gt = (a, b, loose) => compare(a, b, loose) > 0;
-  module.exports = gt;
+  module2.exports = gt;
 });
 
 // node_modules/semver/functions/lt.js
-var require_lt = __commonJS(function(exports, module) {
+var require_lt = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var lt = (a, b, loose) => compare(a, b, loose) < 0;
-  module.exports = lt;
+  module2.exports = lt;
 });
 
 // node_modules/semver/functions/eq.js
-var require_eq = __commonJS(function(exports, module) {
+var require_eq = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var eq = (a, b, loose) => compare(a, b, loose) === 0;
-  module.exports = eq;
+  module2.exports = eq;
 });
 
 // node_modules/semver/functions/neq.js
-var require_neq = __commonJS(function(exports, module) {
+var require_neq = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var neq = (a, b, loose) => compare(a, b, loose) !== 0;
-  module.exports = neq;
+  module2.exports = neq;
 });
 
 // node_modules/semver/functions/gte.js
-var require_gte = __commonJS(function(exports, module) {
+var require_gte = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var gte = (a, b, loose) => compare(a, b, loose) >= 0;
-  module.exports = gte;
+  module2.exports = gte;
 });
 
 // node_modules/semver/functions/lte.js
-var require_lte = __commonJS(function(exports, module) {
+var require_lte = __commonJS(function(exports2, module2) {
   var compare = require_compare();
   var lte = (a, b, loose) => compare(a, b, loose) <= 0;
-  module.exports = lte;
+  module2.exports = lte;
 });
 
 // node_modules/semver/functions/cmp.js
-var require_cmp = __commonJS(function(exports, module) {
+var require_cmp = __commonJS(function(exports2, module2) {
   var eq = require_eq();
   var neq = require_neq();
   var gt = require_gt();
@@ -16480,11 +16496,11 @@ var require_cmp = __commonJS(function(exports, module) {
         throw new TypeError(`Invalid operator: ${op}`);
     }
   };
-  module.exports = cmp;
+  module2.exports = cmp;
 });
 
 // node_modules/semver/functions/coerce.js
-var require_coerce = __commonJS(function(exports, module) {
+var require_coerce = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var parse = require_parse2();
   var { safeRe: re, t } = require_re();
@@ -16523,11 +16539,11 @@ var require_coerce = __commonJS(function(exports, module) {
     const build = options.includePrerelease && match[6] ? `+${match[6]}` : "";
     return parse(`${major}.${minor}.${patch}${prerelease}${build}`, options);
   };
-  module.exports = coerce;
+  module2.exports = coerce;
 });
 
 // node_modules/semver/functions/truncate.js
-var require_truncate = __commonJS(function(exports, module) {
+var require_truncate = __commonJS(function(exports2, module2) {
   var parse = require_parse2();
   var constants = require_constants2();
   var SemVer = require_semver();
@@ -16561,11 +16577,11 @@ var require_truncate = __commonJS(function(exports, module) {
   var isPrerelease = (type) => {
     return type.startsWith("pre");
   };
-  module.exports = truncate;
+  module2.exports = truncate;
 });
 
 // node_modules/semver/internal/lrucache.js
-var require_lrucache = __commonJS(function(exports, module) {
+var require_lrucache = __commonJS(function(exports2, module2) {
   class LRUCache {
     constructor() {
       this.max = 1000;
@@ -16596,11 +16612,11 @@ var require_lrucache = __commonJS(function(exports, module) {
       return this;
     }
   }
-  module.exports = LRUCache;
+  module2.exports = LRUCache;
 });
 
 // node_modules/semver/classes/range.js
-var require_range = __commonJS(function(exports, module) {
+var require_range = __commonJS(function(exports2, module2) {
   var SPACE_CHARACTERS = /\s+/g;
 
   class Range {
@@ -16741,7 +16757,7 @@ var require_range = __commonJS(function(exports, module) {
       return false;
     }
   }
-  module.exports = Range;
+  module2.exports = Range;
   var LRU = require_lrucache();
   var cache = new LRU;
   var parseOptions = require_parse_options();
@@ -16982,7 +16998,7 @@ var require_range = __commonJS(function(exports, module) {
 });
 
 // node_modules/semver/classes/comparator.js
-var require_comparator = __commonJS(function(exports, module) {
+var require_comparator = __commonJS(function(exports2, module2) {
   var ANY = Symbol("SemVer ANY");
 
   class Comparator {
@@ -17083,7 +17099,7 @@ var require_comparator = __commonJS(function(exports, module) {
       return false;
     }
   }
-  module.exports = Comparator;
+  module2.exports = Comparator;
   var parseOptions = require_parse_options();
   var { safeRe: re, t } = require_re();
   var cmp = require_cmp();
@@ -17093,7 +17109,7 @@ var require_comparator = __commonJS(function(exports, module) {
 });
 
 // node_modules/semver/functions/satisfies.js
-var require_satisfies = __commonJS(function(exports, module) {
+var require_satisfies = __commonJS(function(exports2, module2) {
   var Range = require_range();
   var satisfies = (version, range, options) => {
     try {
@@ -17103,18 +17119,18 @@ var require_satisfies = __commonJS(function(exports, module) {
     }
     return range.test(version);
   };
-  module.exports = satisfies;
+  module2.exports = satisfies;
 });
 
 // node_modules/semver/ranges/to-comparators.js
-var require_to_comparators = __commonJS(function(exports, module) {
+var require_to_comparators = __commonJS(function(exports2, module2) {
   var Range = require_range();
   var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
-  module.exports = toComparators;
+  module2.exports = toComparators;
 });
 
 // node_modules/semver/ranges/max-satisfying.js
-var require_max_satisfying = __commonJS(function(exports, module) {
+var require_max_satisfying = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var Range = require_range();
   var maxSatisfying = (versions, range, options) => {
@@ -17136,11 +17152,11 @@ var require_max_satisfying = __commonJS(function(exports, module) {
     });
     return max;
   };
-  module.exports = maxSatisfying;
+  module2.exports = maxSatisfying;
 });
 
 // node_modules/semver/ranges/min-satisfying.js
-var require_min_satisfying = __commonJS(function(exports, module) {
+var require_min_satisfying = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var Range = require_range();
   var minSatisfying = (versions, range, options) => {
@@ -17162,11 +17178,11 @@ var require_min_satisfying = __commonJS(function(exports, module) {
     });
     return min;
   };
-  module.exports = minSatisfying;
+  module2.exports = minSatisfying;
 });
 
 // node_modules/semver/ranges/min-version.js
-var require_min_version = __commonJS(function(exports, module) {
+var require_min_version = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var Range = require_range();
   var gt = require_gt();
@@ -17216,11 +17232,11 @@ var require_min_version = __commonJS(function(exports, module) {
     }
     return null;
   };
-  module.exports = minVersion;
+  module2.exports = minVersion;
 });
 
 // node_modules/semver/ranges/valid.js
-var require_valid2 = __commonJS(function(exports, module) {
+var require_valid2 = __commonJS(function(exports2, module2) {
   var Range = require_range();
   var validRange = (range, options) => {
     try {
@@ -17229,11 +17245,11 @@ var require_valid2 = __commonJS(function(exports, module) {
       return null;
     }
   };
-  module.exports = validRange;
+  module2.exports = validRange;
 });
 
 // node_modules/semver/ranges/outside.js
-var require_outside = __commonJS(function(exports, module) {
+var require_outside = __commonJS(function(exports2, module2) {
   var SemVer = require_semver();
   var Comparator = require_comparator();
   var { ANY } = Comparator;
@@ -17295,39 +17311,39 @@ var require_outside = __commonJS(function(exports, module) {
     }
     return true;
   };
-  module.exports = outside;
+  module2.exports = outside;
 });
 
 // node_modules/semver/ranges/gtr.js
-var require_gtr = __commonJS(function(exports, module) {
+var require_gtr = __commonJS(function(exports2, module2) {
   var outside = require_outside();
   var gtr = (version, range, options) => outside(version, range, ">", options);
-  module.exports = gtr;
+  module2.exports = gtr;
 });
 
 // node_modules/semver/ranges/ltr.js
-var require_ltr = __commonJS(function(exports, module) {
+var require_ltr = __commonJS(function(exports2, module2) {
   var outside = require_outside();
   var ltr = (version, range, options) => outside(version, range, "<", options);
-  module.exports = ltr;
+  module2.exports = ltr;
 });
 
 // node_modules/semver/ranges/intersects.js
-var require_intersects = __commonJS(function(exports, module) {
+var require_intersects = __commonJS(function(exports2, module2) {
   var Range = require_range();
   var intersects = (r1, r2, options) => {
     r1 = new Range(r1, options);
     r2 = new Range(r2, options);
     return r1.intersects(r2, options);
   };
-  module.exports = intersects;
+  module2.exports = intersects;
 });
 
 // node_modules/semver/ranges/simplify.js
-var require_simplify = __commonJS(function(exports, module) {
+var require_simplify = __commonJS(function(exports2, module2) {
   var satisfies = require_satisfies();
   var compare = require_compare();
-  module.exports = (versions, range, options) => {
+  module2.exports = (versions, range, options) => {
     const set = [];
     let first = null;
     let prev = null;
@@ -17371,7 +17387,7 @@ var require_simplify = __commonJS(function(exports, module) {
 });
 
 // node_modules/semver/ranges/subset.js
-var require_subset = __commonJS(function(exports, module) {
+var require_subset = __commonJS(function(exports2, module2) {
   var Range = require_range();
   var Comparator = require_comparator();
   var { ANY } = Comparator;
@@ -17527,11 +17543,11 @@ var require_subset = __commonJS(function(exports, module) {
     const comp = compare(a.semver, b.semver, options);
     return comp < 0 ? a : comp > 0 ? b : b.operator === "<" && a.operator === "<=" ? b : a;
   };
-  module.exports = subset;
+  module2.exports = subset;
 });
 
 // node_modules/semver/index.js
-var require_semver2 = __commonJS(function(exports, module) {
+var require_semver2 = __commonJS(function(exports2, module2) {
   var internalRe = require_re();
   var constants = require_constants2();
   var SemVer = require_semver();
@@ -17574,7 +17590,7 @@ var require_semver2 = __commonJS(function(exports, module) {
   var intersects = require_intersects();
   var simplifyRange = require_simplify();
   var subset = require_subset();
-  module.exports = {
+  module2.exports = {
     parse,
     valid,
     clean,
@@ -17652,12 +17668,12 @@ var init_update = __esm(() => {
 });
 
 // node_modules/ws/lib/constants.js
-var require_constants3 = __commonJS(function(exports, module) {
+var require_constants3 = __commonJS(function(exports2, module2) {
   var BINARY_TYPES = ["nodebuffer", "arraybuffer", "fragments"];
   var hasBlob = typeof Blob !== "undefined";
   if (hasBlob)
     BINARY_TYPES.push("blob");
-  module.exports = {
+  module2.exports = {
     BINARY_TYPES,
     CLOSE_TIMEOUT: 30000,
     EMPTY_BUFFER: Buffer.alloc(0),
@@ -17672,7 +17688,7 @@ var require_constants3 = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/buffer-util.js
-var require_buffer_util = __commonJS(function(exports, module) {
+var require_buffer_util = __commonJS(function(exports2, module2) {
   var { EMPTY_BUFFER } = require_constants3();
   var FastBuffer = Buffer[Symbol.species];
   function concat(list, totalLength) {
@@ -17723,7 +17739,7 @@ var require_buffer_util = __commonJS(function(exports, module) {
     }
     return buf;
   }
-  module.exports = {
+  module2.exports = {
     concat,
     mask: _mask,
     toArrayBuffer,
@@ -17733,13 +17749,13 @@ var require_buffer_util = __commonJS(function(exports, module) {
   if (!process.env.WS_NO_BUFFER_UTIL) {
     try {
       const bufferUtil = (()=>{throw new Error("Cannot require module "+"bufferutil");})();
-      module.exports.mask = function(source, mask2, output, offset, length) {
+      module2.exports.mask = function(source, mask2, output, offset, length) {
         if (length < 48)
           _mask(source, mask2, output, offset, length);
         else
           bufferUtil.mask(source, mask2, output, offset, length);
       };
-      module.exports.unmask = function(buffer, mask) {
+      module2.exports.unmask = function(buffer, mask) {
         if (buffer.length < 32)
           _unmask(buffer, mask);
         else
@@ -17750,7 +17766,7 @@ var require_buffer_util = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/limiter.js
-var require_limiter = __commonJS(function(exports, module) {
+var require_limiter = __commonJS(function(exports2, module2) {
   var kDone = Symbol("kDone");
   var kRun = Symbol("kRun");
 
@@ -17778,12 +17794,12 @@ var require_limiter = __commonJS(function(exports, module) {
       }
     }
   }
-  module.exports = Limiter;
+  module2.exports = Limiter;
 });
 
 // node_modules/ws/lib/permessage-deflate.js
-var require_permessage_deflate = __commonJS(function(exports, module) {
-  var zlib = __require("zlib");
+var require_permessage_deflate = __commonJS(function(exports2, module2) {
+  var zlib = require("zlib");
   var bufferUtil = require_buffer_util();
   var Limiter = require_limiter();
   var { kStatusCode } = require_constants3();
@@ -18017,7 +18033,7 @@ var require_permessage_deflate = __commonJS(function(exports, module) {
       });
     }
   }
-  module.exports = PerMessageDeflate;
+  module2.exports = PerMessageDeflate;
   function deflateOnData(chunk) {
     this[kBuffers].push(chunk);
     this[kTotalLength] += chunk.length;
@@ -18046,8 +18062,8 @@ var require_permessage_deflate = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/validation.js
-var require_validation = __commonJS(function(exports, module) {
-  var { isUtf8 } = __require("buffer");
+var require_validation = __commonJS(function(exports2, module2) {
+  var { isUtf8 } = require("buffer");
   var { hasBlob } = require_constants3();
   var tokenChars = [
     0,
@@ -18212,20 +18228,20 @@ var require_validation = __commonJS(function(exports, module) {
   function isBlob(value) {
     return hasBlob && typeof value === "object" && typeof value.arrayBuffer === "function" && typeof value.type === "string" && typeof value.stream === "function" && (value[Symbol.toStringTag] === "Blob" || value[Symbol.toStringTag] === "File");
   }
-  module.exports = {
+  module2.exports = {
     isBlob,
     isValidStatusCode,
     isValidUTF8: _isValidUTF8,
     tokenChars
   };
   if (isUtf8) {
-    module.exports.isValidUTF8 = function(buf) {
+    module2.exports.isValidUTF8 = function(buf) {
       return buf.length < 24 ? _isValidUTF8(buf) : isUtf8(buf);
     };
   } else if (!process.env.WS_NO_UTF_8_VALIDATE) {
     try {
       const isValidUTF8 = (()=>{throw new Error("Cannot require module "+"utf-8-validate");})();
-      module.exports.isValidUTF8 = function(buf) {
+      module2.exports.isValidUTF8 = function(buf) {
         return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
       };
     } catch (e) {}
@@ -18233,8 +18249,8 @@ var require_validation = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/receiver.js
-var require_receiver = __commonJS(function(exports, module) {
-  var { Writable } = __require("stream");
+var require_receiver = __commonJS(function(exports2, module2) {
+  var { Writable } = require("stream");
   var PerMessageDeflate = require_permessage_deflate();
   var {
     BINARY_TYPES,
@@ -18623,16 +18639,16 @@ var require_receiver = __commonJS(function(exports, module) {
       return err;
     }
   }
-  module.exports = Receiver;
+  module2.exports = Receiver;
 });
 
 // node_modules/ws/lib/sender.js
-var require_sender = __commonJS(function(exports, module) {
-  var { Duplex } = __require("stream");
-  var { randomFillSync } = __require("crypto");
+var require_sender = __commonJS(function(exports2, module2) {
+  var { Duplex } = require("stream");
+  var { randomFillSync } = require("crypto");
   var {
     types: { isUint8Array }
-  } = __require("util");
+  } = require("util");
   var PerMessageDeflate = require_permessage_deflate();
   var { EMPTY_BUFFER, kWebSocket, NOOP } = require_constants3();
   var { isBlob, isValidStatusCode } = require_validation();
@@ -18968,7 +18984,7 @@ var require_sender = __commonJS(function(exports, module) {
       }
     }
   }
-  module.exports = Sender;
+  module2.exports = Sender;
   function callCallbacks(sender, err, cb) {
     if (typeof cb === "function")
       cb(err);
@@ -18986,7 +19002,7 @@ var require_sender = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/event-target.js
-var require_event_target = __commonJS(function(exports, module) {
+var require_event_target = __commonJS(function(exports2, module2) {
   var { kForOnEventAttribute, kListener } = require_constants3();
   var kCode = Symbol("kCode");
   var kData = Symbol("kData");
@@ -19120,7 +19136,7 @@ var require_event_target = __commonJS(function(exports, module) {
       }
     }
   };
-  module.exports = {
+  module2.exports = {
     CloseEvent,
     ErrorEvent,
     Event,
@@ -19137,7 +19153,7 @@ var require_event_target = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/extension.js
-var require_extension = __commonJS(function(exports, module) {
+var require_extension = __commonJS(function(exports2, module2) {
   var { tokenChars } = require_validation();
   function push(dest, name, elem) {
     if (dest[name] === undefined)
@@ -19298,19 +19314,19 @@ var require_extension = __commonJS(function(exports, module) {
       }).join(", ");
     }).join(", ");
   }
-  module.exports = { format, parse };
+  module2.exports = { format, parse };
 });
 
 // node_modules/ws/lib/websocket.js
-var require_websocket = __commonJS(function(exports, module) {
-  var EventEmitter = __require("events");
-  var https = __require("https");
-  var http = __require("http");
-  var net = __require("net");
-  var tls = __require("tls");
-  var { randomBytes, createHash } = __require("crypto");
-  var { Duplex, Readable } = __require("stream");
-  var { URL: URL2 } = __require("url");
+var require_websocket = __commonJS(function(exports2, module2) {
+  var EventEmitter = require("events");
+  var https = require("https");
+  var http = require("http");
+  var net = require("net");
+  var tls = require("tls");
+  var { randomBytes, createHash } = require("crypto");
+  var { Duplex, Readable } = require("stream");
+  var { URL: URL2 } = require("url");
   var PerMessageDeflate = require_permessage_deflate();
   var Receiver = require_receiver();
   var Sender = require_sender();
@@ -19659,7 +19675,7 @@ var require_websocket = __commonJS(function(exports, module) {
   });
   WebSocket.prototype.addEventListener = addEventListener;
   WebSocket.prototype.removeEventListener = removeEventListener;
-  module.exports = WebSocket;
+  module2.exports = WebSocket;
   function initAsClient(websocket, address, protocols, options) {
     const opts = {
       allowSynchronousEvents: true,
@@ -20074,9 +20090,9 @@ var require_websocket = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/stream.js
-var require_stream = __commonJS(function(exports, module) {
+var require_stream = __commonJS(function(exports2, module2) {
   var WebSocket = require_websocket();
-  var { Duplex } = __require("stream");
+  var { Duplex } = require("stream");
   function emitClose(stream) {
     stream.emit("close");
   }
@@ -20173,11 +20189,11 @@ var require_stream = __commonJS(function(exports, module) {
     duplex.on("error", duplexOnError);
     return duplex;
   }
-  module.exports = createWebSocketStream;
+  module2.exports = createWebSocketStream;
 });
 
 // node_modules/ws/lib/subprotocol.js
-var require_subprotocol = __commonJS(function(exports, module) {
+var require_subprotocol = __commonJS(function(exports2, module2) {
   var { tokenChars } = require_validation();
   function parse(header) {
     const protocols = new Set;
@@ -20218,15 +20234,15 @@ var require_subprotocol = __commonJS(function(exports, module) {
     protocols.add(protocol);
     return protocols;
   }
-  module.exports = { parse };
+  module2.exports = { parse };
 });
 
 // node_modules/ws/lib/websocket-server.js
-var require_websocket_server = __commonJS(function(exports, module) {
-  var EventEmitter = __require("events");
-  var http = __require("http");
-  var { Duplex } = __require("stream");
-  var { createHash } = __require("crypto");
+var require_websocket_server = __commonJS(function(exports2, module2) {
+  var EventEmitter = require("events");
+  var http = require("http");
+  var { Duplex } = require("stream");
+  var { createHash } = require("crypto");
   var extension = require_extension();
   var PerMessageDeflate = require_permessage_deflate();
   var subprotocol = require_subprotocol();
@@ -20488,7 +20504,7 @@ var require_websocket_server = __commonJS(function(exports, module) {
       cb(ws, req);
     }
   }
-  module.exports = WebSocketServer;
+  module2.exports = WebSocketServer;
   function addListeners(server, map) {
     for (const event of Object.keys(map))
       server.on(event, map[event]);
@@ -20532,13 +20548,9 @@ var require_websocket_server = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/wrapper.mjs
-var exports_wrapper = {};
-__export(exports_wrapper, {
-  default: () => wrapper_default
-});
-var import_stream2, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
+var import_stream, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
 var init_wrapper = __esm(() => {
-  import_stream2 = __toESM(require_stream(), 1);
+  import_stream = __toESM(require_stream(), 1);
   import_extension = __toESM(require_extension(), 1);
   import_permessage_deflate = __toESM(require_permessage_deflate(), 1);
   import_receiver = __toESM(require_receiver(), 1);
@@ -20550,14 +20562,13 @@ var init_wrapper = __esm(() => {
 });
 
 // node_modules/zca-js/dist/apis/listen.js
-import EventEmitter3 from "events";
 function getHeader(buffer) {
   if (buffer.byteLength < 4) {
     throw new ZaloApiError("Invalid header");
   }
   return [buffer[0], buffer.readUInt16LE(1), buffer[3]];
 }
-var CloseReason, Listener;
+var import_events, CloseReason, Listener;
 var init_listen = __esm(() => {
   init_wrapper();
   init_FriendEvent();
@@ -20567,13 +20578,14 @@ var init_listen = __esm(() => {
   init_ZaloApiError();
   init_SeenMessage();
   init_DeliveredMessage();
+  import_events = __toESM(require("events"), 1);
   (function(CloseReason) {
     CloseReason[CloseReason["ManualClosure"] = 1000] = "ManualClosure";
     CloseReason[CloseReason["AbnormalClosure"] = 1006] = "AbnormalClosure";
     CloseReason[CloseReason["DuplicateConnection"] = 3000] = "DuplicateConnection";
     CloseReason[CloseReason["KickConnection"] = 3003] = "KickConnection";
   })(CloseReason || (CloseReason = {}));
-  Listener = class Listener extends EventEmitter3 {
+  Listener = class Listener extends import_events.default {
     constructor(ctx, urls) {
       super();
       this.ctx = ctx;
@@ -21513,10 +21525,10 @@ var init_blockViewFeed = __esm(() => {
 });
 
 // node_modules/delayed-stream/lib/delayed_stream.js
-var require_delayed_stream = __commonJS(function(exports, module) {
-  var Stream = __require("stream").Stream;
-  var util = __require("util");
-  module.exports = DelayedStream;
+var require_delayed_stream = __commonJS(function(exports2, module2) {
+  var Stream = require("stream").Stream;
+  var util = require("util");
+  module2.exports = DelayedStream;
   function DelayedStream() {
     this.source = null;
     this.dataSize = 0;
@@ -21601,11 +21613,11 @@ var require_delayed_stream = __commonJS(function(exports, module) {
 });
 
 // node_modules/combined-stream/lib/combined_stream.js
-var require_combined_stream = __commonJS(function(exports, module) {
-  var util = __require("util");
-  var Stream = __require("stream").Stream;
+var require_combined_stream = __commonJS(function(exports2, module2) {
+  var util = require("util");
+  var Stream = require("stream").Stream;
   var DelayedStream = require_delayed_stream();
-  module.exports = CombinedStream;
+  module2.exports = CombinedStream;
   function CombinedStream() {
     this.writable = false;
     this.readable = true;
@@ -21770,8 +21782,8 @@ var require_combined_stream = __commonJS(function(exports, module) {
 });
 
 // node_modules/form-data/node_modules/mime-types/node_modules/mime-db/db.json
-var require_db = __commonJS(function(exports, module) {
-  module.exports = {
+var require_db = __commonJS(function(exports2, module2) {
+  module2.exports = {
     "application/1d-interleaved-parityfec": {
       source: "iana"
     },
@@ -30292,26 +30304,37 @@ var require_db = __commonJS(function(exports, module) {
   };
 });
 
+// node_modules/form-data/node_modules/mime-types/node_modules/mime-db/index.js
+var require_mime_db = __commonJS(function(exports2, module2) {
+  /*!
+   * mime-db
+   * Copyright(c) 2014 Jonathan Ong
+   * Copyright(c) 2015-2022 Douglas Christopher Wilson
+   * MIT Licensed
+   */
+  module2.exports = require_db();
+});
+
 // node_modules/form-data/node_modules/mime-types/index.js
-var require_mime_types = __commonJS(function(exports) {
+var require_mime_types = __commonJS(function(exports2) {
   /*!
    * mime-types
    * Copyright(c) 2014 Jonathan Ong
    * Copyright(c) 2015 Douglas Christopher Wilson
    * MIT Licensed
    */
-  var db = require_db();
-  var extname = __require("path").extname;
+  var db = require_mime_db();
+  var extname = require("path").extname;
   var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
   var TEXT_TYPE_REGEXP = /^text\//i;
-  exports.charset = charset;
-  exports.charsets = { lookup: charset };
-  exports.contentType = contentType;
-  exports.extension = extension;
-  exports.extensions = Object.create(null);
-  exports.lookup = lookup;
-  exports.types = Object.create(null);
-  populateMaps(exports.extensions, exports.types);
+  exports2.charset = charset;
+  exports2.charsets = { lookup: charset };
+  exports2.contentType = contentType;
+  exports2.extension = extension;
+  exports2.extensions = Object.create(null);
+  exports2.lookup = lookup;
+  exports2.types = Object.create(null);
+  populateMaps(exports2.extensions, exports2.types);
   function charset(type) {
     if (!type || typeof type !== "string") {
       return false;
@@ -30330,12 +30353,12 @@ var require_mime_types = __commonJS(function(exports) {
     if (!str || typeof str !== "string") {
       return false;
     }
-    var mime = str.indexOf("/") === -1 ? exports.lookup(str) : str;
+    var mime = str.indexOf("/") === -1 ? exports2.lookup(str) : str;
     if (!mime) {
       return false;
     }
     if (mime.indexOf("charset") === -1) {
-      var charset = exports.charset(mime);
+      var charset = exports2.charset(mime);
       if (charset)
         mime += "; charset=" + charset.toLowerCase();
     }
@@ -30346,7 +30369,7 @@ var require_mime_types = __commonJS(function(exports) {
       return false;
     }
     var match = EXTRACT_TYPE_REGEXP.exec(type);
-    var exts = match && exports.extensions[match[1].toLowerCase()];
+    var exts = match && exports2.extensions[match[1].toLowerCase()];
     if (!exts || !exts.length) {
       return false;
     }
@@ -30360,7 +30383,7 @@ var require_mime_types = __commonJS(function(exports) {
     if (!extension) {
       return false;
     }
-    return exports.types[extension] || false;
+    return exports2.types[extension] || false;
   }
   function populateMaps(extensions, types) {
     var preference = ["nginx", "apache", undefined, "iana"];
@@ -30387,8 +30410,8 @@ var require_mime_types = __commonJS(function(exports) {
 });
 
 // node_modules/asynckit/lib/defer.js
-var require_defer = __commonJS(function(exports, module) {
-  module.exports = defer;
+var require_defer = __commonJS(function(exports2, module2) {
+  module2.exports = defer;
   function defer(fn) {
     var nextTick = typeof setImmediate == "function" ? setImmediate : typeof process == "object" && typeof process.nextTick == "function" ? process.nextTick : null;
     if (nextTick) {
@@ -30400,9 +30423,9 @@ var require_defer = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/lib/async.js
-var require_async = __commonJS(function(exports, module) {
+var require_async = __commonJS(function(exports2, module2) {
   var defer = require_defer();
-  module.exports = async;
+  module2.exports = async;
   function async(callback) {
     var isAsync = false;
     defer(function() {
@@ -30421,8 +30444,8 @@ var require_async = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/lib/abort.js
-var require_abort = __commonJS(function(exports, module) {
-  module.exports = abort;
+var require_abort = __commonJS(function(exports2, module2) {
+  module2.exports = abort;
   function abort(state) {
     Object.keys(state.jobs).forEach(clean.bind(state));
     state.jobs = {};
@@ -30435,10 +30458,10 @@ var require_abort = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/lib/iterate.js
-var require_iterate = __commonJS(function(exports, module) {
+var require_iterate = __commonJS(function(exports2, module2) {
   var async = require_async();
   var abort = require_abort();
-  module.exports = iterate;
+  module2.exports = iterate;
   function iterate(list, iterator, state, callback) {
     var key = state["keyedList"] ? state["keyedList"][state.index] : state.index;
     state.jobs[key] = runJob(iterator, key, list[key], function(error, output) {
@@ -30466,8 +30489,8 @@ var require_iterate = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/lib/state.js
-var require_state = __commonJS(function(exports, module) {
-  module.exports = state;
+var require_state = __commonJS(function(exports2, module2) {
+  module2.exports = state;
   function state(list, sortMethod) {
     var isNamedList = !Array.isArray(list), initState = {
       index: 0,
@@ -30486,10 +30509,10 @@ var require_state = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/lib/terminator.js
-var require_terminator = __commonJS(function(exports, module) {
+var require_terminator = __commonJS(function(exports2, module2) {
   var abort = require_abort();
   var async = require_async();
-  module.exports = terminator;
+  module2.exports = terminator;
   function terminator(callback) {
     if (!Object.keys(this.jobs).length) {
       return;
@@ -30501,11 +30524,11 @@ var require_terminator = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/parallel.js
-var require_parallel = __commonJS(function(exports, module) {
+var require_parallel = __commonJS(function(exports2, module2) {
   var iterate = require_iterate();
   var initState = require_state();
   var terminator = require_terminator();
-  module.exports = parallel;
+  module2.exports = parallel;
   function parallel(list, iterator, callback) {
     var state = initState(list);
     while (state.index < (state["keyedList"] || list).length) {
@@ -30526,13 +30549,13 @@ var require_parallel = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/serialOrdered.js
-var require_serialOrdered = __commonJS(function(exports, module) {
+var require_serialOrdered = __commonJS(function(exports2, module2) {
   var iterate = require_iterate();
   var initState = require_state();
   var terminator = require_terminator();
-  module.exports = serialOrdered;
-  module.exports.ascending = ascending;
-  module.exports.descending = descending;
+  module2.exports = serialOrdered;
+  module2.exports.ascending = ascending;
+  module2.exports.descending = descending;
   function serialOrdered(list, iterator, sortMethod, callback) {
     var state = initState(list, sortMethod);
     iterate(list, iterator, state, function iteratorHandler(error, result) {
@@ -30558,17 +30581,17 @@ var require_serialOrdered = __commonJS(function(exports, module) {
 });
 
 // node_modules/asynckit/serial.js
-var require_serial = __commonJS(function(exports, module) {
+var require_serial = __commonJS(function(exports2, module2) {
   var serialOrdered = require_serialOrdered();
-  module.exports = serial;
+  module2.exports = serial;
   function serial(list, iterator, callback) {
     return serialOrdered(list, iterator, null, callback);
   }
 });
 
 // node_modules/asynckit/index.js
-var require_asynckit = __commonJS(function(exports, module) {
-  module.exports = {
+var require_asynckit = __commonJS(function(exports2, module2) {
+  module2.exports = {
     parallel: require_parallel(),
     serial: require_serial(),
     serialOrdered: require_serialOrdered()
@@ -30576,86 +30599,86 @@ var require_asynckit = __commonJS(function(exports, module) {
 });
 
 // node_modules/es-object-atoms/index.js
-var require_es_object_atoms = __commonJS(function(exports, module) {
-  module.exports = Object;
+var require_es_object_atoms = __commonJS(function(exports2, module2) {
+  module2.exports = Object;
 });
 
 // node_modules/es-errors/index.js
-var require_es_errors = __commonJS(function(exports, module) {
-  module.exports = Error;
+var require_es_errors = __commonJS(function(exports2, module2) {
+  module2.exports = Error;
 });
 
 // node_modules/es-errors/eval.js
-var require_eval = __commonJS(function(exports, module) {
-  module.exports = EvalError;
+var require_eval = __commonJS(function(exports2, module2) {
+  module2.exports = EvalError;
 });
 
 // node_modules/es-errors/range.js
-var require_range2 = __commonJS(function(exports, module) {
-  module.exports = RangeError;
+var require_range2 = __commonJS(function(exports2, module2) {
+  module2.exports = RangeError;
 });
 
 // node_modules/es-errors/ref.js
-var require_ref = __commonJS(function(exports, module) {
-  module.exports = ReferenceError;
+var require_ref = __commonJS(function(exports2, module2) {
+  module2.exports = ReferenceError;
 });
 
 // node_modules/es-errors/syntax.js
-var require_syntax = __commonJS(function(exports, module) {
-  module.exports = SyntaxError;
+var require_syntax = __commonJS(function(exports2, module2) {
+  module2.exports = SyntaxError;
 });
 
 // node_modules/es-errors/type.js
-var require_type = __commonJS(function(exports, module) {
-  module.exports = TypeError;
+var require_type = __commonJS(function(exports2, module2) {
+  module2.exports = TypeError;
 });
 
 // node_modules/es-errors/uri.js
-var require_uri = __commonJS(function(exports, module) {
-  module.exports = URIError;
+var require_uri = __commonJS(function(exports2, module2) {
+  module2.exports = URIError;
 });
 
 // node_modules/math-intrinsics/abs.js
-var require_abs = __commonJS(function(exports, module) {
-  module.exports = Math.abs;
+var require_abs = __commonJS(function(exports2, module2) {
+  module2.exports = Math.abs;
 });
 
 // node_modules/math-intrinsics/floor.js
-var require_floor = __commonJS(function(exports, module) {
-  module.exports = Math.floor;
+var require_floor = __commonJS(function(exports2, module2) {
+  module2.exports = Math.floor;
 });
 
 // node_modules/math-intrinsics/max.js
-var require_max = __commonJS(function(exports, module) {
-  module.exports = Math.max;
+var require_max = __commonJS(function(exports2, module2) {
+  module2.exports = Math.max;
 });
 
 // node_modules/math-intrinsics/min.js
-var require_min = __commonJS(function(exports, module) {
-  module.exports = Math.min;
+var require_min = __commonJS(function(exports2, module2) {
+  module2.exports = Math.min;
 });
 
 // node_modules/math-intrinsics/pow.js
-var require_pow = __commonJS(function(exports, module) {
-  module.exports = Math.pow;
+var require_pow = __commonJS(function(exports2, module2) {
+  module2.exports = Math.pow;
 });
 
 // node_modules/math-intrinsics/round.js
-var require_round = __commonJS(function(exports, module) {
-  module.exports = Math.round;
+var require_round = __commonJS(function(exports2, module2) {
+  module2.exports = Math.round;
 });
 
 // node_modules/math-intrinsics/isNaN.js
-var require_isNaN = __commonJS(function(exports, module) {
-  module.exports = Number.isNaN || function isNaN2(a) {
+var require_isNaN = __commonJS(function(exports2, module2) {
+  module2.exports = Number.isNaN || function isNaN2(a) {
     return a !== a;
   };
 });
 
 // node_modules/math-intrinsics/sign.js
-var require_sign = __commonJS(function(exports, module) {
+var require_sign = __commonJS(function(exports2, module2) {
   var $isNaN = require_isNaN();
-  module.exports = function sign(number) {
+  module2.exports = function sign(number) {
     if ($isNaN(number) || number === 0) {
       return number;
     }
@@ -30664,12 +30687,12 @@ var require_sign = __commonJS(function(exports, module) {
 });
 
 // node_modules/gopd/gOPD.js
-var require_gOPD = __commonJS(function(exports, module) {
-  module.exports = Object.getOwnPropertyDescriptor;
+var require_gOPD = __commonJS(function(exports2, module2) {
+  module2.exports = Object.getOwnPropertyDescriptor;
 });
 
 // node_modules/gopd/index.js
-var require_gopd = __commonJS(function(exports, module) {
+var require_gopd = __commonJS(function(exports2, module2) {
   var $gOPD = require_gOPD();
   if ($gOPD) {
     try {
@@ -30678,11 +30701,11 @@ var require_gopd = __commonJS(function(exports, module) {
       $gOPD = null;
     }
   }
-  module.exports = $gOPD;
+  module2.exports = $gOPD;
 });
 
 // node_modules/es-define-property/index.js
-var require_es_define_property = __commonJS(function(exports, module) {
+var require_es_define_property = __commonJS(function(exports2, module2) {
   var $defineProperty = Object.defineProperty || false;
   if ($defineProperty) {
     try {
@@ -30691,12 +30714,12 @@ var require_es_define_property = __commonJS(function(exports, module) {
       $defineProperty = false;
     }
   }
-  module.exports = $defineProperty;
+  module2.exports = $defineProperty;
 });
 
 // node_modules/has-symbols/shams.js
-var require_shams = __commonJS(function(exports, module) {
-  module.exports = function hasSymbols() {
+var require_shams = __commonJS(function(exports2, module2) {
+  module2.exports = function hasSymbols() {
     if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
       return false;
     }
@@ -30744,10 +30767,10 @@ var require_shams = __commonJS(function(exports, module) {
 });
 
 // node_modules/has-symbols/index.js
-var require_has_symbols = __commonJS(function(exports, module) {
+var require_has_symbols = __commonJS(function(exports2, module2) {
   var origSymbol = typeof Symbol !== "undefined" && Symbol;
   var hasSymbolSham = require_shams();
-  module.exports = function hasNativeSymbols() {
+  module2.exports = function hasNativeSymbols() {
     if (typeof origSymbol !== "function") {
       return false;
     }
@@ -30765,18 +30788,18 @@ var require_has_symbols = __commonJS(function(exports, module) {
 });
 
 // node_modules/get-proto/Reflect.getPrototypeOf.js
-var require_Reflect_getPrototypeOf = __commonJS(function(exports, module) {
-  module.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
+var require_Reflect_getPrototypeOf = __commonJS(function(exports2, module2) {
+  module2.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
 });
 
 // node_modules/get-proto/Object.getPrototypeOf.js
-var require_Object_getPrototypeOf = __commonJS(function(exports, module) {
+var require_Object_getPrototypeOf = __commonJS(function(exports2, module2) {
   var $Object = require_es_object_atoms();
-  module.exports = $Object.getPrototypeOf || null;
+  module2.exports = $Object.getPrototypeOf || null;
 });
 
 // node_modules/function-bind/implementation.js
-var require_implementation = __commonJS(function(exports, module) {
+var require_implementation = __commonJS(function(exports2, module2) {
   var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
   var toStr = Object.prototype.toString;
   var max = Math.max;
@@ -30808,7 +30831,7 @@ var require_implementation = __commonJS(function(exports, module) {
     }
     return str;
   };
-  module.exports = function bind(that) {
+  module2.exports = function bind(that) {
     var target = this;
     if (typeof target !== "function" || toStr.apply(target) !== funcType) {
       throw new TypeError(ERROR_MESSAGE + target);
@@ -30842,42 +30865,42 @@ var require_implementation = __commonJS(function(exports, module) {
 });
 
 // node_modules/function-bind/index.js
-var require_function_bind = __commonJS(function(exports, module) {
+var require_function_bind = __commonJS(function(exports2, module2) {
   var implementation = require_implementation();
-  module.exports = Function.prototype.bind || implementation;
+  module2.exports = Function.prototype.bind || implementation;
 });
 
 // node_modules/call-bind-apply-helpers/functionCall.js
-var require_functionCall = __commonJS(function(exports, module) {
-  module.exports = Function.prototype.call;
+var require_functionCall = __commonJS(function(exports2, module2) {
+  module2.exports = Function.prototype.call;
 });
 
 // node_modules/call-bind-apply-helpers/functionApply.js
-var require_functionApply = __commonJS(function(exports, module) {
-  module.exports = Function.prototype.apply;
+var require_functionApply = __commonJS(function(exports2, module2) {
+  module2.exports = Function.prototype.apply;
 });
 
 // node_modules/call-bind-apply-helpers/reflectApply.js
-var require_reflectApply = __commonJS(function(exports, module) {
-  module.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
+var require_reflectApply = __commonJS(function(exports2, module2) {
+  module2.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
 });
 
 // node_modules/call-bind-apply-helpers/actualApply.js
-var require_actualApply = __commonJS(function(exports, module) {
+var require_actualApply = __commonJS(function(exports2, module2) {
   var bind = require_function_bind();
   var $apply = require_functionApply();
   var $call = require_functionCall();
   var $reflectApply = require_reflectApply();
-  module.exports = $reflectApply || bind.call($call, $apply);
+  module2.exports = $reflectApply || bind.call($call, $apply);
 });
 
 // node_modules/call-bind-apply-helpers/index.js
-var require_call_bind_apply_helpers = __commonJS(function(exports, module) {
+var require_call_bind_apply_helpers = __commonJS(function(exports2, module2) {
   var bind = require_function_bind();
   var $TypeError = require_type();
   var $call = require_functionCall();
   var $actualApply = require_actualApply();
-  module.exports = function callBindBasic(args) {
+  module2.exports = function callBindBasic(args) {
     if (args.length < 1 || typeof args[0] !== "function") {
       throw new $TypeError("a function is required");
     }
@@ -30886,7 +30909,7 @@ var require_call_bind_apply_helpers = __commonJS(function(exports, module) {
 });
 
 // node_modules/dunder-proto/get.js
-var require_get = __commonJS(function(exports, module) {
+var require_get = __commonJS(function(exports2, module2) {
   var callBind = require_call_bind_apply_helpers();
   var gOPD = require_gopd();
   var hasProtoAccessor;
@@ -30900,17 +30923,17 @@ var require_get = __commonJS(function(exports, module) {
   var desc = !!hasProtoAccessor && gOPD && gOPD(Object.prototype, "__proto__");
   var $Object = Object;
   var $getPrototypeOf = $Object.getPrototypeOf;
-  module.exports = desc && typeof desc.get === "function" ? callBind([desc.get]) : typeof $getPrototypeOf === "function" ? function getDunder(value) {
+  module2.exports = desc && typeof desc.get === "function" ? callBind([desc.get]) : typeof $getPrototypeOf === "function" ? function getDunder(value) {
     return $getPrototypeOf(value == null ? value : $Object(value));
   } : false;
 });
 
 // node_modules/get-proto/index.js
-var require_get_proto = __commonJS(function(exports, module) {
+var require_get_proto = __commonJS(function(exports2, module2) {
   var reflectGetProto = require_Reflect_getPrototypeOf();
   var originalGetProto = require_Object_getPrototypeOf();
   var getDunderProto = require_get();
-  module.exports = reflectGetProto ? function getProto(O) {
+  module2.exports = reflectGetProto ? function getProto(O) {
     return reflectGetProto(O);
   } : originalGetProto ? function getProto(O) {
     if (!O || typeof O !== "object" && typeof O !== "function") {
@@ -30923,15 +30946,15 @@ var require_get_proto = __commonJS(function(exports, module) {
 });
 
 // node_modules/hasown/index.js
-var require_hasown = __commonJS(function(exports, module) {
+var require_hasown = __commonJS(function(exports2, module2) {
   var call = Function.prototype.call;
   var $hasOwn = Object.prototype.hasOwnProperty;
   var bind = require_function_bind();
-  module.exports = bind.call(call, $hasOwn);
+  module2.exports = bind.call(call, $hasOwn);
 });
 
 // node_modules/get-intrinsic/index.js
-var require_get_intrinsic = __commonJS(function(exports, module) {
+var require_get_intrinsic = __commonJS(function(exports2, module2) {
   var undefined2;
   var $Object = require_es_object_atoms();
   var $Error = require_es_errors();
@@ -31193,7 +31216,7 @@ var require_get_intrinsic = __commonJS(function(exports, module) {
     }
     throw new $SyntaxError("intrinsic " + name + " does not exist!");
   };
-  module.exports = function GetIntrinsic(name, allowMissing) {
+  module2.exports = function GetIntrinsic(name, allowMissing) {
     if (typeof name !== "string" || name.length === 0) {
       throw new $TypeError("intrinsic name must be a non-empty string");
     }
@@ -31257,22 +31280,22 @@ var require_get_intrinsic = __commonJS(function(exports, module) {
 });
 
 // node_modules/has-tostringtag/shams.js
-var require_shams2 = __commonJS(function(exports, module) {
+var require_shams2 = __commonJS(function(exports2, module2) {
   var hasSymbols = require_shams();
-  module.exports = function hasToStringTagShams() {
+  module2.exports = function hasToStringTagShams() {
     return hasSymbols() && !!Symbol.toStringTag;
   };
 });
 
 // node_modules/es-set-tostringtag/index.js
-var require_es_set_tostringtag = __commonJS(function(exports, module) {
+var require_es_set_tostringtag = __commonJS(function(exports2, module2) {
   var GetIntrinsic = require_get_intrinsic();
   var $defineProperty = GetIntrinsic("%Object.defineProperty%", true);
   var hasToStringTag = require_shams2()();
   var hasOwn = require_hasown();
   var $TypeError = require_type();
   var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
-  module.exports = function setToStringTag(object, value) {
+  module2.exports = function setToStringTag(object, value) {
     var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
     var nonConfigurable = arguments.length > 2 && !!arguments[2] && arguments[2].nonConfigurable;
     if (typeof overrideIfSet !== "undefined" && typeof overrideIfSet !== "boolean" || typeof nonConfigurable !== "undefined" && typeof nonConfigurable !== "boolean") {
@@ -31294,8 +31317,8 @@ var require_es_set_tostringtag = __commonJS(function(exports, module) {
 });
 
 // node_modules/form-data/lib/populate.js
-var require_populate = __commonJS(function(exports, module) {
-  module.exports = function(dst, src) {
+var require_populate = __commonJS(function(exports2, module2) {
+  module2.exports = function(dst, src) {
     Object.keys(src).forEach(function(prop) {
       dst[prop] = dst[prop] || src[prop];
     });
@@ -31304,16 +31327,16 @@ var require_populate = __commonJS(function(exports, module) {
 });
 
 // node_modules/form-data/lib/form_data.js
-var require_form_data = __commonJS(function(exports, module) {
+var require_form_data = __commonJS(function(exports2, module2) {
   var CombinedStream = require_combined_stream();
-  var util = __require("util");
-  var path = __require("path");
-  var http = __require("http");
-  var https = __require("https");
-  var parseUrl = __require("url").parse;
-  var fs = __require("fs");
-  var Stream = __require("stream").Stream;
-  var crypto2 = __require("crypto");
+  var util = require("util");
+  var path = require("path");
+  var http = require("http");
+  var https = require("https");
+  var parseUrl = require("url").parse;
+  var fs = require("fs");
+  var Stream = require("stream").Stream;
+  var crypto2 = require("crypto");
   var mime = require_mime_types();
   var asynckit = require_asynckit();
   var setToStringTag = require_es_set_tostringtag();
@@ -31618,16 +31641,16 @@ var require_form_data = __commonJS(function(exports, module) {
     return "[object FormData]";
   };
   setToStringTag(FormData2.prototype, "FormData");
-  module.exports = FormData2;
+  module2.exports = FormData2;
 });
 
 // node_modules/zca-js/dist/apis/changeAccountAvatar.js
-import fs2 from "node:fs";
-var import_form_data, changeAccountAvatarFactory;
+var import_form_data, import_node_fs2, changeAccountAvatarFactory;
 var init_changeAccountAvatar = __esm(() => {
   init_ZaloApiError();
   init_utils();
   import_form_data = __toESM(require_form_data(), 1);
+  import_node_fs2 = __toESM(require("node:fs"), 1);
   changeAccountAvatarFactory = apiFactory()((api, ctx, utils) => {
     const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/profile/upavatar`);
     return async function changeAccountAvatar(avatarSource) {
@@ -31650,7 +31673,7 @@ var init_changeAccountAvatar = __esm(() => {
           }
         })
       };
-      const avatarData = isSourceFilePath ? fs2.readFileSync(avatarSource) : avatarSource.data;
+      const avatarData = isSourceFilePath ? import_node_fs2.default.readFileSync(avatarSource) : avatarSource.data;
       const formData = new import_form_data.default;
       formData.append("fileContent", avatarData, {
         filename: "blob",
@@ -31696,12 +31719,12 @@ var init_changeFriendAlias = __esm(() => {
 });
 
 // node_modules/zca-js/dist/apis/changeGroupAvatar.js
-import fs3 from "node:fs";
-var import_form_data2, changeGroupAvatarFactory;
+var import_form_data2, import_node_fs3, changeGroupAvatarFactory;
 var init_changeGroupAvatar = __esm(() => {
   init_ZaloApiError();
   init_utils();
   import_form_data2 = __toESM(require_form_data(), 1);
+  import_node_fs3 = __toESM(require("node:fs"), 1);
   changeGroupAvatarFactory = apiFactory()((api, ctx, utils) => {
     const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/group/upavatar`);
     return async function changeGroupAvatar(avatarSource, groupId) {
@@ -31715,7 +31738,7 @@ var init_changeGroupAvatar = __esm(() => {
       const imageMetaData = isSourceFilePath ? await getImageMetaData(ctx, avatarSource) : avatarSource.metadata;
       params.originWidth = imageMetaData.width || 1080;
       params.originHeight = imageMetaData.height || 1080;
-      const avatarData = isSourceFilePath ? fs3.readFileSync(avatarSource) : avatarSource.data;
+      const avatarData = isSourceFilePath ? import_node_fs3.default.readFileSync(avatarSource) : avatarSource.data;
       const formData = new import_form_data2.default;
       formData.append("fileContent", avatarData, {
         filename: "blob",
@@ -34864,7 +34887,6 @@ var init_sendLink = __esm(() => {
 });
 
 // node_modules/zca-js/dist/apis/sendMessage.js
-import fs4 from "node:fs/promises";
 function prepareQMSGAttach(quote) {
   const quoteData = quote;
   if (typeof quoteData.content == "string")
@@ -34888,12 +34910,13 @@ function prepareQMSG(quote) {
   }
   return "";
 }
-var import_form_data3, attachmentUrlType, TextStyle, Urgency, sendMessageFactory;
+var import_form_data3, import_promises2, attachmentUrlType, TextStyle, Urgency, sendMessageFactory;
 var init_sendMessage = __esm(() => {
   init_ZaloApiError();
   init_models();
   init_utils();
   import_form_data3 = __toESM(require_form_data(), 1);
+  import_promises2 = __toESM(require("node:fs/promises"), 1);
   attachmentUrlType = {
     image: "photo_original/send?",
     gif: "gif?",
@@ -34963,7 +34986,7 @@ var init_sendMessage = __esm(() => {
     }
     async function upthumb(source, url) {
       const formData = new import_form_data3.default;
-      const buffer = typeof source == "string" ? await fs4.readFile(source) : source.data;
+      const buffer = typeof source == "string" ? await import_promises2.default.readFile(source) : source.data;
       formData.append("fileContent", buffer, {
         filename: "blob",
         contentType: "image/png"
@@ -35203,7 +35226,7 @@ var init_sendMessage = __esm(() => {
           throw new ZaloApiError(`File ${isFilePath ? getFileName(gif) : gif.filename} size exceed maximum size of ${sharefile.max_size_share_file_v3}MB`);
         const _upthumb = await upthumb(gif, serviceURLs.attachment[ThreadType.User]);
         const formData = new import_form_data3.default;
-        formData.append("chunkContent", isFilePath ? await fs4.readFile(gif) : gif.data, {
+        formData.append("chunkContent", isFilePath ? await import_promises2.default.readFile(gif) : gif.data, {
           filename: isFilePath ? getFileName(gif) : gif.filename,
           contentType: "application/octet-stream"
         });
@@ -36410,13 +36433,13 @@ var init_upgradeGroupToCommunity = __esm(() => {
 });
 
 // node_modules/zca-js/dist/apis/uploadAttachment.js
-import fs5 from "node:fs";
-var import_form_data4, urlType, uploadAttachmentFactory;
+var import_form_data4, import_node_fs4, urlType, uploadAttachmentFactory;
 var init_uploadAttachment = __esm(() => {
   init_ZaloApiError();
   init_models();
   init_utils();
   import_form_data4 = __toESM(require_form_data(), 1);
+  import_node_fs4 = __toESM(require("node:fs"), 1);
   urlType = {
     image: "photo_original/upload",
     video: "asyncfile/upload",
@@ -36458,7 +36481,7 @@ var init_uploadAttachment = __esm(() => {
           throw new ZaloApiError("Invalid source type");
         if (!isFilePath && !source.filename)
           throw new ZaloApiError("Missing filename");
-        if (isFilePath && !fs5.existsSync(source))
+        if (isFilePath && !import_node_fs4.default.existsSync(source))
           throw new ZaloApiError("File not found");
         const extFile = getFileExtension(isFilePath ? source : source.filename).toLowerCase();
         const fileName = isFilePath ? getFileName(source) : source.filename;
@@ -36533,7 +36556,7 @@ var init_uploadAttachment = __esm(() => {
             break;
           }
         }
-        const fileBuffer = isFilePath ? await fs5.promises.readFile(source) : source.data;
+        const fileBuffer = isFilePath ? await import_node_fs4.default.promises.readFile(source) : source.data;
         for (let i = 0;i < data.params.totalChunk; i++) {
           const formData = new import_form_data4.default;
           const slicedBuffer = fileBuffer.subarray(i * chunkSize, (i + 1) * chunkSize);
@@ -36598,11 +36621,11 @@ var init_uploadAttachment = __esm(() => {
 });
 
 // node_modules/zca-js/dist/apis/uploadProductPhoto.js
-import fs6 from "node:fs";
-var import_form_data5, uploadProductPhotoFactory;
+var import_node_fs5, import_form_data5, uploadProductPhotoFactory;
 var init_uploadProductPhoto = __esm(() => {
   init_ZaloApiError();
   init_utils();
+  import_node_fs5 = __toESM(require("node:fs"), 1);
   import_form_data5 = __toESM(require_form_data(), 1);
   uploadProductPhotoFactory = apiFactory()((api, ctx, utils) => {
     const serviceURL = utils.makeURL(`${api.zpwServiceMap.file[0]}/api/product/upload/photo`);
@@ -36610,7 +36633,7 @@ var init_uploadProductPhoto = __esm(() => {
       const isSourceFilePath = typeof payload.file == "string";
       const fileMetaData = isSourceFilePath ? await getImageMetaData(ctx, payload.file) : payload.file.metadata;
       const fileSize = fileMetaData.totalSize || 0;
-      const fileBuffer = isSourceFilePath ? await fs6.promises.readFile(payload.file) : payload.file.data;
+      const fileBuffer = isSourceFilePath ? await import_node_fs5.default.promises.readFile(payload.file) : payload.file.data;
       const formData = new import_form_data5.default;
       formData.append("chunkContent", fileBuffer, {
         filename: "undefined",
@@ -37132,8 +37155,8 @@ var init_dist = __esm(() => {
 });
 
 // node_modules/dotenv/package.json
-var require_package = __commonJS(function(exports, module) {
-  module.exports = {
+var require_package = __commonJS(function(exports2, module2) {
+  module2.exports = {
     name: "dotenv",
     version: "16.6.1",
     description: "Loads environment variables from .env file",
@@ -37198,11 +37221,11 @@ var require_package = __commonJS(function(exports, module) {
 });
 
 // node_modules/dotenv/lib/main.js
-var require_main = __commonJS(function(exports, module) {
-  var fs = __require("fs");
-  var path = __require("path");
-  var os = __require("os");
-  var crypto2 = __require("crypto");
+var require_main = __commonJS(function(exports2, module2) {
+  var fs = require("fs");
+  var path = require("path");
+  var os = require("os");
+  var crypto2 = require("crypto");
   var packageJson = require_package();
   var version = packageJson.version;
   var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
@@ -37477,19 +37500,35 @@ var require_main = __commonJS(function(exports, module) {
     parse,
     populate
   };
-  module.exports.configDotenv = DotenvModule.configDotenv;
-  module.exports._configVault = DotenvModule._configVault;
-  module.exports._parseVault = DotenvModule._parseVault;
-  module.exports.config = DotenvModule.config;
-  module.exports.decrypt = DotenvModule.decrypt;
-  module.exports.parse = DotenvModule.parse;
-  module.exports.populate = DotenvModule.populate;
-  module.exports = DotenvModule;
+  module2.exports.configDotenv = DotenvModule.configDotenv;
+  module2.exports._configVault = DotenvModule._configVault;
+  module2.exports._parseVault = DotenvModule._parseVault;
+  module2.exports.config = DotenvModule.config;
+  module2.exports.decrypt = DotenvModule.decrypt;
+  module2.exports.parse = DotenvModule.parse;
+  module2.exports.populate = DotenvModule.populate;
+  module2.exports = DotenvModule;
 });
-// src/core/adapter.ts
-import { EventEmitter } from "node:events";
 
-class BaseChannel extends EventEmitter {
+// src/channels/zalo/index.ts
+var exports_zalo = {};
+__export(exports_zalo, {
+  EMOJI_TO_ZALO: () => EMOJI_TO_ZALO,
+  Reactions: () => Reactions2,
+  ZaloChannelAdapter: () => ZaloChannelAdapter,
+  ZaloOABot: () => ZaloOABot,
+  ZaloPersonalBot: () => ZaloPersonalBot,
+  ZaloReactions: () => ZaloReactions,
+  ZaloThreadType: () => ZaloThreadType,
+  initOABot: () => initOABot,
+  initPersonalBot: () => initPersonalBot
+});
+module.exports = __toCommonJS(exports_zalo);
+
+// src/core/adapter.ts
+var import_node_events = require("node:events");
+
+class BaseChannel extends import_node_events.EventEmitter {
   get provider() {
     return this.name;
   }
@@ -37526,299 +37565,7 @@ class BaseChannel extends EventEmitter {
     }, options);
   }
 }
-// src/core/bus.ts
-import { EventEmitter as EventEmitter2 } from "node:events";
 
-class ChannelEventBus extends EventEmitter2 {
-  emitMessage(msg) {
-    return this.emit("message", msg);
-  }
-  emitError(err) {
-    return this.emit("error", err);
-  }
-  emitStatus(status) {
-    return this.emit("status", status);
-  }
-}
-// src/core/stream.ts
-class SmartStreamer {
-  adapter;
-  options;
-  constructor(adapter, options = {}) {
-    this.adapter = adapter;
-    this.options = {
-      editDebounceMs: 1000,
-      typingIntervalMs: 4000,
-      chunkMode: "sentence",
-      minSentenceLength: 60,
-      initialPlaceholder: "...",
-      ...options
-    };
-  }
-  async stream(chatId, tokenStream, sendOptions) {
-    let typingActive = true;
-    const triggerTyping = async () => {
-      if (this.adapter.sendTyping) {
-        try {
-          await this.adapter.sendTyping(chatId);
-        } catch {}
-      }
-    };
-    await triggerTyping();
-    const typingTimer = setInterval(() => {
-      if (typingActive)
-        triggerTyping();
-    }, this.options.typingIntervalMs);
-    try {
-      if (typeof this.adapter.editText === "function") {
-        return await this.streamWithEdit(chatId, tokenStream, sendOptions);
-      } else {
-        return await this.streamWithoutEdit(chatId, tokenStream, sendOptions);
-      }
-    } finally {
-      typingActive = false;
-      clearInterval(typingTimer);
-    }
-  }
-  async streamWithEdit(chatId, tokenStream, sendOptions) {
-    let accumulated = "";
-    let sentMsg = null;
-    let lastEditTime = 0;
-    let pendingEditTimeout = null;
-    const performEdit = async (text) => {
-      if (sentMsg && this.adapter.editText) {
-        await this.adapter.editText(chatId, sentMsg.messageId, text);
-        lastEditTime = Date.now();
-      }
-    };
-    for await (const chunk of tokenStream) {
-      accumulated += chunk;
-      if (!sentMsg) {
-        sentMsg = await this.adapter.sendText(chatId, accumulated.trim() || this.options.initialPlaceholder, sendOptions);
-        lastEditTime = Date.now();
-        continue;
-      }
-      const now = Date.now();
-      const elapsed = now - lastEditTime;
-      if (elapsed >= this.options.editDebounceMs) {
-        if (pendingEditTimeout) {
-          clearTimeout(pendingEditTimeout);
-          pendingEditTimeout = null;
-        }
-        await performEdit(accumulated);
-      } else if (!pendingEditTimeout) {
-        pendingEditTimeout = setTimeout(async () => {
-          pendingEditTimeout = null;
-          await performEdit(accumulated);
-        }, this.options.editDebounceMs - elapsed);
-      }
-    }
-    if (pendingEditTimeout) {
-      clearTimeout(pendingEditTimeout);
-      pendingEditTimeout = null;
-    }
-    if (sentMsg && accumulated) {
-      await performEdit(accumulated);
-      return [sentMsg];
-    } else if (!sentMsg && accumulated) {
-      const res = await this.adapter.sendText(chatId, accumulated, sendOptions);
-      return [res];
-    }
-    return sentMsg ? [sentMsg] : [];
-  }
-  async streamWithoutEdit(chatId, tokenStream, sendOptions) {
-    const results = [];
-    if (this.options.chunkMode === "accumulate") {
-      let accumulated = "";
-      for await (const chunk of tokenStream) {
-        accumulated += chunk;
-      }
-      if (accumulated.trim()) {
-        const res = await this.adapter.sendText(chatId, accumulated, sendOptions);
-        results.push(res);
-      }
-      return results;
-    }
-    let buffer = "";
-    const sentenceEndRegex = /[.?!;\n]\s*$/;
-    for await (const chunk of tokenStream) {
-      buffer += chunk;
-      if (buffer.length >= this.options.minSentenceLength && sentenceEndRegex.test(buffer.trimEnd())) {
-        const textToSend = buffer.trim();
-        if (textToSend) {
-          const res = await this.adapter.sendText(chatId, textToSend, sendOptions);
-          results.push(res);
-          buffer = "";
-        }
-      }
-    }
-    if (buffer.trim()) {
-      const res = await this.adapter.sendText(chatId, buffer.trim(), sendOptions);
-      results.push(res);
-    }
-    return results;
-  }
-}
-
-// src/core/context.ts
-function createMessageContext(message, channel) {
-  return {
-    message,
-    channel,
-    reply: (text, options) => channel.sendText(message.chat.id, text, {
-      replyToId: message.id,
-      ...options
-    }),
-    replyMedia: (media, options) => channel.sendMedia(message.chat.id, media, {
-      replyToId: message.id,
-      ...options
-    }),
-    react: async (emoji) => {
-      if (channel.addReaction) {
-        await channel.addReaction(message.chat.id, message.id, emoji);
-      }
-    },
-    sendTyping: async () => {
-      if (channel.sendTyping) {
-        await channel.sendTyping(message.chat.id);
-      }
-    },
-    stream: async (tokenStream, options) => {
-      const streamer = new SmartStreamer(channel, options);
-      return await streamer.stream(message.chat.id, tokenStream, {
-        replyToId: message.id
-      });
-    }
-  };
-}
-// src/core/hub.ts
-class ChannelHub {
-  _channels = new Map;
-  _bus = new ChannelEventBus;
-  _messageHandlers = [];
-  _queue = [];
-  _waiters = [];
-  _queueDrainWaiters = [];
-  _isClosed = false;
-  register(channel) {
-    const provider = channel.provider || channel.name;
-    const accountId = channel.accountId || "default";
-    const fullKey = `${provider}:${accountId}`;
-    if (this._channels.has(fullKey)) {
-      throw new Error(`Channel '${fullKey}' is already registered in ChannelHub.`);
-    }
-    this._channels.set(fullKey, channel);
-    if (!this._channels.has(provider)) {
-      this._channels.set(provider, channel);
-    }
-    if (!this._channels.has(channel.name)) {
-      this._channels.set(channel.name, channel);
-    }
-    channel.on("message", async (msg) => {
-      this._bus.emitMessage(msg);
-      const ctx = createMessageContext(msg, channel);
-      if (this._waiters.length > 0) {
-        const waiter = this._waiters.shift();
-        waiter(ctx);
-      } else {
-        while (this._queue.length >= 2000) {
-          await new Promise((resolve) => this._queueDrainWaiters.push(resolve));
-        }
-        this._queue.push(ctx);
-      }
-      for (const handler of this._messageHandlers) {
-        try {
-          await handler(ctx);
-        } catch (err) {
-          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
-        }
-      }
-    });
-    channel.on("error", (err) => {
-      this._bus.emitError(err);
-    });
-    return this;
-  }
-  getChannel(providerOrKey, accountId) {
-    if (accountId) {
-      return this._channels.get(`${providerOrKey}:${accountId}`);
-    }
-    return this._channels.get(providerOrKey);
-  }
-  listChannels() {
-    const seen = new Set;
-    const keys = [];
-    for (const [key, ch] of this._channels.entries()) {
-      if (!seen.has(ch)) {
-        seen.add(ch);
-        keys.push(key);
-      }
-    }
-    return keys;
-  }
-  onMessage(handler) {
-    this._messageHandlers.push(handler);
-    return this;
-  }
-  on(event, handler) {
-    if (event === "message") {
-      this.onMessage(handler);
-    } else if (event === "error") {
-      this._bus.on("error", handler);
-    }
-    return this;
-  }
-  async* messages(signal) {
-    while (!this._isClosed && !signal?.aborted) {
-      if (this._queue.length > 0) {
-        yield this._queue.shift();
-        continue;
-      }
-      const next = await new Promise((resolve) => {
-        const onAbort = () => {
-          signal?.removeEventListener("abort", onAbort);
-          resolve(null);
-        };
-        signal?.addEventListener("abort", onAbort, { once: true });
-        this._waiters.push((ctx) => {
-          signal?.removeEventListener("abort", onAbort);
-          resolve(ctx);
-        });
-      });
-      if (!next || signal?.aborted)
-        break;
-      yield next;
-    }
-  }
-  async start(signal) {
-    const connected = [];
-    const uniqueChannels = Array.from(new Set(this._channels.values()));
-    try {
-      for (const ch of uniqueChannels) {
-        if (signal?.aborted) {
-          throw signal.reason || new Error("Startup aborted");
-        }
-        await ch.connect(signal);
-        connected.push(ch);
-      }
-    } catch (err) {
-      await Promise.allSettled(connected.map((ch) => ch.disconnect()));
-      throw err;
-    }
-  }
-  async startAll(signal) {
-    return this.start(signal);
-  }
-  async stop(signal) {
-    this._isClosed = true;
-    for (const waiter of this._waiters) {
-      waiter(null);
-    }
-    this._waiters = [];
-    const uniqueChannels = Array.from(new Set(this._channels.values()));
-    await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
-  }
-}
 // src/channels/zalo/adapter.ts
 var EMOJI_TO_ZALO = {
   "❤️": "HEART",
@@ -38155,6 +37902,7 @@ var ZaloReactions = {
   BEER: "/-beer",
   NONE: ""
 };
+var Reactions2 = ZaloReactions;
 // src/personal/client.ts
 class ZaloPersonalBot {
   api;
@@ -38697,12 +38445,12 @@ class ZaloPersonalBot {
   }
 }
 // src/config/env.ts
+var import_node_path2 = __toESM(require("node:path"), 1);
 var import_dotenv = __toESM(require_main(), 1);
-import path2 from "node:path";
 import_dotenv.default.config();
 var CONFIG = {
   PERSONAL: {
-    CRED_PATH: process.env.ZALO_CRED_PATH || path2.resolve("./credentials.json"),
+    CRED_PATH: process.env.ZALO_CRED_PATH || import_node_path2.default.resolve("./credentials.json"),
     DEFAULT_PREFIX: "!"
   },
   OA: {
@@ -38852,13 +38600,13 @@ class ZaloOABot {
   }
 }
 // src/personal/index.ts
-import fs7 from "node:fs";
+var import_node_fs6 = __toESM(require("node:fs"), 1);
 async function initPersonalBot() {
-  if (!fs7.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
+  if (!import_node_fs6.default.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
     throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
   await Promise.resolve().then(() => init_dist());
-  const creds = JSON.parse(fs7.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
+  const creds = JSON.parse(import_node_fs6.default.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
   const bot = new ZaloPersonalBot(api);
@@ -38870,1609 +38618,3 @@ async function initPersonalBot() {
 function initOABot() {
   return new ZaloOABot;
 }
-// src/channels/telegram/adapter.ts
-class TelegramChannelAdapter extends BaseChannel {
-  name = "telegram";
-  capabilities = {
-    inbound: true,
-    outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
-    reactions: true,
-    editing: true,
-    typing: true,
-    mode: "polling"
-  };
-  config;
-  apiRoot;
-  pollTimer = null;
-  lastUpdateId = 0;
-  isPolling = false;
-  constructor(config) {
-    super();
-    this.config = config;
-    this.apiRoot = config.apiRoot || "https://api.telegram.org";
-  }
-  async connect() {
-    if (!this.config.botToken) {
-      throw new Error("Telegram botToken is required.");
-    }
-    this.setConnected(true);
-    if (this.config.autoStart !== false) {
-      this.startPolling();
-    }
-  }
-  async disconnect() {
-    this.stopPolling();
-    this.setConnected(false);
-  }
-  normalizeUpdate(update) {
-    if (!update)
-      return null;
-    const msg = update.message || update.edited_message || update.channel_post;
-    if (!msg)
-      return null;
-    const chatType = msg.chat.type === "private" ? "dm" : msg.chat.type === "channel" ? "channel" : "group";
-    const senderName = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(" ");
-    return {
-      id: String(msg.message_id),
-      channel: "telegram",
-      sender: {
-        id: String(msg.from?.id ?? ""),
-        name: senderName || undefined,
-        username: msg.from?.username,
-        isBot: Boolean(msg.from?.is_bot)
-      },
-      chat: {
-        id: String(msg.chat.id),
-        type: chatType,
-        title: msg.chat.title
-      },
-      content: {
-        text: msg.text || msg.caption || "",
-        replyToId: msg.reply_to_message?.message_id ? String(msg.reply_to_message.message_id) : undefined
-      },
-      raw: update,
-      timestamp: (msg.date || Math.floor(Date.now() / 1000)) * 1000
-    };
-  }
-  async callApi(method, body, signal) {
-    const url = `${this.apiRoot}/bot${this.config.botToken}/${method}`;
-    const res = await fetch(url, {
-      method: "POST",
-      signal,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Telegram API ${method} failed: ${res.status} ${errText}`);
-    }
-    const data = await res.json();
-    if (!data.ok) {
-      throw new Error(`Telegram API ${method} error: ${data.description}`);
-    }
-    return data.result;
-  }
-  async dispatchMessage(msg) {
-    const listeners = this.listeners("message");
-    for (const listener of listeners) {
-      try {
-        await listener(msg);
-      } catch (err) {
-        this.emit("error", err);
-      }
-    }
-  }
-  startPolling() {
-    if (this.isPolling)
-      return;
-    this.isPolling = true;
-    const interval = this.config.pollIntervalMs || 1000;
-    const poll = async () => {
-      if (!this.isPolling)
-        return;
-      try {
-        const updates = await this.callApi("getUpdates", {
-          offset: this.lastUpdateId + 1,
-          timeout: 10
-        });
-        if (Array.isArray(updates)) {
-          for (const u of updates) {
-            const unified = this.normalizeUpdate(u);
-            if (unified) {
-              await this.dispatchMessage(unified);
-            }
-            this.lastUpdateId = Math.max(this.lastUpdateId, u.update_id);
-          }
-        }
-      } catch (err) {
-        this.emit("error", err);
-      } finally {
-        if (this.isPolling) {
-          this.pollTimer = setTimeout(poll, interval);
-        }
-      }
-    };
-    poll();
-  }
-  stopPolling() {
-    this.isPolling = false;
-    if (this.pollTimer) {
-      clearTimeout(this.pollTimer);
-      this.pollTimer = null;
-    }
-  }
-  async sendText(chatId, text, options) {
-    const payload = {
-      chat_id: chatId,
-      text
-    };
-    if (options?.replyToId) {
-      payload.reply_to_message_id = Number(options.replyToId);
-    }
-    const res = await this.callApi("sendMessage", payload, options?.signal);
-    return {
-      messageId: String(res.message_id),
-      chatId,
-      timestamp: res.date * 1000
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : media.type === "animation" ? "sendAnimation" : media.type === "sticker" ? "sendSticker" : "sendDocument";
-    const payload = {
-      chat_id: chatId,
-      caption: media.caption
-    };
-    if (typeof media.source === "string") {
-      if (media.type === "image")
-        payload.photo = media.source;
-      else if (media.type === "video")
-        payload.video = media.source;
-      else if (media.type === "animation")
-        payload.animation = media.source;
-      else if (media.type === "sticker")
-        payload.sticker = media.source;
-      else
-        payload.document = media.source;
-    }
-    if (options?.replyToId) {
-      payload.reply_to_message_id = Number(options.replyToId);
-    }
-    const res = await this.callApi(method, payload, options?.signal);
-    return {
-      messageId: String(res.message_id),
-      chatId,
-      timestamp: (res.date || Date.now()) * 1000
-    };
-  }
-  async addReaction(chatId, messageId, emoji, options) {
-    await this.callApi("setMessageReaction", {
-      chat_id: chatId,
-      message_id: Number(messageId),
-      reaction: [{ type: "emoji", emoji }]
-    });
-  }
-  async sendTyping(chatId, options) {
-    await this.callApi("sendChatAction", {
-      chat_id: chatId,
-      action: "typing"
-    }, options?.signal);
-  }
-  async editText(chatId, messageId, text, options) {
-    const res = await this.callApi("editMessageText", {
-      chat_id: chatId,
-      message_id: Number(messageId),
-      text
-    }, options?.signal);
-    return {
-      messageId: String(res.message_id || messageId),
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-}
-// src/channels/discord/adapter.ts
-class DiscordChannelAdapter extends BaseChannel {
-  name = "discord";
-  capabilities = {
-    inbound: true,
-    outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
-    reactions: true,
-    editing: true,
-    typing: true,
-    mode: "gateway"
-  };
-  config;
-  apiBase = "https://discord.com/api/v10";
-  ws;
-  heartbeatTimer;
-  sequence = null;
-  constructor(config) {
-    super();
-    this.config = config;
-  }
-  async connect(signal) {
-    this.assertNotAborted(signal);
-    if (!this.config.botToken)
-      throw new Error("Discord botToken is required.");
-    await this.callApi("GET", "/users/@me");
-    this.setConnected(true);
-    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
-      this.connectGateway();
-    }
-  }
-  async connectGateway() {
-    const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
-    const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
-    this.ws = ws;
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data.toString());
-        if (data.s !== null)
-          this.sequence = data.s;
-        if (data.op === 10) {
-          const interval = data.d.heartbeat_interval;
-          this.heartbeatTimer = setInterval(() => {
-            ws.send(JSON.stringify({ op: 1, d: this.sequence }));
-          }, interval);
-          ws.send(JSON.stringify({
-            op: 2,
-            d: {
-              token: this.config.botToken,
-              intents: this.config.intents ?? 33280,
-              properties: {
-                os: process.platform,
-                browser: "channelhub",
-                device: "channelhub"
-              }
-            }
-          }));
-        }
-        if (data.op === 0 && data.t === "MESSAGE_CREATE") {
-          const msg = this.normalizeEvent(data.d);
-          if (msg)
-            this.emit("message", msg);
-        }
-      } catch (err) {}
-    };
-    ws.onclose = () => {
-      if (this.heartbeatTimer)
-        clearInterval(this.heartbeatTimer);
-    };
-  }
-  async disconnect(signal) {
-    this.assertNotAborted(signal);
-    if (this.heartbeatTimer)
-      clearInterval(this.heartbeatTimer);
-    if (this.ws) {
-      this.ws.close();
-      this.ws = undefined;
-    }
-    this.setConnected(false);
-  }
-  normalizeEvent(event) {
-    if (!event || event.type !== 0 && !event.content && !event.author) {
-      if (!event?.content && !event?.d?.content)
-        return null;
-    }
-    const msg = event.d || event;
-    if (!msg.content && !msg.attachments?.length)
-      return null;
-    if (msg.author?.bot)
-      return null;
-    const isDm = !msg.guild_id;
-    return {
-      id: String(msg.id),
-      channel: "discord",
-      sender: {
-        id: String(msg.author?.id ?? ""),
-        name: msg.author?.global_name || msg.author?.username,
-        username: msg.author?.username,
-        isBot: Boolean(msg.author?.bot),
-        avatarUrl: msg.author?.avatar ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png` : undefined
-      },
-      chat: {
-        id: String(msg.channel_id),
-        type: isDm ? "dm" : "channel",
-        title: undefined
-      },
-      content: {
-        text: msg.content || "",
-        attachments: (msg.attachments || []).map((a) => ({
-          type: a.content_type?.startsWith("image/") ? "image" : a.content_type?.startsWith("video/") ? "video" : "file",
-          url: a.url,
-          filename: a.filename,
-          mimeType: a.content_type,
-          size: a.size
-        })),
-        replyToId: msg.message_reference?.message_id ? String(msg.message_reference.message_id) : undefined
-      },
-      raw: event,
-      timestamp: msg.timestamp ? Date.parse(msg.timestamp) : Date.now()
-    };
-  }
-  async callApi(method, path, body, signal) {
-    const res = await fetch(`${this.apiBase}${path}`, {
-      method,
-      signal,
-      headers: {
-        Authorization: `Bot ${this.config.botToken}`,
-        "Content-Type": "application/json"
-      },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Discord API ${method} ${path} failed: ${res.status} ${errText}`);
-    }
-    if (res.status === 204)
-      return null;
-    return res.json();
-  }
-  async sendText(chatId, text, options) {
-    const payload = { content: text };
-    if (options?.replyToId) {
-      payload.message_reference = { message_id: options.replyToId };
-    }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
-    return {
-      messageId: String(res.id),
-      chatId,
-      timestamp: Date.parse(res.timestamp) || Date.now()
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    const payload = {
-      content: media.caption || ""
-    };
-    if (typeof media.source === "string") {
-      payload.embeds = [{ image: { url: media.source } }];
-    }
-    if (options?.replyToId) {
-      payload.message_reference = { message_id: options.replyToId };
-    }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
-    return {
-      messageId: String(res.id),
-      chatId,
-      timestamp: Date.parse(res.timestamp) || Date.now()
-    };
-  }
-  async addReaction(chatId, messageId, emoji, options) {
-    const encoded = encodeURIComponent(emoji);
-    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
-  }
-  async sendTyping(chatId, options) {
-    await this.callApi("POST", `/channels/${chatId}/typing`, {});
-  }
-  async editText(chatId, messageId, text, options) {
-    const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
-      content: text
-    });
-    return {
-      messageId: String(res.id || messageId),
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-}
-// src/channels/slack/adapter.ts
-class SlackChannelAdapter extends BaseChannel {
-  name = "slack";
-  capabilities = {
-    inbound: true,
-    outbound: true,
-    media: ["image", "video", "document", "audio"],
-    reactions: true,
-    editing: true,
-    typing: false,
-    mode: "webhook"
-  };
-  config;
-  apiBase = "https://slack.com/api";
-  ws;
-  constructor(config) {
-    super();
-    this.config = config;
-  }
-  async connect(signal) {
-    this.assertNotAborted(signal);
-    if (!this.config.botToken)
-      throw new Error("Slack botToken is required.");
-    await this.callApi("auth.test", {});
-    if (this.config.appToken) {
-      const res = await fetch("https://slack.com/api/apps.connections.open", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${this.config.appToken}` }
-      });
-      const data = await res.json();
-      if (data.ok && data.url) {
-        const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
-        this.ws = new WS(data.url);
-        this.ws.onopen = () => this.emit("status", { status: "connected" });
-        this.ws.onmessage = (e) => {
-          try {
-            const payload = JSON.parse(e.data.toString());
-            if (payload.type === "hello")
-              return;
-            if (payload.envelope_id) {
-              this.ws?.send(JSON.stringify({ envelope_id: payload.envelope_id }));
-            }
-            if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
-              const msg = this.normalizeEvent(payload.payload);
-              if (msg)
-                this.emit("message", msg);
-            }
-          } catch (err) {}
-        };
-        this.ws.onerror = (e) => this.emit("error", new Error("Slack Socket Error"));
-        this.ws.onclose = () => this.emit("status", { status: "disconnected" });
-      }
-    }
-    this.setConnected(true);
-  }
-  async disconnect(signal) {
-    this.assertNotAborted(signal);
-    if (this.ws) {
-      this.ws.close();
-      this.ws = undefined;
-    }
-    this.setConnected(false);
-  }
-  normalizeEvent(event) {
-    const msg = event.event || event;
-    if (!msg || msg.type !== "message")
-      return null;
-    if (msg.subtype === "bot_message" || msg.bot_id)
-      return null;
-    const isDm = msg.channel_type === "im" || msg.channel && msg.channel.startsWith("D");
-    return {
-      id: String(msg.client_msg_id || msg.ts),
-      channel: "slack",
-      sender: {
-        id: String(msg.user || ""),
-        isBot: Boolean(msg.bot_id)
-      },
-      chat: {
-        id: String(msg.channel),
-        type: isDm ? "dm" : "channel"
-      },
-      content: {
-        text: msg.text || "",
-        replyToId: msg.thread_ts ? String(msg.thread_ts) : undefined
-      },
-      raw: event,
-      timestamp: msg.ts ? parseFloat(msg.ts) * 1000 : Date.now()
-    };
-  }
-  async callApi(method, body, signal) {
-    const res = await fetch(`${this.apiBase}/${method}`, {
-      method: "POST",
-      signal,
-      headers: {
-        Authorization: `Bearer ${this.config.botToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Slack API ${method} failed: ${res.status} ${errText}`);
-    }
-    const data = await res.json();
-    if (!data.ok) {
-      throw new Error(`Slack API ${method} error: ${data.error}`);
-    }
-    return data;
-  }
-  async sendText(chatId, text, options) {
-    const payload = {
-      channel: chatId,
-      text
-    };
-    if (options?.replyToId) {
-      payload.thread_ts = options.replyToId;
-    }
-    const res = await this.callApi("chat.postMessage", payload, options?.signal);
-    return {
-      messageId: String(res.ts),
-      chatId,
-      timestamp: parseFloat(res.ts) * 1000
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    const payload = {
-      channel: chatId,
-      text: media.caption || "Attachment"
-    };
-    if (options?.replyToId) {
-      payload.thread_ts = options.replyToId;
-    }
-    const res = await this.callApi("chat.postMessage", payload, options?.signal);
-    return {
-      messageId: String(res.ts),
-      chatId,
-      timestamp: parseFloat(res.ts) * 1000
-    };
-  }
-  async addReaction(chatId, messageId, emoji, options) {
-    const cleanName = emoji.replace(/:/g, "");
-    await this.callApi("reactions.add", {
-      channel: chatId,
-      timestamp: messageId,
-      name: cleanName
-    }, options?.signal);
-  }
-  async sendTyping(chatId) {}
-  async editText(chatId, messageId, text, options) {
-    const res = await this.callApi("chat.update", {
-      channel: chatId,
-      ts: messageId,
-      text
-    }, options?.signal);
-    return {
-      messageId: String(res.ts || messageId),
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-}
-// src/channels/messenger/adapter.ts
-import http from "node:http";
-class MessengerChannelAdapter extends BaseChannel {
-  name = "messenger";
-  capabilities = {
-    inbound: true,
-    outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
-    reactions: true,
-    editing: false,
-    typing: true,
-    mode: "webhook"
-  };
-  config;
-  apiBase;
-  server;
-  constructor(config) {
-    super();
-    this.config = config;
-    const version = config.apiVersion || "v19.0";
-    this.apiBase = `https://graph.facebook.com/${version}`;
-  }
-  async connect(signal) {
-    this.assertNotAborted(signal);
-    if (!this.config.pageAccessToken) {
-      throw new Error("Messenger pageAccessToken is required.");
-    }
-    const res = await fetch(`${this.apiBase}/me`, {
-      signal,
-      headers: { Authorization: `Bearer ${this.config.pageAccessToken}` }
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
-    }
-    if (this.config.port) {
-      const path = this.config.webhookPath || "/webhook";
-      this.server = http.createServer(async (req, res) => {
-        const url = new URL(req.url || "/", `http://${req.headers.host}`);
-        if (url.pathname !== path) {
-          res.writeHead(404).end("Not Found");
-          return;
-        }
-        if (req.method === "GET") {
-          const mode = url.searchParams.get("hub.mode") || "";
-          const token = url.searchParams.get("hub.verify_token") || "";
-          const challenge = url.searchParams.get("hub.challenge") || "";
-          const verified = this.verifyWebhook(mode, token, challenge);
-          if (verified) {
-            res.writeHead(200, { "Content-Type": "text/plain" }).end(verified);
-          } else {
-            res.writeHead(403).end("Forbidden");
-          }
-          return;
-        }
-        if (req.method === "POST") {
-          let body = "";
-          req.on("data", (chunk) => {
-            body += chunk;
-            if (body.length > 1024 * 1024)
-              req.destroy();
-          });
-          req.on("end", () => {
-            try {
-              const data = JSON.parse(body);
-              const msgs = this.normalizeEvent(data);
-              for (const m of msgs) {
-                this.emit("message", m);
-              }
-              res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ status: "ok" }));
-            } catch (err) {
-              res.writeHead(400).end("Bad Request");
-            }
-          });
-          return;
-        }
-        res.writeHead(405).end("Method Not Allowed");
-      });
-      await new Promise((resolve) => {
-        this.server?.listen(this.config.port, "0.0.0.0", () => {
-          resolve();
-        });
-      });
-    }
-    this.setConnected(true);
-  }
-  async disconnect(signal) {
-    this.assertNotAborted(signal);
-    if (this.server) {
-      await new Promise((resolve) => this.server?.close(() => resolve()));
-      this.server = undefined;
-    }
-    this.setConnected(false);
-  }
-  verifyWebhook(mode, token, challenge) {
-    if (mode === "subscribe" && token === this.config.verifyToken) {
-      return challenge;
-    }
-    return null;
-  }
-  normalizeEvent(body) {
-    const messages = [];
-    if (body?.object !== "page" || !Array.isArray(body?.entry)) {
-      return messages;
-    }
-    for (const entry of body.entry) {
-      if (!Array.isArray(entry.messaging))
-        continue;
-      for (const event of entry.messaging) {
-        if (!event.message && !event.postback)
-          continue;
-        const senderId = event.sender?.id || "";
-        let text = event.message?.text || event.postback?.title || event.postback?.payload || "";
-        const attachments = [];
-        if (event.message?.sticker_id) {
-          attachments.push({
-            type: "image",
-            url: event.message?.attachments?.[0]?.payload?.url || `https://facebook.com/sticker/${event.message.sticker_id}`,
-            filename: `sticker_${event.message.sticker_id}.png`
-          });
-        }
-        if (Array.isArray(event.message?.attachments)) {
-          for (const att of event.message.attachments) {
-            let type = "file";
-            let url = att.payload?.url || att.url || "";
-            let filename = att.payload?.name || att.title || undefined;
-            if (att.type === "image")
-              type = "image";
-            else if (att.type === "video")
-              type = "video";
-            else if (att.type === "audio")
-              type = "audio";
-            else if (att.type === "location") {
-              type = "file";
-              const lat = att.payload?.coordinates?.lat;
-              const long = att.payload?.coordinates?.long;
-              if (lat != null && long != null) {
-                url = `https://www.google.com/maps?q=${lat},${long}`;
-                filename = "location.json";
-                if (!text)
-                  text = `\uD83D\uDCCD [Shared Location: ${lat}, ${long}]`;
-              }
-            } else if (att.type === "fallback") {
-              type = "file";
-              if (!text)
-                text = `\uD83D\uDD17 [Shared Link: ${att.title || "URL"}]`;
-            } else {
-              type = "file";
-            }
-            if (filename) {
-              filename = filename.replace(/[\/\\]/g, "_").replace(/\0/g, "");
-            }
-            if (att.type === "image" && att.payload?.sticker_id)
-              continue;
-            attachments.push({ type, url, filename });
-          }
-        }
-        messages.push({
-          id: event.message?.mid || event.postback?.mid || `fb_${Date.now()}`,
-          channel: this.name,
-          sender: {
-            id: senderId,
-            name: undefined
-          },
-          chat: {
-            id: senderId,
-            type: "dm"
-          },
-          content: {
-            text,
-            attachments,
-            replyToId: event.message?.reply_to?.mid
-          },
-          raw: event,
-          timestamp: event.timestamp || Date.now()
-        });
-      }
-    }
-    return messages;
-  }
-  async sendText(chatId, text, options) {
-    const payload = {
-      recipient: { id: chatId },
-      message: { text }
-    };
-    if (options?.replyToId) {
-      payload.message.reply_to = { mid: options.replyToId };
-    }
-    const res = await this.callApi("POST", "/me/messages", payload);
-    return {
-      messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-  async sendMedia(chatId, media, options) {
-    if (media.type === "sticker" && typeof media.source === "string" && /^\d+$/.test(media.source)) {
-      const payload = {
-        recipient: { id: chatId },
-        message: {
-          attachment: {
-            type: "image",
-            payload: { sticker_id: Number(media.source) }
-          }
-        }
-      };
-      if (options?.replyToId)
-        payload.message.reply_to = { mid: options.replyToId };
-      const res = await this.callApi("POST", "/me/messages", payload);
-      return {
-        messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
-        chatId,
-        timestamp: Date.now()
-      };
-    }
-    const attachmentType = media.type === "sticker" || media.type === "animation" ? "image" : media.type;
-    if (typeof media.source === "string" && (media.source.startsWith("http://") || media.source.startsWith("https://"))) {
-      const payload = {
-        recipient: { id: chatId },
-        message: {
-          attachment: {
-            type: attachmentType,
-            payload: {
-              url: media.source,
-              is_reusable: true
-            }
-          }
-        }
-      };
-      if (options?.replyToId) {
-        payload.message.reply_to = { mid: options.replyToId };
-      }
-      const res = await this.callApi("POST", "/me/messages", payload);
-      return {
-        messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
-        chatId,
-        timestamp: Date.now()
-      };
-    }
-    let buffer;
-    let mimeType = media.mimeType;
-    let filename = media.filename || "file";
-    if (typeof media.source === "string") {
-      const fs = await import("node:fs");
-      const path = await import("node:path");
-      const resolvedPath = path.resolve(media.source);
-      if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
-        throw new Error(`Media file not found or is invalid: ${media.source}`);
-      }
-      buffer = new Uint8Array(fs.readFileSync(resolvedPath));
-      if (!media.filename) {
-        filename = path.basename(resolvedPath);
-      }
-    } else {
-      buffer = new Uint8Array(media.source);
-    }
-    const fileSize = buffer.byteLength;
-    if (fileSize > 104857600) {
-      throw new Error(`Messenger attachment limit exceeded: File size is ${(fileSize / 1048576).toFixed(1)}MB. Meta Messenger caps file/video uploads at 100MB. Please compress the file or provide a streaming URL.`);
-    }
-    if (!mimeType) {
-      const ext = filename.split(".").pop()?.toLowerCase();
-      if (ext === "mp4")
-        mimeType = "video/mp4";
-      else if (ext === "mov")
-        mimeType = "video/quicktime";
-      else if (ext === "webm")
-        mimeType = "video/webm";
-      else if (ext === "avi")
-        mimeType = "video/x-msvideo";
-      else if (ext === "mkv")
-        mimeType = "video/x-matroska";
-      else if (ext === "jpg" || ext === "jpeg")
-        mimeType = "image/jpeg";
-      else if (ext === "png")
-        mimeType = "image/png";
-      else if (ext === "gif")
-        mimeType = "image/gif";
-      else if (ext === "webp")
-        mimeType = "image/webp";
-      else if (ext === "mp3")
-        mimeType = "audio/mpeg";
-      else if (ext === "wav")
-        mimeType = "audio/wav";
-      else if (ext === "ogg")
-        mimeType = "audio/ogg";
-      else if (ext === "m4a")
-        mimeType = "audio/mp4";
-      else if (ext === "pdf")
-        mimeType = "application/pdf";
-      else
-        mimeType = "application/octet-stream";
-    }
-    const blob = new Blob([buffer], { type: mimeType });
-    if (fileSize > 26214400) {
-      const uploadFormData = new FormData;
-      uploadFormData.append("message", JSON.stringify({
-        attachment: {
-          type: attachmentType,
-          payload: { is_reusable: true }
-        }
-      }));
-      uploadFormData.append("filedata", blob, filename);
-      const uploadUrl = `${this.apiBase}/me/message_attachments`;
-      const uploadRes = await fetch(uploadUrl, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.config.pageAccessToken}`
-        },
-        body: uploadFormData
-      });
-      if (uploadRes.ok) {
-        const uploadData = await uploadRes.json();
-        if (uploadData.attachment_id) {
-          const payload = {
-            recipient: { id: chatId },
-            message: {
-              attachment: {
-                type: attachmentType,
-                payload: { attachment_id: uploadData.attachment_id }
-              }
-            }
-          };
-          if (options?.replyToId)
-            payload.message.reply_to = { mid: options.replyToId };
-          const res = await this.callApi("POST", "/me/messages", payload);
-          return {
-            messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
-            chatId,
-            timestamp: Date.now()
-          };
-        }
-      }
-    }
-    const formData = new FormData;
-    formData.append("recipient", JSON.stringify({ id: chatId }));
-    formData.append("message", JSON.stringify({
-      attachment: {
-        type: attachmentType,
-        payload: {}
-      }
-    }));
-    formData.append("filedata", blob, filename);
-    const url = `${this.apiBase}/me/messages`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.config.pageAccessToken}`
-      },
-      body: formData
-    });
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Messenger API Error (${response.status}): ${err}`);
-    }
-    const res = await response.json();
-    return {
-      messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
-      chatId,
-      timestamp: Date.now()
-    };
-  }
-  async sendTyping(chatId) {
-    await this.callApi("POST", "/me/messages", {
-      recipient: { id: chatId },
-      sender_action: "typing_on"
-    });
-  }
-  async callApi(method, path, body) {
-    const url = `${this.apiBase}${path}`;
-    const headers = {
-      Authorization: `Bearer ${this.config.pageAccessToken}`,
-      "Content-Type": "application/json"
-    };
-    const res = await fetch(url, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Messenger API Error (${res.status}): ${err}`);
-    }
-    return await res.json();
-  }
-}
-// src/bridges/mcp/index.ts
-function getChannelHubMcpTools() {
-  return [
-    {
-      name: "channelhub_list_channels",
-      description: "List all active channels registered in ChannelHub (e.g. zalo, telegram, discord, slack, messenger) with their connection state.",
-      parameters: {
-        type: "object",
-        properties: {}
-      }
-    },
-    {
-      name: "channelhub_get_status",
-      description: "Get detailed connection status for each registered messaging channel.",
-      parameters: {
-        type: "object",
-        properties: {}
-      }
-    },
-    {
-      name: "channelhub_send_message",
-      description: "Send a text message or reply to a specific chat on a registered channel.",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "text"],
-        properties: {
-          channel: {
-            type: "string",
-            description: "Channel name (e.g. 'zalo', 'telegram', 'discord', 'slack', 'messenger')"
-          },
-          chatId: {
-            type: "string",
-            description: "Target chat/thread/channel ID"
-          },
-          text: {
-            type: "string",
-            description: "Message body text"
-          },
-          replyToId: {
-            type: "string",
-            description: "Optional message ID to reply to"
-          }
-        }
-      }
-    },
-    {
-      name: "channelhub_send_media",
-      description: "Send an image, video, audio, or document file to a specific chat.",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "url", "mediaType"],
-        properties: {
-          channel: {
-            type: "string",
-            description: "Channel name (e.g. 'zalo', 'telegram', 'discord', 'slack', 'messenger')"
-          },
-          chatId: {
-            type: "string",
-            description: "Target chat/thread/channel ID"
-          },
-          url: {
-            type: "string",
-            description: "Public URL or local file path to the media"
-          },
-          mediaType: {
-            type: "string",
-            enum: ["image", "video", "audio", "file"],
-            description: "Media type"
-          },
-          caption: {
-            type: "string",
-            description: "Optional caption for the media"
-          }
-        }
-      }
-    },
-    {
-      name: "channelhub_send_typing",
-      description: "Trigger a typing indicator on the target channel to let users know the bot is thinking.",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId"],
-        properties: {
-          channel: {
-            type: "string",
-            description: "Channel name"
-          },
-          chatId: {
-            type: "string",
-            description: "Target chat/thread ID"
-          }
-        }
-      }
-    },
-    {
-      name: "channelhub_edit_message",
-      description: "Edit a previously sent message text (supported on Telegram, Discord, Slack).",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "messageId", "newText"],
-        properties: {
-          channel: {
-            type: "string",
-            description: "Channel name"
-          },
-          chatId: {
-            type: "string",
-            description: "Target chat/thread ID"
-          },
-          messageId: {
-            type: "string",
-            description: "ID of the message to edit"
-          },
-          newText: {
-            type: "string",
-            description: "Updated message content"
-          }
-        }
-      }
-    },
-    {
-      name: "channelhub_send_sticker",
-      description: "Send a sticker to a chat (supports Telegram sticker file_id/url, Zalo sticker ID, Messenger sticker_id/URL).",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "sticker"],
-        properties: {
-          channel: { type: "string" },
-          chatId: { type: "string" },
-          sticker: { type: "string", description: "Sticker ID or public sticker URL/path" },
-          replyToId: { type: "string", description: "Optional message ID to reply to" }
-        }
-      }
-    },
-    {
-      name: "channelhub_send_gif",
-      description: "Send an animated GIF to a chat (supports GIF URL or local file path).",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "gifUrl"],
-        properties: {
-          channel: { type: "string" },
-          chatId: { type: "string" },
-          gifUrl: { type: "string", description: "Public GIF URL or local .gif file path" },
-          caption: { type: "string", description: "Optional caption" },
-          replyToId: { type: "string", description: "Optional message ID to reply to" }
-        }
-      }
-    },
-    {
-      name: "channelhub_add_reaction",
-      description: "React to a message with an emoji.",
-      parameters: {
-        type: "object",
-        required: ["channel", "chatId", "messageId", "emoji"],
-        properties: {
-          channel: { type: "string" },
-          chatId: { type: "string" },
-          messageId: { type: "string" },
-          emoji: { type: "string" }
-        }
-      }
-    },
-    {
-      name: "channelhub_broadcast",
-      description: "Broadcast a text message to multiple destinations (chat IDs) across channels simultaneously.",
-      parameters: {
-        type: "object",
-        required: ["targets", "text"],
-        properties: {
-          targets: {
-            type: "array",
-            description: "List of targets to broadcast to",
-            items: {
-              type: "object",
-              required: ["channel", "chatId"],
-              properties: {
-                channel: { type: "string" },
-                chatId: { type: "string" }
-              }
-            }
-          },
-          text: {
-            type: "string",
-            description: "Message body to broadcast"
-          }
-        }
-      }
-    }
-  ];
-}
-async function handleChannelHubMcpCall(hub, toolName, args) {
-  try {
-    switch (toolName) {
-      case "channelhub_list_channels": {
-        const channels = hub.listChannels();
-        return {
-          content: [{ type: "text", text: JSON.stringify({ channels }, null, 2) }]
-        };
-      }
-      case "channelhub_get_status": {
-        const channels = hub.listChannels();
-        const statusMap = {};
-        for (const name of channels) {
-          const ch = hub.getChannel(name);
-          statusMap[name] = { connected: ch ? ch.isConnected() : false };
-        }
-        return {
-          content: [{ type: "text", text: JSON.stringify({ status: statusMap }, null, 2) }]
-        };
-      }
-      case "channelhub_send_message": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found or not active.`);
-        const res = await ch.sendText(args.chatId, args.text, { replyToId: args.replyToId });
-        return {
-          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
-        };
-      }
-      case "channelhub_send_media": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found or not active.`);
-        const res = await ch.sendMedia(args.chatId, {
-          type: args.mediaType,
-          source: args.url,
-          caption: args.caption
-        });
-        return {
-          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
-        };
-      }
-      case "channelhub_send_sticker": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found or not active.`);
-        const res = ch.sendSticker ? await ch.sendSticker(args.chatId, args.sticker, { replyToId: args.replyToId }) : await ch.sendMedia(args.chatId, { type: "sticker", source: args.sticker }, { replyToId: args.replyToId });
-        return {
-          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
-        };
-      }
-      case "channelhub_send_gif": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found or not active.`);
-        const res = ch.sendGif ? await ch.sendGif(args.chatId, args.gifUrl, args.caption, { replyToId: args.replyToId }) : await ch.sendMedia(args.chatId, { type: "animation", source: args.gifUrl, caption: args.caption }, { replyToId: args.replyToId });
-        return {
-          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
-        };
-      }
-      case "channelhub_send_typing": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found.`);
-        if (ch.sendTyping) {
-          await ch.sendTyping(args.chatId);
-          return { content: [{ type: "text", text: JSON.stringify({ success: true }) }] };
-        }
-        return { content: [{ type: "text", text: JSON.stringify({ supported: false }) }] };
-      }
-      case "channelhub_edit_message": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found.`);
-        if (!ch.editText)
-          throw new Error(`Channel '${args.channel}' does not support editing messages.`);
-        const res = await ch.editText(args.chatId, args.messageId, args.newText);
-        return {
-          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
-        };
-      }
-      case "channelhub_add_reaction": {
-        const ch = hub.getChannel(args.channel);
-        if (!ch)
-          throw new Error(`Channel '${args.channel}' not found.`);
-        if (!ch.addReaction)
-          throw new Error(`Channel '${args.channel}' does not support reactions.`);
-        await ch.addReaction(args.chatId, args.messageId, args.emoji);
-        return {
-          content: [{ type: "text", text: JSON.stringify({ success: true }) }]
-        };
-      }
-      case "channelhub_broadcast": {
-        const targets = args.targets || [];
-        const text = args.text || "";
-        const results = await Promise.allSettled(targets.map(async (t) => {
-          const ch = hub.getChannel(t.channel);
-          if (!ch)
-            throw new Error(`Channel '${t.channel}' not found.`);
-          return await ch.sendText(t.chatId, text);
-        }));
-        const summary = results.map((r, i) => ({
-          target: targets[i],
-          status: r.status,
-          result: r.status === "fulfilled" ? r.value : undefined,
-          error: r.status === "rejected" ? r.reason?.message || String(r.reason) : undefined
-        }));
-        return {
-          content: [{ type: "text", text: JSON.stringify({ broadcast: summary }, null, 2) }]
-        };
-      }
-      default:
-        throw new Error(`Unknown tool: ${toolName}`);
-    }
-  } catch (err) {
-    return {
-      isError: true,
-      content: [{ type: "text", text: err.message || String(err) }]
-    };
-  }
-}
-// src/bridges/webhook/index.ts
-import { createServer } from "node:http";
-import { timingSafeEqual } from "node:crypto";
-
-class WebhookBridge {
-  hub;
-  config;
-  server = null;
-  sseClients = new Set;
-  constructor(hub, config = {}) {
-    this.hub = hub;
-    this.config = {
-      port: config.port ?? 8788,
-      host: config.host ?? "127.0.0.1",
-      pathPrefix: config.pathPrefix ?? "",
-      apiKey: config.apiKey ?? process.env.CHANNELHUB_API_KEY ?? "",
-      maxBodySize: config.maxBodySize ?? 1024 * 1024
-    };
-    hub.onMessage(async (ctx) => {
-      this.broadcastSse(ctx.message);
-    });
-  }
-  async start() {
-    this.server = createServer((req, res) => this.handle(req, res));
-    await new Promise((resolve) => {
-      this.server.listen(this.config.port, this.config.host, () => resolve());
-    });
-  }
-  async stop() {
-    for (const client of this.sseClients) {
-      client.end();
-    }
-    this.sseClients.clear();
-    if (this.server) {
-      await new Promise((resolve, reject) => {
-        this.server.close((err) => err ? reject(err) : resolve());
-      });
-      this.server = null;
-    }
-  }
-  path(req) {
-    const url = req.url || "/";
-    const bare = url.split("?")[0];
-    return bare.startsWith(this.config.pathPrefix) ? bare.slice(this.config.pathPrefix.length) || "/" : bare;
-  }
-  authenticate(req) {
-    const isLoopback = this.config.host === "127.0.0.1" || this.config.host === "localhost";
-    if (!this.config.apiKey) {
-      if (!isLoopback)
-        return false;
-      return true;
-    }
-    const authHeader = req.headers["authorization"];
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return false;
-    }
-    const token = authHeader.slice(7).trim();
-    const tokenBuf = Buffer.from(token);
-    const keyBuf = Buffer.from(this.config.apiKey);
-    if (tokenBuf.length !== keyBuf.length)
-      return false;
-    return timingSafeEqual(tokenBuf, keyBuf);
-  }
-  async handle(req, res) {
-    const p = this.path(req);
-    try {
-      if (req.method === "GET" && p === "/health") {
-        return this.json(res, 200, { ok: true });
-      }
-      if (!this.authenticate(req)) {
-        return this.json(res, 401, { error: "Unauthorized: Invalid or missing API key" });
-      }
-      if (req.method === "GET" && p === "/channels") {
-        return this.json(res, 200, { channels: this.hub.listChannels() });
-      }
-      if (req.method === "POST" && p === "/send") {
-        const body = await this.readJson(req);
-        const ch = this.hub.getChannel(body.channel);
-        if (!ch)
-          return this.json(res, 404, { error: `Channel '${body.channel}' not found` });
-        const result = await ch.sendText(body.chatId, body.text, { replyToId: body.replyToId });
-        return this.json(res, 200, result);
-      }
-      if (req.method === "POST" && p === "/react") {
-        const body = await this.readJson(req);
-        const ch = this.hub.getChannel(body.channel);
-        if (!ch)
-          return this.json(res, 404, { error: `Channel '${body.channel}' not found` });
-        if (!ch.addReaction)
-          return this.json(res, 400, { error: "Channel does not support reactions" });
-        await ch.addReaction(body.chatId, body.messageId, body.emoji);
-        return this.json(res, 200, { success: true });
-      }
-      if (req.method === "GET" && p === "/events") {
-        if (this.sseClients.size >= 50) {
-          return this.json(res, 429, { error: "Too many active SSE connections" });
-        }
-        return this.handleSse(res);
-      }
-      this.json(res, 404, { error: "Not found" });
-    } catch (err) {
-      const isPayloadTooLarge = err.message === "Payload too large";
-      const status = isPayloadTooLarge ? 413 : 500;
-      const safeError = isPayloadTooLarge ? "Payload too large. Request body exceeds configured limit." : "An internal server error occurred while processing the request.";
-      this.json(res, status, { error: safeError });
-    }
-  }
-  handleSse(res) {
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    });
-    res.write(`data: ${JSON.stringify({ type: "connected" })}
-
-`);
-    this.sseClients.add(res);
-    res.on("close", () => this.sseClients.delete(res));
-  }
-  broadcastSse(msg) {
-    const { raw, ...safeMessage } = msg;
-    const payload = `data: ${JSON.stringify(safeMessage)}
-
-`;
-    for (const client of this.sseClients) {
-      client.write(payload);
-    }
-  }
-  json(res, status, body) {
-    const data = JSON.stringify(body);
-    res.writeHead(status, {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(data)
-    });
-    res.end(data);
-  }
-  readJson(req) {
-    return new Promise((resolve, reject) => {
-      const chunks = [];
-      let totalBytes = 0;
-      req.on("data", (c) => {
-        totalBytes += c.length;
-        if (totalBytes > this.config.maxBodySize) {
-          req.destroy(new Error("Payload too large"));
-          return;
-        }
-        chunks.push(c);
-      });
-      req.on("end", () => {
-        try {
-          resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}"));
-        } catch (err) {
-          reject(err);
-        }
-      });
-      req.on("error", reject);
-    });
-  }
-}
-// src/commands/modules/general.ts
-var heartCommand = {
-  name: "heart",
-  description: "React with heart to the message",
-  execute: async ({ bot, msg, threadId, isGroup }) => {
-    if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, ZaloReactions.HEART, isGroup);
-    }
-  }
-};
-var hahaCommand = {
-  name: "haha",
-  description: "React with laugh to the message",
-  execute: async ({ bot, msg, threadId, isGroup }) => {
-    if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, ZaloReactions.HAHA, isGroup);
-    }
-  }
-};
-var pingCommand = {
-  name: "ping",
-  description: "Check latency and bot health status",
-  execute: async ({ bot, threadId, isGroup }) => {
-    await bot.sendText(threadId, "Pong! ChannelHub module online ⚡", [], isGroup);
-  }
-};
-
-// src/commands/modules/group.ts
-var kickCommand = {
-  name: "kick",
-  description: "Kick member from group via @mention tag",
-  groupOnly: true,
-  execute: async ({ bot, msg, threadId }) => {
-    if (!msg.mentions || msg.mentions.length === 0) {
-      await bot.sendText(threadId, "Must tag user to kick: !kick @user", [], true);
-      return;
-    }
-    for (const target of msg.mentions) {
-      console.log(`[Mod] Kicking UID: ${target.uid} from group ${threadId}`);
-      await bot.removeUserFromGroup(threadId, target.uid);
-    }
-    await bot.sendText(threadId, "Member kicked successfully.", [], true);
-  }
-};
-var renameCommand = {
-  name: "rename",
-  description: "Rename chat group",
-  groupOnly: true,
-  execute: async ({ bot, args, threadId }) => {
-    const newName = args.join(" ").trim();
-    if (!newName) {
-      await bot.sendText(threadId, "Usage: !rename <New Name>", [], true);
-      return;
-    }
-    await bot.changeGroupName(threadId, newName);
-    await bot.sendText(threadId, `Group renamed to: ${newName}`, [], true);
-  }
-};
-var groupInfoCommand = {
-  name: "groupinfo",
-  description: "View detailed group chat information",
-  groupOnly: true,
-  execute: async ({ bot, threadId }) => {
-    const info = await bot.getGroupInfo(threadId);
-    const gData = info?.gridInfoMap?.[threadId];
-    if (gData) {
-      const text = `Name: ${gData.name}
-Members: ${gData.totalMember}/${gData.maxMember}
-Owner UID: ${gData.creatorId}`;
-      await bot.sendText(threadId, text, [], true);
-    }
-  }
-};
-
-// src/commands/modules/reaction.ts
-var EMOJI_TO_REACTION = {
-  "❤️": ZaloReactions.HEART,
-  "\uD83D\uDC96": ZaloReactions.HEART,
-  "\uD83D\uDC4D": ZaloReactions.LIKE,
-  "\uD83D\uDE06": ZaloReactions.HAHA,
-  "\uD83D\uDE02": ZaloReactions.TEARS_OF_JOY,
-  "\uD83D\uDE2E": ZaloReactions.WOW,
-  "\uD83D\uDE2D": ZaloReactions.CRY,
-  "\uD83D\uDE21": ZaloReactions.ANGRY,
-  "\uD83D\uDE18": ZaloReactions.KISS,
-  "\uD83D\uDCA9": ZaloReactions.SHIT,
-  "\uD83C\uDF39": ZaloReactions.ROSE,
-  "\uD83D\uDC94": ZaloReactions.BROKEN_HEART,
-  "\uD83D\uDC4E": ZaloReactions.DISLIKE,
-  "\uD83D\uDE0D": ZaloReactions.LOVE,
-  "\uD83E\uDD14": ZaloReactions.CONFUSED,
-  "\uD83D\uDE09": ZaloReactions.WINK,
-  "☀️": ZaloReactions.SUN,
-  "\uD83C\uDF82": ZaloReactions.BIRTHDAY,
-  "\uD83D\uDCA3": ZaloReactions.BOMB,
-  "\uD83D\uDC4C": ZaloReactions.OK,
-  "✌️": ZaloReactions.PEACE,
-  "\uD83D\uDE4F": ZaloReactions.PRAY,
-  "\uD83D\uDC4F": ZaloReactions.HANDCLAP,
-  "\uD83D\uDE0E": ZaloReactions.SUNGLASSES,
-  "\uD83D\uDC4B": ZaloReactions.BYE,
-  "\uD83D\uDE34": ZaloReactions.SLEEPY,
-  heart: ZaloReactions.HEART,
-  like: ZaloReactions.LIKE,
-  haha: ZaloReactions.HAHA,
-  wow: ZaloReactions.WOW,
-  cry: ZaloReactions.CRY,
-  angry: ZaloReactions.ANGRY
-};
-var reactCommand = {
-  name: "react",
-  aliases: ["emoji", "drop"],
-  description: "React to message with emoji: !react ❤️ or quote a message and type !react \uD83D\uDE02",
-  execute: async ({ bot, msg, args, threadId, isGroup }) => {
-    const emojiInput = args[0] || "❤️";
-    const reactionCode = EMOJI_TO_REACTION[emojiInput] || emojiInput;
-    if (msg.quote && msg.quote.msgId && msg.quote.cliMsgId) {
-      await bot.addReaction(threadId, msg.quote.msgId, msg.quote.cliMsgId, reactionCode, isGroup);
-      return;
-    }
-    if (msg.msgId && msg.cliMsgId) {
-      await bot.addReaction(threadId, msg.msgId, msg.cliMsgId, reactionCode, isGroup);
-    }
-  }
-};
-
-// src/commands/router.ts
-class CommandRouter {
-  commands = new Map;
-  constructor() {
-    this.register(pingCommand);
-    this.register(heartCommand);
-    this.register(hahaCommand);
-    this.register(kickCommand);
-    this.register(renameCommand);
-    this.register(groupInfoCommand);
-    this.register(reactCommand);
-  }
-  register(cmd) {
-    this.commands.set(cmd.name.toLowerCase(), cmd);
-    if (cmd.aliases) {
-      for (const alias of cmd.aliases) {
-        this.commands.set(alias.toLowerCase(), cmd);
-      }
-    }
-  }
-  async handleMessage(bot, msg) {
-    const content = typeof msg.content === "string" ? msg.content.trim() : "";
-    const prefix = CONFIG.PERSONAL.DEFAULT_PREFIX;
-    if (!content.startsWith(prefix))
-      return;
-    const parts = content.slice(prefix.length).trim().split(/\s+/);
-    const commandName = parts[0]?.toLowerCase();
-    const args = parts.slice(1);
-    const command = this.commands.get(commandName);
-    if (!command)
-      return;
-    const isGroup = msg.type === 1;
-    const threadId = msg.threadId;
-    if (command.groupOnly && !isGroup) {
-      await bot.sendText(threadId, "This command can only be used in group chats.", [], false);
-      return;
-    }
-    const ctx = {
-      bot,
-      msg,
-      args,
-      isGroup,
-      threadId
-    };
-    try {
-      await command.execute(ctx);
-    } catch (err) {
-      console.error(`[Router Error] Command error ${commandName}:`, err);
-      await bot.sendText(threadId, `Error executing command: ${err.message}`, [], isGroup);
-    }
-  }
-}
-export {
-  BaseChannel,
-  CONFIG,
-  ChannelEventBus,
-  ChannelHub,
-  CommandRouter,
-  DiscordChannelAdapter,
-  MessengerChannelAdapter,
-  SlackChannelAdapter,
-  SmartStreamer,
-  TelegramChannelAdapter,
-  WebhookBridge,
-  ZaloChannelAdapter,
-  ZaloOABot,
-  ZaloPersonalBot,
-  ZaloReactions,
-  ZaloThreadType,
-  createMessageContext,
-  getChannelHubMcpTools,
-  handleChannelHubMcpCall,
-  initOABot,
-  initPersonalBot
-};

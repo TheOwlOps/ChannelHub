@@ -7,6 +7,7 @@ export declare class ChannelHub {
     private _messageHandlers;
     private _queue;
     private _waiters;
+    private _queueDrainWaiters;
     private _isClosed;
     register(channel: IChannelAdapter): this;
     getChannel(providerOrKey: string, accountId?: string): IChannelAdapter | undefined;

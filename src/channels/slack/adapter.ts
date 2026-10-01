@@ -9,12 +9,22 @@ import type {
 
 export interface SlackAdapterConfig {
   botToken: string;
+  accountId?: string;
   appToken?: string;
   signingSecret?: string;
 }
 
 export class SlackChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "slack";
+  readonly capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio"] as const,
+    reactions: true,
+    editing: true,
+    typing: false,
+    mode: "webhook" as const,
+  };
   private config: SlackAdapterConfig;
   private apiBase = "https://slack.com/api";
 
@@ -37,7 +47,8 @@ export class SlackChannelAdapter extends BaseChannel {
       });
       const data = await res.json();
       if (data.ok && data.url) {
-        this.ws = new (globalThis as any).WebSocket(data.url);
+        const WS = (globalThis as any).WebSocket || (await import("ws")).default;
+        this.ws = new WS(data.url);
         this.ws.onopen = () => this.emit("status", { status: "connected" });
         this.ws.onmessage = (e: any) => {
           try {
@@ -96,9 +107,10 @@ export class SlackChannelAdapter extends BaseChannel {
     };
   }
 
-  private async callApi(method: string, body: Record<string, unknown>): Promise<any> {
+  private async callApi(method: string, body: Record<string, unknown>, signal?: AbortSignal): Promise<any> {
     const res = await fetch(`${this.apiBase}/${method}`, {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${this.config.botToken}`,
         "Content-Type": "application/json",
@@ -128,7 +140,7 @@ export class SlackChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.thread_ts = options.replyToId;
     }
-    const res = await this.callApi("chat.postMessage", payload);
+    const res = await this.callApi("chat.postMessage", payload, options?.signal);
     return {
       messageId: String(res.ts),
       chatId,
@@ -149,7 +161,7 @@ export class SlackChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.thread_ts = options.replyToId;
     }
-    const res = await this.callApi("chat.postMessage", payload);
+    const res = await this.callApi("chat.postMessage", payload, options?.signal);
     return {
       messageId: String(res.ts),
       chatId,
@@ -157,26 +169,26 @@ export class SlackChannelAdapter extends BaseChannel {
     };
   }
 
-  async addReaction(chatId: string, messageId: string, emoji: string): Promise<void> {
+  async addReaction(chatId: string, messageId: string, emoji: string, options?: { signal?: AbortSignal }): Promise<void> {
     // Remove colons if user passed :smile:
     const cleanName = emoji.replace(/:/g, "");
     await this.callApi("reactions.add", {
       channel: chatId,
       timestamp: messageId,
       name: cleanName,
-    });
+    }, options?.signal);
   }
 
   async sendTyping(chatId: string): Promise<void> {
     // Slack doesn't have a dedicated typing API for bots; no-op for now.
   }
 
-  async editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult> {
+  async editText(chatId: string, messageId: string, text: string, options?: { signal?: AbortSignal }): Promise<SentMessageResult> {
     const res = await this.callApi("chat.update", {
       channel: chatId,
       ts: messageId,
       text,
-    });
+    }, options?.signal);
     return {
       messageId: String(res.ts || messageId),
       chatId,

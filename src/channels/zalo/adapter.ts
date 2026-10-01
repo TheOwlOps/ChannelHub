@@ -53,6 +53,15 @@ interface CachedMessage {
 
 export class ZaloChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "zalo";
+  readonly capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    reactions: true,
+    editing: false,
+    typing: true,
+    mode: "gateway" as const,
+  };
   private api: any;
   private ownId?: string;
   private config: ZaloAdapterConfig;

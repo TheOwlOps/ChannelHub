@@ -20548,6 +20548,10 @@ var require_websocket_server = __commonJS(function(exports2, module2) {
 });
 
 // node_modules/ws/wrapper.mjs
+var exports_wrapper = {};
+__export(exports_wrapper, {
+  default: () => wrapper_default
+});
 var import_stream2, import_extension, import_permessage_deflate, import_receiver, import_sender, import_subprotocol, import_websocket, import_websocket_server, wrapper_default;
 var init_wrapper = __esm(() => {
   import_stream2 = __toESM(require_stream(), 1);
@@ -37544,7 +37548,7 @@ class BaseChannel extends import_node_events.EventEmitter {
     return this.name;
   }
   get accountId() {
-    return "default";
+    return this.config?.accountId || "default";
   }
   _connected = false;
   isConnected() {
@@ -37748,6 +37752,7 @@ class ChannelHub {
   _messageHandlers = [];
   _queue = [];
   _waiters = [];
+  _queueDrainWaiters = [];
   _isClosed = false;
   register(channel) {
     const provider = channel.provider || channel.name;
@@ -37770,10 +37775,10 @@ class ChannelHub {
         const waiter = this._waiters.shift();
         waiter(ctx);
       } else {
-        this._queue.push(ctx);
-        if (this._queue.length > 2000) {
-          this._queue.shift();
+        while (this._queue.length >= 2000) {
+          await new Promise((resolve) => this._queueDrainWaiters.push(resolve));
         }
+        this._queue.push(ctx);
       }
       for (const handler of this._messageHandlers) {
         try {
@@ -37896,6 +37901,15 @@ var EMOJI_TO_ZALO = {
 
 class ZaloChannelAdapter extends BaseChannel {
   name = "zalo";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    reactions: true,
+    editing: false,
+    typing: true,
+    mode: "gateway"
+  };
   api;
   ownId;
   config;
@@ -38913,6 +38927,15 @@ function initOABot() {
 // src/channels/telegram/adapter.ts
 class TelegramChannelAdapter extends BaseChannel {
   name = "telegram";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    reactions: true,
+    editing: true,
+    typing: true,
+    mode: "polling"
+  };
   config;
   apiRoot;
   pollTimer = null;
@@ -38966,10 +38989,11 @@ class TelegramChannelAdapter extends BaseChannel {
       timestamp: (msg.date || Math.floor(Date.now() / 1000)) * 1000
     };
   }
-  async callApi(method, body) {
+  async callApi(method, body, signal) {
     const url = `${this.apiRoot}/bot${this.config.botToken}/${method}`;
     const res = await fetch(url, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
@@ -39040,7 +39064,7 @@ class TelegramChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.reply_to_message_id = Number(options.replyToId);
     }
-    const res = await this.callApi("sendMessage", payload);
+    const res = await this.callApi("sendMessage", payload, options?.signal);
     return {
       messageId: String(res.message_id),
       chatId,
@@ -39068,32 +39092,32 @@ class TelegramChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.reply_to_message_id = Number(options.replyToId);
     }
-    const res = await this.callApi(method, payload);
+    const res = await this.callApi(method, payload, options?.signal);
     return {
       messageId: String(res.message_id),
       chatId,
       timestamp: (res.date || Date.now()) * 1000
     };
   }
-  async addReaction(chatId, messageId, emoji) {
+  async addReaction(chatId, messageId, emoji, options) {
     await this.callApi("setMessageReaction", {
       chat_id: chatId,
       message_id: Number(messageId),
       reaction: [{ type: "emoji", emoji }]
     });
   }
-  async sendTyping(chatId) {
+  async sendTyping(chatId, options) {
     await this.callApi("sendChatAction", {
       chat_id: chatId,
       action: "typing"
-    });
+    }, options?.signal);
   }
-  async editText(chatId, messageId, text) {
+  async editText(chatId, messageId, text, options) {
     const res = await this.callApi("editMessageText", {
       chat_id: chatId,
       message_id: Number(messageId),
       text
-    });
+    }, options?.signal);
     return {
       messageId: String(res.message_id || messageId),
       chatId,
@@ -39104,6 +39128,15 @@ class TelegramChannelAdapter extends BaseChannel {
 // src/channels/discord/adapter.ts
 class DiscordChannelAdapter extends BaseChannel {
   name = "discord";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    reactions: true,
+    editing: true,
+    typing: true,
+    mode: "gateway"
+  };
   config;
   apiBase = "https://discord.com/api/v10";
   ws;
@@ -39123,8 +39156,9 @@ class DiscordChannelAdapter extends BaseChannel {
       this.connectGateway();
     }
   }
-  connectGateway() {
-    const ws = new globalThis.WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+  async connectGateway() {
+    const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
+    const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
     this.ws = ws;
     ws.onmessage = (event) => {
       try {
@@ -39212,9 +39246,10 @@ class DiscordChannelAdapter extends BaseChannel {
       timestamp: msg.timestamp ? Date.parse(msg.timestamp) : Date.now()
     };
   }
-  async callApi(method, path, body) {
+  async callApi(method, path, body, signal) {
     const res = await fetch(`${this.apiBase}${path}`, {
       method,
+      signal,
       headers: {
         Authorization: `Bot ${this.config.botToken}`,
         "Content-Type": "application/json"
@@ -39234,7 +39269,7 @@ class DiscordChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message_reference = { message_id: options.replyToId };
     }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload);
+    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
     return {
       messageId: String(res.id),
       chatId,
@@ -39251,21 +39286,21 @@ class DiscordChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message_reference = { message_id: options.replyToId };
     }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload);
+    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
     return {
       messageId: String(res.id),
       chatId,
       timestamp: Date.parse(res.timestamp) || Date.now()
     };
   }
-  async addReaction(chatId, messageId, emoji) {
+  async addReaction(chatId, messageId, emoji, options) {
     const encoded = encodeURIComponent(emoji);
     await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
   }
-  async sendTyping(chatId) {
+  async sendTyping(chatId, options) {
     await this.callApi("POST", `/channels/${chatId}/typing`, {});
   }
-  async editText(chatId, messageId, text) {
+  async editText(chatId, messageId, text, options) {
     const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
       content: text
     });
@@ -39279,6 +39314,15 @@ class DiscordChannelAdapter extends BaseChannel {
 // src/channels/slack/adapter.ts
 class SlackChannelAdapter extends BaseChannel {
   name = "slack";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio"],
+    reactions: true,
+    editing: true,
+    typing: false,
+    mode: "webhook"
+  };
   config;
   apiBase = "https://slack.com/api";
   ws;
@@ -39298,7 +39342,8 @@ class SlackChannelAdapter extends BaseChannel {
       });
       const data = await res.json();
       if (data.ok && data.url) {
-        this.ws = new globalThis.WebSocket(data.url);
+        const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
+        this.ws = new WS(data.url);
         this.ws.onopen = () => this.emit("status", { status: "connected" });
         this.ws.onmessage = (e) => {
           try {
@@ -39355,9 +39400,10 @@ class SlackChannelAdapter extends BaseChannel {
       timestamp: msg.ts ? parseFloat(msg.ts) * 1000 : Date.now()
     };
   }
-  async callApi(method, body) {
+  async callApi(method, body, signal) {
     const res = await fetch(`${this.apiBase}/${method}`, {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${this.config.botToken}`,
         "Content-Type": "application/json"
@@ -39382,7 +39428,7 @@ class SlackChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.thread_ts = options.replyToId;
     }
-    const res = await this.callApi("chat.postMessage", payload);
+    const res = await this.callApi("chat.postMessage", payload, options?.signal);
     return {
       messageId: String(res.ts),
       chatId,
@@ -39397,28 +39443,28 @@ class SlackChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.thread_ts = options.replyToId;
     }
-    const res = await this.callApi("chat.postMessage", payload);
+    const res = await this.callApi("chat.postMessage", payload, options?.signal);
     return {
       messageId: String(res.ts),
       chatId,
       timestamp: parseFloat(res.ts) * 1000
     };
   }
-  async addReaction(chatId, messageId, emoji) {
+  async addReaction(chatId, messageId, emoji, options) {
     const cleanName = emoji.replace(/:/g, "");
     await this.callApi("reactions.add", {
       channel: chatId,
       timestamp: messageId,
       name: cleanName
-    });
+    }, options?.signal);
   }
   async sendTyping(chatId) {}
-  async editText(chatId, messageId, text) {
+  async editText(chatId, messageId, text, options) {
     const res = await this.callApi("chat.update", {
       channel: chatId,
       ts: messageId,
       text
-    });
+    }, options?.signal);
     return {
       messageId: String(res.ts || messageId),
       chatId,
@@ -39430,6 +39476,15 @@ class SlackChannelAdapter extends BaseChannel {
 var import_node_http = __toESM(require("node:http"), 1);
 class MessengerChannelAdapter extends BaseChannel {
   name = "messenger";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    reactions: true,
+    editing: false,
+    typing: true,
+    mode: "webhook"
+  };
   config;
   apiBase;
   server;
@@ -39445,6 +39500,7 @@ class MessengerChannelAdapter extends BaseChannel {
       throw new Error("Messenger pageAccessToken is required.");
     }
     const res = await fetch(`${this.apiBase}/me`, {
+      signal,
       headers: { Authorization: `Bearer ${this.config.pageAccessToken}` }
     });
     if (!res.ok) {

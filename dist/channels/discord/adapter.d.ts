@@ -2,6 +2,7 @@ import { BaseChannel } from "../../core/adapter";
 import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/types";
 export interface DiscordAdapterConfig {
     botToken: string;
+    accountId?: string;
     intents?: number;
     autoStart?: boolean;
 }
@@ -11,6 +12,15 @@ export interface DiscordAdapterConfig {
  */
 export declare class DiscordChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
+    readonly capabilities: {
+        inbound: boolean;
+        outbound: boolean;
+        media: readonly ["image", "video", "document", "audio", "animation", "sticker"];
+        reactions: boolean;
+        editing: boolean;
+        typing: boolean;
+        mode: "gateway";
+    };
     private config;
     private apiBase;
     private ws?;
@@ -24,7 +34,13 @@ export declare class DiscordChannelAdapter extends BaseChannel {
     private callApi;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
-    addReaction(chatId: string, messageId: string, emoji: string): Promise<void>;
-    sendTyping(chatId: string): Promise<void>;
-    editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult>;
+    addReaction(chatId: string, messageId: string, emoji: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
+    sendTyping(chatId: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
+    editText(chatId: string, messageId: string, text: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<SentMessageResult>;
 }

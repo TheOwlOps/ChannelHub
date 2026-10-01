@@ -6,7 +6,7 @@ class BaseChannel extends EventEmitter {
     return this.name;
   }
   get accountId() {
-    return "default";
+    return this.config?.accountId || "default";
   }
   _connected = false;
   isConnected() {
@@ -210,6 +210,7 @@ class ChannelHub {
   _messageHandlers = [];
   _queue = [];
   _waiters = [];
+  _queueDrainWaiters = [];
   _isClosed = false;
   register(channel) {
     const provider = channel.provider || channel.name;
@@ -232,10 +233,10 @@ class ChannelHub {
         const waiter = this._waiters.shift();
         waiter(ctx);
       } else {
-        this._queue.push(ctx);
-        if (this._queue.length > 2000) {
-          this._queue.shift();
+        while (this._queue.length >= 2000) {
+          await new Promise((resolve) => this._queueDrainWaiters.push(resolve));
         }
+        this._queue.push(ctx);
       }
       for (const handler of this._messageHandlers) {
         try {

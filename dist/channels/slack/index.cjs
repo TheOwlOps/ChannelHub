@@ -1,8 +1,8 @@
-import { createRequire } from "node:module";
 var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 function __accessProp(key) {
   return this[key];
@@ -31,6 +31,23 @@ var __toESM = (mod, isNodeMode, target) => {
     cache.set(mod, to);
   return to;
 };
+var __toCommonJS = (from) => {
+  var entry = (__moduleCache ??= new WeakMap).get(from), desc;
+  if (entry)
+    return entry;
+  entry = __defProp({}, "__esModule", { value: true });
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (var key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(entry, key))
+        __defProp(entry, key, {
+          get: __accessProp.bind(from, key),
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+        });
+  }
+  __moduleCache.set(from, entry);
+  return entry;
+};
+var __moduleCache;
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __returnValue = (v) => v;
 function __exportSetter(name, newValue) {
@@ -56,15 +73,14 @@ var __esm = (fn, res, err) => () => {
     throw err[0];
   return res;
 };
-var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
 // node_modules/ws/lib/constants.js
-var require_constants = __commonJS(function(exports, module) {
+var require_constants = __commonJS(function(exports2, module2) {
   var BINARY_TYPES = ["nodebuffer", "arraybuffer", "fragments"];
   var hasBlob = typeof Blob !== "undefined";
   if (hasBlob)
     BINARY_TYPES.push("blob");
-  module.exports = {
+  module2.exports = {
     BINARY_TYPES,
     CLOSE_TIMEOUT: 30000,
     EMPTY_BUFFER: Buffer.alloc(0),
@@ -79,7 +95,7 @@ var require_constants = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/buffer-util.js
-var require_buffer_util = __commonJS(function(exports, module) {
+var require_buffer_util = __commonJS(function(exports2, module2) {
   var { EMPTY_BUFFER } = require_constants();
   var FastBuffer = Buffer[Symbol.species];
   function concat(list, totalLength) {
@@ -130,7 +146,7 @@ var require_buffer_util = __commonJS(function(exports, module) {
     }
     return buf;
   }
-  module.exports = {
+  module2.exports = {
     concat,
     mask: _mask,
     toArrayBuffer,
@@ -140,13 +156,13 @@ var require_buffer_util = __commonJS(function(exports, module) {
   if (!process.env.WS_NO_BUFFER_UTIL) {
     try {
       const bufferUtil = (()=>{throw new Error("Cannot require module "+"bufferutil");})();
-      module.exports.mask = function(source, mask2, output, offset, length) {
+      module2.exports.mask = function(source, mask2, output, offset, length) {
         if (length < 48)
           _mask(source, mask2, output, offset, length);
         else
           bufferUtil.mask(source, mask2, output, offset, length);
       };
-      module.exports.unmask = function(buffer, mask) {
+      module2.exports.unmask = function(buffer, mask) {
         if (buffer.length < 32)
           _unmask(buffer, mask);
         else
@@ -157,7 +173,7 @@ var require_buffer_util = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/limiter.js
-var require_limiter = __commonJS(function(exports, module) {
+var require_limiter = __commonJS(function(exports2, module2) {
   var kDone = Symbol("kDone");
   var kRun = Symbol("kRun");
 
@@ -185,12 +201,12 @@ var require_limiter = __commonJS(function(exports, module) {
       }
     }
   }
-  module.exports = Limiter;
+  module2.exports = Limiter;
 });
 
 // node_modules/ws/lib/permessage-deflate.js
-var require_permessage_deflate = __commonJS(function(exports, module) {
-  var zlib = __require("zlib");
+var require_permessage_deflate = __commonJS(function(exports2, module2) {
+  var zlib = require("zlib");
   var bufferUtil = require_buffer_util();
   var Limiter = require_limiter();
   var { kStatusCode } = require_constants();
@@ -424,7 +440,7 @@ var require_permessage_deflate = __commonJS(function(exports, module) {
       });
     }
   }
-  module.exports = PerMessageDeflate;
+  module2.exports = PerMessageDeflate;
   function deflateOnData(chunk) {
     this[kBuffers].push(chunk);
     this[kTotalLength] += chunk.length;
@@ -453,8 +469,8 @@ var require_permessage_deflate = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/validation.js
-var require_validation = __commonJS(function(exports, module) {
-  var { isUtf8 } = __require("buffer");
+var require_validation = __commonJS(function(exports2, module2) {
+  var { isUtf8 } = require("buffer");
   var { hasBlob } = require_constants();
   var tokenChars = [
     0,
@@ -619,20 +635,20 @@ var require_validation = __commonJS(function(exports, module) {
   function isBlob(value) {
     return hasBlob && typeof value === "object" && typeof value.arrayBuffer === "function" && typeof value.type === "string" && typeof value.stream === "function" && (value[Symbol.toStringTag] === "Blob" || value[Symbol.toStringTag] === "File");
   }
-  module.exports = {
+  module2.exports = {
     isBlob,
     isValidStatusCode,
     isValidUTF8: _isValidUTF8,
     tokenChars
   };
   if (isUtf8) {
-    module.exports.isValidUTF8 = function(buf) {
+    module2.exports.isValidUTF8 = function(buf) {
       return buf.length < 24 ? _isValidUTF8(buf) : isUtf8(buf);
     };
   } else if (!process.env.WS_NO_UTF_8_VALIDATE) {
     try {
       const isValidUTF8 = (()=>{throw new Error("Cannot require module "+"utf-8-validate");})();
-      module.exports.isValidUTF8 = function(buf) {
+      module2.exports.isValidUTF8 = function(buf) {
         return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
       };
     } catch (e) {}
@@ -640,8 +656,8 @@ var require_validation = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/receiver.js
-var require_receiver = __commonJS(function(exports, module) {
-  var { Writable } = __require("stream");
+var require_receiver = __commonJS(function(exports2, module2) {
+  var { Writable } = require("stream");
   var PerMessageDeflate = require_permessage_deflate();
   var {
     BINARY_TYPES,
@@ -1030,16 +1046,16 @@ var require_receiver = __commonJS(function(exports, module) {
       return err;
     }
   }
-  module.exports = Receiver;
+  module2.exports = Receiver;
 });
 
 // node_modules/ws/lib/sender.js
-var require_sender = __commonJS(function(exports, module) {
-  var { Duplex } = __require("stream");
-  var { randomFillSync } = __require("crypto");
+var require_sender = __commonJS(function(exports2, module2) {
+  var { Duplex } = require("stream");
+  var { randomFillSync } = require("crypto");
   var {
     types: { isUint8Array }
-  } = __require("util");
+  } = require("util");
   var PerMessageDeflate = require_permessage_deflate();
   var { EMPTY_BUFFER, kWebSocket, NOOP } = require_constants();
   var { isBlob, isValidStatusCode } = require_validation();
@@ -1375,7 +1391,7 @@ var require_sender = __commonJS(function(exports, module) {
       }
     }
   }
-  module.exports = Sender;
+  module2.exports = Sender;
   function callCallbacks(sender, err, cb) {
     if (typeof cb === "function")
       cb(err);
@@ -1393,7 +1409,7 @@ var require_sender = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/event-target.js
-var require_event_target = __commonJS(function(exports, module) {
+var require_event_target = __commonJS(function(exports2, module2) {
   var { kForOnEventAttribute, kListener } = require_constants();
   var kCode = Symbol("kCode");
   var kData = Symbol("kData");
@@ -1527,7 +1543,7 @@ var require_event_target = __commonJS(function(exports, module) {
       }
     }
   };
-  module.exports = {
+  module2.exports = {
     CloseEvent,
     ErrorEvent,
     Event,
@@ -1544,7 +1560,7 @@ var require_event_target = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/extension.js
-var require_extension = __commonJS(function(exports, module) {
+var require_extension = __commonJS(function(exports2, module2) {
   var { tokenChars } = require_validation();
   function push(dest, name, elem) {
     if (dest[name] === undefined)
@@ -1705,19 +1721,19 @@ var require_extension = __commonJS(function(exports, module) {
       }).join(", ");
     }).join(", ");
   }
-  module.exports = { format, parse };
+  module2.exports = { format, parse };
 });
 
 // node_modules/ws/lib/websocket.js
-var require_websocket = __commonJS(function(exports, module) {
-  var EventEmitter = __require("events");
-  var https = __require("https");
-  var http = __require("http");
-  var net = __require("net");
-  var tls = __require("tls");
-  var { randomBytes, createHash } = __require("crypto");
-  var { Duplex, Readable } = __require("stream");
-  var { URL } = __require("url");
+var require_websocket = __commonJS(function(exports2, module2) {
+  var EventEmitter = require("events");
+  var https = require("https");
+  var http = require("http");
+  var net = require("net");
+  var tls = require("tls");
+  var { randomBytes, createHash } = require("crypto");
+  var { Duplex, Readable } = require("stream");
+  var { URL } = require("url");
   var PerMessageDeflate = require_permessage_deflate();
   var Receiver = require_receiver();
   var Sender = require_sender();
@@ -2066,7 +2082,7 @@ var require_websocket = __commonJS(function(exports, module) {
   });
   WebSocket.prototype.addEventListener = addEventListener;
   WebSocket.prototype.removeEventListener = removeEventListener;
-  module.exports = WebSocket;
+  module2.exports = WebSocket;
   function initAsClient(websocket, address, protocols, options) {
     const opts = {
       allowSynchronousEvents: true,
@@ -2481,9 +2497,9 @@ var require_websocket = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/stream.js
-var require_stream = __commonJS(function(exports, module) {
+var require_stream = __commonJS(function(exports2, module2) {
   var WebSocket = require_websocket();
-  var { Duplex } = __require("stream");
+  var { Duplex } = require("stream");
   function emitClose(stream) {
     stream.emit("close");
   }
@@ -2580,11 +2596,11 @@ var require_stream = __commonJS(function(exports, module) {
     duplex.on("error", duplexOnError);
     return duplex;
   }
-  module.exports = createWebSocketStream;
+  module2.exports = createWebSocketStream;
 });
 
 // node_modules/ws/lib/subprotocol.js
-var require_subprotocol = __commonJS(function(exports, module) {
+var require_subprotocol = __commonJS(function(exports2, module2) {
   var { tokenChars } = require_validation();
   function parse(header) {
     const protocols = new Set;
@@ -2625,15 +2641,15 @@ var require_subprotocol = __commonJS(function(exports, module) {
     protocols.add(protocol);
     return protocols;
   }
-  module.exports = { parse };
+  module2.exports = { parse };
 });
 
 // node_modules/ws/lib/websocket-server.js
-var require_websocket_server = __commonJS(function(exports, module) {
-  var EventEmitter = __require("events");
-  var http = __require("http");
-  var { Duplex } = __require("stream");
-  var { createHash } = __require("crypto");
+var require_websocket_server = __commonJS(function(exports2, module2) {
+  var EventEmitter = require("events");
+  var http = require("http");
+  var { Duplex } = require("stream");
+  var { createHash } = require("crypto");
   var extension = require_extension();
   var PerMessageDeflate = require_permessage_deflate();
   var subprotocol = require_subprotocol();
@@ -2895,7 +2911,7 @@ var require_websocket_server = __commonJS(function(exports, module) {
       cb(ws, req);
     }
   }
-  module.exports = WebSocketServer;
+  module2.exports = WebSocketServer;
   function addListeners(server, map) {
     for (const event of Object.keys(map))
       server.on(event, map[event]);
@@ -2956,10 +2972,17 @@ var init_wrapper = __esm(() => {
   wrapper_default = import_websocket.default;
 });
 
-// src/core/adapter.ts
-import { EventEmitter } from "node:events";
+// src/channels/slack/index.ts
+var exports_slack = {};
+__export(exports_slack, {
+  SlackChannelAdapter: () => SlackChannelAdapter
+});
+module.exports = __toCommonJS(exports_slack);
 
-class BaseChannel extends EventEmitter {
+// src/core/adapter.ts
+var import_node_events = require("node:events");
+
+class BaseChannel extends import_node_events.EventEmitter {
   get provider() {
     return this.name;
   }
@@ -2997,23 +3020,21 @@ class BaseChannel extends EventEmitter {
   }
 }
 
-// src/channels/discord/adapter.ts
-class DiscordChannelAdapter extends BaseChannel {
-  name = "discord";
+// src/channels/slack/adapter.ts
+class SlackChannelAdapter extends BaseChannel {
+  name = "slack";
   capabilities = {
     inbound: true,
     outbound: true,
-    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    media: ["image", "video", "document", "audio"],
     reactions: true,
     editing: true,
-    typing: true,
-    mode: "gateway"
+    typing: false,
+    mode: "webhook"
   };
   config;
-  apiBase = "https://discord.com/api/v10";
+  apiBase = "https://slack.com/api";
   ws;
-  heartbeatTimer;
-  sequence = null;
   constructor(config) {
     super();
     this.config = config;
@@ -3021,56 +3042,41 @@ class DiscordChannelAdapter extends BaseChannel {
   async connect(signal) {
     this.assertNotAborted(signal);
     if (!this.config.botToken)
-      throw new Error("Discord botToken is required.");
-    await this.callApi("GET", "/users/@me");
-    this.setConnected(true);
-    if (this.config.autoStart !== false && typeof globalThis.WebSocket !== "undefined") {
-      this.connectGateway();
-    }
-  }
-  async connectGateway() {
-    const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
-    const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
-    this.ws = ws;
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data.toString());
-        if (data.s !== null)
-          this.sequence = data.s;
-        if (data.op === 10) {
-          const interval = data.d.heartbeat_interval;
-          this.heartbeatTimer = setInterval(() => {
-            ws.send(JSON.stringify({ op: 1, d: this.sequence }));
-          }, interval);
-          ws.send(JSON.stringify({
-            op: 2,
-            d: {
-              token: this.config.botToken,
-              intents: this.config.intents ?? 33280,
-              properties: {
-                os: process.platform,
-                browser: "channelhub",
-                device: "channelhub"
-              }
+      throw new Error("Slack botToken is required.");
+    await this.callApi("auth.test", {});
+    if (this.config.appToken) {
+      const res = await fetch("https://slack.com/api/apps.connections.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.config.appToken}` }
+      });
+      const data = await res.json();
+      if (data.ok && data.url) {
+        const WS = globalThis.WebSocket || (await Promise.resolve().then(() => (init_wrapper(), exports_wrapper))).default;
+        this.ws = new WS(data.url);
+        this.ws.onopen = () => this.emit("status", { status: "connected" });
+        this.ws.onmessage = (e) => {
+          try {
+            const payload = JSON.parse(e.data.toString());
+            if (payload.type === "hello")
+              return;
+            if (payload.envelope_id) {
+              this.ws?.send(JSON.stringify({ envelope_id: payload.envelope_id }));
             }
-          }));
-        }
-        if (data.op === 0 && data.t === "MESSAGE_CREATE") {
-          const msg = this.normalizeEvent(data.d);
-          if (msg)
-            this.emit("message", msg);
-        }
-      } catch (err) {}
-    };
-    ws.onclose = () => {
-      if (this.heartbeatTimer)
-        clearInterval(this.heartbeatTimer);
-    };
+            if (payload.payload && payload.payload.event && payload.payload.event.type === "message") {
+              const msg = this.normalizeEvent(payload.payload);
+              if (msg)
+                this.emit("message", msg);
+            }
+          } catch (err) {}
+        };
+        this.ws.onerror = (e) => this.emit("error", new Error("Slack Socket Error"));
+        this.ws.onclose = () => this.emit("status", { status: "disconnected" });
+      }
+    }
+    this.setConnected(true);
   }
   async disconnect(signal) {
     this.assertNotAborted(signal);
-    if (this.heartbeatTimer)
-      clearInterval(this.heartbeatTimer);
     if (this.ws) {
       this.ws.close();
       this.ws = undefined;
@@ -3078,111 +3084,100 @@ class DiscordChannelAdapter extends BaseChannel {
     this.setConnected(false);
   }
   normalizeEvent(event) {
-    if (!event || event.type !== 0 && !event.content && !event.author) {
-      if (!event?.content && !event?.d?.content)
-        return null;
-    }
-    const msg = event.d || event;
-    if (!msg.content && !msg.attachments?.length)
+    const msg = event.event || event;
+    if (!msg || msg.type !== "message")
       return null;
-    if (msg.author?.bot)
+    if (msg.subtype === "bot_message" || msg.bot_id)
       return null;
-    const isDm = !msg.guild_id;
+    const isDm = msg.channel_type === "im" || msg.channel && msg.channel.startsWith("D");
     return {
-      id: String(msg.id),
-      channel: "discord",
+      id: String(msg.client_msg_id || msg.ts),
+      channel: "slack",
       sender: {
-        id: String(msg.author?.id ?? ""),
-        name: msg.author?.global_name || msg.author?.username,
-        username: msg.author?.username,
-        isBot: Boolean(msg.author?.bot),
-        avatarUrl: msg.author?.avatar ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png` : undefined
+        id: String(msg.user || ""),
+        isBot: Boolean(msg.bot_id)
       },
       chat: {
-        id: String(msg.channel_id),
-        type: isDm ? "dm" : "channel",
-        title: undefined
+        id: String(msg.channel),
+        type: isDm ? "dm" : "channel"
       },
       content: {
-        text: msg.content || "",
-        attachments: (msg.attachments || []).map((a) => ({
-          type: a.content_type?.startsWith("image/") ? "image" : a.content_type?.startsWith("video/") ? "video" : "file",
-          url: a.url,
-          filename: a.filename,
-          mimeType: a.content_type,
-          size: a.size
-        })),
-        replyToId: msg.message_reference?.message_id ? String(msg.message_reference.message_id) : undefined
+        text: msg.text || "",
+        replyToId: msg.thread_ts ? String(msg.thread_ts) : undefined
       },
       raw: event,
-      timestamp: msg.timestamp ? Date.parse(msg.timestamp) : Date.now()
+      timestamp: msg.ts ? parseFloat(msg.ts) * 1000 : Date.now()
     };
   }
-  async callApi(method, path, body, signal) {
-    const res = await fetch(`${this.apiBase}${path}`, {
-      method,
+  async callApi(method, body, signal) {
+    const res = await fetch(`${this.apiBase}/${method}`, {
+      method: "POST",
       signal,
       headers: {
-        Authorization: `Bot ${this.config.botToken}`,
+        Authorization: `Bearer ${this.config.botToken}`,
         "Content-Type": "application/json"
       },
-      body: body ? JSON.stringify(body) : undefined
+      body: JSON.stringify(body)
     });
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Discord API ${method} ${path} failed: ${res.status} ${errText}`);
+      throw new Error(`Slack API ${method} failed: ${res.status} ${errText}`);
     }
-    if (res.status === 204)
-      return null;
-    return res.json();
+    const data = await res.json();
+    if (!data.ok) {
+      throw new Error(`Slack API ${method} error: ${data.error}`);
+    }
+    return data;
   }
   async sendText(chatId, text, options) {
-    const payload = { content: text };
+    const payload = {
+      channel: chatId,
+      text
+    };
     if (options?.replyToId) {
-      payload.message_reference = { message_id: options.replyToId };
+      payload.thread_ts = options.replyToId;
     }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
+    const res = await this.callApi("chat.postMessage", payload, options?.signal);
     return {
-      messageId: String(res.id),
+      messageId: String(res.ts),
       chatId,
-      timestamp: Date.parse(res.timestamp) || Date.now()
+      timestamp: parseFloat(res.ts) * 1000
     };
   }
   async sendMedia(chatId, media, options) {
     const payload = {
-      content: media.caption || ""
+      channel: chatId,
+      text: media.caption || "Attachment"
     };
-    if (typeof media.source === "string") {
-      payload.embeds = [{ image: { url: media.source } }];
-    }
     if (options?.replyToId) {
-      payload.message_reference = { message_id: options.replyToId };
+      payload.thread_ts = options.replyToId;
     }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
+    const res = await this.callApi("chat.postMessage", payload, options?.signal);
     return {
-      messageId: String(res.id),
+      messageId: String(res.ts),
       chatId,
-      timestamp: Date.parse(res.timestamp) || Date.now()
+      timestamp: parseFloat(res.ts) * 1000
     };
   }
   async addReaction(chatId, messageId, emoji, options) {
-    const encoded = encodeURIComponent(emoji);
-    await this.callApi("PUT", `/channels/${chatId}/messages/${messageId}/reactions/${encoded}/@me`);
+    const cleanName = emoji.replace(/:/g, "");
+    await this.callApi("reactions.add", {
+      channel: chatId,
+      timestamp: messageId,
+      name: cleanName
+    }, options?.signal);
   }
-  async sendTyping(chatId, options) {
-    await this.callApi("POST", `/channels/${chatId}/typing`, {});
-  }
+  async sendTyping(chatId) {}
   async editText(chatId, messageId, text, options) {
-    const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
-      content: text
-    });
+    const res = await this.callApi("chat.update", {
+      channel: chatId,
+      ts: messageId,
+      text
+    }, options?.signal);
     return {
-      messageId: String(res.id || messageId),
+      messageId: String(res.ts || messageId),
       chatId,
       timestamp: Date.now()
     };
   }
 }
-export {
-  DiscordChannelAdapter
-};

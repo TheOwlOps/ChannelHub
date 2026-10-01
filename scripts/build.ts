@@ -8,21 +8,29 @@ console.log("🚀 Building ChannelHub SDK...");
 await $`bun build src/index.ts --outfile ./dist/index.js --format esm --target node`;
 await $`bun build src/index.ts --outfile ./dist/index.cjs --format cjs --target node`;
 
-// 2. Build subpath entrypoints
-await $`bun build src/core/index.ts --outfile ./dist/core/index.js --format esm --target node`;
-await $`bun build src/channels/zalo/index.ts --outfile ./dist/channels/zalo/index.js --format esm --target node`;
-await $`bun build src/channels/telegram/index.ts --outfile ./dist/channels/telegram/index.js --format esm --target node`;
-await $`bun build src/channels/discord/index.ts --outfile ./dist/channels/discord/index.js --format esm --target node`;
-await $`bun build src/channels/slack/index.ts --outfile ./dist/channels/slack/index.js --format esm --target node`;
-await $`bun build src/channels/messenger/index.ts --outfile ./dist/channels/messenger/index.js --format esm --target node`;
-await $`bun build src/bridges/mcp/index.ts --outfile ./dist/bridges/mcp/index.js --format esm --target node`;
-await $`bun build src/bridges/webhook/index.ts --outfile ./dist/bridges/webhook/index.js --format esm --target node`;
-await $`bun build src/personal/index.ts --outfile ./dist/personal/index.js --format esm --target node`;
-await $`bun build src/oa/index.ts --outfile ./dist/oa/index.js --format esm --target node`;
+// 2. Build subpath entrypoints (ESM & CJS)
+const subpaths = [
+  ["src/core/index.ts", "./dist/core/index"],
+  ["src/channels/zalo/index.ts", "./dist/channels/zalo/index"],
+  ["src/channels/telegram/index.ts", "./dist/channels/telegram/index"],
+  ["src/channels/discord/index.ts", "./dist/channels/discord/index"],
+  ["src/channels/slack/index.ts", "./dist/channels/slack/index"],
+  ["src/channels/messenger/index.ts", "./dist/channels/messenger/index"],
+  ["src/bridges/mcp/index.ts", "./dist/bridges/mcp/index"],
+  ["src/bridges/webhook/index.ts", "./dist/bridges/webhook/index"],
+  ["src/personal/index.ts", "./dist/personal/index"],
+  ["src/oa/index.ts", "./dist/oa/index"],
+];
+
+for (const [src, dst] of subpaths) {
+  await $`bun build ${src} --outfile ${dst}.js --format esm --target node`;
+  await $`bun build ${src} --outfile ${dst}.cjs --format cjs --target node`;
+}
 
 // 3. Build CLI and MCP entrypoints
+// Bundle @modelcontextprotocol/sdk into mcp-server.js so it runs without peer dependencies!
 await $`bun build bin/cli.ts --outfile ./dist/bin/cli.js --format esm --target node --external playwright --external zca-js`;
-await $`bun build bin/mcp-server.ts --outfile ./dist/bin/mcp-server.js --format esm --target node --external @modelcontextprotocol/sdk --external zca-js`;
+await $`bun build bin/mcp-server.ts --outfile ./dist/bin/mcp-server.js --format esm --target node --external zca-js`;
 
 // Mark binaries as executable (Unix)
 if (process.platform !== "win32") {

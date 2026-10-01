@@ -1,6 +1,6 @@
 {
   "name": "@theowlops/channelhub",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "ChannelHub SDK - Unified multi-channel messaging toolkit (Zalo, Telegram, Discord, Slack) for AI agents, standalone bots, and enterprise automation.",
   "module": "dist/index.js",
   "main": "dist/index.cjs",
@@ -19,43 +19,53 @@
     },
     "./core": {
       "import": "./dist/core/index.js",
-      "types": "./dist/core/index.d.ts"
+      "types": "./dist/core/index.d.ts",
+      "require": "./dist/core/index.cjs"
     },
     "./zalo": {
       "import": "./dist/channels/zalo/index.js",
-      "types": "./dist/channels/zalo/index.d.ts"
+      "types": "./dist/channels/zalo/index.d.ts",
+      "require": "./dist/channels/zalo/index.cjs"
     },
     "./telegram": {
       "import": "./dist/channels/telegram/index.js",
-      "types": "./dist/channels/telegram/index.d.ts"
+      "types": "./dist/channels/telegram/index.d.ts",
+      "require": "./dist/channels/telegram/index.cjs"
     },
     "./discord": {
       "import": "./dist/channels/discord/index.js",
-      "types": "./dist/channels/discord/index.d.ts"
+      "types": "./dist/channels/discord/index.d.ts",
+      "require": "./dist/channels/discord/index.cjs"
     },
     "./slack": {
       "import": "./dist/channels/slack/index.js",
-      "types": "./dist/channels/slack/index.d.ts"
+      "types": "./dist/channels/slack/index.d.ts",
+      "require": "./dist/channels/slack/index.cjs"
     },
     "./messenger": {
       "import": "./dist/channels/messenger/index.js",
-      "types": "./dist/channels/messenger/index.d.ts"
+      "types": "./dist/channels/messenger/index.d.ts",
+      "require": "./dist/channels/messenger/index.cjs"
     },
     "./mcp": {
       "import": "./dist/bridges/mcp/index.js",
-      "types": "./dist/bridges/mcp/index.d.ts"
+      "types": "./dist/bridges/mcp/index.d.ts",
+      "require": "./dist/bridges/mcp/index.cjs"
     },
     "./webhook": {
       "import": "./dist/bridges/webhook/index.js",
-      "types": "./dist/bridges/webhook/index.d.ts"
+      "types": "./dist/bridges/webhook/index.d.ts",
+      "require": "./dist/bridges/webhook/index.cjs"
     },
     "./personal": {
       "import": "./dist/personal/index.js",
-      "types": "./dist/personal/index.d.ts"
+      "types": "./dist/personal/index.d.ts",
+      "require": "./dist/personal/index.cjs"
     },
     "./oa": {
       "import": "./dist/oa/index.js",
-      "types": "./dist/oa/index.d.ts"
+      "types": "./dist/oa/index.d.ts",
+      "require": "./dist/oa/index.cjs"
     }
   },
   "files": [
@@ -103,7 +113,8 @@
   "homepage": "https://github.com/TheOwlOps/ChannelHub#readme",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "ws": "^8.18.0"
   },
   "peerDependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",

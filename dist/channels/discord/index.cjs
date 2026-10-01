@@ -1,8 +1,8 @@
-import { createRequire } from "node:module";
 var __create = Object.create;
 var __getProtoOf = Object.getPrototypeOf;
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 function __accessProp(key) {
   return this[key];
@@ -31,6 +31,23 @@ var __toESM = (mod, isNodeMode, target) => {
     cache.set(mod, to);
   return to;
 };
+var __toCommonJS = (from) => {
+  var entry = (__moduleCache ??= new WeakMap).get(from), desc;
+  if (entry)
+    return entry;
+  entry = __defProp({}, "__esModule", { value: true });
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (var key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(entry, key))
+        __defProp(entry, key, {
+          get: __accessProp.bind(from, key),
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+        });
+  }
+  __moduleCache.set(from, entry);
+  return entry;
+};
+var __moduleCache;
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __returnValue = (v) => v;
 function __exportSetter(name, newValue) {
@@ -56,15 +73,14 @@ var __esm = (fn, res, err) => () => {
     throw err[0];
   return res;
 };
-var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
 // node_modules/ws/lib/constants.js
-var require_constants = __commonJS(function(exports, module) {
+var require_constants = __commonJS(function(exports2, module2) {
   var BINARY_TYPES = ["nodebuffer", "arraybuffer", "fragments"];
   var hasBlob = typeof Blob !== "undefined";
   if (hasBlob)
     BINARY_TYPES.push("blob");
-  module.exports = {
+  module2.exports = {
     BINARY_TYPES,
     CLOSE_TIMEOUT: 30000,
     EMPTY_BUFFER: Buffer.alloc(0),
@@ -79,7 +95,7 @@ var require_constants = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/buffer-util.js
-var require_buffer_util = __commonJS(function(exports, module) {
+var require_buffer_util = __commonJS(function(exports2, module2) {
   var { EMPTY_BUFFER } = require_constants();
   var FastBuffer = Buffer[Symbol.species];
   function concat(list, totalLength) {
@@ -130,7 +146,7 @@ var require_buffer_util = __commonJS(function(exports, module) {
     }
     return buf;
   }
-  module.exports = {
+  module2.exports = {
     concat,
     mask: _mask,
     toArrayBuffer,
@@ -140,13 +156,13 @@ var require_buffer_util = __commonJS(function(exports, module) {
   if (!process.env.WS_NO_BUFFER_UTIL) {
     try {
       const bufferUtil = (()=>{throw new Error("Cannot require module "+"bufferutil");})();
-      module.exports.mask = function(source, mask2, output, offset, length) {
+      module2.exports.mask = function(source, mask2, output, offset, length) {
         if (length < 48)
           _mask(source, mask2, output, offset, length);
         else
           bufferUtil.mask(source, mask2, output, offset, length);
       };
-      module.exports.unmask = function(buffer, mask) {
+      module2.exports.unmask = function(buffer, mask) {
         if (buffer.length < 32)
           _unmask(buffer, mask);
         else
@@ -157,7 +173,7 @@ var require_buffer_util = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/limiter.js
-var require_limiter = __commonJS(function(exports, module) {
+var require_limiter = __commonJS(function(exports2, module2) {
   var kDone = Symbol("kDone");
   var kRun = Symbol("kRun");
 
@@ -185,12 +201,12 @@ var require_limiter = __commonJS(function(exports, module) {
       }
     }
   }
-  module.exports = Limiter;
+  module2.exports = Limiter;
 });
 
 // node_modules/ws/lib/permessage-deflate.js
-var require_permessage_deflate = __commonJS(function(exports, module) {
-  var zlib = __require("zlib");
+var require_permessage_deflate = __commonJS(function(exports2, module2) {
+  var zlib = require("zlib");
   var bufferUtil = require_buffer_util();
   var Limiter = require_limiter();
   var { kStatusCode } = require_constants();
@@ -424,7 +440,7 @@ var require_permessage_deflate = __commonJS(function(exports, module) {
       });
     }
   }
-  module.exports = PerMessageDeflate;
+  module2.exports = PerMessageDeflate;
   function deflateOnData(chunk) {
     this[kBuffers].push(chunk);
     this[kTotalLength] += chunk.length;
@@ -453,8 +469,8 @@ var require_permessage_deflate = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/validation.js
-var require_validation = __commonJS(function(exports, module) {
-  var { isUtf8 } = __require("buffer");
+var require_validation = __commonJS(function(exports2, module2) {
+  var { isUtf8 } = require("buffer");
   var { hasBlob } = require_constants();
   var tokenChars = [
     0,
@@ -619,20 +635,20 @@ var require_validation = __commonJS(function(exports, module) {
   function isBlob(value) {
     return hasBlob && typeof value === "object" && typeof value.arrayBuffer === "function" && typeof value.type === "string" && typeof value.stream === "function" && (value[Symbol.toStringTag] === "Blob" || value[Symbol.toStringTag] === "File");
   }
-  module.exports = {
+  module2.exports = {
     isBlob,
     isValidStatusCode,
     isValidUTF8: _isValidUTF8,
     tokenChars
   };
   if (isUtf8) {
-    module.exports.isValidUTF8 = function(buf) {
+    module2.exports.isValidUTF8 = function(buf) {
       return buf.length < 24 ? _isValidUTF8(buf) : isUtf8(buf);
     };
   } else if (!process.env.WS_NO_UTF_8_VALIDATE) {
     try {
       const isValidUTF8 = (()=>{throw new Error("Cannot require module "+"utf-8-validate");})();
-      module.exports.isValidUTF8 = function(buf) {
+      module2.exports.isValidUTF8 = function(buf) {
         return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
       };
     } catch (e) {}
@@ -640,8 +656,8 @@ var require_validation = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/receiver.js
-var require_receiver = __commonJS(function(exports, module) {
-  var { Writable } = __require("stream");
+var require_receiver = __commonJS(function(exports2, module2) {
+  var { Writable } = require("stream");
   var PerMessageDeflate = require_permessage_deflate();
   var {
     BINARY_TYPES,
@@ -1030,16 +1046,16 @@ var require_receiver = __commonJS(function(exports, module) {
       return err;
     }
   }
-  module.exports = Receiver;
+  module2.exports = Receiver;
 });
 
 // node_modules/ws/lib/sender.js
-var require_sender = __commonJS(function(exports, module) {
-  var { Duplex } = __require("stream");
-  var { randomFillSync } = __require("crypto");
+var require_sender = __commonJS(function(exports2, module2) {
+  var { Duplex } = require("stream");
+  var { randomFillSync } = require("crypto");
   var {
     types: { isUint8Array }
-  } = __require("util");
+  } = require("util");
   var PerMessageDeflate = require_permessage_deflate();
   var { EMPTY_BUFFER, kWebSocket, NOOP } = require_constants();
   var { isBlob, isValidStatusCode } = require_validation();
@@ -1375,7 +1391,7 @@ var require_sender = __commonJS(function(exports, module) {
       }
     }
   }
-  module.exports = Sender;
+  module2.exports = Sender;
   function callCallbacks(sender, err, cb) {
     if (typeof cb === "function")
       cb(err);
@@ -1393,7 +1409,7 @@ var require_sender = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/event-target.js
-var require_event_target = __commonJS(function(exports, module) {
+var require_event_target = __commonJS(function(exports2, module2) {
   var { kForOnEventAttribute, kListener } = require_constants();
   var kCode = Symbol("kCode");
   var kData = Symbol("kData");
@@ -1527,7 +1543,7 @@ var require_event_target = __commonJS(function(exports, module) {
       }
     }
   };
-  module.exports = {
+  module2.exports = {
     CloseEvent,
     ErrorEvent,
     Event,
@@ -1544,7 +1560,7 @@ var require_event_target = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/extension.js
-var require_extension = __commonJS(function(exports, module) {
+var require_extension = __commonJS(function(exports2, module2) {
   var { tokenChars } = require_validation();
   function push(dest, name, elem) {
     if (dest[name] === undefined)
@@ -1705,19 +1721,19 @@ var require_extension = __commonJS(function(exports, module) {
       }).join(", ");
     }).join(", ");
   }
-  module.exports = { format, parse };
+  module2.exports = { format, parse };
 });
 
 // node_modules/ws/lib/websocket.js
-var require_websocket = __commonJS(function(exports, module) {
-  var EventEmitter = __require("events");
-  var https = __require("https");
-  var http = __require("http");
-  var net = __require("net");
-  var tls = __require("tls");
-  var { randomBytes, createHash } = __require("crypto");
-  var { Duplex, Readable } = __require("stream");
-  var { URL } = __require("url");
+var require_websocket = __commonJS(function(exports2, module2) {
+  var EventEmitter = require("events");
+  var https = require("https");
+  var http = require("http");
+  var net = require("net");
+  var tls = require("tls");
+  var { randomBytes, createHash } = require("crypto");
+  var { Duplex, Readable } = require("stream");
+  var { URL } = require("url");
   var PerMessageDeflate = require_permessage_deflate();
   var Receiver = require_receiver();
   var Sender = require_sender();
@@ -2066,7 +2082,7 @@ var require_websocket = __commonJS(function(exports, module) {
   });
   WebSocket.prototype.addEventListener = addEventListener;
   WebSocket.prototype.removeEventListener = removeEventListener;
-  module.exports = WebSocket;
+  module2.exports = WebSocket;
   function initAsClient(websocket, address, protocols, options) {
     const opts = {
       allowSynchronousEvents: true,
@@ -2481,9 +2497,9 @@ var require_websocket = __commonJS(function(exports, module) {
 });
 
 // node_modules/ws/lib/stream.js
-var require_stream = __commonJS(function(exports, module) {
+var require_stream = __commonJS(function(exports2, module2) {
   var WebSocket = require_websocket();
-  var { Duplex } = __require("stream");
+  var { Duplex } = require("stream");
   function emitClose(stream) {
     stream.emit("close");
   }
@@ -2580,11 +2596,11 @@ var require_stream = __commonJS(function(exports, module) {
     duplex.on("error", duplexOnError);
     return duplex;
   }
-  module.exports = createWebSocketStream;
+  module2.exports = createWebSocketStream;
 });
 
 // node_modules/ws/lib/subprotocol.js
-var require_subprotocol = __commonJS(function(exports, module) {
+var require_subprotocol = __commonJS(function(exports2, module2) {
   var { tokenChars } = require_validation();
   function parse(header) {
     const protocols = new Set;
@@ -2625,15 +2641,15 @@ var require_subprotocol = __commonJS(function(exports, module) {
     protocols.add(protocol);
     return protocols;
   }
-  module.exports = { parse };
+  module2.exports = { parse };
 });
 
 // node_modules/ws/lib/websocket-server.js
-var require_websocket_server = __commonJS(function(exports, module) {
-  var EventEmitter = __require("events");
-  var http = __require("http");
-  var { Duplex } = __require("stream");
-  var { createHash } = __require("crypto");
+var require_websocket_server = __commonJS(function(exports2, module2) {
+  var EventEmitter = require("events");
+  var http = require("http");
+  var { Duplex } = require("stream");
+  var { createHash } = require("crypto");
   var extension = require_extension();
   var PerMessageDeflate = require_permessage_deflate();
   var subprotocol = require_subprotocol();
@@ -2895,7 +2911,7 @@ var require_websocket_server = __commonJS(function(exports, module) {
       cb(ws, req);
     }
   }
-  module.exports = WebSocketServer;
+  module2.exports = WebSocketServer;
   function addListeners(server, map) {
     for (const event of Object.keys(map))
       server.on(event, map[event]);
@@ -2956,10 +2972,17 @@ var init_wrapper = __esm(() => {
   wrapper_default = import_websocket.default;
 });
 
-// src/core/adapter.ts
-import { EventEmitter } from "node:events";
+// src/channels/discord/index.ts
+var exports_discord = {};
+__export(exports_discord, {
+  DiscordChannelAdapter: () => DiscordChannelAdapter
+});
+module.exports = __toCommonJS(exports_discord);
 
-class BaseChannel extends EventEmitter {
+// src/core/adapter.ts
+var import_node_events = require("node:events");
+
+class BaseChannel extends import_node_events.EventEmitter {
   get provider() {
     return this.name;
   }
@@ -3183,6 +3206,3 @@ class DiscordChannelAdapter extends BaseChannel {
     };
   }
 }
-export {
-  DiscordChannelAdapter
-};

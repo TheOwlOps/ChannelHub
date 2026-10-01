@@ -12,6 +12,7 @@ export class ChannelHub {
   // Async queue for backpressure support
   private _queue: MessageContext[] = [];
   private _waiters: Array<(ctx: MessageContext | null) => void> = [];
+  private _queueDrainWaiters: Array<() => void> = [];
   private _isClosed = false;
 
   register(channel: IChannelAdapter): this {
@@ -42,11 +43,10 @@ export class ChannelHub {
         const waiter = this._waiters.shift()!;
         waiter(ctx);
       } else {
-        this._queue.push(ctx);
-        // Bounded queue limit to prevent unbounded memory growth
-        if (this._queue.length > 2000) {
-          this._queue.shift(); // Drop oldest under extreme unconsumed pressure
+        while (this._queue.length >= 2000) {
+          await new Promise<void>((resolve) => this._queueDrainWaiters.push(resolve));
         }
+        this._queue.push(ctx);
       }
 
       // 2. Dispatch to registered callbacks awaiting sequentially

@@ -9,7 +9,7 @@ class BaseChannel extends EventEmitter {
     return this.name;
   }
   get accountId() {
-    return "default";
+    return this.config?.accountId || "default";
   }
   _connected = false;
   isConnected() {
@@ -45,6 +45,15 @@ class BaseChannel extends EventEmitter {
 // src/channels/messenger/adapter.ts
 class MessengerChannelAdapter extends BaseChannel {
   name = "messenger";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"],
+    reactions: true,
+    editing: false,
+    typing: true,
+    mode: "webhook"
+  };
   config;
   apiBase;
   server;
@@ -60,6 +69,7 @@ class MessengerChannelAdapter extends BaseChannel {
       throw new Error("Messenger pageAccessToken is required.");
     }
     const res = await fetch(`${this.apiBase}/me`, {
+      signal,
       headers: { Authorization: `Bearer ${this.config.pageAccessToken}` }
     });
     if (!res.ok) {

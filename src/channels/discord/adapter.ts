@@ -9,6 +9,7 @@ import type {
 
 export interface DiscordAdapterConfig {
   botToken: string;
+  accountId?: string;
   intents?: number;
   autoStart?: boolean;
 }
@@ -19,6 +20,15 @@ export interface DiscordAdapterConfig {
  */
 export class DiscordChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "discord";
+  readonly capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "document", "audio", "animation", "sticker"] as const,
+    reactions: true,
+    editing: true,
+    typing: true,
+    mode: "gateway" as const,
+  };
   private config: DiscordAdapterConfig;
   private apiBase = "https://discord.com/api/v10";
 
@@ -43,8 +53,9 @@ export class DiscordChannelAdapter extends BaseChannel {
     }
   }
 
-  private connectGateway(): void {
-    const ws = new (globalThis as any).WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+  private async connectGateway(): Promise<void> {
+    const WS = (globalThis as any).WebSocket || (await import("ws")).default;
+    const ws = new WS("wss://gateway.discord.gg/?v=10&encoding=json");
     this.ws = ws;
 
     ws.onmessage = (event: any) => {
@@ -147,9 +158,10 @@ export class DiscordChannelAdapter extends BaseChannel {
     };
   }
 
-  private async callApi(method: string, path: string, body?: Record<string, unknown>): Promise<any> {
+  private async callApi(method: string, path: string, body?: Record<string, unknown>, signal?: AbortSignal): Promise<any> {
     const res = await fetch(`${this.apiBase}${path}`, {
       method,
+      signal,
       headers: {
         Authorization: `Bot ${this.config.botToken}`,
         "Content-Type": "application/json",
@@ -173,7 +185,7 @@ export class DiscordChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message_reference = { message_id: options.replyToId };
     }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload);
+    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
     return {
       messageId: String(res.id),
       chatId,
@@ -195,7 +207,7 @@ export class DiscordChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message_reference = { message_id: options.replyToId };
     }
-    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload);
+    const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
     return {
       messageId: String(res.id),
       chatId,
@@ -203,7 +215,7 @@ export class DiscordChannelAdapter extends BaseChannel {
     };
   }
 
-  async addReaction(chatId: string, messageId: string, emoji: string): Promise<void> {
+  async addReaction(chatId: string, messageId: string, emoji: string, options?: { signal?: AbortSignal }): Promise<void> {
     const encoded = encodeURIComponent(emoji);
     await this.callApi(
       "PUT",
@@ -211,11 +223,11 @@ export class DiscordChannelAdapter extends BaseChannel {
     );
   }
 
-  async sendTyping(chatId: string): Promise<void> {
+  async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
     await this.callApi("POST", `/channels/${chatId}/typing`, {});
   }
 
-  async editText(chatId: string, messageId: string, text: string): Promise<SentMessageResult> {
+  async editText(chatId: string, messageId: string, text: string, options?: { signal?: AbortSignal }): Promise<SentMessageResult> {
     const res = await this.callApi("PATCH", `/channels/${chatId}/messages/${messageId}`, {
       content: text,
     });

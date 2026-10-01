@@ -1,33 +1,106 @@
-#!/usr/bin/env node
-var __esm = (fn, res, err) => () => {
-  if (fn)
-    try {
-      res = fn(fn = 0);
-    } catch (e) {
-      err = [e];
-    }
-  if (err)
-    throw err[0];
-  return res;
+var __defProp = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+function __accessProp(key) {
+  return this[key];
+}
+var __toCommonJS = (from) => {
+  var entry = (__moduleCache ??= new WeakMap).get(from), desc;
+  if (entry)
+    return entry;
+  entry = __defProp({}, "__esModule", { value: true });
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (var key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(entry, key))
+        __defProp(entry, key, {
+          get: __accessProp.bind(from, key),
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+        });
+  }
+  __moduleCache.set(from, entry);
+  return entry;
+};
+var __moduleCache;
+var __returnValue = (v) => v;
+function __exportSetter(name, newValue) {
+  this[name] = __returnValue.bind(null, newValue);
+}
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, {
+      get: all[name],
+      enumerable: true,
+      configurable: true,
+      set: __exportSetter.bind(all, name)
+    });
 };
 
-// src/core/bus.ts
-import { EventEmitter } from "node:events";
-var ChannelEventBus;
-var init_bus = __esm(() => {
-  ChannelEventBus = class ChannelEventBus extends EventEmitter {
-    emitMessage(msg) {
-      return this.emit("message", msg);
-    }
-    emitError(err) {
-      return this.emit("error", err);
-    }
-    emitStatus(status) {
-      return this.emit("status", status);
-    }
-  };
+// src/core/index.ts
+var exports_core = {};
+__export(exports_core, {
+  BaseChannel: () => BaseChannel,
+  ChannelEventBus: () => ChannelEventBus,
+  ChannelHub: () => ChannelHub,
+  SmartStreamer: () => SmartStreamer,
+  createMessageContext: () => createMessageContext
 });
+module.exports = __toCommonJS(exports_core);
 
+// src/core/adapter.ts
+var import_node_events = require("node:events");
+
+class BaseChannel extends import_node_events.EventEmitter {
+  get provider() {
+    return this.name;
+  }
+  get accountId() {
+    return this.config?.accountId || "default";
+  }
+  _connected = false;
+  isConnected() {
+    return this._connected;
+  }
+  setConnected(value) {
+    const changed = this._connected !== value;
+    this._connected = value;
+    if (changed) {
+      this.emit("status", value ? "connected" : "disconnected");
+    }
+  }
+  assertNotAborted(signal) {
+    if (signal?.aborted) {
+      throw signal.reason || new Error("Operation aborted");
+    }
+  }
+  async sendGif(chatId, urlOrPath, caption, options) {
+    return this.sendMedia(chatId, {
+      type: "animation",
+      source: urlOrPath,
+      caption
+    }, options);
+  }
+  async sendSticker(chatId, stickerIdOrUrl, options) {
+    return this.sendMedia(chatId, {
+      type: "sticker",
+      source: stickerIdOrUrl
+    }, options);
+  }
+}
+// src/core/bus.ts
+var import_node_events2 = require("node:events");
+
+class ChannelEventBus extends import_node_events2.EventEmitter {
+  emitMessage(msg) {
+    return this.emit("message", msg);
+  }
+  emitError(err) {
+    return this.emit("error", err);
+  }
+  emitStatus(status) {
+    return this.emit("status", status);
+  }
+}
 // src/core/stream.ts
 class SmartStreamer {
   adapter;
@@ -179,8 +252,6 @@ function createMessageContext(message, channel) {
     }
   };
 }
-var init_context = () => {};
-
 // src/core/hub.ts
 class ChannelHub {
   _channels = new Map;
@@ -309,148 +380,3 @@ class ChannelHub {
     await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
   }
 }
-var init_hub = __esm(() => {
-  init_bus();
-  init_context();
-});
-
-// bin/cli.ts
-import fs from "node:fs";
-import path from "node:path";
-var args = process.argv.slice(2);
-var command = args[0] || "help";
-function printHelp() {
-  console.log(`
-ChannelHub CLI \uD83E\uDD89 - Multi-Channel Messaging Toolkit
-
-Usage:
-  channelhub <command> [options]
-
-Commands:
-  doctor              Diagnose environment, configuration and channel credentials
-  start               Start ChannelHub agent/bot services
-  login:zalo          Scan QR code to authenticate personal Zalo account
-  login:messenger     Authenticate personal Facebook Messenger account via browser
-  version             Display version information
-  help                Display this help message
-`);
-}
-async function runDoctor() {
-  console.log(`ChannelHub Diagnostics \uD83E\uDE7A
-`);
-  console.log(`Node.js Runtime : ${process.version}`);
-  console.log(`Platform        : ${process.platform} (${process.arch})`);
-  console.log(`Working Directory: ${process.cwd()}
-`);
-  const zaloCred = path.resolve(process.cwd(), "credentials.json");
-  if (fs.existsSync(zaloCred)) {
-    console.log("✅ Zalo Personal Credentials: Found (credentials.json)");
-  } else {
-    console.log("⚪ Zalo Personal Credentials: Not found (Run 'channelhub login:zalo')");
-  }
-  const msgCred = path.resolve(process.cwd(), "messenger.credentials.json");
-  if (fs.existsSync(msgCred)) {
-    console.log("✅ Messenger Credentials    : Found (messenger.credentials.json)");
-  } else {
-    console.log("⚪ Messenger Credentials    : Not found (Run 'channelhub login:messenger')");
-  }
-  const envVars = [
-    "TELEGRAM_BOT_TOKEN",
-    "DISCORD_BOT_TOKEN",
-    "SLACK_BOT_TOKEN",
-    "MESSENGER_PAGE_TOKEN",
-    "ZALO_OA_ACCESS_TOKEN"
-  ];
-  console.log(`
-Configured Environment Variables:`);
-  for (const v of envVars) {
-    if (process.env[v]) {
-      console.log(`  - ${v}: Set (length ${process.env[v].length})`);
-    } else {
-      console.log(`  - ${v}: Not set`);
-    }
-  }
-}
-async function main() {
-  switch (command) {
-    case "doctor":
-      await runDoctor();
-      break;
-    case "login:zalo":
-    case "login": {
-      console.log("[ChannelHub CLI] Initiating Zalo QR login...");
-      try {
-        const { Zalo } = await import("zca-js");
-        const zalo = new Zalo;
-        const api = await zalo.loginQR({}, (qr) => {
-          console.log("[ChannelHub] Scan QR code to authenticate:", qr);
-        });
-        const creds = api.getContext();
-        const outPath = path.resolve(process.cwd(), "credentials.json");
-        fs.writeFileSync(outPath, JSON.stringify(creds, null, 2));
-        console.log(`✅ Zalo authentication successful! Saved to: ${outPath}`);
-      } catch (err) {
-        console.error("Zalo login failed:", err.message || err);
-        process.exit(1);
-      }
-      break;
-    }
-    case "login:messenger": {
-      console.log("[ChannelHub CLI] Launching Messenger browser login...");
-      try {
-        const { chromium } = await import("playwright");
-        const browser = await chromium.launch({ headless: false, args: ["--disable-notifications"] });
-        const context = await browser.newContext();
-        const page = await context.newPage();
-        await page.goto("https://www.facebook.com/", { waitUntil: "domcontentloaded" });
-        console.log("Waiting for user to log in on the browser window...");
-        while (true) {
-          const cookies = await context.cookies();
-          const cUser = cookies.find((c) => c.name === "c_user");
-          if (cUser && cUser.value) {
-            const outPath = path.resolve(process.cwd(), "messenger.credentials.json");
-            fs.writeFileSync(outPath, JSON.stringify({ userId: cUser.value, cookies, savedAt: new Date().toISOString() }, null, 2));
-            console.log(`✅ Messenger authenticated! User ID: ${cUser.value}. Saved to: ${outPath}`);
-            await browser.close();
-            break;
-          }
-          await new Promise((r) => setTimeout(r, 1500));
-        }
-      } catch (err) {
-        console.error("Messenger login failed:", err.message || err);
-        process.exit(1);
-      }
-      break;
-    }
-    case "start": {
-      console.log("[ChannelHub CLI] Starting ChannelHub runtime...");
-      try {
-        await Promise.resolve().then(() => init_hub());
-        const hub = new ChannelHub;
-        console.log("ChannelHub core initialized. Registering configured adapters...");
-        await hub.startAll();
-        console.log("ChannelHub is active and running.");
-      } catch (err) {
-        console.error("Failed to start ChannelHub:", err.message || err);
-        process.exit(1);
-      }
-      break;
-    }
-    case "version":
-    case "-v":
-    case "--version": {
-      console.log("@theowlops/channelhub v1.4.1");
-      break;
-    }
-    case "help":
-    case "-h":
-    case "--help":
-    default:
-      printHelp();
-      break;
-  }
-}
-main().catch((err) => {
-  console.error("Error:", err);
-  process.exit(1);
-});

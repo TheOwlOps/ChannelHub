@@ -3,6 +3,15 @@ import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, Unified
 import type { MessengerAdapterConfig } from "./types";
 export declare class MessengerChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
+    readonly capabilities: {
+        inbound: boolean;
+        outbound: boolean;
+        media: readonly ["image", "video", "document", "audio", "animation", "sticker"];
+        reactions: boolean;
+        editing: boolean;
+        typing: boolean;
+        mode: "webhook";
+    };
     private config;
     private apiBase;
     private server?;

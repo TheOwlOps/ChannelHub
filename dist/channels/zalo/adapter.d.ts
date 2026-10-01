@@ -12,6 +12,15 @@ export interface ZaloAdapterConfig {
 export declare const EMOJI_TO_ZALO: Record<string, string>;
 export declare class ZaloChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
+    readonly capabilities: {
+        inbound: boolean;
+        outbound: boolean;
+        media: readonly ["image", "video", "document", "audio", "animation", "sticker"];
+        reactions: boolean;
+        editing: boolean;
+        typing: boolean;
+        mode: "gateway";
+    };
     private api;
     private ownId?;
     private config;

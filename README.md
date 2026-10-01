@@ -156,6 +156,8 @@ import { getChannelHubMcpTools, handleChannelHubMcpCall } from "@theowlops/chann
 // - channelhub_get_status: Kiểm tra trạng thái kết nối từng kênh
 // - channelhub_send_message: Gửi tin nhắn hoặc phản hồi
 // - channelhub_send_media: Gửi ảnh, video, âm thanh hoặc file tài liệu
+// - channelhub_send_sticker: Gửi sticker bản địa (Telegram, Zalo, Messenger)
+// - channelhub_send_gif: Gửi ảnh động GIF hoặc animation
 // - channelhub_send_typing: Hiển thị trạng thái đang soạn tin (typing)
 // - channelhub_edit_message: Chỉnh sửa nội dung tin nhắn đã gửi
 // - channelhub_add_reaction: Thả cảm xúc emoji

@@ -18,7 +18,8 @@ class MockChannel extends BaseChannel {
     this.lastSent = { chatId, text, options };
     return { messageId: "m-123", chatId, timestamp: Date.now() };
   }
-  async sendMedia(chatId: string) {
+  async sendMedia(chatId: string, media: any, options: any) {
+    this.lastSent = { type: media.type, source: media.source, caption: media.caption };
     return { messageId: "m-img", chatId, timestamp: Date.now() };
   }
   async addReaction(_chatId: string, _messageId: string, emoji: string) {
@@ -34,6 +35,8 @@ describe("MCP Bridge", () => {
     expect(names).toContain("channelhub_list_channels");
     expect(names).toContain("channelhub_send_message");
     expect(names).toContain("channelhub_add_reaction");
+    expect(names).toContain("channelhub_send_sticker");
+    expect(names).toContain("channelhub_send_gif");
   });
 
   test("executes tool calls against registered channels", async () => {
@@ -52,6 +55,28 @@ describe("MCP Bridge", () => {
     });
     expect(sendRes.isError).toBeFalsy();
     expect(ch.lastSent.text).toBe("hello from MCP");
+
+    // Test sending sticker via MCP
+    const stickerRes = await handleChannelHubMcpCall(hub, "channelhub_send_sticker", {
+      channel: "mock",
+      chatId: "chat-456",
+      sticker: "sticker-12345",
+    });
+    expect(stickerRes.isError).toBeFalsy();
+    expect(ch.lastSent.type).toBe("sticker");
+    expect(ch.lastSent.source).toBe("sticker-12345");
+
+    // Test sending animated GIF via MCP
+    const gifRes = await handleChannelHubMcpCall(hub, "channelhub_send_gif", {
+      channel: "mock",
+      chatId: "chat-456",
+      gifUrl: "https://media.giphy.com/media/test.gif",
+      caption: "Funny cat",
+    });
+    expect(gifRes.isError).toBeFalsy();
+    expect(ch.lastSent.type).toBe("animation");
+    expect(ch.lastSent.source).toBe("https://media.giphy.com/media/test.gif");
+    expect(ch.lastSent.caption).toBe("Funny cat");
   });
 });
 

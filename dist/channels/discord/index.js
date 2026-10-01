@@ -13,6 +13,19 @@ class BaseChannel extends EventEmitter {
       this.emit("status", value ? "connected" : "disconnected");
     }
   }
+  async sendGif(chatId, urlOrPath, caption, options) {
+    return this.sendMedia(chatId, {
+      type: "animation",
+      source: urlOrPath,
+      caption
+    }, options);
+  }
+  async sendSticker(chatId, stickerIdOrUrl, options) {
+    return this.sendMedia(chatId, {
+      type: "sticker",
+      source: stickerIdOrUrl
+    }, options);
+  }
 }
 
 // src/channels/discord/adapter.ts

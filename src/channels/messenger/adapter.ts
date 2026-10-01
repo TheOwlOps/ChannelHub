@@ -156,12 +156,35 @@ export class MessengerChannelAdapter extends BaseChannel {
   }
 
   async sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult> {
+    // 1. Handle native sticker_id for Messenger
+    if (media.type === "sticker" && typeof media.source === "string" && /^\d+$/.test(media.source)) {
+      const payload: any = {
+        recipient: { id: chatId },
+        message: {
+          attachment: {
+            type: "image",
+            payload: { sticker_id: Number(media.source) },
+          },
+        },
+      };
+      if (options?.replyToId) payload.message.reply_to = { mid: options.replyToId };
+      const res = await this.callApi("POST", "/me/messages", payload);
+      return {
+        messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
+        chatId,
+        timestamp: Date.now(),
+      };
+    }
+
+    // Map "sticker" or "animation" to Meta's "image" attachment type
+    const attachmentType = (media.type === "sticker" || media.type === "animation") ? "image" : media.type;
+
     if (typeof media.source === "string" && (media.source.startsWith("http://") || media.source.startsWith("https://"))) {
       const payload: any = {
         recipient: { id: chatId },
         message: {
           attachment: {
-            type: media.type,
+            type: attachmentType,
             payload: {
               url: media.source,
               is_reusable: true,
@@ -239,7 +262,7 @@ export class MessengerChannelAdapter extends BaseChannel {
         "message",
         JSON.stringify({
           attachment: {
-            type: media.type,
+            type: attachmentType,
             payload: { is_reusable: true },
           },
         })
@@ -255,11 +278,12 @@ export class MessengerChannelAdapter extends BaseChannel {
       if (uploadRes.ok) {
         const uploadData = (await uploadRes.json()) as any;
         if (uploadData.attachment_id) {
+          // Send message using cached attachment_id
           const payload: any = {
             recipient: { id: chatId },
             message: {
               attachment: {
-                type: media.type,
+                type: attachmentType,
                 payload: { attachment_id: uploadData.attachment_id },
               },
             },
@@ -282,7 +306,7 @@ export class MessengerChannelAdapter extends BaseChannel {
       "message",
       JSON.stringify({
         attachment: {
-          type: media.type,
+          type: attachmentType,
           payload: {},
         },
       })

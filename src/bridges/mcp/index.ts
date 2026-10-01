@@ -127,6 +127,35 @@ export function getChannelHubMcpTools(): McpToolDefinition[] {
       },
     },
     {
+      name: "channelhub_send_sticker",
+      description: "Send a sticker to a chat (supports Telegram sticker file_id/url, Zalo sticker ID, Messenger sticker_id/URL).",
+      parameters: {
+        type: "object",
+        required: ["channel", "chatId", "sticker"],
+        properties: {
+          channel: { type: "string" },
+          chatId: { type: "string" },
+          sticker: { type: "string", description: "Sticker ID or public sticker URL/path" },
+          replyToId: { type: "string", description: "Optional message ID to reply to" }
+        }
+      }
+    },
+    {
+      name: "channelhub_send_gif",
+      description: "Send an animated GIF to a chat (supports GIF URL or local file path).",
+      parameters: {
+        type: "object",
+        required: ["channel", "chatId", "gifUrl"],
+        properties: {
+          channel: { type: "string" },
+          chatId: { type: "string" },
+          gifUrl: { type: "string", description: "Public GIF URL or local .gif file path" },
+          caption: { type: "string", description: "Optional caption" },
+          replyToId: { type: "string", description: "Optional message ID to reply to" }
+        }
+      }
+    },
+    {
       name: "channelhub_add_reaction",
       description: "React to a message with an emoji.",
       parameters: {
@@ -212,6 +241,28 @@ export async function handleChannelHubMcpCall(
           source: args.url,
           caption: args.caption,
         });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_send_sticker": {
+        const ch = hub.getChannel(args.channel);
+        if (!ch) throw new Error(`Channel '${args.channel}' not found or not active.`);
+        const res = ch.sendSticker
+          ? await ch.sendSticker(args.chatId, args.sticker, { replyToId: args.replyToId })
+          : await ch.sendMedia(args.chatId, { type: "sticker", source: args.sticker }, { replyToId: args.replyToId });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_send_gif": {
+        const ch = hub.getChannel(args.channel);
+        if (!ch) throw new Error(`Channel '${args.channel}' not found or not active.`);
+        const res = ch.sendGif
+          ? await ch.sendGif(args.chatId, args.gifUrl, args.caption, { replyToId: args.replyToId })
+          : await ch.sendMedia(args.chatId, { type: "animation", source: args.gifUrl, caption: args.caption }, { replyToId: args.replyToId });
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
         };

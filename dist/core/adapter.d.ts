@@ -9,4 +9,6 @@ export declare abstract class BaseChannel extends EventEmitter implements IChann
     abstract disconnect(): Promise<void>;
     abstract sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
     abstract sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
+    sendGif(chatId: string, urlOrPath: string, caption?: string, options?: SendOptions): Promise<SentMessageResult>;
+    sendSticker(chatId: string, stickerIdOrUrl: string, options?: SendOptions): Promise<SentMessageResult>;
 }

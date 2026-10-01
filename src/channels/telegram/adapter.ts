@@ -167,7 +167,11 @@ export class TelegramChannelAdapter extends BaseChannel {
         ? "sendPhoto"
         : media.type === "video"
           ? "sendVideo"
-          : "sendDocument";
+          : media.type === "animation"
+            ? "sendAnimation"
+            : media.type === "sticker"
+              ? "sendSticker"
+              : "sendDocument";
 
     const payload: Record<string, unknown> = {
       chat_id: chatId,
@@ -177,6 +181,8 @@ export class TelegramChannelAdapter extends BaseChannel {
     if (typeof media.source === "string") {
       if (media.type === "image") payload.photo = media.source;
       else if (media.type === "video") payload.video = media.source;
+      else if (media.type === "animation") payload.animation = media.source;
+      else if (media.type === "sticker") payload.sticker = media.source;
       else payload.document = media.source;
     }
 

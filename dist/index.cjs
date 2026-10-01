@@ -37550,6 +37550,19 @@ class BaseChannel extends import_node_events.EventEmitter {
       this.emit("status", value ? "connected" : "disconnected");
     }
   }
+  async sendGif(chatId, urlOrPath, caption, options) {
+    return this.sendMedia(chatId, {
+      type: "animation",
+      source: urlOrPath,
+      caption
+    }, options);
+  }
+  async sendSticker(chatId, stickerIdOrUrl, options) {
+    return this.sendMedia(chatId, {
+      type: "sticker",
+      source: stickerIdOrUrl
+    }, options);
+  }
 }
 // src/core/bus.ts
 var import_node_events2 = require("node:events");
@@ -37983,7 +37996,11 @@ class ZaloChannelAdapter extends BaseChannel {
     const quote = this.resolveQuote(options?.replyToId);
     return await this.enqueueSend(async () => {
       let res;
-      if (media.type === "image") {
+      if (media.type === "sticker" && this.api.sendSticker) {
+        res = await this.api.sendSticker(media.source, chatId, threadType);
+      } else if (media.type === "animation" && this.api.sendAnimatedGif) {
+        res = await this.api.sendAnimatedGif({ gif: media.source, msg: media.caption || "", quote }, chatId, threadType);
+      } else if (media.type === "image") {
         res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source], quote }, chatId, threadType);
       } else if (media.type === "video" && this.api.sendVideo) {
         res = await this.api.sendVideo({ video: media.source, msg: media.caption || "", quote }, chatId, threadType);
@@ -38864,7 +38881,7 @@ class TelegramChannelAdapter extends BaseChannel {
     };
   }
   async sendMedia(chatId, media, options) {
-    const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : "sendDocument";
+    const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : media.type === "animation" ? "sendAnimation" : media.type === "sticker" ? "sendSticker" : "sendDocument";
     const payload = {
       chat_id: chatId,
       caption: media.caption
@@ -38874,6 +38891,10 @@ class TelegramChannelAdapter extends BaseChannel {
         payload.photo = media.source;
       else if (media.type === "video")
         payload.video = media.source;
+      else if (media.type === "animation")
+        payload.animation = media.source;
+      else if (media.type === "sticker")
+        payload.sticker = media.source;
       else
         payload.document = media.source;
     }
@@ -39278,12 +39299,32 @@ class MessengerChannelAdapter extends BaseChannel {
     };
   }
   async sendMedia(chatId, media, options) {
+    if (media.type === "sticker" && typeof media.source === "string" && /^\d+$/.test(media.source)) {
+      const payload = {
+        recipient: { id: chatId },
+        message: {
+          attachment: {
+            type: "image",
+            payload: { sticker_id: Number(media.source) }
+          }
+        }
+      };
+      if (options?.replyToId)
+        payload.message.reply_to = { mid: options.replyToId };
+      const res = await this.callApi("POST", "/me/messages", payload);
+      return {
+        messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
+        chatId,
+        timestamp: Date.now()
+      };
+    }
+    const attachmentType = media.type === "sticker" || media.type === "animation" ? "image" : media.type;
     if (typeof media.source === "string" && (media.source.startsWith("http://") || media.source.startsWith("https://"))) {
       const payload = {
         recipient: { id: chatId },
         message: {
           attachment: {
-            type: media.type,
+            type: attachmentType,
             payload: {
               url: media.source,
               is_reusable: true
@@ -39360,7 +39401,7 @@ class MessengerChannelAdapter extends BaseChannel {
       const uploadFormData = new FormData;
       uploadFormData.append("message", JSON.stringify({
         attachment: {
-          type: media.type,
+          type: attachmentType,
           payload: { is_reusable: true }
         }
       }));
@@ -39377,7 +39418,7 @@ class MessengerChannelAdapter extends BaseChannel {
             recipient: { id: chatId },
             message: {
               attachment: {
-                type: media.type,
+                type: attachmentType,
                 payload: { attachment_id: uploadData.attachment_id }
               }
             }
@@ -39397,7 +39438,7 @@ class MessengerChannelAdapter extends BaseChannel {
     formData.append("recipient", JSON.stringify({ id: chatId }));
     formData.append("message", JSON.stringify({
       attachment: {
-        type: media.type,
+        type: attachmentType,
         payload: {}
       }
     }));
@@ -39562,6 +39603,35 @@ function getChannelHubMcpTools() {
       }
     },
     {
+      name: "channelhub_send_sticker",
+      description: "Send a sticker to a chat (supports Telegram sticker file_id/url, Zalo sticker ID, Messenger sticker_id/URL).",
+      parameters: {
+        type: "object",
+        required: ["channel", "chatId", "sticker"],
+        properties: {
+          channel: { type: "string" },
+          chatId: { type: "string" },
+          sticker: { type: "string", description: "Sticker ID or public sticker URL/path" },
+          replyToId: { type: "string", description: "Optional message ID to reply to" }
+        }
+      }
+    },
+    {
+      name: "channelhub_send_gif",
+      description: "Send an animated GIF to a chat (supports GIF URL or local file path).",
+      parameters: {
+        type: "object",
+        required: ["channel", "chatId", "gifUrl"],
+        properties: {
+          channel: { type: "string" },
+          chatId: { type: "string" },
+          gifUrl: { type: "string", description: "Public GIF URL or local .gif file path" },
+          caption: { type: "string", description: "Optional caption" },
+          replyToId: { type: "string", description: "Optional message ID to reply to" }
+        }
+      }
+    },
+    {
       name: "channelhub_add_reaction",
       description: "React to a message with an emoji.",
       parameters: {
@@ -39641,6 +39711,24 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
           source: args.url,
           caption: args.caption
         });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_send_sticker": {
+        const ch = hub.getChannel(args.channel);
+        if (!ch)
+          throw new Error(`Channel '${args.channel}' not found or not active.`);
+        const res = ch.sendSticker ? await ch.sendSticker(args.chatId, args.sticker, { replyToId: args.replyToId }) : await ch.sendMedia(args.chatId, { type: "sticker", source: args.sticker }, { replyToId: args.replyToId });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_send_gif": {
+        const ch = hub.getChannel(args.channel);
+        if (!ch)
+          throw new Error(`Channel '${args.channel}' not found or not active.`);
+        const res = ch.sendGif ? await ch.sendGif(args.chatId, args.gifUrl, args.caption, { replyToId: args.replyToId }) : await ch.sendMedia(args.chatId, { type: "animation", source: args.gifUrl, caption: args.caption }, { replyToId: args.replyToId });
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
         };

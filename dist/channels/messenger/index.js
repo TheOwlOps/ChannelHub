@@ -13,6 +13,19 @@ class BaseChannel extends EventEmitter {
       this.emit("status", value ? "connected" : "disconnected");
     }
   }
+  async sendGif(chatId, urlOrPath, caption, options) {
+    return this.sendMedia(chatId, {
+      type: "animation",
+      source: urlOrPath,
+      caption
+    }, options);
+  }
+  async sendSticker(chatId, stickerIdOrUrl, options) {
+    return this.sendMedia(chatId, {
+      type: "sticker",
+      source: stickerIdOrUrl
+    }, options);
+  }
 }
 
 // src/channels/messenger/adapter.ts
@@ -142,12 +155,32 @@ class MessengerChannelAdapter extends BaseChannel {
     };
   }
   async sendMedia(chatId, media, options) {
+    if (media.type === "sticker" && typeof media.source === "string" && /^\d+$/.test(media.source)) {
+      const payload = {
+        recipient: { id: chatId },
+        message: {
+          attachment: {
+            type: "image",
+            payload: { sticker_id: Number(media.source) }
+          }
+        }
+      };
+      if (options?.replyToId)
+        payload.message.reply_to = { mid: options.replyToId };
+      const res = await this.callApi("POST", "/me/messages", payload);
+      return {
+        messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
+        chatId,
+        timestamp: Date.now()
+      };
+    }
+    const attachmentType = media.type === "sticker" || media.type === "animation" ? "image" : media.type;
     if (typeof media.source === "string" && (media.source.startsWith("http://") || media.source.startsWith("https://"))) {
       const payload = {
         recipient: { id: chatId },
         message: {
           attachment: {
-            type: media.type,
+            type: attachmentType,
             payload: {
               url: media.source,
               is_reusable: true
@@ -224,7 +257,7 @@ class MessengerChannelAdapter extends BaseChannel {
       const uploadFormData = new FormData;
       uploadFormData.append("message", JSON.stringify({
         attachment: {
-          type: media.type,
+          type: attachmentType,
           payload: { is_reusable: true }
         }
       }));
@@ -241,7 +274,7 @@ class MessengerChannelAdapter extends BaseChannel {
             recipient: { id: chatId },
             message: {
               attachment: {
-                type: media.type,
+                type: attachmentType,
                 payload: { attachment_id: uploadData.attachment_id }
               }
             }
@@ -261,7 +294,7 @@ class MessengerChannelAdapter extends BaseChannel {
     formData.append("recipient", JSON.stringify({ id: chatId }));
     formData.append("message", JSON.stringify({
       attachment: {
-        type: media.type,
+        type: attachmentType,
         payload: {}
       }
     }));

@@ -37485,6 +37485,19 @@ class BaseChannel extends EventEmitter {
       this.emit("status", value ? "connected" : "disconnected");
     }
   }
+  async sendGif(chatId, urlOrPath, caption, options) {
+    return this.sendMedia(chatId, {
+      type: "animation",
+      source: urlOrPath,
+      caption
+    }, options);
+  }
+  async sendSticker(chatId, stickerIdOrUrl, options) {
+    return this.sendMedia(chatId, {
+      type: "sticker",
+      source: stickerIdOrUrl
+    }, options);
+  }
 }
 
 // src/channels/zalo/adapter.ts
@@ -37711,7 +37724,11 @@ class ZaloChannelAdapter extends BaseChannel {
     const quote = this.resolveQuote(options?.replyToId);
     return await this.enqueueSend(async () => {
       let res;
-      if (media.type === "image") {
+      if (media.type === "sticker" && this.api.sendSticker) {
+        res = await this.api.sendSticker(media.source, chatId, threadType);
+      } else if (media.type === "animation" && this.api.sendAnimatedGif) {
+        res = await this.api.sendAnimatedGif({ gif: media.source, msg: media.caption || "", quote }, chatId, threadType);
+      } else if (media.type === "image") {
         res = await this.api.sendMessage({ msg: media.caption || "", attachments: [media.source], quote }, chatId, threadType);
       } else if (media.type === "video" && this.api.sendVideo) {
         res = await this.api.sendVideo({ video: media.source, msg: media.caption || "", quote }, chatId, threadType);

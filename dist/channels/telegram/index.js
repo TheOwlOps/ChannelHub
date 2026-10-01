@@ -13,6 +13,19 @@ class BaseChannel extends EventEmitter {
       this.emit("status", value ? "connected" : "disconnected");
     }
   }
+  async sendGif(chatId, urlOrPath, caption, options) {
+    return this.sendMedia(chatId, {
+      type: "animation",
+      source: urlOrPath,
+      caption
+    }, options);
+  }
+  async sendSticker(chatId, stickerIdOrUrl, options) {
+    return this.sendMedia(chatId, {
+      type: "sticker",
+      source: stickerIdOrUrl
+    }, options);
+  }
 }
 
 // src/channels/telegram/adapter.ts
@@ -143,7 +156,7 @@ class TelegramChannelAdapter extends BaseChannel {
     };
   }
   async sendMedia(chatId, media, options) {
-    const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : "sendDocument";
+    const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : media.type === "animation" ? "sendAnimation" : media.type === "sticker" ? "sendSticker" : "sendDocument";
     const payload = {
       chat_id: chatId,
       caption: media.caption
@@ -153,6 +166,10 @@ class TelegramChannelAdapter extends BaseChannel {
         payload.photo = media.source;
       else if (media.type === "video")
         payload.video = media.source;
+      else if (media.type === "animation")
+        payload.animation = media.source;
+      else if (media.type === "sticker")
+        payload.sticker = media.source;
       else
         payload.document = media.source;
     }

@@ -288,7 +288,15 @@ export class ZaloChannelAdapter extends BaseChannel {
 
     return await this.enqueueSend(async () => {
       let res: any;
-      if (media.type === "image") {
+      if (media.type === "sticker" && this.api.sendSticker) {
+        res = await this.api.sendSticker(media.source, chatId, threadType);
+      } else if (media.type === "animation" && this.api.sendAnimatedGif) {
+        res = await this.api.sendAnimatedGif(
+          { gif: media.source, msg: media.caption || "", quote },
+          chatId,
+          threadType,
+        );
+      } else if (media.type === "image") {
         res = await this.api.sendMessage(
           { msg: media.caption || "", attachments: [media.source], quote },
           chatId,

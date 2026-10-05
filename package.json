@@ -89,6 +89,7 @@
     "build": "bun run scripts/build.ts",
     "build:check": "bun x tsc --noEmit",
     "test": "bun test",
+    "bench": "bun run scripts/benchmark.ts",
     "test:smoke": "bun test test/clean-install.test.ts",
     "prepublishOnly": "bun run build && bun test"
   },

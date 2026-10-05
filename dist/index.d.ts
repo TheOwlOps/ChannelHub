@@ -4,7 +4,7 @@ export { TelegramChannelAdapter } from "./channels/telegram/index";
 export type { TelegramAdapterConfig } from "./channels/telegram/types";
 export { DiscordChannelAdapter, type DiscordAdapterConfig } from "./channels/discord/index";
 export { SlackChannelAdapter, type SlackAdapterConfig } from "./channels/slack/index";
-export { MessengerChannelAdapter, type MessengerAdapterConfig } from "./channels/messenger/index";
+export { MessengerChannelAdapter, MessengerPersonalAdapter, type MessengerAdapterConfig, type MessengerPersonalConfig, } from "./channels/messenger/index";
 export { TikTokBusinessAdapter, type TikTokBusinessConfig } from "./channels/tiktok/index";
 export { TwilioChannelAdapter, type TwilioAdapterConfig } from "./channels/twilio/index";
 export { getChannelHubMcpTools, handleChannelHubMcpCall, type McpToolDefinition, } from "./bridges/mcp/index";

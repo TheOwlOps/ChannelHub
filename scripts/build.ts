@@ -5,8 +5,8 @@ import path from "node:path";
 console.log("🚀 Building ChannelHub SDK...");
 
 // 1. Build main bundles (ESM & CJS)
-await $`bun build src/index.ts --outfile ./dist/index.js --format esm --target node`;
-await $`bun build src/index.ts --outfile ./dist/index.cjs --format cjs --target node`;
+await $`bun build src/index.ts --outfile ./dist/index.js --format esm --target node --external playwright --external playwright-core --external zca-js`;
+await $`bun build src/index.ts --outfile ./dist/index.cjs --format cjs --target node --external playwright --external playwright-core --external zca-js`;
 
 // 2. Build subpath entrypoints (ESM & CJS)
 const subpaths = [
@@ -23,14 +23,14 @@ const subpaths = [
 ];
 
 for (const [src, dst] of subpaths) {
-  await $`bun build ${src} --outfile ${dst}.js --format esm --target node`;
-  await $`bun build ${src} --outfile ${dst}.cjs --format cjs --target node`;
+  await $`bun build ${src} --outfile ${dst}.js --format esm --target node --external playwright --external playwright-core --external zca-js`;
+  await $`bun build ${src} --outfile ${dst}.cjs --format cjs --target node --external playwright --external playwright-core --external zca-js`;
 }
 
 // 3. Build CLI and MCP entrypoints
 // Bundle @modelcontextprotocol/sdk into mcp-server.js so it runs without peer dependencies!
-await $`bun build bin/cli.ts --outfile ./dist/bin/cli.js --format esm --target node --external playwright --external zca-js`;
-await $`bun build bin/mcp-server.ts --outfile ./dist/bin/mcp-server.js --format esm --target node --external zca-js`;
+await $`bun build bin/cli.ts --outfile ./dist/bin/cli.js --format esm --target node --external playwright --external playwright-core --external zca-js`;
+await $`bun build bin/mcp-server.ts --outfile ./dist/bin/mcp-server.js --format esm --target node --external playwright --external playwright-core --external zca-js`;
 
 // Mark binaries as executable (Unix)
 if (process.platform !== "win32") {

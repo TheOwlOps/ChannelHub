@@ -28,12 +28,13 @@
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
 - [Channel Adapters](#-channel-adapters)
-  - [TikTok for Business & Shop](#-tiktok-for-business-adapter)
-  - [Meta Messenger](#-meta-messenger-adapter)
-  - [Zalo (Personal & OA)](#-zalo-adapter)
-  - [Telegram](#-telegram-adapter)
-  - [Discord](#-discord-adapter)
-  - [Slack](#-slack-adapter)
+  - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
+  - [💬 Meta Messenger](#-meta-messenger-adapter)
+  - [🔵 Zalo (Personal & OA)](#-zalo-adapter)
+  - [✈️ Telegram](#-telegram-adapter)
+  - [🎮 Discord](#-discord-adapter)
+  - [💼 Slack](#-slack-adapter)
+  - [📱 Twilio (WhatsApp & SMS)](#-twilio-adapter)
 - [Rich Media, Stickers & GIFs](#-rich-media-stickers--gifs)
 - [SmartStreamer for LLMs](#-smartstreamer-for-llms)
 - [Automated Personal Login](#-automated-personal-login)
@@ -77,12 +78,12 @@
 
 | Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Auth Mode | Current Status |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Zalo** | ✅ Full API | ✅ Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | Session Cookie / OA Token | **Stable Inbound/Outbound** |
-| **Telegram** | ✅ Bot API | ✅ Polling & Webhook | ✅ Photo, Video, File, Sticker, GIF | ✅ Full Native | ✅ In-place Edit Stream | Bot Token | **Stable Inbound/Outbound** |
-| **TikTok** | ✅ Business API v1.3 | ✅ HMAC Webhook (`message.receive`) | ✅ Images (via `media_id`) | ❌ N/A | ❌ N/A | OAuth2 Access-Token | **Stable Webhook Inbound/Outbound** |
-| **Messenger**| ✅ Graph API v19.0 | ⚡ Webhook Normalizer | ✅ Image, Video (100MB), File, Sticker | ⏳ Planned | ⚡ Typing Indicator | Page Token & Secret | **Stable Outbound + Normalizer** |
-| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer | ✅ Embeds & Attachments | ✅ Full Native | ⚡ In-place Edit Stream | Bot Token | **Stable Outbound + Normalizer** |
-| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer | ✅ Files & Blocks | ⏳ Planned | ⚡ Typing Indicator | Bot Token | **Stable Outbound + Normalizer** |
+| 🔵 **Zalo** | ✅ Full API | ✅ Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | Session Cookie / OA Token | **Stable Inbound/Outbound** |
+| ✈️ **Telegram** | ✅ Bot API | ✅ Polling & Webhook | ✅ Photo, Video, File, Sticker, GIF | ✅ Full Native | ✅ In-place Edit Stream | Bot Token | **Stable Inbound/Outbound** |
+| 🎵 **TikTok** | ✅ Business API v1.3 | ✅ HMAC Webhook (`message.receive`) | ✅ Images (via `media_id`) | ❌ N/A | ❌ N/A | OAuth2 Access-Token | **Stable Webhook Inbound/Outbound** |
+| 💬 **Messenger**| ✅ Graph API v19.0 | ⚡ Webhook Normalizer | ✅ Image, Video (100MB), File, Sticker | ⏳ Planned | ⚡ Typing Indicator | Page Token & Secret | **Stable Outbound + Normalizer** |
+| 🎮 **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer | ✅ Embeds & Attachments | ✅ Full Native | ⚡ In-place Edit Stream | Bot Token | **Stable Outbound + Normalizer** |
+| 💼 **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer | ✅ Files & Blocks | ⏳ Planned | ⚡ Typing Indicator | Bot Token | **Stable Outbound + Normalizer** |
 
 ---
 
@@ -263,6 +264,20 @@ import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
 
 const telegram = new TelegramChannelAdapter({
   botToken: "123456:ABC-DEF..."
+});
+```
+
+
+### 📱 Twilio Adapter
+Omnichannel adapter for WhatsApp, SMS, MMS, and RCS via Twilio API. Supports timing-safe HMAC-SHA1 signature verification for webhooks.
+
+```typescript
+import { TwilioChannelAdapter } from "@theowlops/channelhub/twilio";
+
+const twilio = new TwilioChannelAdapter({
+  accountSid: "AC...",
+  authToken: "YOUR_TWILIO_AUTH_TOKEN",
+  phoneNumber: "whatsapp:+14155238886" // Or standard SMS number
 });
 ```
 

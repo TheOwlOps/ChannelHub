@@ -5,5 +5,7 @@ export * from "./stream";
 export * from "./hub";
 export * from "./dedup";
 export * from "./limiter";
+export * from "./shared-limiter";
 export * from "./dlq";
 export * from "./identity";
+export * from "./handoff";

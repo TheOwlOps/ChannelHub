@@ -7,6 +7,7 @@ import type {
   UnifiedMessage,
 } from "./types";
 import type { UniversalIdentity } from "./identity";
+import type { HumanHandoffManager } from "./handoff";
 import { SmartStreamer, type StreamOptions } from "./stream";
 
 export interface MessageContext {
@@ -14,6 +15,12 @@ export interface MessageContext {
   channel: IChannelAdapter;
   /** Canonical stitched user identity across all channels */
   identity?: UniversalIdentity;
+  /** Whether this chat is currently paused for human takeover */
+  isHandedOff?: boolean;
+  /** Pause bot/AI from responding to this chat */
+  handoff: (durationMs?: number, reason?: string) => void;
+  /** Resume bot/AI operations for this chat */
+  resume: () => boolean;
   reply: (text: string, options?: SendOptions) => Promise<SentMessageResult>;
   replyWithActions: (text: string, actions: ActionNode[], options?: SendOptions) => Promise<SentMessageResult>;
   replyMedia: (media: MediaPayload, options?: SendOptions) => Promise<SentMessageResult>;
@@ -29,11 +36,23 @@ export function createMessageContext(
   message: UnifiedMessage,
   channel: IChannelAdapter,
   identity?: UniversalIdentity,
+  handoffManager?: HumanHandoffManager,
 ): MessageContext {
+  const isHandedOff = handoffManager ? handoffManager.isPaused(channel.name, message.chat.id) : false;
+
   return {
     message,
     channel,
     identity,
+    isHandedOff,
+    handoff: (durationMs?: number, reason?: string) => {
+      if (handoffManager) {
+        handoffManager.pause(channel.name, message.chat.id, durationMs, reason);
+      }
+    },
+    resume: () => {
+      return handoffManager ? handoffManager.resume(channel.name, message.chat.id) : false;
+    },
     reply: (text: string, options?: SendOptions) =>
       channel.sendText(message.chat.id, text, {
         replyToId: message.id,

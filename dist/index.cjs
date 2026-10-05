@@ -37522,9 +37522,11 @@ __export(exports_src, {
   ChannelHub: () => ChannelHub,
   CommandRouter: () => CommandRouter,
   DiscordChannelAdapter: () => DiscordChannelAdapter,
+  HumanHandoffManager: () => HumanHandoffManager,
   IdempotencyCache: () => IdempotencyCache,
   IdentityStitcher: () => IdentityStitcher,
   MessengerChannelAdapter: () => MessengerChannelAdapter,
+  SharedTokenBucketLimiter: () => SharedTokenBucketLimiter,
   SlackChannelAdapter: () => SlackChannelAdapter,
   SmartStreamer: () => SmartStreamer,
   TelegramChannelAdapter: () => TelegramChannelAdapter,
@@ -37715,11 +37717,21 @@ class SmartStreamer {
 }
 
 // src/core/context.ts
-function createMessageContext(message, channel, identity) {
+function createMessageContext(message, channel, identity, handoffManager) {
+  const isHandedOff = handoffManager ? handoffManager.isPaused(channel.name, message.chat.id) : false;
   return {
     message,
     channel,
     identity,
+    isHandedOff,
+    handoff: (durationMs, reason) => {
+      if (handoffManager) {
+        handoffManager.pause(channel.name, message.chat.id, durationMs, reason);
+      }
+    },
+    resume: () => {
+      return handoffManager ? handoffManager.resume(channel.name, message.chat.id) : false;
+    },
     reply: (text, options) => channel.sendText(message.chat.id, text, {
       replyToId: message.id,
       ...options
@@ -37884,14 +37896,49 @@ class IdentityStitcher {
   }
 }
 
+// src/core/handoff.ts
+class HumanHandoffManager {
+  _states = new Map;
+  _getKey(channel, chatId) {
+    return `${channel}:${chatId}`;
+  }
+  pause(channel, chatId, durationMs = 3600000, reason) {
+    const key = this._getKey(channel, chatId);
+    const pausedUntil = durationMs === Infinity ? Infinity : Date.now() + durationMs;
+    this._states.set(key, { chatId, channel, pausedUntil, reason });
+  }
+  resume(channel, chatId) {
+    const key = this._getKey(channel, chatId);
+    return this._states.delete(key);
+  }
+  isPaused(channel, chatId) {
+    const key = this._getKey(channel, chatId);
+    const state = this._states.get(key);
+    if (!state)
+      return false;
+    if (state.pausedUntil !== Infinity && Date.now() > state.pausedUntil) {
+      this._states.delete(key);
+      return false;
+    }
+    return true;
+  }
+  getState(channel, chatId) {
+    if (!this.isPaused(channel, chatId))
+      return;
+    return this._states.get(this._getKey(channel, chatId));
+  }
+}
+
 // src/core/hub.ts
 class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _middlewares = [];
   _dedupCache;
   _dlqHandler;
   _identityStitcher;
+  _handoffManager;
   _queue = [];
   _waiters = [];
   _queueDrainWaiters = [];
@@ -37902,9 +37949,17 @@ class ChannelHub {
     }
     this._dlqHandler = options.onDeadLetter;
     this._identityStitcher = options.identityStitcher ?? new IdentityStitcher;
+    this._handoffManager = new HumanHandoffManager;
   }
   get identityStitcher() {
     return this._identityStitcher;
+  }
+  get handoff() {
+    return this._handoffManager;
+  }
+  use(middleware) {
+    this._middlewares.push(middleware);
+    return this;
   }
   register(channel) {
     const provider = channel.provider || channel.name;
@@ -37929,7 +37984,10 @@ class ChannelHub {
       }
       this._bus.emitMessage(msg);
       const identity = this._identityStitcher.resolve(channel.name, msg.sender.id);
-      const ctx = createMessageContext(msg, channel, identity);
+      const ctx = createMessageContext(msg, channel, identity, this._handoffManager);
+      if (ctx.isHandedOff) {
+        this._bus.emit("handoff", ctx);
+      }
       if (this._waiters.length > 0) {
         const waiter = this._waiters.shift();
         waiter(ctx);
@@ -37941,24 +37999,34 @@ class ChannelHub {
           this._queue.push(ctx);
         }
       }
-      for (const handler of this._messageHandlers) {
-        try {
-          await handler(ctx);
-        } catch (err) {
-          const errorObj = err instanceof Error ? err : new Error(String(err));
-          this._bus.emitError(errorObj);
-          if (this._dlqHandler) {
-            try {
-              await this._dlqHandler({
-                message: msg,
-                error: errorObj,
-                timestamp: Date.now(),
-                retryCount: 0,
-                channel: channel.name
-              });
-            } catch (dlqErr) {
-              this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
-            }
+      const executePipeline = async (index) => {
+        if (index < this._middlewares.length) {
+          const fn = this._middlewares[index];
+          await fn(ctx, () => executePipeline(index + 1));
+          return;
+        }
+        if (!ctx.isHandedOff) {
+          for (const handler of this._messageHandlers) {
+            await handler(ctx);
+          }
+        }
+      };
+      try {
+        await executePipeline(0);
+      } catch (err) {
+        const errorObj = err instanceof Error ? err : new Error(String(err));
+        this._bus.emitError(errorObj);
+        if (this._dlqHandler) {
+          try {
+            await this._dlqHandler({
+              message: msg,
+              error: errorObj,
+              timestamp: Date.now(),
+              retryCount: 0,
+              channel: channel.name
+            });
+          } catch (dlqErr) {
+            this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
           }
         }
       }
@@ -37994,6 +38062,8 @@ class ChannelHub {
       this.onMessage(handler);
     } else if (event === "error") {
       this._bus.on("error", handler);
+    } else if (event === "handoff") {
+      this._bus.on("handoff", handler);
     }
     return this;
   }
@@ -38130,6 +38200,75 @@ class TokenBucketLimiter {
   get tokensAvailable() {
     this.refill();
     return this._tokens;
+  }
+}
+// src/core/shared-limiter.ts
+var delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+class SharedTokenBucketLimiter {
+  maxTokens;
+  refillRatePerSec;
+  mem;
+  TOKENS_MASK = (1n << 22n) - 1n;
+  constructor(maxTokens, refillRatePerSec, sharedBuffer) {
+    this.maxTokens = maxTokens;
+    this.refillRatePerSec = refillRatePerSec;
+    if (maxTokens > 4000000) {
+      throw new Error("SharedTokenBucketLimiter supports max 4,000,000 tokens per bucket.");
+    }
+    const buffer = sharedBuffer ?? new SharedArrayBuffer(8);
+    this.mem = new BigInt64Array(buffer);
+    if (!sharedBuffer) {
+      const initialPacked = this.pack(BigInt(Date.now()), BigInt(maxTokens));
+      Atomics.store(this.mem, 0, initialPacked);
+    }
+  }
+  get buffer() {
+    return this.mem.buffer;
+  }
+  pack(timestampMs, tokens) {
+    return timestampMs << 22n | tokens & this.TOKENS_MASK;
+  }
+  unpack(packed) {
+    const tokens = packed & this.TOKENS_MASK;
+    const timestampMs = packed >> 22n;
+    return { timestampMs, tokens };
+  }
+  tryAcquire(cost = 1) {
+    const costBn = BigInt(cost);
+    let currentPacked = Atomics.load(this.mem, 0);
+    while (true) {
+      let { timestampMs, tokens } = this.unpack(currentPacked);
+      const now = BigInt(Date.now());
+      const elapsedMs = Number(now - timestampMs);
+      if (elapsedMs > 0) {
+        const added = Math.floor(elapsedMs / 1000 * this.refillRatePerSec);
+        if (added > 0) {
+          tokens = BigInt(Math.min(this.maxTokens, Number(tokens) + added));
+          const msConsumed = added * 1000 / this.refillRatePerSec;
+          timestampMs = timestampMs + BigInt(Math.floor(msConsumed));
+        }
+      }
+      if (tokens < costBn) {
+        return false;
+      }
+      const newPacked = this.pack(timestampMs, tokens - costBn);
+      const actual = Atomics.compareExchange(this.mem, 0, currentPacked, newPacked);
+      if (actual === currentPacked) {
+        return true;
+      }
+      currentPacked = actual;
+    }
+  }
+  async acquire(cost = 1, timeoutMs = 5000) {
+    const start = Date.now();
+    while (true) {
+      if (this.tryAcquire(cost))
+        return true;
+      if (Date.now() - start > timeoutMs)
+        return false;
+      await delay(Math.max(10, Math.floor(1000 / this.refillRatePerSec)));
+    }
   }
 }
 // src/channels/zalo/adapter.ts

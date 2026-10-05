@@ -18620,11 +18620,21 @@ class SmartStreamer {
 }
 
 // src/core/context.ts
-function createMessageContext(message, channel, identity) {
+function createMessageContext(message, channel, identity, handoffManager) {
+  const isHandedOff = handoffManager ? handoffManager.isPaused(channel.name, message.chat.id) : false;
   return {
     message,
     channel,
     identity,
+    isHandedOff,
+    handoff: (durationMs, reason) => {
+      if (handoffManager) {
+        handoffManager.pause(channel.name, message.chat.id, durationMs, reason);
+      }
+    },
+    resume: () => {
+      return handoffManager ? handoffManager.resume(channel.name, message.chat.id) : false;
+    },
     reply: (text, options) => channel.sendText(message.chat.id, text, {
       replyToId: message.id,
       ...options
@@ -18775,14 +18785,49 @@ class IdentityStitcher {
   }
 }
 
+// src/core/handoff.ts
+class HumanHandoffManager {
+  _states = new Map;
+  _getKey(channel, chatId) {
+    return `${channel}:${chatId}`;
+  }
+  pause(channel, chatId, durationMs = 3600000, reason) {
+    const key = this._getKey(channel, chatId);
+    const pausedUntil = durationMs === Infinity ? Infinity : Date.now() + durationMs;
+    this._states.set(key, { chatId, channel, pausedUntil, reason });
+  }
+  resume(channel, chatId) {
+    const key = this._getKey(channel, chatId);
+    return this._states.delete(key);
+  }
+  isPaused(channel, chatId) {
+    const key = this._getKey(channel, chatId);
+    const state = this._states.get(key);
+    if (!state)
+      return false;
+    if (state.pausedUntil !== Infinity && Date.now() > state.pausedUntil) {
+      this._states.delete(key);
+      return false;
+    }
+    return true;
+  }
+  getState(channel, chatId) {
+    if (!this.isPaused(channel, chatId))
+      return;
+    return this._states.get(this._getKey(channel, chatId));
+  }
+}
+
 // src/core/hub.ts
 class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _middlewares = [];
   _dedupCache;
   _dlqHandler;
   _identityStitcher;
+  _handoffManager;
   _queue = [];
   _waiters = [];
   _queueDrainWaiters = [];
@@ -18793,9 +18838,17 @@ class ChannelHub {
     }
     this._dlqHandler = options.onDeadLetter;
     this._identityStitcher = options.identityStitcher ?? new IdentityStitcher;
+    this._handoffManager = new HumanHandoffManager;
   }
   get identityStitcher() {
     return this._identityStitcher;
+  }
+  get handoff() {
+    return this._handoffManager;
+  }
+  use(middleware) {
+    this._middlewares.push(middleware);
+    return this;
   }
   register(channel) {
     const provider = channel.provider || channel.name;
@@ -18820,7 +18873,10 @@ class ChannelHub {
       }
       this._bus.emitMessage(msg);
       const identity = this._identityStitcher.resolve(channel.name, msg.sender.id);
-      const ctx = createMessageContext(msg, channel, identity);
+      const ctx = createMessageContext(msg, channel, identity, this._handoffManager);
+      if (ctx.isHandedOff) {
+        this._bus.emit("handoff", ctx);
+      }
       if (this._waiters.length > 0) {
         const waiter = this._waiters.shift();
         waiter(ctx);
@@ -18832,24 +18888,34 @@ class ChannelHub {
           this._queue.push(ctx);
         }
       }
-      for (const handler of this._messageHandlers) {
-        try {
-          await handler(ctx);
-        } catch (err) {
-          const errorObj = err instanceof Error ? err : new Error(String(err));
-          this._bus.emitError(errorObj);
-          if (this._dlqHandler) {
-            try {
-              await this._dlqHandler({
-                message: msg,
-                error: errorObj,
-                timestamp: Date.now(),
-                retryCount: 0,
-                channel: channel.name
-              });
-            } catch (dlqErr) {
-              this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
-            }
+      const executePipeline = async (index) => {
+        if (index < this._middlewares.length) {
+          const fn = this._middlewares[index];
+          await fn(ctx, () => executePipeline(index + 1));
+          return;
+        }
+        if (!ctx.isHandedOff) {
+          for (const handler of this._messageHandlers) {
+            await handler(ctx);
+          }
+        }
+      };
+      try {
+        await executePipeline(0);
+      } catch (err) {
+        const errorObj = err instanceof Error ? err : new Error(String(err));
+        this._bus.emitError(errorObj);
+        if (this._dlqHandler) {
+          try {
+            await this._dlqHandler({
+              message: msg,
+              error: errorObj,
+              timestamp: Date.now(),
+              retryCount: 0,
+              channel: channel.name
+            });
+          } catch (dlqErr) {
+            this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
           }
         }
       }
@@ -18885,6 +18951,8 @@ class ChannelHub {
       this.onMessage(handler);
     } else if (event === "error") {
       this._bus.on("error", handler);
+    } else if (event === "handoff") {
+      this._bus.on("handoff", handler);
     }
     return this;
   }

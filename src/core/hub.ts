@@ -2,10 +2,16 @@ import { ChannelEventBus } from "./bus";
 import { createMessageContext, type MessageContext } from "./context";
 import { IdempotencyCache, type IdempotencyCacheOptions } from "./dedup";
 import { IdentityStitcher } from "./identity";
+import { HumanHandoffManager } from "./handoff";
 import type { DeadLetterHandler, DeadLetterItem } from "./dlq";
 import type { IChannelAdapter, UnifiedMessage } from "./types";
 
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
+
+export type Middleware = (
+  ctx: MessageContext,
+  next: () => Promise<void>
+) => Promise<void> | void;
 
 export interface ChannelHubOptions {
   /** Enable message deduplication (prevents double processing from webhook retries). Default: false */
@@ -22,11 +28,13 @@ export class ChannelHub {
   private _channels = new Map<string, IChannelAdapter>();
   private _bus = new ChannelEventBus();
   private _messageHandlers: MessageHandler[] = [];
+  private _middlewares: Middleware[] = [];
   
   // Primitives
   private _dedupCache?: IdempotencyCache;
   private _dlqHandler?: DeadLetterHandler;
   private _identityStitcher: IdentityStitcher;
+  private _handoffManager: HumanHandoffManager;
 
   // Async queue for backpressure support
   private _queue: MessageContext[] = [];
@@ -40,11 +48,26 @@ export class ChannelHub {
     }
     this._dlqHandler = options.onDeadLetter;
     this._identityStitcher = options.identityStitcher ?? new IdentityStitcher();
+    this._handoffManager = new HumanHandoffManager();
   }
 
   /** Gets the active identity stitcher. */
   get identityStitcher(): IdentityStitcher {
     return this._identityStitcher;
+  }
+
+  /** Gets the human handoff manager. */
+  get handoff(): HumanHandoffManager {
+    return this._handoffManager;
+  }
+
+  /**
+   * Registers a middleware function to the pipeline.
+   * Middlewares run sequentially before registered message handlers.
+   */
+  use(middleware: Middleware): this {
+    this._middlewares.push(middleware);
+    return this;
   }
 
   register(channel: IChannelAdapter): this {
@@ -83,7 +106,12 @@ export class ChannelHub {
         msg.sender.id,
       );
 
-      const ctx = createMessageContext(msg, channel, identity);
+      const ctx = createMessageContext(msg, channel, identity, this._handoffManager);
+
+      // If chat is currently handed off to a human, emit event and do not pass to automated handlers
+      if (ctx.isHandedOff) {
+        this._bus.emit("handoff", ctx);
+      }
 
       // 1. Dispatch to AsyncIterable queue (Backpressure)
       if (this._waiters.length > 0) {
@@ -98,27 +126,40 @@ export class ChannelHub {
         }
       }
 
-      // 2. Dispatch to registered callbacks awaiting sequentially
-      for (const handler of this._messageHandlers) {
-        try {
-          await handler(ctx);
-        } catch (err: any) {
-          const errorObj = err instanceof Error ? err : new Error(String(err));
-          this._bus.emitError(errorObj);
+      // 2. Dispatch through Middleware Pipeline + Handlers
+      const executePipeline = async (index: number): Promise<void> => {
+        if (index < this._middlewares.length) {
+          const fn = this._middlewares[index];
+          await fn(ctx, () => executePipeline(index + 1));
+          return;
+        }
 
-          // 3. Dead Letter Queue handling
-          if (this._dlqHandler) {
-            try {
-              await this._dlqHandler({
-                message: msg,
-                error: errorObj,
-                timestamp: Date.now(),
-                retryCount: 0,
-                channel: channel.name,
-              });
-            } catch (dlqErr: any) {
-              this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
-            }
+        // Only invoke automated bot handlers if the conversation is not paused for human takeover
+        if (!ctx.isHandedOff) {
+          for (const handler of this._messageHandlers) {
+            await handler(ctx);
+          }
+        }
+      };
+
+      try {
+        await executePipeline(0);
+      } catch (err: any) {
+        const errorObj = err instanceof Error ? err : new Error(String(err));
+        this._bus.emitError(errorObj);
+
+        // 3. Dead Letter Queue handling
+        if (this._dlqHandler) {
+          try {
+            await this._dlqHandler({
+              message: msg,
+              error: errorObj,
+              timestamp: Date.now(),
+              retryCount: 0,
+              channel: channel.name,
+            });
+          } catch (dlqErr: any) {
+            this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
           }
         }
       }
@@ -156,11 +197,13 @@ export class ChannelHub {
     return this;
   }
 
-  on(event: "message" | "error", handler: any): this {
+  on(event: "message" | "error" | "handoff", handler: any): this {
     if (event === "message") {
       this.onMessage(handler);
     } else if (event === "error") {
       this._bus.on("error", handler);
+    } else if (event === "handoff") {
+      this._bus.on("handoff", handler);
     }
     return this;
   }

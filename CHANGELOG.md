@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0] - 2026-10-06
+
+### Added
+- **Twilio Omnichannel Adapter**: Added comprehensive adapter for WhatsApp, SMS, MMS, and RCS via Twilio REST API and webhooks.
+- **Middleware Pipeline (`hub.use`)**: Express/Koa-style Onion architecture. Allows intercepting, modifying, and short-circuiting message payloads.
+- **Human Handoff & Takeover (`ctx.handoff()`)**: Built-in manager to temporarily mute automated bot handlers in specific chats, empowering human agents to intervene without interruption.
+- **SharedArrayBuffer Token Bucket Limiter (`SharedTokenBucketLimiter`)**: High-throughput, completely lock-free, zero-Redis rate limiting across Node/Bun Worker Threads utilizing CPU Atomics (~3.7M ops/sec).
+- **CLI Scaffolder (`channelhub init`)**: Zero-config starter script that auto-generates `.env`, `bot.ts`, and `package.json` for new developers.
+
+### Security
+- **Timing-Safe Cryptography**: Implemented `crypto.timingSafeEqual` in Messenger and Slack webhook signature verification to thwart timing attacks.
+- **Anti-Replay Mechanism**: Hardened Slack adapter with a 5-minute replay attack threshold (`timestamp`).
+- **Token Leak Redaction**: Masked bot tokens `[REDACTED]` from standard stack traces and network fetch errors in Telegram adapter.
+
+---
+
 ## [1.5.0] - 2026-10-05
 
 ### Added

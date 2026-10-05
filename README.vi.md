@@ -25,6 +25,7 @@
 - [Channel Capability Matrix](#-channel-capability-matrix)
 - [Cơ Chế Hoạt Động](#-how-it-works-deep-dive)
 - [Tính Năng Chính](#-key-features)
+- [Cài Đặt](#-cài-đặt-installation)
 - [Bắt Đầu Nhanh (Zero-Config)](#-bắt-đầu-nhanh-zero-config)
 - [Các Kênh Hỗ Trợ](#-channel-adapters)
   - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
@@ -34,6 +35,7 @@
   - [🎮 Discord](#-discord-adapter)
   - [💼 Slack](#-slack-adapter)
   - [📱 Twilio (WhatsApp & SMS)](#-twilio-adapter)
+- [Tính Năng Mở Rộng v1.6.0](#-tính-năng-mở-rộng-v160)
 - [Rich Media, Stickers & GIFs](#-rich-media-stickers--gifs)
 - [SmartStreamer for LLMs](#-smartstreamer-for-llms)
 - [Bộ Công Cụ CLI (CLI Toolkit)](#-cli-toolkit)
@@ -154,6 +156,27 @@ When an event occurs, ChannelHub constructs a `MessageContext` wrapper around th
 
 ---
 
+
+## 📦 Cài Đặt (Installation)
+
+Nếu bạn đã có sẵn dự án Node.js / Bun, cài đặt ChannelHub qua package manager:
+
+```bash
+# Bun (Khuyên dùng)
+bun add @theowlops/channelhub
+
+# NPM
+npm install @theowlops/channelhub
+
+# PNPM
+pnpm add @theowlops/channelhub
+
+# Yarn
+yarn add @theowlops/channelhub
+```
+
+---
+
 ## 🚀 Bắt Đầu Nhanh (Zero-Config)
 
 Chỉ cần 3 bước đơn giản. ChannelHub sẽ tự động tạo sẵn toàn bộ source code cho bạn!
@@ -267,6 +290,57 @@ const slack = new SlackChannelAdapter({ botToken: "xoxb-...", signingSecret: "..
 ```
 
 ---
+
+
+---
+
+## ⚡ Tính Năng Mở Rộng v1.6.0
+
+### 1. Middleware Pipeline (`hub.use`)
+Kiến trúc Onion (tương tự Koa / Express) cho phép lọc, biến đổi hoặc kiểm soát tin nhắn trước khi tới tay AI/Handler:
+
+```typescript
+// Chặn spam hoặc kiểm tra quyền người dùng
+hub.use(async (ctx, next) => {
+  if (ctx.message.content.text.includes("SPAM")) {
+    return; // Short-circuit, chặn đứng tin nhắn
+  }
+  await next(); // Cho phép đi tiếp vào pipeline
+});
+```
+
+### 2. Chuyển Giao Người Thật (Human Handoff / Takeover)
+Tạm dừng bot trả lời tự động trong một phòng chat cụ thể để nhân viên tư vấn có thể vào can thiệp mà không bị bot chen ngang:
+
+```typescript
+hub.on("message", async (ctx) => {
+  if (ctx.message.content.text === "gặp nhân viên") {
+    // Tạm khóa bot trong chat này 30 phút
+    ctx.handoff(30 * 60 * 1000, "User requested agent");
+    await ctx.reply("Đã kết nối nhân viên tư vấn. Bot sẽ tạm ngưng trả lời.");
+    return;
+  }
+});
+
+// Khi nhân viên kết thúc hỗ trợ:
+// ctx.resume() hoặc hub.handoff.resume(channel, chatId);
+```
+
+### 3. Bộ Giới Hạn Tốc Độ Đa Nhân (`SharedTokenBucketLimiter`)
+Chia sẻ Token Bucket Rate Limit giữa nhiều Worker Process / Threads qua `SharedArrayBuffer` và `Atomics` ở cấp phần cứng CPU:
+- **Tốc độ:** ~3.700.000 ops/giây (độ trễ micro-giây).
+- **Chi phí:** 0đ, không cần cài đặt hay duy trì cụm Redis.
+
+```typescript
+import { SharedTokenBucketLimiter } from "@theowlops/channelhub/core";
+
+// 100 token tối đa, hồi phục 20 token/giây
+const limiter = new SharedTokenBucketLimiter(100, 20);
+
+if (limiter.tryAcquire(1)) {
+  // Gửi tin an toàn, không sợ bị ban API
+}
+```
 
 ## 🎨 Rich Media, Stickers & GIFs
 

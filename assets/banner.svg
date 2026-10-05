@@ -92,7 +92,7 @@
     <rect width="320" height="32" rx="16" fill="#0F172A" fill-opacity="0.85" stroke="url(#borderGrad)" stroke-width="1.2" />
     <circle cx="16" cy="16" r="4.5" fill="#10B981" filter="url(#badgeGlow)" />
     <text x="32" y="21" fill="#94A3B8" class="font-sans" font-size="12" font-weight="600" letter-spacing="0.5">
-      v1.5.0 RELEASE <tspan fill="#38BDF8">|</tspan> <tspan fill="#F8FAFC">UNIFIED AUTOMATION SDK</tspan>
+      v1.6.0 RELEASE <tspan fill="#38BDF8">|</tspan> <tspan fill="#F8FAFC">UNIFIED AUTOMATION SDK</tspan>
     </text>
   </g>
 

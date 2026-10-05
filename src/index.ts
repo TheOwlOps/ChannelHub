@@ -11,6 +11,7 @@ export { DiscordChannelAdapter, type DiscordAdapterConfig } from "./channels/dis
 export { SlackChannelAdapter, type SlackAdapterConfig } from "./channels/slack/index";
 export { MessengerChannelAdapter, type MessengerAdapterConfig } from "./channels/messenger/index";
 export { TikTokBusinessAdapter, type TikTokBusinessConfig } from "./channels/tiktok/index";
+export { TwilioChannelAdapter, type TwilioAdapterConfig } from "./channels/twilio/index";
 
 // 3. AI & Protocol Bridges
 export {

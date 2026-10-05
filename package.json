@@ -52,6 +52,11 @@
       "types": "./dist/channels/tiktok/index.d.ts",
       "require": "./dist/channels/tiktok/index.cjs"
     },
+    "./twilio": {
+      "import": "./dist/channels/twilio/index.js",
+      "types": "./dist/channels/twilio/index.d.ts",
+      "require": "./dist/channels/twilio/index.cjs"
+    },
     "./mcp": {
       "import": "./dist/bridges/mcp/index.js",
       "types": "./dist/bridges/mcp/index.d.ts",

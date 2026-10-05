@@ -40250,6 +40250,152 @@ class TikTokBusinessAdapter extends BaseChannel {
     };
   }
 }
+// src/channels/twilio/adapter.ts
+import { createHmac as createHmac2, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
+class TwilioChannelAdapter extends BaseChannel {
+  name = "twilio";
+  capabilities = {
+    inbound: true,
+    outbound: true,
+    media: ["image", "video", "audio", "file"],
+    reactions: false,
+    editing: false,
+    typing: false,
+    mode: "webhook"
+  };
+  config;
+  apiRoot;
+  constructor(config) {
+    super();
+    if (!config.accountSid)
+      throw new Error("TwilioChannelAdapter: accountSid required");
+    if (!config.authToken)
+      throw new Error("TwilioChannelAdapter: authToken required");
+    if (!config.fromNumber)
+      throw new Error("TwilioChannelAdapter: fromNumber required");
+    this.config = config;
+    this.apiRoot = config.apiRoot || "https://api.twilio.com";
+  }
+  async connect(signal) {
+    this.assertNotAborted(signal);
+    this.setConnected(true);
+  }
+  async disconnect(signal) {
+    this.assertNotAborted(signal);
+    this.setConnected(false);
+  }
+  verifySignature(signatureHeader, url, postData) {
+    if (!signatureHeader)
+      return false;
+    const sortedKeys = Object.keys(postData).sort();
+    let dataStr = url;
+    for (const k of sortedKeys) {
+      dataStr += k + postData[k];
+    }
+    const expectedB64 = createHmac2("sha1", this.config.authToken).update(dataStr, "utf8").digest("base64");
+    const expectedBuf = Buffer.from(expectedB64, "utf8");
+    const receivedBuf = Buffer.from(signatureHeader, "utf8");
+    if (expectedBuf.length !== receivedBuf.length)
+      return false;
+    return timingSafeEqual2(expectedBuf, receivedBuf);
+  }
+  async handleWebhook(postData, signatureHeader, exactUrl) {
+    if (exactUrl && signatureHeader) {
+      const isValid = this.verifySignature(signatureHeader, exactUrl, postData);
+      if (!isValid)
+        return false;
+    }
+    const unified = this.normalizeMessage(postData);
+    if (unified) {
+      await this.dispatchMessage(unified);
+    }
+    return true;
+  }
+  normalizeMessage(msg) {
+    if (!msg || !msg.MessageSid)
+      return null;
+    let channelAlias = "sms";
+    if (msg.From.startsWith("whatsapp:"))
+      channelAlias = "whatsapp";
+    const attachments = [];
+    const numMedia = parseInt(msg.NumMedia || "0", 10);
+    for (let i = 0;i < numMedia; i++) {
+      const url = msg[`MediaUrl${i}`];
+      const mime = msg[`MediaContentType${i}`];
+      if (url) {
+        let type = "file";
+        if (mime?.startsWith("image/"))
+          type = "image";
+        else if (mime?.startsWith("video/"))
+          type = "video";
+        else if (mime?.startsWith("audio/"))
+          type = "audio";
+        attachments.push({ type, url, mimeType: mime });
+      }
+    }
+    return {
+      id: msg.MessageSid,
+      channel: this.name,
+      sender: {
+        id: msg.From
+      },
+      chat: {
+        id: msg.From,
+        type: "dm"
+      },
+      content: {
+        text: msg.Body || "",
+        attachments: attachments.length > 0 ? attachments : undefined
+      },
+      raw: msg,
+      timestamp: Date.now(),
+      metadata: { twilioChannel: channelAlias }
+    };
+  }
+  async sendText(chatId, text, options) {
+    const params = new URLSearchParams;
+    params.append("To", chatId);
+    params.append("From", this.config.fromNumber);
+    params.append("Body", text);
+    return this.postTwilioMessage(params, options?.signal);
+  }
+  async sendMedia(chatId, media, options) {
+    const params = new URLSearchParams;
+    params.append("To", chatId);
+    params.append("From", this.config.fromNumber);
+    if (media.caption) {
+      params.append("Body", media.caption);
+    }
+    if (typeof media.source !== "string" || !media.source.startsWith("http")) {
+      throw new Error("TwilioChannelAdapter: media.source must be a public HTTP URL.");
+    }
+    params.append("MediaUrl", media.source);
+    return this.postTwilioMessage(params, options?.signal);
+  }
+  async postTwilioMessage(params, signal) {
+    const url = `${this.apiRoot}/2010-04-01/Accounts/${this.config.accountSid}/Messages.json`;
+    const authBuf = Buffer.from(`${this.config.accountSid}:${this.config.authToken}`).toString("base64");
+    const res = await fetch(url, {
+      method: "POST",
+      signal,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${authBuf}`
+      },
+      body: params
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Twilio API failed: HTTP ${res.status} [REDACTED]`);
+    }
+    const data = await res.json();
+    return {
+      messageId: data.sid,
+      chatId: data.to,
+      timestamp: Date.now()
+    };
+  }
+}
 // src/bridges/mcp/index.ts
 function getChannelHubMcpTools() {
   return [
@@ -40564,7 +40710,7 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
 }
 // src/bridges/webhook/index.ts
 import { createServer } from "node:http";
-import { timingSafeEqual as timingSafeEqual2 } from "node:crypto";
+import { timingSafeEqual as timingSafeEqual3 } from "node:crypto";
 
 class WebhookBridge {
   hub;
@@ -40623,7 +40769,7 @@ class WebhookBridge {
     const keyBuf = Buffer.from(this.config.apiKey);
     if (tokenBuf.length !== keyBuf.length)
       return false;
-    return timingSafeEqual2(tokenBuf, keyBuf);
+    return timingSafeEqual3(tokenBuf, keyBuf);
   }
   async handle(req, res) {
     const p = this.path(req);
@@ -40913,6 +41059,7 @@ export {
   TelegramChannelAdapter,
   TikTokBusinessAdapter,
   TokenBucketLimiter,
+  TwilioChannelAdapter,
   WebhookBridge,
   ZaloChannelAdapter,
   ZaloOABot,

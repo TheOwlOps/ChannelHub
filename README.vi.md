@@ -25,8 +25,7 @@
 - [Channel Capability Matrix](#-channel-capability-matrix)
 - [Cơ Chế Hoạt Động](#-how-it-works-deep-dive)
 - [Tính Năng Chính](#-key-features)
-- [Installation](#-installation)
-- [Bắt Đầu Nhanh](#-quick-start)
+- [Bắt Đầu Nhanh (Dành Cho Người Mới)](#-bắt-đầu-nhanh-dành-cho-người-mới)
 - [Các Kênh Hỗ Trợ](#-channel-adapters)
   - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
   - [💬 Meta Messenger](#-meta-messenger-adapter)
@@ -155,54 +154,54 @@ When an event occurs, ChannelHub constructs a `MessageContext` wrapper around th
 
 ---
 
-## 📦 Installation
+## 🚀 Bắt Đầu Nhanh (Dành Cho Người Mới)
 
+Chỉ cần 3 bước đơn giản. Bạn không cần kiến thức phức tạp để bắt đầu!
+
+### Bước 1: Tạo dự án & Cài đặt
+Mở terminal (CMD/PowerShell) và chạy các lệnh sau để tạo thư mục và cài đặt ChannelHub:
 ```bash
-# Recommended (Bun)
+mkdir my-bot && cd my-bot
+bun init -y
 bun add @theowlops/channelhub
-
-# NPM
-npm install @theowlops/channelhub
-
-# PNPM
-pnpm add @theowlops/channelhub
 ```
+*(Nếu bạn dùng Node.js thay vì Bun, hãy chạy `npm init -y` và `npm install @theowlops/channelhub`)*
 
----
-
-## ⚡ Bắt Đầu Nhanh
+### Bước 2: Viết Bot (bot.ts)
+Tạo file `bot.ts` và dán đoạn code sau. Ở đây dùng Telegram làm ví dụ vì nó dễ setup nhất (Lấy Token bằng cách chat với [@BotFather](https://t.me/BotFather) trên Telegram).
 
 ```typescript
 import { ChannelHub } from "@theowlops/channelhub/core";
 import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
-import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
 
 const hub = new ChannelHub();
 
-// 1. Register Telegram
+// 1. Kết nối với Telegram
 hub.register(new TelegramChannelAdapter({
-  botToken: process.env.TELEGRAM_BOT_TOKEN!
+  botToken: "DÁN_TOKEN_TELEGRAM_CỦA_BẠN_VÀO_ĐÂY"
 }));
 
-// 2. Register TikTok for Business
-const tiktok = new TikTokBusinessAdapter({
-  appId: process.env.TIKTOK_APP_ID!,
-  clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
-  accessToken: process.env.TIKTOK_ACCESS_TOKEN!
-});
-hub.register(tiktok);
-
-// 3. Central message dispatcher
+// 2. Lắng nghe tin nhắn gửi đến
 hub.on("message", async (ctx) => {
-  console.log(`[${ctx.channel}] ${ctx.message.sender.name}: ${ctx.message.content.text}`);
-
-  if (ctx.message.content.text.startsWith("/echo ")) {
-    const replyText = ctx.message.content.text.replace("/echo ", "");
-    await ctx.reply(replyText);
-  }
+  console.log(`💬 Tin nhắn từ ${ctx.message.sender.name}: ${ctx.message.content.text}`);
+  
+  // Trả lời lại người dùng
+  await ctx.reply(`Chào bạn! Bạn vừa nói: ${ctx.message.content.text}`);
 });
 
+// 3. Khởi động bot
 await hub.startAll();
+console.log("🚀 Bot đã chạy!");
+```
+
+### Bước 3: Chạy Bot & Tự bắt bệnh
+Chạy bot của bạn bằng lệnh sau:
+```bash
+bun bot.ts
+```
+**Gặp lỗi? Bot không chạy?** ChannelHub có sẵn công cụ "bắt bệnh" (doctor) tự động kiểm tra xem token hay môi trường của bạn có sai ở đâu không:
+```bash
+npx @theowlops/channelhub doctor
 ```
 
 ---

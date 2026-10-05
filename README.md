@@ -25,8 +25,7 @@
 - [Channel Capability Matrix](#-channel-capability-matrix)
 - [How It Works Deep Dive](#-how-it-works-deep-dive)
 - [Key Features](#-key-features)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
+- [Quick Start (For Beginners)](#-quick-start-for-beginners)
 - [Channel Adapters](#-channel-adapters)
   - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
   - [💬 Meta Messenger](#-meta-messenger-adapter)
@@ -155,54 +154,54 @@ When an event occurs, ChannelHub constructs a `MessageContext` wrapper around th
 
 ---
 
-## 📦 Installation
+## 🚀 Quick Start (For Beginners)
 
+Get started in 3 simple steps. No prior experience required!
+
+### Step 1: Create a Project & Install
+Open your terminal and run these commands to create an empty project and install ChannelHub:
 ```bash
-# Recommended (Bun)
+mkdir my-bot && cd my-bot
+bun init -y
 bun add @theowlops/channelhub
-
-# NPM
-npm install @theowlops/channelhub
-
-# PNPM
-pnpm add @theowlops/channelhub
 ```
+*(If you use Node.js, run `npm init -y` and `npm install @theowlops/channelhub`)*
 
----
-
-## ⚡ Quick Start
+### Step 2: Write your Bot (bot.ts)
+Create a file named `bot.ts` and paste this code. We'll use Telegram as an example because it's the easiest to test. (Get a bot token by messaging [@BotFather](https://t.me/BotFather) on Telegram).
 
 ```typescript
 import { ChannelHub } from "@theowlops/channelhub/core";
 import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
-import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
 
 const hub = new ChannelHub();
 
-// 1. Register Telegram
+// 1. Connect to Telegram
 hub.register(new TelegramChannelAdapter({
-  botToken: process.env.TELEGRAM_BOT_TOKEN!
+  botToken: "YOUR_TELEGRAM_BOT_TOKEN_HERE" // Replace this!
 }));
 
-// 2. Register TikTok for Business
-const tiktok = new TikTokBusinessAdapter({
-  appId: process.env.TIKTOK_APP_ID!,
-  clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
-  accessToken: process.env.TIKTOK_ACCESS_TOKEN!
-});
-hub.register(tiktok);
-
-// 3. Central message dispatcher
+// 2. Listen for incoming messages across all channels
 hub.on("message", async (ctx) => {
-  console.log(`[${ctx.channel}] ${ctx.message.sender.name}: ${ctx.message.content.text}`);
-
-  if (ctx.message.content.text.startsWith("/echo ")) {
-    const replyText = ctx.message.content.text.replace("/echo ", "");
-    await ctx.reply(replyText);
-  }
+  console.log(`💬 New message from ${ctx.message.sender.name}: ${ctx.message.content.text}`);
+  
+  // Reply to the user
+  await ctx.reply(`Hello! You said: ${ctx.message.content.text}`);
 });
 
+// 3. Start the bot
 await hub.startAll();
+console.log("🚀 Bot is running!");
+```
+
+### Step 3: Run & Diagnose
+Run your bot using Bun (or `tsx` if using Node.js):
+```bash
+bun bot.ts
+```
+**Not working?** ChannelHub comes with a built-in doctor to check your environment and tokens. Run:
+```bash
+npx @theowlops/channelhub doctor
 ```
 
 ---

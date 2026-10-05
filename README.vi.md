@@ -229,20 +229,36 @@ app.post("/webhook/tiktok", async (req, res) => {
 });
 ```
 
-### 🔵 Meta Messenger Adapter
-Supports Meta Graph API v19.0 with webhook challenge verification, personal Playwright session recovery, and large file support.
+### 💬 Meta Messenger Adapter
+ChannelHub cung cấp 2 giải pháp kết nối Messenger:
 
+**1. Meta Graph API (Page Bot Doanh nghiệp - Khuyên dùng)**
+Hỗ trợ xác thực webhook challenge, quét permissions, gửi video lớn 100MB, và message tags (`HUMAN_AGENT`).
 ```typescript
 import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
 
 const messenger = new MessengerChannelAdapter({
   pageAccessToken: "EAA...",
   verifyToken: "custom_webhook_secret",
-  pageId: "10029384912"
+  appSecret: "facebook_app_secret",
+  autoSubscribePage: true, // Tự động đăng ký webhook với Facebook Page
 });
 ```
 
-### 💬 Zalo Adapter
+**2. Personal Profile Adapter (Playwright Stealth)**
+Tự động hóa tài khoản Facebook cá nhân. Chạy bằng Playwright Persistent Context giả lập hành vi người thật để chống checkpoint và khóa nick.
+```typescript
+import { MessengerPersonalAdapter } from "@theowlops/channelhub/messenger";
+
+// Chạy 'npx @theowlops/channelhub login:messenger' trước để lưu session!
+const personal = new MessengerPersonalAdapter({
+  headless: true,
+  maxMessagesPerMinute: 15,
+  humanTypingDelayMs: 40,
+});
+```
+
+### 🔵 Zalo Adapter
 Supports reverse-engineered Web API (`zca-js`) personal sessions and Official Account (OA) v3 OpenAPI. Includes anti-ban jitter algorithms and automatic quote object generation.
 
 ```typescript

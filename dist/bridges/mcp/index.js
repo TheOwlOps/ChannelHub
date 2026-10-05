@@ -186,6 +186,46 @@ function getChannelHubMcpTools() {
           }
         }
       }
+    },
+    {
+      name: "channelhub_send_email",
+      description: "Send an email (via Resend, SendGrid, or registered Email channel) with full support for HTML, Subject, CC, and BCC.",
+      parameters: {
+        type: "object",
+        required: ["to", "subject", "text"],
+        properties: {
+          to: {
+            type: "string",
+            description: "Recipient email address"
+          },
+          subject: {
+            type: "string",
+            description: "Email subject line"
+          },
+          text: {
+            type: "string",
+            description: "Plain text body of the email"
+          },
+          html: {
+            type: "string",
+            description: "Optional rich HTML body"
+          },
+          cc: {
+            type: "array",
+            items: { type: "string" },
+            description: "Optional list of CC email addresses"
+          },
+          bcc: {
+            type: "array",
+            items: { type: "string" },
+            description: "Optional list of BCC email addresses"
+          },
+          replyTo: {
+            type: "string",
+            description: "Optional reply-to email address"
+          }
+        }
+      }
     }
   ];
 }
@@ -298,6 +338,21 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
         }));
         return {
           content: [{ type: "text", text: JSON.stringify({ broadcast: summary }, null, 2) }]
+        };
+      }
+      case "channelhub_send_email": {
+        const ch = hub.getChannel("email");
+        if (!ch)
+          throw new Error("Email channel adapter not registered in ChannelHub. Register EmailChannelAdapter first.");
+        const res = await ch.sendText(args.to, args.text, {
+          subject: args.subject,
+          html: args.html,
+          cc: args.cc,
+          bcc: args.bcc,
+          replyTo: args.replyTo
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
         };
       }
       default:

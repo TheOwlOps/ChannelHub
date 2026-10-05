@@ -6614,6 +6614,215 @@ class TwilioChannelAdapter extends BaseChannel {
     };
   }
 }
+// src/channels/email/adapter.ts
+class EmailChannelAdapter extends BaseChannel {
+  name = "email";
+  config;
+  constructor(config) {
+    super();
+    if (!config.apiKey)
+      throw new Error("EmailAdapter requires apiKey");
+    if (!config.fromAddress)
+      throw new Error("EmailAdapter requires fromAddress");
+    this.config = {
+      provider: "resend",
+      ...config
+    };
+  }
+  async connect(signal) {
+    if (signal?.aborted)
+      throw new Error("Connection aborted");
+    if (this.config.provider === "resend") {
+      const base = this.config.apiBaseUrl || "https://api.resend.com";
+      const res = await fetch(`${base}/api-keys`, {
+        signal,
+        headers: { Authorization: `Bearer ${this.config.apiKey}` }
+      });
+      if (res.status === 401) {
+        throw new Error("Invalid Resend API Key provided to EmailChannelAdapter");
+      }
+    }
+    this.setConnected(true);
+  }
+  async disconnect() {
+    this.setConnected(false);
+  }
+  async sendText(chatId, text, options) {
+    if (options?.signal?.aborted)
+      throw new Error("Send aborted");
+    const subject = options?.subject || this.config.defaultSubject || "Message from AI Agent";
+    const recipient = chatId;
+    if (this.config.provider === "resend") {
+      const base = this.config.apiBaseUrl || "https://api.resend.com";
+      const body = {
+        from: this.config.fromAddress,
+        to: [recipient],
+        subject,
+        text
+      };
+      if (options?.html)
+        body.html = options.html;
+      if (options?.cc)
+        body.cc = options.cc;
+      if (options?.bcc)
+        body.bcc = options.bcc;
+      if (options?.replyTo)
+        body.reply_to = options.replyTo;
+      const res = await fetch(`${base}/emails`, {
+        method: "POST",
+        signal: options?.signal,
+        headers: {
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Resend API failed (${res.status}): ${err}`);
+      }
+      const data = await res.json();
+      return {
+        messageId: data.id || `email_${Date.now()}`,
+        chatId: recipient,
+        timestamp: Date.now()
+      };
+    } else {
+      const base = this.config.apiBaseUrl || "https://api.sendgrid.com/v3";
+      const body = {
+        personalizations: [{ to: [{ email: recipient }] }],
+        from: { email: this.config.fromAddress },
+        subject,
+        content: [{ type: "text/plain", value: text }]
+      };
+      if (options?.html) {
+        body.content.push({ type: "text/html", value: options.html });
+      }
+      const res = await fetch(`${base}/mail/send`, {
+        method: "POST",
+        signal: options?.signal,
+        headers: {
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`SendGrid API failed (${res.status}): ${err}`);
+      }
+      return {
+        messageId: res.headers.get("x-message-id") || `sg_${Date.now()}`,
+        chatId: recipient,
+        timestamp: Date.now()
+      };
+    }
+  }
+  async sendMedia(chatId, media, options) {
+    if (options?.signal?.aborted)
+      throw new Error("Send aborted");
+    let base64Content = "";
+    if (typeof media.source === "string") {
+      base64Content = Buffer.from(media.source).toString("base64");
+    } else if (media.source instanceof Uint8Array || Buffer.isBuffer(media.source)) {
+      base64Content = Buffer.from(media.source).toString("base64");
+    }
+    const filename = media.filename || "attachment.dat";
+    const subject = options?.subject || this.config.defaultSubject || `Attachment: ${filename}`;
+    if (this.config.provider === "resend") {
+      const base = this.config.apiBaseUrl || "https://api.resend.com";
+      const body = {
+        from: this.config.fromAddress,
+        to: [chatId],
+        subject,
+        text: media.caption || `Attached file: ${filename}`,
+        attachments: [
+          {
+            filename,
+            content: base64Content
+          }
+        ]
+      };
+      const res = await fetch(`${base}/emails`, {
+        method: "POST",
+        signal: options?.signal,
+        headers: {
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Resend sendMedia failed (${res.status}): ${err}`);
+      }
+      const data = await res.json();
+      return {
+        messageId: data.id || `email_${Date.now()}`,
+        chatId,
+        timestamp: Date.now()
+      };
+    } else {
+      const base = this.config.apiBaseUrl || "https://api.sendgrid.com/v3";
+      const body = {
+        personalizations: [{ to: [{ email: chatId }] }],
+        from: { email: this.config.fromAddress },
+        subject,
+        content: [{ type: "text/plain", value: media.caption || `Attached file: ${filename}` }],
+        attachments: [
+          {
+            content: base64Content,
+            filename,
+            type: media.mimeType || "application/octet-stream",
+            disposition: "attachment"
+          }
+        ]
+      };
+      const res = await fetch(`${base}/mail/send`, {
+        method: "POST",
+        signal: options?.signal,
+        headers: {
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`SendGrid sendMedia failed (${res.status}): ${err}`);
+      }
+      return {
+        messageId: res.headers.get("x-message-id") || `sg_${Date.now()}`,
+        chatId,
+        timestamp: Date.now()
+      };
+    }
+  }
+  handleInboundWebhook(rawPayload) {
+    const from = rawPayload.from || rawPayload.envelope?.from || "unknown@domain.com";
+    const text = rawPayload.text || rawPayload.body || rawPayload.subject || "";
+    const id = rawPayload.id || `inbound_email_${Date.now()}`;
+    const unified = {
+      id,
+      channel: "email",
+      chat: {
+        id: from,
+        type: "dm"
+      },
+      sender: {
+        id: from,
+        name: rawPayload.sender_name || from
+      },
+      content: {
+        text
+      },
+      timestamp: Date.now(),
+      raw: rawPayload
+    };
+    this.dispatchMessage(unified);
+    return unified;
+  }
+}
 // src/bridges/mcp/index.ts
 function getChannelHubMcpTools() {
   return [
@@ -6802,6 +7011,46 @@ function getChannelHubMcpTools() {
           }
         }
       }
+    },
+    {
+      name: "channelhub_send_email",
+      description: "Send an email (via Resend, SendGrid, or registered Email channel) with full support for HTML, Subject, CC, and BCC.",
+      parameters: {
+        type: "object",
+        required: ["to", "subject", "text"],
+        properties: {
+          to: {
+            type: "string",
+            description: "Recipient email address"
+          },
+          subject: {
+            type: "string",
+            description: "Email subject line"
+          },
+          text: {
+            type: "string",
+            description: "Plain text body of the email"
+          },
+          html: {
+            type: "string",
+            description: "Optional rich HTML body"
+          },
+          cc: {
+            type: "array",
+            items: { type: "string" },
+            description: "Optional list of CC email addresses"
+          },
+          bcc: {
+            type: "array",
+            items: { type: "string" },
+            description: "Optional list of BCC email addresses"
+          },
+          replyTo: {
+            type: "string",
+            description: "Optional reply-to email address"
+          }
+        }
+      }
     }
   ];
 }
@@ -6914,6 +7163,21 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
         }));
         return {
           content: [{ type: "text", text: JSON.stringify({ broadcast: summary }, null, 2) }]
+        };
+      }
+      case "channelhub_send_email": {
+        const ch = hub.getChannel("email");
+        if (!ch)
+          throw new Error("Email channel adapter not registered in ChannelHub. Register EmailChannelAdapter first.");
+        const res = await ch.sendText(args.to, args.text, {
+          subject: args.subject,
+          html: args.html,
+          cc: args.cc,
+          bcc: args.bcc,
+          replyTo: args.replyTo
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
         };
       }
       default:
@@ -7269,6 +7533,7 @@ export {
   ChannelHub,
   CommandRouter,
   DiscordChannelAdapter,
+  EmailChannelAdapter,
   HumanHandoffManager,
   IdempotencyCache,
   IdentityStitcher,

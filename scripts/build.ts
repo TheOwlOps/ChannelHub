@@ -16,6 +16,7 @@ const subpaths = [
   ["src/channels/discord/index.ts", "./dist/channels/discord/index"],
   ["src/channels/slack/index.ts", "./dist/channels/slack/index"],
   ["src/channels/messenger/index.ts", "./dist/channels/messenger/index"],
+  ["src/channels/email/index.ts", "./dist/channels/email/index"],
   ["src/bridges/mcp/index.ts", "./dist/bridges/mcp/index"],
   ["src/bridges/webhook/index.ts", "./dist/bridges/webhook/index"],
   ["src/personal/index.ts", "./dist/personal/index"],

@@ -17,6 +17,7 @@ export {
 } from "./channels/messenger/index";
 export { TikTokBusinessAdapter, type TikTokBusinessConfig } from "./channels/tiktok/index";
 export { TwilioChannelAdapter, type TwilioAdapterConfig } from "./channels/twilio/index";
+export { EmailChannelAdapter, type EmailAdapterConfig, type EmailSendOptions } from "./channels/email/index";
 
 // 3. AI & Protocol Bridges
 export {

@@ -57,6 +57,11 @@
       "types": "./dist/channels/twilio/index.d.ts",
       "require": "./dist/channels/twilio/index.cjs"
     },
+    "./email": {
+      "import": "./dist/channels/email/index.js",
+      "types": "./dist/channels/email/index.d.ts",
+      "require": "./dist/channels/email/index.cjs"
+    },
     "./mcp": {
       "import": "./dist/bridges/mcp/index.js",
       "types": "./dist/bridges/mcp/index.d.ts",

@@ -321,24 +321,17 @@ await streamer.end();
 
 ## 🛠️ CLI Toolkit
 
-ChannelHub includes a built-in CLI toolkit (`channelhub`) to streamline project creation, diagnosis, and authentication:
+ChannelHub includes a built-in CLI (`channelhub`) to streamline project scaffolding, account authentication, and environment troubleshooting:
 
-```bash
-# 1. Scaffold a fresh bot project (.env + bot.ts)
-npx @theowlops/channelhub init
-
-# 2. Diagnose environment variables & credentials
-npx @theowlops/channelhub doctor
-
-# 3. Authenticate personal Zalo account via terminal QR code
-npx @theowlops/channelhub login:zalo
-
-# 4. Authenticate personal Messenger account via browser
-npx @theowlops/channelhub login:messenger
-
-# 5. Check installed version
-npx @theowlops/channelhub version
-```
+| Command | Purpose | When & How to Use |
+| :--- | :--- | :--- |
+| `npx @theowlops/channelhub init` | **Project Scaffolder** | Run in an empty folder to auto-generate `.env`, `bot.ts`, and `package.json`. |
+| `npx @theowlops/channelhub doctor` | **Environment Diagnostics** | Check missing tokens, inspect Node/Bun runtimes, and verify credential files. |
+| `npx @theowlops/channelhub login:zalo` | **Zalo Personal Login** | Generates a terminal QR code. Scan with your phone to extract `credentials.json`. |
+| `npx @theowlops/channelhub login:messenger` | **Messenger Personal Login** | Opens a browser window. Log into Facebook to auto-save `messenger.credentials.json`. |
+| `npx @theowlops/channelhub start` | **Runtime Runner** | Starts configured ChannelHub services directly from terminal. |
+| `npx @theowlops/channelhub version` | **Version Inspector** | Prints current installed version of `@theowlops/channelhub`. |
+| `npx @theowlops/channelhub help` | **Command Reference** | Displays list of available CLI commands and usage flags. |
 
 ---
 

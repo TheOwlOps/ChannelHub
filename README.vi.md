@@ -321,24 +321,17 @@ await streamer.end();
 
 ## 🛠️ CLI Toolkit
 
-ChannelHub được tích hợp sẵn một bộ công cụ CLI (`channelhub`) để giúp bạn khởi tạo dự án, đăng nhập tài khoản tự động và kiểm tra lỗi:
+ChannelHub tích hợp sẵn công cụ dòng lệnh (`channelhub`) giúp bạn khởi tạo dự án, đăng nhập tài khoản tự động và kiểm tra chẩn đoán lỗi:
 
-```bash
-# 1. Khởi tạo dự án mới (tự động tạo .env + bot.ts)
-npx @theowlops/channelhub init
-
-# 2. "Bắt bệnh" biến môi trường & kiểm tra kết nối các tài khoản
-npx @theowlops/channelhub doctor
-
-# 3. Quét mã QR trên terminal để đăng nhập tài khoản cá nhân Zalo
-npx @theowlops/channelhub login:zalo
-
-# 4. Mở trình duyệt để đăng nhập tài khoản cá nhân Facebook Messenger
-npx @theowlops/channelhub login:messenger
-
-# 5. Kiểm tra phiên bản đang cài đặt
-npx @theowlops/channelhub version
-```
+| Lệnh CLI | Chức năng chính | Hướng dẫn sử dụng |
+| :--- | :--- | :--- |
+| `npx @theowlops/channelhub init` | **Khởi tạo dự án nhanh** | Chạy trong thư mục trống để tự động sinh file `.env`, `bot.ts` và `package.json`. |
+| `npx @theowlops/channelhub doctor` | **Chẩn đoán & Bắt bệnh** | Quét và phát hiện các biến môi trường còn thiếu, phiên bản Node/Bun và tính hợp lệ của token. |
+| `npx @theowlops/channelhub login:zalo` | **Đăng nhập Zalo cá nhân** | Hiển thị mã QR trực tiếp trên terminal. Quét bằng app Zalo để tự động lưu `credentials.json`. |
+| `npx @theowlops/channelhub login:messenger` | **Đăng nhập Messenger cá nhân** | Bật trình duyệt để bạn đăng nhập Facebook, tự động trích xuất cookie vào `messenger.credentials.json`. |
+| `npx @theowlops/channelhub start` | **Khởi động Bot** | Chạy trực tiếp ChannelHub và nạp các adapter đã được cấu hình trong môi trường. |
+| `npx @theowlops/channelhub version` | **Kiểm tra phiên bản** | In ra phiên bản hiện tại của gói `@theowlops/channelhub`. |
+| `npx @theowlops/channelhub help` | **Trợ giúp & Hướng dẫn** | Hiển thị bảng tra cứu các lệnh và tham số dòng lệnh được hỗ trợ. |
 
 ---
 

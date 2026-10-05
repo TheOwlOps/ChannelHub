@@ -1,5 +1,6 @@
 import { type MessageContext } from "./context";
 import { type IdempotencyCacheOptions } from "./dedup";
+import { IdentityStitcher } from "./identity";
 import type { DeadLetterHandler } from "./dlq";
 import type { IChannelAdapter } from "./types";
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
@@ -10,6 +11,8 @@ export interface ChannelHubOptions {
     dedupOptions?: IdempotencyCacheOptions;
     /** Dead Letter Queue callback for unhandled errors in message handlers */
     onDeadLetter?: DeadLetterHandler;
+    /** Custom IdentityStitcher for resolving universal user identities. Auto-created if omitted. */
+    identityStitcher?: IdentityStitcher;
 }
 export declare class ChannelHub {
     private _channels;
@@ -17,11 +20,14 @@ export declare class ChannelHub {
     private _messageHandlers;
     private _dedupCache?;
     private _dlqHandler?;
+    private _identityStitcher;
     private _queue;
     private _waiters;
     private _queueDrainWaiters;
     private _isClosed;
     constructor(options?: ChannelHubOptions);
+    /** Gets the active identity stitcher. */
+    get identityStitcher(): IdentityStitcher;
     register(channel: IChannelAdapter): this;
     getChannel(providerOrKey: string, accountId?: string): IChannelAdapter | undefined;
     listChannels(): string[];

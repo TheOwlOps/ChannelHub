@@ -38,7 +38,28 @@ export interface SendOptions {
   replyToId?: string;
   quote?: boolean;
   metadata?: Record<string, unknown>;
+  /** Abstract UI components (buttons, links) to attach to the message */
+  actions?: ActionNode[];
   signal?: AbortSignal;
+}
+
+/** Abstract representation of interactive UI elements. */
+export type ActionNode = ActionButton | ActionLink;
+
+export interface ActionButton {
+  type: "button";
+  /** Unique payload to return via webhook when clicked */
+  payload: string;
+  /** Visible label on the button */
+  label: string;
+}
+
+export interface ActionLink {
+  type: "link";
+  /** URL to open when clicked */
+  url: string;
+  /** Visible label on the button */
+  label: string;
 }
 
 export interface MediaPayload {

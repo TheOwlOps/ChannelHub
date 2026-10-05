@@ -25,6 +25,7 @@ export declare class TelegramChannelAdapter extends BaseChannel {
     private startPolling;
     private stopPolling;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;
+    private buildInlineKeyboard;
     sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult>;
     addReaction(chatId: string, messageId: string, emoji: string, options?: {
         signal?: AbortSignal;

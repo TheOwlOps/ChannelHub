@@ -1,6 +1,7 @@
 import { ChannelEventBus } from "./bus";
 import { createMessageContext, type MessageContext } from "./context";
 import { IdempotencyCache, type IdempotencyCacheOptions } from "./dedup";
+import { IdentityStitcher } from "./identity";
 import type { DeadLetterHandler, DeadLetterItem } from "./dlq";
 import type { IChannelAdapter, UnifiedMessage } from "./types";
 
@@ -13,6 +14,8 @@ export interface ChannelHubOptions {
   dedupOptions?: IdempotencyCacheOptions;
   /** Dead Letter Queue callback for unhandled errors in message handlers */
   onDeadLetter?: DeadLetterHandler;
+  /** Custom IdentityStitcher for resolving universal user identities. Auto-created if omitted. */
+  identityStitcher?: IdentityStitcher;
 }
 
 export class ChannelHub {
@@ -23,6 +26,7 @@ export class ChannelHub {
   // Primitives
   private _dedupCache?: IdempotencyCache;
   private _dlqHandler?: DeadLetterHandler;
+  private _identityStitcher: IdentityStitcher;
 
   // Async queue for backpressure support
   private _queue: MessageContext[] = [];
@@ -35,6 +39,12 @@ export class ChannelHub {
       this._dedupCache = new IdempotencyCache(options.dedupOptions);
     }
     this._dlqHandler = options.onDeadLetter;
+    this._identityStitcher = options.identityStitcher ?? new IdentityStitcher();
+  }
+
+  /** Gets the active identity stitcher. */
+  get identityStitcher(): IdentityStitcher {
+    return this._identityStitcher;
   }
 
   register(channel: IChannelAdapter): this {
@@ -66,7 +76,14 @@ export class ChannelHub {
       }
 
       this._bus.emitMessage(msg);
-      const ctx = createMessageContext(msg, channel);
+
+      // Resolve stitched universal identity
+      const identity = this._identityStitcher.resolve(
+        channel.name,
+        msg.sender.id,
+      );
+
+      const ctx = createMessageContext(msg, channel, identity);
 
       // 1. Dispatch to AsyncIterable queue (Backpressure)
       if (this._waiters.length > 0) {

@@ -42,6 +42,7 @@ __export(exports_core, {
   BaseChannel: () => BaseChannel,
   ChannelHub: () => ChannelHub,
   IdempotencyCache: () => IdempotencyCache,
+  IdentityStitcher: () => IdentityStitcher,
   SmartStreamer: () => SmartStreamer,
   TokenBucketLimiter: () => TokenBucketLimiter,
   createMessageContext: () => createMessageContext
@@ -219,12 +220,18 @@ class SmartStreamer {
 }
 
 // src/core/context.ts
-function createMessageContext(message, channel) {
+function createMessageContext(message, channel, identity) {
   return {
     message,
     channel,
+    identity,
     reply: (text, options) => channel.sendText(message.chat.id, text, {
       replyToId: message.id,
+      ...options
+    }),
+    replyWithActions: (text, actions, options) => channel.sendText(message.chat.id, text, {
+      replyToId: message.id,
+      actions,
       ...options
     }),
     replyMedia: (media, options) => channel.sendMedia(message.chat.id, media, {
@@ -318,6 +325,70 @@ class IdempotencyCache {
   }
 }
 
+// src/core/identity.ts
+class IdentityStitcher {
+  _lookup = new Map;
+  _identities = new Map;
+  makeKey(channel, channelUserId) {
+    return `${channel}:${channelUserId}`;
+  }
+  resolve(channel, channelUserId) {
+    const key = this.makeKey(channel, channelUserId);
+    const existingPrimaryId = this._lookup.get(key);
+    if (existingPrimaryId && this._identities.has(existingPrimaryId)) {
+      return this._identities.get(existingPrimaryId);
+    }
+    const primaryUserId = `usr_${Math.random().toString(36).substring(2, 10)}`;
+    const identity = {
+      primaryUserId,
+      channels: { [channel]: channelUserId },
+      createdAt: Date.now()
+    };
+    this._lookup.set(key, primaryUserId);
+    this._identities.set(primaryUserId, identity);
+    return identity;
+  }
+  link(primaryUserId, channel, channelUserId) {
+    let identity = this._identities.get(primaryUserId);
+    if (!identity) {
+      identity = {
+        primaryUserId,
+        channels: {},
+        createdAt: Date.now()
+      };
+      this._identities.set(primaryUserId, identity);
+    }
+    const key = this.makeKey(channel, channelUserId);
+    this._lookup.set(key, primaryUserId);
+    identity.channels[channel] = channelUserId;
+    return identity;
+  }
+  merge(targetPrimaryId, sourcePrimaryId) {
+    if (targetPrimaryId === sourcePrimaryId) {
+      return this._identities.get(targetPrimaryId);
+    }
+    const target = this._identities.get(targetPrimaryId);
+    const source = this._identities.get(sourcePrimaryId);
+    if (!target || !source) {
+      throw new Error(`Cannot merge identities: both target and source must exist.`);
+    }
+    for (const [ch, chUserId] of Object.entries(source.channels)) {
+      const key = this.makeKey(ch, chUserId);
+      this._lookup.set(key, targetPrimaryId);
+      target.channels[ch] = chUserId;
+    }
+    target.metadata = { ...source.metadata, ...target.metadata };
+    this._identities.delete(sourcePrimaryId);
+    return target;
+  }
+  get(primaryUserId) {
+    return this._identities.get(primaryUserId);
+  }
+  get count() {
+    return this._identities.size;
+  }
+}
+
 // src/core/hub.ts
 class ChannelHub {
   _channels = new Map;
@@ -325,6 +396,7 @@ class ChannelHub {
   _messageHandlers = [];
   _dedupCache;
   _dlqHandler;
+  _identityStitcher;
   _queue = [];
   _waiters = [];
   _queueDrainWaiters = [];
@@ -334,6 +406,10 @@ class ChannelHub {
       this._dedupCache = new IdempotencyCache(options.dedupOptions);
     }
     this._dlqHandler = options.onDeadLetter;
+    this._identityStitcher = options.identityStitcher ?? new IdentityStitcher;
+  }
+  get identityStitcher() {
+    return this._identityStitcher;
   }
   register(channel) {
     const provider = channel.provider || channel.name;
@@ -357,7 +433,8 @@ class ChannelHub {
         }
       }
       this._bus.emitMessage(msg);
-      const ctx = createMessageContext(msg, channel);
+      const identity = this._identityStitcher.resolve(channel.name, msg.sender.id);
+      const ctx = createMessageContext(msg, channel, identity);
       if (this._waiters.length > 0) {
         const waiter = this._waiters.shift();
         waiter(ctx);

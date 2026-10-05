@@ -182,12 +182,24 @@ class TelegramChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.reply_to_message_id = Number(options.replyToId);
     }
+    if (options?.actions && options.actions.length > 0) {
+      payload.reply_markup = this.buildInlineKeyboard(options.actions);
+    }
     const res = await this.callApi("sendMessage", payload, options?.signal);
     return {
       messageId: String(res.message_id),
       chatId,
       timestamp: res.date * 1000
     };
+  }
+  buildInlineKeyboard(actions) {
+    const keyboard = actions.map((act) => {
+      if (act.type === "link") {
+        return [{ text: act.label, url: act.url }];
+      }
+      return [{ text: act.label, callback_data: act.payload }];
+    });
+    return { inline_keyboard: keyboard };
   }
   async sendMedia(chatId, media, options) {
     const method = media.type === "image" ? "sendPhoto" : media.type === "video" ? "sendVideo" : media.type === "animation" ? "sendAnimation" : media.type === "sticker" ? "sendSticker" : "sendDocument";

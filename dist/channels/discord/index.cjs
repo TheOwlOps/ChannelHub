@@ -3174,6 +3174,19 @@ class DiscordChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message_reference = { message_id: options.replyToId };
     }
+    if (options?.actions && options.actions.length > 0) {
+      payload.components = [
+        {
+          type: 1,
+          components: options.actions.map((act) => {
+            if (act.type === "link") {
+              return { type: 2, style: 5, label: act.label, url: act.url };
+            }
+            return { type: 2, style: 1, label: act.label, custom_id: act.payload };
+          })
+        }
+      ];
+    }
     const res = await this.callApi("POST", `/channels/${chatId}/messages`, payload, options?.signal);
     return {
       messageId: String(res.id),

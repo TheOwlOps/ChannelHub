@@ -6,3 +6,4 @@ export * from "./hub";
 export * from "./dedup";
 export * from "./limiter";
 export * from "./dlq";
+export * from "./identity";

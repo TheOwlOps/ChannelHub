@@ -23,6 +23,10 @@ export declare class SlackChannelAdapter extends BaseChannel {
     constructor(config: SlackAdapterConfig);
     connect(signal?: AbortSignal): Promise<void>;
     disconnect(signal?: AbortSignal): Promise<void>;
+    /**
+     * Verifies Slack request signature (v0=...) with 5-minute replay window check.
+     */
+    verifySignature(rawBody: string | Buffer, signatureHeader?: string, timestampHeader?: string): boolean;
     normalizeEvent(event: any): UnifiedMessage | null;
     private callApi;
     sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult>;

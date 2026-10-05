@@ -2956,6 +2956,9 @@ var init_wrapper = __esm(() => {
   wrapper_default = import_websocket.default;
 });
 
+// src/channels/slack/adapter.ts
+import { createHmac, timingSafeEqual } from "node:crypto";
+
 // src/core/adapter.ts
 import { EventEmitter } from "node:events";
 
@@ -3070,6 +3073,22 @@ class SlackChannelAdapter extends BaseChannel {
       this.ws = undefined;
     }
     this.setConnected(false);
+  }
+  verifySignature(rawBody, signatureHeader, timestampHeader) {
+    if (!signatureHeader || !timestampHeader || !this.config.signingSecret)
+      return false;
+    const ts = parseInt(timestampHeader, 10);
+    const now = Math.floor(Date.now() / 1000);
+    if (isNaN(ts) || Math.abs(now - ts) > 300)
+      return false;
+    const bodyStr = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
+    const sigBaseString = `v0:${timestampHeader}:${bodyStr}`;
+    const expected = "v0=" + createHmac("sha256", this.config.signingSecret).update(sigBaseString, "utf8").digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(signatureHeader);
+    if (a.length !== b.length)
+      return false;
+    return timingSafeEqual(a, b);
   }
   normalizeEvent(event) {
     const msg = event.event || event;

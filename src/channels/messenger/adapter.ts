@@ -1,4 +1,5 @@
 import http from "node:http";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { BaseChannel } from "../../core/adapter";
 import type {
   ChannelType,
@@ -75,6 +76,13 @@ export class MessengerChannelAdapter extends BaseChannel {
             if (body.length > 1024 * 1024) req.destroy();
           });
           req.on("end", async () => {
+            if (this.config.appSecret) {
+              const signature = req.headers["x-hub-signature-256"] as string;
+              if (!this.verifySignature(body, signature)) {
+                res.writeHead(401).end("Invalid Signature");
+                return;
+              }
+            }
             try {
               const data = JSON.parse(body);
               const msgs = this.normalizeEvent(data);
@@ -112,13 +120,32 @@ export class MessengerChannelAdapter extends BaseChannel {
   }
 
   /**
-   * Verify Facebook webhook subscription challenge
+   * Verify Facebook webhook subscription challenge with timing-safe comparison
    */
   public verifyWebhook(mode: string, token: string, challenge: string): string | null {
-    if (mode === "subscribe" && token === this.config.verifyToken) {
-      return challenge;
-    }
-    return null;
+    if (mode !== "subscribe" || !this.config.verifyToken) return null;
+    const a = Buffer.from(token);
+    const b = Buffer.from(this.config.verifyToken);
+    if (a.length !== b.length) return null;
+    return timingSafeEqual(a, b) ? challenge : null;
+  }
+
+  /**
+   * Verifies X-Hub-Signature-256 header (HMAC-SHA256)
+   */
+  public verifySignature(rawBody: string | Buffer, signatureHeader?: string): boolean {
+    if (!signatureHeader || !this.config.appSecret) return false;
+    const parts = signatureHeader.split("=");
+    if (parts.length !== 2 || parts[0] !== "sha256") return false;
+
+    const expected = createHmac("sha256", this.config.appSecret)
+      .update(typeof rawBody === "string" ? Buffer.from(rawBody) : rawBody)
+      .digest("hex");
+
+    const a = Buffer.from(expected);
+    const b = Buffer.from(parts[1]);
+    if (a.length !== b.length) return false;
+    return timingSafeEqual(a, b);
   }
 
   /**

@@ -164,15 +164,21 @@ class TelegramChannelAdapter extends BaseChannel {
   }
   async callApi(method, body, signal) {
     const url = `${this.apiRoot}/bot${this.config.botToken}/${method}`;
-    const res = await fetch(url, {
-      method: "POST",
-      signal,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+    } catch (err) {
+      const safeMsg = err.message ? err.message.replace(this.config.botToken, "[REDACTED]") : String(err);
+      throw new Error(`Telegram network error (${method}): ${safeMsg}`);
+    }
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Telegram API ${method} failed: ${res.status} ${errText}`);
+      throw new Error(`Telegram API ${method} failed: ${res.status} ${errText.replace(this.config.botToken, "[REDACTED]")}`);
     }
     const data = await res.json();
     if (!data.ok) {

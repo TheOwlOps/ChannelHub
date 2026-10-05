@@ -39201,15 +39201,21 @@ class TelegramChannelAdapter extends BaseChannel {
   }
   async callApi(method, body, signal) {
     const url = `${this.apiRoot}/bot${this.config.botToken}/${method}`;
-    const res = await fetch(url, {
-      method: "POST",
-      signal,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+    } catch (err) {
+      const safeMsg = err.message ? err.message.replace(this.config.botToken, "[REDACTED]") : String(err);
+      throw new Error(`Telegram network error (${method}): ${safeMsg}`);
+    }
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Telegram API ${method} failed: ${res.status} ${errText}`);
+      throw new Error(`Telegram API ${method} failed: ${res.status} ${errText.replace(this.config.botToken, "[REDACTED]")}`);
     }
     const data = await res.json();
     if (!data.ok) {
@@ -39537,6 +39543,7 @@ class DiscordChannelAdapter extends BaseChannel {
   }
 }
 // src/channels/slack/adapter.ts
+import { createHmac, timingSafeEqual } from "node:crypto";
 class SlackChannelAdapter extends BaseChannel {
   name = "slack";
   capabilities = {
@@ -39599,6 +39606,22 @@ class SlackChannelAdapter extends BaseChannel {
       this.ws = undefined;
     }
     this.setConnected(false);
+  }
+  verifySignature(rawBody, signatureHeader, timestampHeader) {
+    if (!signatureHeader || !timestampHeader || !this.config.signingSecret)
+      return false;
+    const ts = parseInt(timestampHeader, 10);
+    const now = Math.floor(Date.now() / 1000);
+    if (isNaN(ts) || Math.abs(now - ts) > 300)
+      return false;
+    const bodyStr = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
+    const sigBaseString = `v0:${timestampHeader}:${bodyStr}`;
+    const expected = "v0=" + createHmac("sha256", this.config.signingSecret).update(sigBaseString, "utf8").digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(signatureHeader);
+    if (a.length !== b.length)
+      return false;
+    return timingSafeEqual(a, b);
   }
   normalizeEvent(event) {
     const msg = event.event || event;
@@ -39700,6 +39723,7 @@ class SlackChannelAdapter extends BaseChannel {
 }
 // src/channels/messenger/adapter.ts
 import http from "node:http";
+import { createHmac as createHmac2, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
 class MessengerChannelAdapter extends BaseChannel {
   name = "messenger";
   capabilities = {
@@ -39761,6 +39785,13 @@ class MessengerChannelAdapter extends BaseChannel {
               req.destroy();
           });
           req.on("end", async () => {
+            if (this.config.appSecret) {
+              const signature = req.headers["x-hub-signature-256"];
+              if (!this.verifySignature(body, signature)) {
+                res.writeHead(401).end("Invalid Signature");
+                return;
+              }
+            }
             try {
               const data = JSON.parse(body);
               const msgs = this.normalizeEvent(data);
@@ -39793,10 +39824,26 @@ class MessengerChannelAdapter extends BaseChannel {
     this.setConnected(false);
   }
   verifyWebhook(mode, token, challenge) {
-    if (mode === "subscribe" && token === this.config.verifyToken) {
-      return challenge;
-    }
-    return null;
+    if (mode !== "subscribe" || !this.config.verifyToken)
+      return null;
+    const a = Buffer.from(token);
+    const b = Buffer.from(this.config.verifyToken);
+    if (a.length !== b.length)
+      return null;
+    return timingSafeEqual2(a, b) ? challenge : null;
+  }
+  verifySignature(rawBody, signatureHeader) {
+    if (!signatureHeader || !this.config.appSecret)
+      return false;
+    const parts = signatureHeader.split("=");
+    if (parts.length !== 2 || parts[0] !== "sha256")
+      return false;
+    const expected = createHmac2("sha256", this.config.appSecret).update(typeof rawBody === "string" ? Buffer.from(rawBody) : rawBody).digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(parts[1]);
+    if (a.length !== b.length)
+      return false;
+    return timingSafeEqual2(a, b);
   }
   normalizeEvent(body) {
     const messages = [];
@@ -40087,7 +40134,7 @@ class MessengerChannelAdapter extends BaseChannel {
   }
 }
 // src/channels/tiktok/adapter.ts
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac as createHmac3, timingSafeEqual as timingSafeEqual3 } from "node:crypto";
 class TikTokBusinessAdapter extends BaseChannel {
   name = "tiktok";
   capabilities = {
@@ -40145,12 +40192,12 @@ class TikTokBusinessAdapter extends BaseChannel {
     }
     const bodyStr = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
     const message = `${timestampStr}.${bodyStr}`;
-    const expectedHex = createHmac("sha256", this.config.clientSecret).update(message, "utf8").digest("hex");
+    const expectedHex = createHmac3("sha256", this.config.clientSecret).update(message, "utf8").digest("hex");
     const expectedBuf = Buffer.from(expectedHex, "utf8");
     const receivedBuf = Buffer.from(receivedSig, "utf8");
     if (expectedBuf.length !== receivedBuf.length)
       return false;
-    return timingSafeEqual(expectedBuf, receivedBuf);
+    return timingSafeEqual3(expectedBuf, receivedBuf);
   }
   async handleWebhook(rawBody, signatureHeader) {
     if (!this.verifySignature(rawBody, signatureHeader)) {
@@ -40251,7 +40298,7 @@ class TikTokBusinessAdapter extends BaseChannel {
   }
 }
 // src/channels/twilio/adapter.ts
-import { createHmac as createHmac2, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
+import { createHmac as createHmac4, timingSafeEqual as timingSafeEqual4 } from "node:crypto";
 class TwilioChannelAdapter extends BaseChannel {
   name = "twilio";
   capabilities = {
@@ -40292,12 +40339,12 @@ class TwilioChannelAdapter extends BaseChannel {
     for (const k of sortedKeys) {
       dataStr += k + postData[k];
     }
-    const expectedB64 = createHmac2("sha1", this.config.authToken).update(dataStr, "utf8").digest("base64");
+    const expectedB64 = createHmac4("sha1", this.config.authToken).update(dataStr, "utf8").digest("base64");
     const expectedBuf = Buffer.from(expectedB64, "utf8");
     const receivedBuf = Buffer.from(signatureHeader, "utf8");
     if (expectedBuf.length !== receivedBuf.length)
       return false;
-    return timingSafeEqual2(expectedBuf, receivedBuf);
+    return timingSafeEqual4(expectedBuf, receivedBuf);
   }
   async handleWebhook(postData, signatureHeader, exactUrl) {
     if (exactUrl && signatureHeader) {
@@ -40710,7 +40757,7 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
 }
 // src/bridges/webhook/index.ts
 import { createServer } from "node:http";
-import { timingSafeEqual as timingSafeEqual3 } from "node:crypto";
+import { timingSafeEqual as timingSafeEqual5 } from "node:crypto";
 
 class WebhookBridge {
   hub;
@@ -40769,7 +40816,7 @@ class WebhookBridge {
     const keyBuf = Buffer.from(this.config.apiKey);
     if (tokenBuf.length !== keyBuf.length)
       return false;
-    return timingSafeEqual3(tokenBuf, keyBuf);
+    return timingSafeEqual5(tokenBuf, keyBuf);
   }
   async handle(req, res) {
     const p = this.path(req);

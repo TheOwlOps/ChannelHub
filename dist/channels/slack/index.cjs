@@ -2979,6 +2979,9 @@ __export(exports_slack, {
 });
 module.exports = __toCommonJS(exports_slack);
 
+// src/channels/slack/adapter.ts
+var import_node_crypto = require("node:crypto");
+
 // src/core/adapter.ts
 var import_node_events = require("node:events");
 
@@ -3093,6 +3096,22 @@ class SlackChannelAdapter extends BaseChannel {
       this.ws = undefined;
     }
     this.setConnected(false);
+  }
+  verifySignature(rawBody, signatureHeader, timestampHeader) {
+    if (!signatureHeader || !timestampHeader || !this.config.signingSecret)
+      return false;
+    const ts = parseInt(timestampHeader, 10);
+    const now = Math.floor(Date.now() / 1000);
+    if (isNaN(ts) || Math.abs(now - ts) > 300)
+      return false;
+    const bodyStr = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
+    const sigBaseString = `v0:${timestampHeader}:${bodyStr}`;
+    const expected = "v0=" + import_node_crypto.createHmac("sha256", this.config.signingSecret).update(sigBaseString, "utf8").digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(signatureHeader);
+    if (a.length !== b.length)
+      return false;
+    return import_node_crypto.timingSafeEqual(a, b);
   }
   normalizeEvent(event) {
     const msg = event.event || event;

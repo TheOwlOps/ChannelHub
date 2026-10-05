@@ -71,6 +71,7 @@ module.exports = __toCommonJS(exports_messenger);
 
 // src/channels/messenger/adapter.ts
 var import_node_http = __toESM(require("node:http"), 1);
+var import_node_crypto = require("node:crypto");
 
 // src/core/adapter.ts
 var import_node_events = require("node:events");
@@ -185,6 +186,13 @@ class MessengerChannelAdapter extends BaseChannel {
               req.destroy();
           });
           req.on("end", async () => {
+            if (this.config.appSecret) {
+              const signature = req.headers["x-hub-signature-256"];
+              if (!this.verifySignature(body, signature)) {
+                res.writeHead(401).end("Invalid Signature");
+                return;
+              }
+            }
             try {
               const data = JSON.parse(body);
               const msgs = this.normalizeEvent(data);
@@ -217,10 +225,26 @@ class MessengerChannelAdapter extends BaseChannel {
     this.setConnected(false);
   }
   verifyWebhook(mode, token, challenge) {
-    if (mode === "subscribe" && token === this.config.verifyToken) {
-      return challenge;
-    }
-    return null;
+    if (mode !== "subscribe" || !this.config.verifyToken)
+      return null;
+    const a = Buffer.from(token);
+    const b = Buffer.from(this.config.verifyToken);
+    if (a.length !== b.length)
+      return null;
+    return import_node_crypto.timingSafeEqual(a, b) ? challenge : null;
+  }
+  verifySignature(rawBody, signatureHeader) {
+    if (!signatureHeader || !this.config.appSecret)
+      return false;
+    const parts = signatureHeader.split("=");
+    if (parts.length !== 2 || parts[0] !== "sha256")
+      return false;
+    const expected = import_node_crypto.createHmac("sha256", this.config.appSecret).update(typeof rawBody === "string" ? Buffer.from(rawBody) : rawBody).digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(parts[1]);
+    if (a.length !== b.length)
+      return false;
+    return import_node_crypto.timingSafeEqual(a, b);
   }
   normalizeEvent(body) {
     const messages = [];

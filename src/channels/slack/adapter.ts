@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { BaseChannel } from "../../core/adapter";
 import type {
   ChannelType,
@@ -79,6 +80,34 @@ export class SlackChannelAdapter extends BaseChannel {
       this.ws = undefined;
     }
     this.setConnected(false);
+  }
+
+  /**
+   * Verifies Slack request signature (v0=...) with 5-minute replay window check.
+   */
+  public verifySignature(
+    rawBody: string | Buffer,
+    signatureHeader?: string,
+    timestampHeader?: string,
+  ): boolean {
+    if (!signatureHeader || !timestampHeader || !this.config.signingSecret) return false;
+
+    // Check for replay attacks (older than 5 minutes)
+    const ts = parseInt(timestampHeader, 10);
+    const now = Math.floor(Date.now() / 1000);
+    if (isNaN(ts) || Math.abs(now - ts) > 300) return false;
+
+    const bodyStr = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
+    const sigBaseString = `v0:${timestampHeader}:${bodyStr}`;
+
+    const expected = "v0=" + createHmac("sha256", this.config.signingSecret)
+      .update(sigBaseString, "utf8")
+      .digest("hex");
+
+    const a = Buffer.from(expected);
+    const b = Buffer.from(signatureHeader);
+    if (a.length !== b.length) return false;
+    return timingSafeEqual(a, b);
   }
 
   public normalizeEvent(event: any): UnifiedMessage | null {

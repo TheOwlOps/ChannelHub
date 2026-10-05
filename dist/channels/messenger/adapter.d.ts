@@ -19,9 +19,13 @@ export declare class MessengerChannelAdapter extends BaseChannel {
     connect(signal?: AbortSignal): Promise<void>;
     disconnect(signal?: AbortSignal): Promise<void>;
     /**
-     * Verify Facebook webhook subscription challenge
+     * Verify Facebook webhook subscription challenge with timing-safe comparison
      */
     verifyWebhook(mode: string, token: string, challenge: string): string | null;
+    /**
+     * Verifies X-Hub-Signature-256 header (HMAC-SHA256)
+     */
+    verifySignature(rawBody: string | Buffer, signatureHeader?: string): boolean;
     /**
      * Convert Facebook Messenger webhook event/entry to UnifiedMessage
      */

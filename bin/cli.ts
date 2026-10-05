@@ -51,6 +51,8 @@ async function runDoctor() {
     "SLACK_BOT_TOKEN",
     "MESSENGER_PAGE_TOKEN",
     "ZALO_OA_ACCESS_TOKEN",
+    "TIKTOK_ACCESS_TOKEN",
+    "TIKTOK_CLIENT_SECRET",
   ];
   console.log("\nConfigured Environment Variables:");
   for (const v of envVars) {
@@ -138,7 +140,14 @@ async function main() {
     case "version":
     case "-v":
     case "--version": {
-      console.log("@theowlops/channelhub v1.4.1");
+      const pkgPath = path.resolve(__dirname, "../../package.json");
+      let ver = "1.5.0";
+      if (fs.existsSync(pkgPath)) {
+        try {
+          ver = JSON.parse(fs.readFileSync(pkgPath, "utf8")).version || ver;
+        } catch {}
+      }
+      console.log(`@theowlops/channelhub v${ver}`);
       break;
     }
 

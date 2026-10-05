@@ -491,6 +491,7 @@ var init_hub = __esm(() => {
 // bin/cli.ts
 import fs from "node:fs";
 import path from "node:path";
+var __dirname = "D:\\channelhub\\bin";
 var args = process.argv.slice(2);
 var command = args[0] || "help";
 function printHelp() {
@@ -533,7 +534,9 @@ async function runDoctor() {
     "DISCORD_BOT_TOKEN",
     "SLACK_BOT_TOKEN",
     "MESSENGER_PAGE_TOKEN",
-    "ZALO_OA_ACCESS_TOKEN"
+    "ZALO_OA_ACCESS_TOKEN",
+    "TIKTOK_ACCESS_TOKEN",
+    "TIKTOK_CLIENT_SECRET"
   ];
   console.log(`
 Configured Environment Variables:`);
@@ -613,7 +616,14 @@ async function main() {
     case "version":
     case "-v":
     case "--version": {
-      console.log("@theowlops/channelhub v1.4.1");
+      const pkgPath = path.resolve(__dirname, "../../package.json");
+      let ver = "1.5.0";
+      if (fs.existsSync(pkgPath)) {
+        try {
+          ver = JSON.parse(fs.readFileSync(pkgPath, "utf8")).version || ver;
+        } catch {}
+      }
+      console.log(`@theowlops/channelhub v${ver}`);
       break;
     }
     case "help":

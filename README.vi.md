@@ -25,7 +25,7 @@
 - [Channel Capability Matrix](#-channel-capability-matrix)
 - [Cơ Chế Hoạt Động](#-how-it-works-deep-dive)
 - [Tính Năng Chính](#-key-features)
-- [Bắt Đầu Nhanh (Dành Cho Người Mới)](#-bắt-đầu-nhanh-dành-cho-người-mới)
+- [Bắt Đầu Nhanh (Zero-Config)](#-bắt-đầu-nhanh-zero-config)
 - [Các Kênh Hỗ Trợ](#-channel-adapters)
   - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
   - [💬 Meta Messenger](#-meta-messenger-adapter)
@@ -36,7 +36,7 @@
   - [📱 Twilio (WhatsApp & SMS)](#-twilio-adapter)
 - [Rich Media, Stickers & GIFs](#-rich-media-stickers--gifs)
 - [SmartStreamer for LLMs](#-smartstreamer-for-llms)
-- [Đăng Nhập Tự Động](#-automated-personal-login)
+- [Bộ Công Cụ CLI (CLI Toolkit)](#-cli-toolkit)
 - [Model Context Protocol (MCP) Server](#-model-context-protocol-mcp-server)
 - [Bảo Mật Hệ Thống](#-security-hardening)
 - [License](#-license)
@@ -154,51 +154,28 @@ When an event occurs, ChannelHub constructs a `MessageContext` wrapper around th
 
 ---
 
-## 🚀 Bắt Đầu Nhanh (Dành Cho Người Mới)
+## 🚀 Bắt Đầu Nhanh (Zero-Config)
 
-Chỉ cần 3 bước đơn giản. Bạn không cần kiến thức phức tạp để bắt đầu!
+Chỉ cần 3 bước đơn giản. ChannelHub sẽ tự động tạo sẵn toàn bộ source code cho bạn!
 
-### Bước 1: Tạo dự án & Cài đặt
-Mở terminal (CMD/PowerShell) và chạy các lệnh sau để tạo thư mục và cài đặt ChannelHub:
+### Bước 1: Khởi tạo dự án
+Mở terminal, tạo một thư mục trống và chạy lệnh init:
 ```bash
 mkdir my-bot && cd my-bot
-bun init -y
-bun add @theowlops/channelhub
+npx @theowlops/channelhub init
 ```
-*(Nếu bạn dùng Node.js thay vì Bun, hãy chạy `npm init -y` và `npm install @theowlops/channelhub`)*
+*(Lệnh này sẽ tự động tạo ra file `.env`, `bot.ts` và `package.json` cho bạn).*
 
-### Bước 2: Viết Bot (bot.ts)
-Tạo file `bot.ts` và dán đoạn code sau. Ở đây dùng Telegram làm ví dụ vì nó dễ setup nhất (Lấy Token bằng cách chat với [@BotFather](https://t.me/BotFather) trên Telegram).
-
-```typescript
-import { ChannelHub } from "@theowlops/channelhub/core";
-import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
-
-const hub = new ChannelHub();
-
-// 1. Kết nối với Telegram
-hub.register(new TelegramChannelAdapter({
-  botToken: "DÁN_TOKEN_TELEGRAM_CỦA_BẠN_VÀO_ĐÂY"
-}));
-
-// 2. Lắng nghe tin nhắn gửi đến
-hub.on("message", async (ctx) => {
-  console.log(`💬 Tin nhắn từ ${ctx.message.sender.name}: ${ctx.message.content.text}`);
-  
-  // Trả lời lại người dùng
-  await ctx.reply(`Chào bạn! Bạn vừa nói: ${ctx.message.content.text}`);
-});
-
-// 3. Khởi động bot
-await hub.startAll();
-console.log("🚀 Bot đã chạy!");
-```
+### Bước 2: Điền Token của bạn
+Mở file `.env` vừa được tạo ra và dán các token của bạn vào (ví dụ: lấy token từ [@BotFather](https://t.me/BotFather) cho Telegram).
 
 ### Bước 3: Chạy Bot & Tự bắt bệnh
-Chạy bot của bạn bằng lệnh sau:
+Cài đặt thư viện và chạy bot:
 ```bash
-bun bot.ts
+bun install  # hoặc npm install
+bun bot.ts   # hoặc npx tsx bot.ts
 ```
+
 **Gặp lỗi? Bot không chạy?** ChannelHub có sẵn công cụ "bắt bệnh" (doctor) tự động kiểm tra xem token hay môi trường của bạn có sai ở đâu không:
 ```bash
 npx @theowlops/channelhub doctor
@@ -342,21 +319,26 @@ await streamer.end();
 
 ---
 
-## 🔑 Đăng Nhập Tự Động
+## 🛠️ CLI Toolkit
 
-ChannelHub provides built-in browser automation via Playwright Chromium to extract sessions for personal accounts without requiring developer app verification.
+ChannelHub được tích hợp sẵn một bộ công cụ CLI (`channelhub`) để giúp bạn khởi tạo dự án, đăng nhập tài khoản tự động và kiểm tra lỗi:
 
-### Messenger Personal Login
 ```bash
-bun run login:messenger
-```
-Launches an automated Chromium browser. Once you log into Facebook, it securely intercepts your `c_user` session cookies and writes `messenger.credentials.json`.
+# 1. Khởi tạo dự án mới (tự động tạo .env + bot.ts)
+npx @theowlops/channelhub init
 
-### Zalo Personal Login
-```bash
-bun run zalohub --login
+# 2. "Bắt bệnh" biến môi trường & kiểm tra kết nối các tài khoản
+npx @theowlops/channelhub doctor
+
+# 3. Quét mã QR trên terminal để đăng nhập tài khoản cá nhân Zalo
+npx @theowlops/channelhub login:zalo
+
+# 4. Mở trình duyệt để đăng nhập tài khoản cá nhân Facebook Messenger
+npx @theowlops/channelhub login:messenger
+
+# 5. Kiểm tra phiên bản đang cài đặt
+npx @theowlops/channelhub version
 ```
-Renders a terminal QR code for instant scan-and-connect authentication.
 
 ---
 

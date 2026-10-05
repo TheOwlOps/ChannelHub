@@ -25,7 +25,7 @@
 - [Channel Capability Matrix](#-channel-capability-matrix)
 - [How It Works Deep Dive](#-how-it-works-deep-dive)
 - [Key Features](#-key-features)
-- [Quick Start (For Beginners)](#-quick-start-for-beginners)
+- [Quick Start (Zero-Config)](#-quick-start-zero-config)
 - [Channel Adapters](#-channel-adapters)
   - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
   - [💬 Meta Messenger](#-meta-messenger-adapter)
@@ -36,7 +36,7 @@
   - [📱 Twilio (WhatsApp & SMS)](#-twilio-adapter)
 - [Rich Media, Stickers & GIFs](#-rich-media-stickers--gifs)
 - [SmartStreamer for LLMs](#-smartstreamer-for-llms)
-- [Automated Personal Login](#-automated-personal-login)
+- [CLI Toolkit](#-cli-toolkit)
 - [Model Context Protocol (MCP) Server](#-model-context-protocol-mcp-server)
 - [Security Hardening](#-security-hardening)
 - [License](#-license)
@@ -154,51 +154,28 @@ When an event occurs, ChannelHub constructs a `MessageContext` wrapper around th
 
 ---
 
-## 🚀 Quick Start (For Beginners)
+## 🚀 Quick Start (Zero-Config)
 
-Get started in 3 simple steps. No prior experience required!
+Get started in 3 simple steps. ChannelHub handles all the boilerplate for you!
 
-### Step 1: Create a Project & Install
-Open your terminal and run these commands to create an empty project and install ChannelHub:
+### Step 1: Scaffold your project
+Run the interactive init command in an empty folder:
 ```bash
 mkdir my-bot && cd my-bot
-bun init -y
-bun add @theowlops/channelhub
+npx @theowlops/channelhub init
 ```
-*(If you use Node.js, run `npm init -y` and `npm install @theowlops/channelhub`)*
+*(This automatically creates `.env`, `bot.ts`, and `package.json` for you).*
 
-### Step 2: Write your Bot (bot.ts)
-Create a file named `bot.ts` and paste this code. We'll use Telegram as an example because it's the easiest to test. (Get a bot token by messaging [@BotFather](https://t.me/BotFather) on Telegram).
+### Step 2: Add your tokens
+Open the newly created `.env` file and paste your bot tokens (e.g., from [@BotFather](https://t.me/BotFather) for Telegram).
 
-```typescript
-import { ChannelHub } from "@theowlops/channelhub/core";
-import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
-
-const hub = new ChannelHub();
-
-// 1. Connect to Telegram
-hub.register(new TelegramChannelAdapter({
-  botToken: "YOUR_TELEGRAM_BOT_TOKEN_HERE" // Replace this!
-}));
-
-// 2. Listen for incoming messages across all channels
-hub.on("message", async (ctx) => {
-  console.log(`💬 New message from ${ctx.message.sender.name}: ${ctx.message.content.text}`);
-  
-  // Reply to the user
-  await ctx.reply(`Hello! You said: ${ctx.message.content.text}`);
-});
-
-// 3. Start the bot
-await hub.startAll();
-console.log("🚀 Bot is running!");
-```
-
-### Step 3: Run & Diagnose
-Run your bot using Bun (or `tsx` if using Node.js):
+### Step 3: Run your Bot & Diagnose
+Install dependencies and start the bot:
 ```bash
-bun bot.ts
+bun install  # or npm install
+bun bot.ts   # or npx tsx bot.ts
 ```
+
 **Not working?** ChannelHub comes with a built-in doctor to check your environment and tokens. Run:
 ```bash
 npx @theowlops/channelhub doctor
@@ -342,21 +319,26 @@ await streamer.end();
 
 ---
 
-## 🔑 Automated Personal Login
+## 🛠️ CLI Toolkit
 
-ChannelHub provides built-in browser automation via Playwright Chromium to extract sessions for personal accounts without requiring developer app verification.
+ChannelHub includes a built-in CLI toolkit (`channelhub`) to streamline project creation, diagnosis, and authentication:
 
-### Messenger Personal Login
 ```bash
-bun run login:messenger
-```
-Launches an automated Chromium browser. Once you log into Facebook, it securely intercepts your `c_user` session cookies and writes `messenger.credentials.json`.
+# 1. Scaffold a fresh bot project (.env + bot.ts)
+npx @theowlops/channelhub init
 
-### Zalo Personal Login
-```bash
-bun run zalohub --login
+# 2. Diagnose environment variables & credentials
+npx @theowlops/channelhub doctor
+
+# 3. Authenticate personal Zalo account via terminal QR code
+npx @theowlops/channelhub login:zalo
+
+# 4. Authenticate personal Messenger account via browser
+npx @theowlops/channelhub login:messenger
+
+# 5. Check installed version
+npx @theowlops/channelhub version
 ```
-Renders a terminal QR code for instant scan-and-connect authentication.
 
 ---
 

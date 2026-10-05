@@ -102,14 +102,16 @@
     <g transform="translate(0, -50)" filter="url(#logoGlow)">
       <!-- Outer Hexagon/Rounded Squircle -->
       <rect width="68" height="68" rx="20" fill="url(#zaloGrad)" />
-      <!-- Stylized Z Symbol with Chat Dots -->
-      <path d="M22 22 H46 L27 46 H46" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-      <circle cx="44" cy="22" r="3.5" fill="#38EF7D" />
+      <!-- Stylized Universal Hub / Network Symbol -->
+      <circle cx="34" cy="34" r="16" stroke="#FFFFFF" stroke-width="3.5" fill="none" />
+      <line x1="18" y1="34" x2="50" y2="34" stroke="#FFFFFF" stroke-width="2.5" />
+      <ellipse cx="34" cy="34" rx="8" ry="16" stroke="#FFFFFF" stroke-width="2.5" fill="none" />
+      <circle cx="48" cy="20" r="4.5" fill="#38EF7D" />
     </g>
 
     <!-- Title Typography -->
     <text x="88" y="-1" class="font-sans" font-size="54" font-weight="800" letter-spacing="-1.5">
-      <tspan fill="url(#textGrad)">Zalo</tspan><tspan fill="url(#hubGrad)">Hub</tspan>
+      <tspan fill="url(#textGrad)">Channel</tspan><tspan fill="url(#hubGrad)">Hub</tspan>
     </text>
 
     <!-- Subtitle / Tagline -->

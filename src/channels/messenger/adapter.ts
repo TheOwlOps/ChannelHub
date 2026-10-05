@@ -8,7 +8,11 @@ import type {
   SentMessageResult,
   UnifiedMessage,
 } from "../../core/types";
-import type { MessengerAdapterConfig } from "./types";
+import type {
+  MessengerAdapterConfig,
+  MessengerPermission,
+  MessengerSendOptions,
+} from "./types";
 
 export class MessengerChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "messenger";
@@ -45,6 +49,27 @@ export class MessengerChannelAdapter extends BaseChannel {
     if (!res.ok) {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
+    }
+
+    // Auto check permissions
+    if (this.config.checkPermissionsOnConnect !== false) {
+      try {
+        const perms = await this.getPermissions(signal);
+        const hasMessaging = perms.some(
+          (p) => (p.permission === "pages_messaging" || p.permission === "messages") && p.status === "granted"
+        );
+        if (!hasMessaging) {
+          console.warn("[MessengerChannelAdapter] ⚠️ Warning: Token is missing 'pages_messaging' permission. Messages may fail to send/receive.");
+        }
+      } catch (err: any) {
+        // Non-fatal warning if permissions endpoint is unreachable
+        console.warn(`[MessengerChannelAdapter] Unable to inspect token permissions: ${err.message}`);
+      }
+    }
+
+    // Auto subscribe page to webhooks
+    if (this.config.autoSubscribePage) {
+      await this.subscribePage(this.config.subscribedFields, signal);
     }
 
     if (this.config.port) {
@@ -238,7 +263,7 @@ export class MessengerChannelAdapter extends BaseChannel {
     return messages;
   }
 
-  async sendText(chatId: string, text: string, options?: SendOptions): Promise<SentMessageResult> {
+  async sendText(chatId: string, text: string, options?: SendOptions & MessengerSendOptions): Promise<SentMessageResult> {
     const payload: any = {
       recipient: { id: chatId },
       message: { text },
@@ -246,6 +271,13 @@ export class MessengerChannelAdapter extends BaseChannel {
 
     if (options?.replyToId) {
       payload.message.reply_to = { mid: options.replyToId };
+    }
+    if (options?.messagingType) {
+      payload.messaging_type = options.messagingType;
+    }
+    if (options?.tag) {
+      payload.messaging_type = "MESSAGE_TAG"; // Meta requires messaging_type=MESSAGE_TAG when tag is used
+      payload.tag = options.tag;
     }
 
     const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
@@ -256,7 +288,7 @@ export class MessengerChannelAdapter extends BaseChannel {
     };
   }
 
-  async sendMedia(chatId: string, media: MediaPayload, options?: SendOptions): Promise<SentMessageResult> {
+  async sendMedia(chatId: string, media: MediaPayload, options?: SendOptions & MessengerSendOptions): Promise<SentMessageResult> {
     // 1. Handle native sticker_id for Messenger
     if (media.type === "sticker" && typeof media.source === "string" && /^\d+$/.test(media.source)) {
       const payload: any = {
@@ -269,6 +301,12 @@ export class MessengerChannelAdapter extends BaseChannel {
         },
       };
       if (options?.replyToId) payload.message.reply_to = { mid: options.replyToId };
+      if (options?.messagingType) payload.messaging_type = options.messagingType;
+      if (options?.tag) {
+        payload.messaging_type = "MESSAGE_TAG";
+        payload.tag = options.tag;
+      }
+      
       const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
       return {
         messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
@@ -445,6 +483,42 @@ export class MessengerChannelAdapter extends BaseChannel {
     await this.callApi("POST", "/me/messages", { recipient: { id: chatId }, 
       sender_action: "typing_on",
      }, options?.signal);
+  }
+
+  // --- Graph API Permission & Setup Helpers ---
+
+  /**
+   * Fetch granted scopes for the current Page Access Token
+   */
+  async getPermissions(signal?: AbortSignal): Promise<MessengerPermission[]> {
+    const res = await this.callApi("GET", "/me/permissions", undefined, signal);
+    return res.data || [];
+  }
+
+  /**
+   * Subscribe the Page to the app's Webhook
+   */
+  async subscribePage(fields: string[] = ["messages", "messaging_postbacks"], signal?: AbortSignal): Promise<boolean> {
+    try {
+      const res = await this.callApi("POST", "/me/subscribed_apps", { subscribed_fields: fields }, signal);
+      return Boolean(res.success);
+    } catch (err: any) {
+      console.error("[MessengerChannelAdapter] Failed to subscribe page:", err.message);
+      return false;
+    }
+  }
+
+  /**
+   * Sets Messenger Profile (Get Started button, greeting text)
+   */
+  async setMessengerProfile(payload: Record<string, unknown>, signal?: AbortSignal): Promise<boolean> {
+    try {
+      const res = await this.callApi("POST", "/me/messenger_profile", payload, signal);
+      return res.result === "success";
+    } catch (err: any) {
+      console.error("[MessengerChannelAdapter] Failed to set messenger profile:", err.message);
+      return false;
+    }
   }
 
   private async callApi(method: string, path: string, body?: any, signal?: AbortSignal): Promise<any> {

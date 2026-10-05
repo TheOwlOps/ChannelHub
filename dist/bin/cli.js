@@ -616,6 +616,29 @@ Configured Environment Variables:`);
       console.log(`  - ${v}: Not set`);
     }
   }
+  if (process.env.MESSENGER_PAGE_TOKEN) {
+    console.log(`
+\uD83D\uDD0D Running Deep Diagnostic: Messenger Graph API...`);
+    try {
+      const res = await fetch("https://graph.facebook.com/v19.0/me/permissions", {
+        headers: { Authorization: `Bearer ${process.env.MESSENGER_PAGE_TOKEN}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const perms = (data.data || []).filter((p) => p.status === "granted").map((p) => p.permission);
+        if (perms.includes("pages_messaging")) {
+          console.log("  ✅ Token is VALID and has 'pages_messaging' permission.");
+        } else {
+          console.log("  ❌ Token is VALID but MISSING 'pages_messaging' permission! The bot cannot send/receive messages.");
+        }
+      } else {
+        const errData = await res.text();
+        console.log(`  ❌ Token is INVALID or EXPIRED. Meta responded: ${errData}`);
+      }
+    } catch (err) {
+      console.log(`  ⚠️ Failed to connect to Meta API: ${err.message}`);
+    }
+  }
 }
 async function runInit() {
   console.log(`\uD83E\uDD89 ChannelHub Starter Setup

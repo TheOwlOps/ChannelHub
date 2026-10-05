@@ -63,6 +63,30 @@ async function runDoctor() {
       console.log(`  - ${v}: Not set`);
     }
   }
+
+  // Deep Diagnostic: Meta Messenger Graph API
+  if (process.env.MESSENGER_PAGE_TOKEN) {
+    console.log("\n🔍 Running Deep Diagnostic: Messenger Graph API...");
+    try {
+      const res = await fetch("https://graph.facebook.com/v19.0/me/permissions", {
+        headers: { Authorization: `Bearer ${process.env.MESSENGER_PAGE_TOKEN}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const perms = (data.data || []).filter((p: any) => p.status === "granted").map((p: any) => p.permission);
+        if (perms.includes("pages_messaging")) {
+          console.log("  ✅ Token is VALID and has 'pages_messaging' permission.");
+        } else {
+          console.log("  ❌ Token is VALID but MISSING 'pages_messaging' permission! The bot cannot send/receive messages.");
+        }
+      } else {
+        const errData = await res.text();
+        console.log(`  ❌ Token is INVALID or EXPIRED. Meta responded: ${errData}`);
+      }
+    } catch (err: any) {
+      console.log(`  ⚠️ Failed to connect to Meta API: ${err.message}`);
+    }
+  }
 }
 
 async function runInit() {

@@ -138,4 +138,69 @@ describe("MessengerChannelAdapter", () => {
     await expect(adapter.sendMedia("test", { type: "video", source: largeBuffer }))
       .rejects.toThrow(/100MB/);
   });
+
+  describe("Messenger Permissions & Tags", () => {
+    test("fetches permissions list via Graph API", async () => {
+      const mockAdapter = new MessengerChannelAdapter({
+        pageAccessToken: "test_token",
+      });
+
+      // Mock internal callApi
+      (mockAdapter as any).callApi = async (method: string, path: string) => {
+        if (path === "/me/permissions") {
+          return {
+            data: [
+              { permission: "pages_messaging", status: "granted" },
+              { permission: "pages_manage_metadata", status: "granted" },
+            ],
+          };
+        }
+        return {};
+      };
+
+      const perms = await mockAdapter.getPermissions();
+      expect(perms.length).toBe(2);
+      expect(perms[0].permission).toBe("pages_messaging");
+      expect(perms[0].status).toBe("granted");
+    });
+
+    test("subscribes page to webhook events with fields", async () => {
+      const mockAdapter = new MessengerChannelAdapter({
+        pageAccessToken: "test_token",
+      });
+
+      let requestedBody: any;
+      (mockAdapter as any).callApi = async (method: string, path: string, body: any) => {
+        if (path === "/me/subscribed_apps") {
+          requestedBody = body;
+          return { success: true };
+        }
+        return {};
+      };
+
+      const res = await mockAdapter.subscribePage(["messages", "messaging_postbacks"]);
+      expect(res).toBe(true);
+      expect(requestedBody.subscribed_fields).toEqual(["messages", "messaging_postbacks"]);
+    });
+
+    test("sends message with HUMAN_AGENT tag outside 24h window", async () => {
+      const mockAdapter = new MessengerChannelAdapter({
+        pageAccessToken: "test_token",
+      });
+
+      let sentPayload: any;
+      (mockAdapter as any).callApi = async (method: string, path: string, body: any) => {
+        sentPayload = body;
+        return { message_id: "mid_tagged_123" };
+      };
+
+      await mockAdapter.sendText("user_123", "Hello from human support", {
+        tag: "HUMAN_AGENT",
+      });
+
+      expect(sentPayload.messaging_type).toBe("MESSAGE_TAG");
+      expect(sentPayload.tag).toBe("HUMAN_AGENT");
+      expect(sentPayload.recipient.id).toBe("user_123");
+    });
+  });
 });

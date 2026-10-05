@@ -39954,6 +39954,20 @@ class MessengerChannelAdapter extends BaseChannel {
       const err = await res.text();
       throw new Error(`Failed to authenticate with Messenger Graph API: ${err}`);
     }
+    if (this.config.checkPermissionsOnConnect !== false) {
+      try {
+        const perms = await this.getPermissions(signal);
+        const hasMessaging = perms.some((p) => (p.permission === "pages_messaging" || p.permission === "messages") && p.status === "granted");
+        if (!hasMessaging) {
+          console.warn("[MessengerChannelAdapter] ⚠️ Warning: Token is missing 'pages_messaging' permission. Messages may fail to send/receive.");
+        }
+      } catch (err) {
+        console.warn(`[MessengerChannelAdapter] Unable to inspect token permissions: ${err.message}`);
+      }
+    }
+    if (this.config.autoSubscribePage) {
+      await this.subscribePage(this.config.subscribedFields, signal);
+    }
     if (this.config.port) {
       const path = this.config.webhookPath || "/webhook";
       this.server = import_node_http.default.createServer(async (req, res) => {
@@ -40130,6 +40144,13 @@ class MessengerChannelAdapter extends BaseChannel {
     if (options?.replyToId) {
       payload.message.reply_to = { mid: options.replyToId };
     }
+    if (options?.messagingType) {
+      payload.messaging_type = options.messagingType;
+    }
+    if (options?.tag) {
+      payload.messaging_type = "MESSAGE_TAG";
+      payload.tag = options.tag;
+    }
     const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
     return {
       messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
@@ -40150,6 +40171,12 @@ class MessengerChannelAdapter extends BaseChannel {
       };
       if (options?.replyToId)
         payload.message.reply_to = { mid: options.replyToId };
+      if (options?.messagingType)
+        payload.messaging_type = options.messagingType;
+      if (options?.tag) {
+        payload.messaging_type = "MESSAGE_TAG";
+        payload.tag = options.tag;
+      }
       const res = await this.callApi("POST", "/me/messages", payload, options?.signal);
       return {
         messageId: res.message_id || res.recipient_id || `msg_${Date.now()}`,
@@ -40311,6 +40338,28 @@ class MessengerChannelAdapter extends BaseChannel {
       recipient: { id: chatId },
       sender_action: "typing_on"
     }, options?.signal);
+  }
+  async getPermissions(signal) {
+    const res = await this.callApi("GET", "/me/permissions", undefined, signal);
+    return res.data || [];
+  }
+  async subscribePage(fields = ["messages", "messaging_postbacks"], signal) {
+    try {
+      const res = await this.callApi("POST", "/me/subscribed_apps", { subscribed_fields: fields }, signal);
+      return Boolean(res.success);
+    } catch (err) {
+      console.error("[MessengerChannelAdapter] Failed to subscribe page:", err.message);
+      return false;
+    }
+  }
+  async setMessengerProfile(payload, signal) {
+    try {
+      const res = await this.callApi("POST", "/me/messenger_profile", payload, signal);
+      return res.result === "success";
+    } catch (err) {
+      console.error("[MessengerChannelAdapter] Failed to set messenger profile:", err.message);
+      return false;
+    }
   }
   async callApi(method, path, body, signal) {
     const url = `${this.apiBase}${path}`;

@@ -502,6 +502,7 @@ Usage:
   channelhub <command> [options]
 
 Commands:
+  init                Quickly scaffold a new ChannelHub bot project (.env, bot.ts)
   doctor              Diagnose environment, configuration and channel credentials
   start               Start ChannelHub agent/bot services
   login:zalo          Scan QR code to authenticate personal Zalo account
@@ -548,8 +549,105 @@ Configured Environment Variables:`);
     }
   }
 }
+async function runInit() {
+  console.log(`\uD83E\uDD89 ChannelHub Starter Setup
+`);
+  const cwd = process.cwd();
+  const envPath = path.resolve(cwd, ".env");
+  const envExamplePath = path.resolve(cwd, ".env.example");
+  const envTemplate = `# ChannelHub Environment Configuration
+
+# Telegram Bot Token (from @BotFather)
+TELEGRAM_BOT_TOKEN=
+
+# Discord Bot Token (from Discord Developer Portal)
+DISCORD_BOT_TOKEN=
+
+# Slack Bot Token & Signing Secret
+SLACK_BOT_TOKEN=
+SLACK_SIGNING_SECRET=
+
+# Meta Messenger Page Token & App Secret
+MESSENGER_PAGE_TOKEN=
+MESSENGER_VERIFY_TOKEN=
+MESSENGER_APP_SECRET=
+
+# TikTok for Business Credentials
+TIKTOK_APP_ID=
+TIKTOK_CLIENT_SECRET=
+TIKTOK_ACCESS_TOKEN=
+
+# Twilio Omnichannel (WhatsApp / SMS)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+`;
+  if (!fs.existsSync(envPath)) {
+    fs.writeFileSync(envPath, envTemplate, "utf8");
+    console.log("✅ Created: .env");
+  }
+  if (!fs.existsSync(envExamplePath)) {
+    fs.writeFileSync(envExamplePath, envTemplate, "utf8");
+    console.log("✅ Created: .env.example");
+  }
+  const botPath = path.resolve(cwd, "bot.ts");
+  const botTemplate = `import { ChannelHub } from "@theowlops/channelhub/core";
+import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
+import { DiscordChannelAdapter } from "@theowlops/channelhub/discord";
+
+const hub = new ChannelHub({ enableDeduplication: true });
+
+// Auto-register channels if tokens are set
+if (process.env.TELEGRAM_BOT_TOKEN) {
+  hub.register(new TelegramChannelAdapter({ botToken: process.env.TELEGRAM_BOT_TOKEN }));
+}
+if (process.env.DISCORD_BOT_TOKEN) {
+  hub.register(new DiscordChannelAdapter({ botToken: process.env.DISCORD_BOT_TOKEN }));
+}
+
+hub.on("message", async (ctx) => {
+  console.log(\`[\\u{1F4AC} \${ctx.channel}] \${ctx.message.sender.name}: \${ctx.message.content.text}\`);
+
+  if (ctx.message.content.text.startsWith("/ping")) {
+    await ctx.reply("pong! \uD83C\uDFD3");
+  }
+});
+
+await hub.startAll();
+console.log("\uD83D\uDE80 ChannelHub is live and listening for messages!");
+`;
+  if (!fs.existsSync(botPath)) {
+    fs.writeFileSync(botPath, botTemplate, "utf8");
+    console.log("✅ Created: bot.ts");
+  }
+  const pkgPath = path.resolve(cwd, "package.json");
+  if (!fs.existsSync(pkgPath)) {
+    const pkgTemplate = JSON.stringify({
+      name: "channelhub-bot",
+      type: "module",
+      scripts: {
+        start: "bun bot.ts",
+        doctor: "channelhub doctor"
+      },
+      dependencies: {
+        "@theowlops/channelhub": "^1.5.0",
+        dotenv: "^16.4.5"
+      }
+    }, null, 2);
+    fs.writeFileSync(pkgPath, pkgTemplate, "utf8");
+    console.log("✅ Created: package.json (run 'bun install' or 'npm install')");
+  }
+  console.log(`
+\uD83C\uDF89 Setup complete!
+1. Open '.env' and paste your channel tokens.
+2. Run your bot:
+   bun bot.ts (or npx tsx bot.ts)
+`);
+}
 async function main() {
   switch (command) {
+    case "init":
+      await runInit();
+      break;
     case "doctor":
       await runDoctor();
       break;

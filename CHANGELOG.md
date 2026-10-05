@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - 2026-10-05
+
+### Added
+- **Production Scale Primitives**: 
+  - Added `IdempotencyCache` for sliding-window deduplication (prevents webhook replay loops).
+  - Added `TokenBucketLimiter` for egress API rate limiting and burst management.
+  - Added `DeadLetterQueue` (DLQ) support for unhandled exceptions in `onMessage` handlers.
+- **Identity Stitching**: Built-in cross-channel identity resolution (`ctx.identity.primaryUserId`) to seamlessly track user contexts across multiple vendors.
+- **Interactive UI Schema**: Added `ActionNode` schema (`ctx.replyWithActions`). Unified cross-platform button interfaces translated into Telegram `InlineKeyboardMarkup` and Discord `ActionRow`.
+- **TikTok Business Adapter**: Implemented full `TikTokBusinessAdapter` covering webhook `message.receive` verification (HMAC-SHA256, timing-safe), Anti-Replay bounds, and outbound text/media endpoints.
+- **Performance Benchmarks**: New benchmarking script verifying >3M ops/sec deduplication and >640k msg/sec ingress pipeline processing.
+
+### Changed
+- Refactored `createMessageContext` to attach resolved `UniversalIdentity` to context.
+
+---
+
 ## [1.4.8] - 2026-10-01
 
 ### Fixed

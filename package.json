@@ -47,6 +47,11 @@
       "types": "./dist/channels/messenger/index.d.ts",
       "require": "./dist/channels/messenger/index.cjs"
     },
+    "./tiktok": {
+      "import": "./dist/channels/tiktok/index.js",
+      "types": "./dist/channels/tiktok/index.d.ts",
+      "require": "./dist/channels/tiktok/index.cjs"
+    },
     "./mcp": {
       "import": "./dist/bridges/mcp/index.js",
       "types": "./dist/bridges/mcp/index.d.ts",

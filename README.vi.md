@@ -3,144 +3,342 @@
 </div>
 
 <div align="center">
-  <img src="https://img.shields.io/npm/v/@theowlops/channelhub.svg?style=for-the-badge&logo=npm" alt="NPM Version" />
-  <img src="https://img.shields.io/github/license/TheOwlOps/ChannelHub?style=for-the-badge" alt="License" />
-  <img src="https://img.shields.io/npm/dw/@theowlops/channelhub?style=for-the-badge" alt="Downloads" />
-</div>
 
-# ChannelHub 🦉 (Vietnamese)
+# 🌐 ChannelHub
+
+*The Universal Multi-Channel Messaging SDK for AI Agents, Autonomous Systems & Microservices*
+
+[![npm version](https://img.shields.io/npm/v/@theowlops/channelhub?color=blue&style=flat-square)](https://www.npmjs.com/package/@theowlops/channelhub)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+[![Bun](https://img.shields.io/badge/Runtime-Bun%20%7C%20Node%20%7C%20Deno-black?style=flat-square)](https://bun.sh)
+[![AI Native](https://img.shields.io/badge/AI%20Agent-Universal%20MCP%20%7C%20REST-purple?style=flat-square)](#-model-context-protocol-mcp-server)
 
 [English](./README.md) | [Tiếng Việt](./README.vi.md) | [中文](./README.zh.md)
 
-**ChannelHub** là một SDK nhắn tin đa kênh (Multi-channel Messaging SDK) siêu nhẹ, được thiết kế đặc biệt cho các AI Agent, Bot độc lập và tự động hóa doanh nghiệp. Nó trừu tượng hoá API của các nền tảng chat phổ biến (Messenger, Zalo, Telegram, Discord, Slack) thành một chuẩn chung duy nhất: **UnifiedMessage**.
-
-## 🌟 Tính năng cốt lõi
-
-- 🎯 **Giao diện chuẩn hoá (Unified API)**: Code một lần, chạy mọi nền tảng. Xử lý tin nhắn đến và đi qua một interface `UnifiedMessage` chung.
-- 🤖 **Thiết kế riêng cho AI & LLM (AI-Native)**:
-  - Tích hợp sẵn **SmartStreamer**: tự động gom token từ LLM (streaming) theo độ dài câu trước khi gửi, hoặc edit message realtime (Discord, Telegram).
-  - Tích hợp sẵn **MCP Server**: 10 công cụ (tools) JSON-RPC qua stdio giúp mọi LLM (Claude, Hermes, ChatGPT) kết nối ngay vào chat mà không cần code thêm.
-- 📦 **Xử lý đa phương tiện (Rich Media & Attachments)**: 
-  - Gửi ảnh, âm thanh, tệp tài liệu.
-  - Tự động fallback và nén dung lượng lớn (Hỗ trợ upload video Meta Messenger lên đến 100MB qua Resumable API).
-  - Hỗ trợ gửi **Sticker bản địa** (Native Sticker) và **GIF động** mượt mà trên Telegram, Zalo và Messenger.
-  - Phân tích và trích xuất mọi tệp tin dị thường từ webhook (Location, Share link, Reel).
-- 🔐 **Bảo mật tối đa (Hardened Security)**: Kiểm tra Path Traversal, tự động loại bỏ null bytes, và giới hạn payload DoS cho webhook.
-
-## 🛠 Cách hoạt động (Architecture)
-
-ChannelHub hoạt động dựa trên mô hình **Hub & Adapter**:
-
-1. **Adapter Layer (`IChannelAdapter`)**: Mỗi kênh (Messenger, Zalo, Telegram...) là một Adapter. Nó có nhiệm vụ dịch API đặc thù của kênh đó (Graph API, zca-js, grammy, discord.js) thành format `UnifiedMessage`.
-2. **ChannelHub (Core Engine)**: Trái tim của hệ thống. Nó quản lý nhiều Adapter cùng lúc. Khi có tin nhắn đến từ bất kỳ Adapter nào, nó phát (emit) sự kiện `message` kèm theo `MessageContext`.
-3. **MessageContext**: Cung cấp các hàm `reply()`, `sendMedia()`, `react()` giúp nhà phát triển phản hồi tin nhắn mà không cần quan tâm tin nhắn đó đến từ Zalo hay Telegram.
-4. **Bridges (Cầu nối)**: Các module giúp ChannelHub kết nối ra ngoài:
-   - **WebhookBridge**: Lắng nghe Webhook (HTTP POST) từ Meta, Telegram, Slack. (Bao gồm bảo mật Bearer token và ngăn chặn DoS).
-   - **MCP Bridge**: Khởi chạy một tiến trình con (stdio) cung cấp Tools cho các mô hình ngôn ngữ (LLM).
+</div>
 
 ---
 
-## 📊 Ma trận tính năng từng kênh (Capability Matrix)
+## 📖 Mục Lục
 
-| Kênh (Channel) | Gửi tin (Outbound) | Nhận tin (Inbound) | File & Đa phương tiện | Thả cảm xúc | Typing & Streaming | Trạng thái hiện tại |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Zalo** | ✅ Full API (Cá nhân/OA) | ✅ Native Listener / Polling | ✅ Ảnh, Video, File, Sticker, GIF | ✅ Native Zalo | ✅ Typing & Sentence Stream | **Toàn diện (Inbound/Outbound)** |
-| **Telegram** | ✅ Full Bot API | ✅ Polling & Webhook Handler | ✅ Ảnh, Video, File, Sticker, GIF | ✅ Native Emoji | ✅ Realtime In-place Edit Stream | **Toàn diện (Inbound/Outbound)** |
-| **Messenger** | ✅ Graph API v19.0 (100MB) | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Ảnh, Video, File, Sticker, GIF | ⏳ Dự kiến v2.1 | ⚡ Typing Indicator | **Ổn định Outbound + Normalizer** |
-| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Embeds & Attachments | ✅ Native PUT Reaction | ⚡ Realtime In-place Edit Stream | **Ổn định Outbound + Normalizer** |
-| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer (`normalizeEvent`) | ✅ File & Media | ⏳ Dự kiến v2.1 | ⚡ Typing Indicator | **Ổn định Outbound + Normalizer** |
+- [Overview & Architecture](#-overview--architecture)
+- [Channel Capability Matrix](#-channel-capability-matrix)
+- [Cơ Chế Hoạt Động](#-how-it-works-deep-dive)
+- [Tính Năng Chính](#-key-features)
+- [Installation](#-installation)
+- [Bắt Đầu Nhanh](#-quick-start)
+- [Các Kênh Hỗ Trợ](#-channel-adapters)
+  - [TikTok for Business & Shop](#-tiktok-for-business-adapter)
+  - [Meta Messenger](#-meta-messenger-adapter)
+  - [Zalo (Personal & OA)](#-zalo-adapter)
+  - [Telegram](#-telegram-adapter)
+  - [Discord](#-discord-adapter)
+  - [Slack](#-slack-adapter)
+- [Rich Media, Stickers & GIFs](#-rich-media-stickers--gifs)
+- [SmartStreamer for LLMs](#-smartstreamer-for-llms)
+- [Đăng Nhập Tự Động](#-automated-personal-login)
+- [Model Context Protocol (MCP) Server](#-model-context-protocol-mcp-server)
+- [Bảo Mật Hệ Thống](#-security-hardening)
+- [License](#-license)
 
 ---
 
-## 🚀 Cài đặt
+## 🏛 Overview & Architecture
 
-```bash
-# Sử dụng Bun (Khuyến nghị)
-bun add @theowlops/channelhub
+**ChannelHub** (`@theowlops/channelhub`) is an ultra-lightweight, high-performance messaging abstraction library designed for AI Agents, autonomous systems, and modern backend services. Instead of integrating multiple bespoke SDKs (`grammy`, `discord.js`, `zca-js`, Facebook/TikTok APIs), ChannelHub unifies them all behind a single, ergonomic, and strongly-typed contract with zero unnecessary runtime dependencies.
 
-# Sử dụng NPM
-npm install @theowlops/channelhub
+```
+                              ┌──────────────────────────────────────────┐
+                              │            Your Application /            │
+                              │           AI Agent Framework             │
+                              └────────────────────┬─────────────────────┘
+                                                   │
+                                                   ▼
+                              ┌──────────────────────────────────────────┐
+                              │                ChannelHub                │
+                              │          (Core Event Engine)             │
+                              └─────────┬──────────┬──────────┬──────────┘
+                                        │          │          │
+                     ┌──────────────────┴──┐       │       ┌──┴──────────────────┐
+                     ▼                     ▼       ▼       ▼                     ▼
+             ┌───────────────┐     ┌───────────────┐   ┌───────────────┐ ┌───────────────┐
+             │ TikTok        │     │ Messenger     │   │ Zalo          │ │ Telegram /    │
+             │ Business      │     │ Adapter       │   │ Adapter       │ │ Discord/Slack │
+             └───────┬───────┘     └───────┬───────┘   └───────┬───────┘ └───────┬───────┘
+                     │                     │                   │                 │
+                     ▼                     ▼                   ▼                 ▼
+             TikTok Business       Meta Graph API      zca-js Web API      Bot Gateways &
+             Messaging API         Resumable Upload    & OA v3 API         REST Webhooks
 ```
 
-## 💻 Hướng dẫn sử dụng
+---
 
-### 1. Khởi tạo Hub và nhận tin nhắn
+## 📊 Channel Capability Matrix
+
+| Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Auth Mode | Current Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Zalo** | ✅ Full API | ✅ Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | Session Cookie / OA Token | **Stable Inbound/Outbound** |
+| **Telegram** | ✅ Bot API | ✅ Polling & Webhook | ✅ Photo, Video, File, Sticker, GIF | ✅ Full Native | ✅ In-place Edit Stream | Bot Token | **Stable Inbound/Outbound** |
+| **TikTok** | ✅ Business API v1.3 | ✅ HMAC Webhook (`message.receive`) | ✅ Images (via `media_id`) | ❌ N/A | ❌ N/A | OAuth2 Access-Token | **Stable Webhook Inbound/Outbound** |
+| **Messenger**| ✅ Graph API v19.0 | ⚡ Webhook Normalizer | ✅ Image, Video (100MB), File, Sticker | ⏳ Planned | ⚡ Typing Indicator | Page Token & Secret | **Stable Outbound + Normalizer** |
+| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer | ✅ Embeds & Attachments | ✅ Full Native | ⚡ In-place Edit Stream | Bot Token | **Stable Outbound + Normalizer** |
+| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer | ✅ Files & Blocks | ⏳ Planned | ⚡ Typing Indicator | Bot Token | **Stable Outbound + Normalizer** |
+
+---
+
+## 🔬 Cơ Chế Hoạt Động
+
+### 1. Unified Message Protocol (`UnifiedMessage`)
+Every incoming payload—regardless of originating protocol (TikTok Webhook, Telegram Polling, Discord WebSocket, Meta Graph API)—is normalized into an immutable, cross-platform standard representation:
+
+```typescript
+export interface UnifiedMessage {
+  id: string;               // Normalized message identifier
+  channel: ChannelType;     // "tiktok" | "zalo" | "telegram" | "discord" | "slack" | "messenger"
+  sender: {
+    id: string;
+    name?: string;
+    username?: string;
+    avatarUrl?: string;
+    isBot?: boolean;
+  };
+  chat: {
+    id: string;
+    type: "dm" | "group" | "channel";
+    title?: string;
+  };
+  content: {
+    text: string;
+    attachments?: MediaAttachment[];
+    replyToId?: string;
+  };
+  raw: unknown;             // Original vendor payload preserved for platform-specific access
+  timestamp: number;
+}
+```
+
+### 2. The MessageContext Lifecycle
+When an event occurs, ChannelHub constructs a `MessageContext` wrapper around the event. This decouples message reply logic from the underlying protocol:
+- Calling `await ctx.reply("Hello")` automatically resolves the originating channel, routes through the target adapter, manages rate-limiting queues, and emits typing indicators.
+- Calling `await ctx.sendMedia({ type: "image", source: "./image.png" })` validates local paths against directory traversal, detects MIME headers, and handles chunked file uploading seamlessly.
+
+---
+
+## 🌟 Tính Năng Chính
+
+- **Unified Multi-Platform API**: Write your agent's communication logic once; execute identically across TikTok, Zalo, Telegram, Discord, Messenger, and Slack.
+- **AI-Native MCP Daemon**: Built-in Model Context Protocol (MCP) stdio server exposing **10 high-level tools** for Claude Desktop, Hermes Agent, and Codex.
+- **SmartStreamer Token Batcher**: Converts LLM token streams into real-time in-place message edits or sentence-boundary chunks with typing indicators without hitting rate limits.
+- **Backpressure & Bounded Ingress Queue**: Built-in 2,000 items buffer with async generator drain waiters to avoid memory leaks during message spikes.
+- **Large Video Resumable Upload**: Native support for video assets up to **100MB** on Meta Messenger using the Graph API Attachment Upload protocol.
+- **Native Sticker & Animated GIF Engine**: Send stickers and GIFs natively across all supported platforms.
+- **Zero Heavy Core**: Core engine depends exclusively on Node.js / Bun standard library (`node:events`, native `fetch`, `node:crypto`).
+
+---
+
+## 📦 Installation
+
+```bash
+# Recommended (Bun)
+bun add @theowlops/channelhub
+
+# NPM
+npm install @theowlops/channelhub
+
+# PNPM
+pnpm add @theowlops/channelhub
+```
+
+---
+
+## ⚡ Bắt Đầu Nhanh
 
 ```typescript
 import { ChannelHub } from "@theowlops/channelhub/core";
-import { MessengerChannelAdapter } from "@theowlops/channelhub/channels/messenger";
-import { TelegramChannelAdapter } from "@theowlops/channelhub/channels/telegram";
+import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
+import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
 
 const hub = new ChannelHub();
 
-// Cấu hình Telegram
+// 1. Register Telegram
 hub.register(new TelegramChannelAdapter({
-  botToken: "YOUR_TELEGRAM_BOT_TOKEN"
+  botToken: process.env.TELEGRAM_BOT_TOKEN!
 }));
 
-// Cấu hình Messenger
-hub.register(new MessengerChannelAdapter({
-  pageId: "YOUR_PAGE_ID",
-  pageAccessToken: "YOUR_PAGE_TOKEN",
-  verifyToken: "YOUR_WEBHOOK_VERIFY_TOKEN"
-}));
+// 2. Register TikTok for Business
+const tiktok = new TikTokBusinessAdapter({
+  appId: process.env.TIKTOK_APP_ID!,
+  clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
+  accessToken: process.env.TIKTOK_ACCESS_TOKEN!
+});
+hub.register(tiktok);
 
-// Bắt sự kiện tin nhắn chung
+// 3. Central message dispatcher
 hub.on("message", async (ctx) => {
   console.log(`[${ctx.channel}] ${ctx.message.sender.name}: ${ctx.message.content.text}`);
-  
-  // Trả lời lại người dùng
-  await ctx.reply(`Xin chào! Bạn vừa nói: ${ctx.message.content.text}`);
+
+  if (ctx.message.content.text.startsWith("/echo ")) {
+    const replyText = ctx.message.content.text.replace("/echo ", "");
+    await ctx.reply(replyText);
+  }
 });
 
 await hub.startAll();
 ```
 
-### 2. Gửi đa phương tiện (Ảnh, Video, Sticker, GIF)
+---
+
+## 🔌 Các Kênh Hỗ Trợ
+
+### 🎵 TikTok for Business & Shop
+Supports TikTok Business Messaging API v1.3. Handles inbound webhooks with timing-safe HMAC-SHA256 signature verification and replay prevention.
 
 ```typescript
-// Gửi ảnh qua link
-await ctx.sendMedia({
-  type: "image",
-  source: "https://example.com/image.png",
-  caption: "Ảnh đẹp"
+import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
+
+const tiktok = new TikTokBusinessAdapter({
+  appId: "YOUR_TIKTOK_APP_ID",
+  clientSecret: "YOUR_TIKTOK_CLIENT_SECRET",
+  accessToken: "YOUR_TIKTOK_ACCESS_TOKEN",
+  maxWebhookAgeSeconds: 300 // Replay attack protection (default 300s)
 });
 
-// Gửi file từ ổ cứng cục bộ
-await ctx.sendMedia({
-  type: "video",
-  source: "/path/to/video.mp4" // Tự động chặn path traversal
+// In your HTTP server (Fastify, Express, Bun.serve)
+app.post("/webhook/tiktok", async (req, res) => {
+  const verified = await tiktok.handleWebhook(req.rawBody, req.headers["tiktok-signature"]);
+  if (!verified) return res.status(401).send("Unauthorized");
+  return res.status(200).send("OK");
 });
-
-// Gửi Sticker hoặc GIF
-await ctx.sendSticker("12345678"); // Sticker ID Zalo/Messenger hoặc Telegram file_id
-await ctx.sendGif("https://media.giphy.com/media/funny-cat.gif", "Meo meo");
 ```
 
-### 3. Tự động hóa đăng nhập Zalo & Messenger cá nhân
+### 🔵 Meta Messenger Adapter
+Supports Meta Graph API v19.0 with webhook challenge verification, personal Playwright session recovery, and large file support.
 
-Khác với bot truyền thống (thường cần Fanpage/Bot Token), ChannelHub hỗ trợ các tài khoản cá nhân thông qua Playwright Chromium (tự động mở trình duyệt ẩn lấy Cookie).
+```typescript
+import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
 
-**Lấy Cookie Messenger (Playwright):**
+const messenger = new MessengerChannelAdapter({
+  pageAccessToken: "EAA...",
+  verifyToken: "custom_webhook_secret",
+  pageId: "10029384912"
+});
+```
+
+### 💬 Zalo Adapter
+Supports reverse-engineered Web API (`zca-js`) personal sessions and Official Account (OA) v3 OpenAPI. Includes anti-ban jitter algorithms and automatic quote object generation.
+
+```typescript
+import { ZaloChannelAdapter } from "@theowlops/channelhub/zalo";
+
+const zalo = new ZaloChannelAdapter({
+  credentialsPath: "./credentials.json", // Auto-captured session
+  minDelayMs: 300,
+  maxDelayMs: 800
+});
+```
+
+### ✈️ Telegram Adapter
+Lightweight bot integration via Telegram Bot API with native webhook and polling dispatchers.
+
+```typescript
+import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
+
+const telegram = new TelegramChannelAdapter({
+  botToken: "123456:ABC-DEF..."
+});
+```
+
+### 🎮 Discord & 💼 Slack Adapters
+```typescript
+import { DiscordChannelAdapter } from "@theowlops/channelhub/discord";
+import { SlackChannelAdapter } from "@theowlops/channelhub/slack";
+
+const discord = new DiscordChannelAdapter({ botToken: "DISCORD_TOKEN" });
+const slack = new SlackChannelAdapter({ botToken: "xoxb-...", signingSecret: "..." });
+```
+
+---
+
+## 🎨 Rich Media, Stickers & GIFs
+
+ChannelHub normalizes rich media transmission across all platforms:
+
+```typescript
+// 1. Send Images / Files via URL or Local Path
+await ctx.sendMedia({
+  type: "image",
+  source: "https://example.com/art.png",
+  caption: "Concept Art"
+});
+
+// 2. Send Large Videos (Meta Resumable Upload up to 100MB)
+await ctx.sendMedia({
+  type: "video",
+  source: "/var/media/demo_video.mp4"
+});
+
+// 3. Send Native Stickers
+// Supports Telegram file_id, Zalo sticker ID, or Messenger sticker ID
+await ctx.sendSticker("369239263222822");
+
+// 4. Send Animated GIFs
+await ctx.sendGif("https://media.giphy.com/media/cat.gif", "Cat Dancing");
+```
+
+---
+
+## 🌊 SmartStreamer for LLMs
+
+LLMs generate responses token by token. Direct API calls per token hit rate limits. `SmartStreamer` batches tokens adaptively:
+- **Editable Channels** (Discord, Telegram): Streams first chunk, then edits the message at throttled intervals (`updateIntervalMs: 800`).
+- **Non-Editable Channels** (Zalo, Messenger, TikTok): Accumulates tokens and flushes them chunk by chunk on sentence boundaries (`.`, `!`, `?`, `\n`) while emitting typing signals.
+
+```typescript
+import { SmartStreamer } from "@theowlops/channelhub/core";
+
+const streamer = new SmartStreamer(ctx, {
+  chunkSentences: true,
+  updateIntervalMs: 800
+});
+
+// Pipe tokens directly from OpenAI / Anthropic / Local LLM
+for await (const chunk of llmTokenStream) {
+  await streamer.write(chunk);
+}
+await streamer.end();
+```
+
+---
+
+## 🔑 Đăng Nhập Tự Động
+
+ChannelHub provides built-in browser automation via Playwright Chromium to extract sessions for personal accounts without requiring developer app verification.
+
+### Messenger Personal Login
 ```bash
 bun run login:messenger
 ```
-Script sẽ sinh ra file `messenger.credentials.json` để hệ thống tự load.
+Launches an automated Chromium browser. Once you log into Facebook, it securely intercepts your `c_user` session cookies and writes `messenger.credentials.json`.
 
-**Lấy Cookie Zalo:**
-Tương tự ZCA, chạy lệnh quét QR:
+### Zalo Personal Login
 ```bash
 bun run zalohub --login
 ```
+Renders a terminal QR code for instant scan-and-connect authentication.
 
-### 4. Tích hợp AI (MCP Server)
+---
 
-Khởi chạy MCP Daemon độc lập (cung cấp 10 Tools):
+## 🤖 Model Context Protocol (MCP) Server
 
+ChannelHub ships with a standalone stdio JSON-RPC MCP server. Connect your AI agent directly to all your chat channels with zero boilerplate.
+
+### Starting the Daemon
 ```bash
 channelhub-mcp
 ```
-Hoặc cấu hình vào `claude_desktop_config.json`:
+
+### Claude Desktop / Hermes Agent Config
+Add to `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
@@ -151,18 +349,33 @@ Hoặc cấu hình vào `claude_desktop_config.json`:
   }
 }
 ```
-**10 Công cụ AI (MCP Tools) được cung cấp:**
-- `channelhub_list_channels`: Liệt kê các kênh
-- `channelhub_get_status`: Xem trạng thái kết nối
-- `channelhub_send_message`: Gửi Text
-- `channelhub_send_media`: Gửi File / Ảnh
-- `channelhub_send_sticker`: Gửi Sticker bản địa
-- `channelhub_send_gif`: Gửi ảnh động
-- `channelhub_send_typing`: Bật trạng thái "Đang gõ..."
-- `channelhub_edit_message`: Sửa tin nhắn
-- `channelhub_add_reaction`: Thả tim/emoji
-- `channelhub_broadcast`: Bắn tin nhắn hàng loạt
 
-## 📚 Giấy phép
+### 10 Standard MCP Tools
+1. `channelhub_list_channels`: List active registered channels.
+2. `channelhub_get_status`: Health-check channel connectivity.
+3. `channelhub_send_message`: Send or reply to messages with text.
+4. `channelhub_send_media`: Send photos, audio, documents, and videos.
+5. `channelhub_send_sticker`: Send native stickers to any channel.
+6. `channelhub_send_gif`: Send animated GIFs.
+7. `channelhub_send_typing`: Simulate human-like typing status.
+8. `channelhub_edit_message`: Edit previously dispatched messages.
+9. `channelhub_add_reaction`: React to messages with emojis.
+10. `channelhub_broadcast`: Broadcast a message across multiple channels in a single call.
 
-Được phát hành dưới giấy phép MIT. Phát triển bởi TheOwlOps Team.
+---
+
+## 🛡 Bảo Mật Hệ Thống
+
+- **HMAC-SHA256 & Timing-Safe Verification**: All inbound webhooks (TikTok, Messenger, Slack) verify cryptographic signatures via `crypto.timingSafeEqual` to thwart timing attacks.
+- **Anti-Replay Attack Protection**: Webhook deliveries outside the allowed time window (default 300s) are immediately discarded.
+- **Zero Token Leak in URLs**: Authentication tokens are strictly transmitted in HTTP headers (`Access-Token`, `Authorization: Bearer`), never in URL query strings.
+- **Localhost Loopback Default**: Webhook bridge defaults to `127.0.0.1` rather than `0.0.0.0`.
+- **DoS Payload Limits**: Enforces a strict 1MB JSON body size ceiling before socket termination.
+- **Path Traversal Guard**: All file uploads run through `path.resolve` and verify `fs.statSync().isFile()`, preventing arbitrary file disclosure.
+- **Credential Hygiene**: Auto-masks sensitive tokens in logs (`[REDACTED]`) and enforces `.gitignore` rules against credential files.
+
+---
+
+## 📄 License
+
+ChannelHub is licensed under the [MIT License](LICENSE). Maintained by [TheOwlOps Team](https://github.com/TheOwlOps).

@@ -22,11 +22,13 @@
 ## 📖 Table of Contents
 
 - [Overview & Architecture](#-overview--architecture)
+- [Channel Capability Matrix](#-channel-capability-matrix)
 - [How It Works Deep Dive](#-how-it-works-deep-dive)
 - [Key Features](#-key-features)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
 - [Channel Adapters](#-channel-adapters)
+  - [TikTok for Business & Shop](#-tiktok-for-business-adapter)
   - [Meta Messenger](#-meta-messenger-adapter)
   - [Zalo (Personal & OA)](#-zalo-adapter)
   - [Telegram](#-telegram-adapter)
@@ -43,7 +45,7 @@
 
 ## 🏛 Overview & Architecture
 
-**ChannelHub** is an ultra-lightweight, zero-heavy-dependency messaging abstraction library designed for developers and AI systems. Instead of juggling distinct libraries (`grammy`, `discord.js`, `zca-js`, `facebook-chat-api`), ChannelHub bridges them all behind a single, ergonomic contract.
+**ChannelHub** (`@theowlops/channelhub`) is an ultra-lightweight, high-performance messaging abstraction library designed for AI Agents, autonomous systems, and modern backend services. Instead of integrating multiple bespoke SDKs (`grammy`, `discord.js`, `zca-js`, Facebook/TikTok APIs), ChannelHub unifies them all behind a single, ergonomic, and strongly-typed contract with zero unnecessary runtime dependencies.
 
 ```
                               ┌──────────────────────────────────────────┐
@@ -60,38 +62,39 @@
                      ┌──────────────────┴──┐       │       ┌──┴──────────────────┐
                      ▼                     ▼       ▼       ▼                     ▼
              ┌───────────────┐     ┌───────────────┐   ┌───────────────┐ ┌───────────────┐
-             │ Messenger     │     │ Zalo          │   │ Telegram      │ │ Discord/Slack │
-             │ Adapter       │     │ Adapter       │   │ Adapter       │ │ Adapters      │
+             │ TikTok        │     │ Messenger     │   │ Zalo          │ │ Telegram /    │
+             │ Business      │     │ Adapter       │   │ Adapter       │ │ Discord/Slack │
              └───────┬───────┘     └───────┬───────┘   └───────┬───────┘ └───────┬───────┘
                      │                     │                   │                 │
                      ▼                     ▼                   ▼                 ▼
-             Meta Graph API /       zca-js Web API        Telegram Bot      Discord/Slack
-             Resumable Upload        & Anti-Ban Q           HTTP API           Gateways
+             TikTok Business       Meta Graph API      zca-js Web API      Bot Gateways &
+             Messaging API         Resumable Upload    & OA v3 API         REST Webhooks
 ```
 
 ---
 
 ## 📊 Channel Capability Matrix
 
-| Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Current Status |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Zalo** | ✅ Full API (Personal/OA) | ✅ Native Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | **Stable Inbound/Outbound** |
-| **Telegram** | ✅ Full Bot API | ✅ Polling & Webhook Handler | ✅ Photo, Video, File, Sticker, GIF | ✅ Native Reactions | ✅ Realtime In-place Edit Stream | **Stable Inbound/Outbound** |
-| **Messenger** | ✅ Graph API v19.0 (100MB) | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Image, Video, File, Sticker, GIF | ⏳ Planned v2.1 | ⚡ Typing Indicator | **Stable Outbound + Normalizer** |
-| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer (`normalizeEvent`) | ✅ Embeds & Attachments | ✅ Native Reactions | ⚡ Realtime In-place Edit Stream | **Stable Outbound + Normalizer** |
-| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer (`normalizeEvent`) | ✅ File & Media | ⏳ Planned v2.1 | ⚡ Typing Indicator | **Stable Outbound + Normalizer** |
+| Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Auth Mode | Current Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Zalo** | ✅ Full API | ✅ Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | Session Cookie / OA Token | **Stable Inbound/Outbound** |
+| **Telegram** | ✅ Bot API | ✅ Polling & Webhook | ✅ Photo, Video, File, Sticker, GIF | ✅ Full Native | ✅ In-place Edit Stream | Bot Token | **Stable Inbound/Outbound** |
+| **TikTok** | ✅ Business API v1.3 | ✅ HMAC Webhook (`message.receive`) | ✅ Images (via `media_id`) | ❌ N/A | ❌ N/A | OAuth2 Access-Token | **Stable Webhook Inbound/Outbound** |
+| **Messenger**| ✅ Graph API v19.0 | ⚡ Webhook Normalizer | ✅ Image, Video (100MB), File, Sticker | ⏳ Planned | ⚡ Typing Indicator | Page Token & Secret | **Stable Outbound + Normalizer** |
+| **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer | ✅ Embeds & Attachments | ✅ Full Native | ⚡ In-place Edit Stream | Bot Token | **Stable Outbound + Normalizer** |
+| **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer | ✅ Files & Blocks | ⏳ Planned | ⚡ Typing Indicator | Bot Token | **Stable Outbound + Normalizer** |
 
 ---
 
 ## 🔬 How It Works Deep Dive
 
 ### 1. Unified Message Protocol (`UnifiedMessage`)
-Every incoming payload—regardless of whether it arrived from a Telegram Webhook, Discord WebSocket, or Meta Graph API payload—is normalized into an immutable, cross-platform standard representation:
+Every incoming payload—regardless of originating protocol (TikTok Webhook, Telegram Polling, Discord WebSocket, Meta Graph API)—is normalized into an immutable, cross-platform standard representation:
 
 ```typescript
 export interface UnifiedMessage {
   id: string;               // Normalized message identifier
-  channel: ChannelType;     // "messenger" | "zalo" | "telegram" | "discord" | "slack"
+  channel: ChannelType;     // "tiktok" | "zalo" | "telegram" | "discord" | "slack" | "messenger"
   sender: {
     id: string;
     name?: string;
@@ -116,19 +119,20 @@ export interface UnifiedMessage {
 
 ### 2. The MessageContext Lifecycle
 When an event occurs, ChannelHub constructs a `MessageContext` wrapper around the event. This decouples message reply logic from the underlying protocol:
-- Calling `await ctx.reply("Hello")` resolves the originating channel, routes through the target adapter, manages rate-limiting queues, and emits typing indicators automatically.
+- Calling `await ctx.reply("Hello")` automatically resolves the originating channel, routes through the target adapter, manages rate-limiting queues, and emits typing indicators.
 - Calling `await ctx.sendMedia({ type: "image", source: "./image.png" })` validates local paths against directory traversal, detects MIME headers, and handles chunked file uploading seamlessly.
 
 ---
 
 ## 🌟 Key Features
 
-- **Unified Multi-Platform API**: Write business logic once; execute identically on Messenger, Zalo, Telegram, Discord, and Slack.
-- **AI-Native MCP Daemon**: Built-in stdio Model Context Protocol (MCP) server exposing **10 high-level tools** for Claude Desktop, Hermes Agent, and Codex.
-- **SmartStreamer Token Batcher**: Seamlessly converts LLM token streams into real-time in-place message edits or sentence-boundary chunks with typing indicators.
+- **Unified Multi-Platform API**: Write your agent's communication logic once; execute identically across TikTok, Zalo, Telegram, Discord, Messenger, and Slack.
+- **AI-Native MCP Daemon**: Built-in Model Context Protocol (MCP) stdio server exposing **10 high-level tools** for Claude Desktop, Hermes Agent, and Codex.
+- **SmartStreamer Token Batcher**: Converts LLM token streams into real-time in-place message edits or sentence-boundary chunks with typing indicators without hitting rate limits.
+- **Backpressure & Bounded Ingress Queue**: Built-in 2,000 items buffer with async generator drain waiters to avoid memory leaks during message spikes.
 - **Large Video Resumable Upload**: Native support for video assets up to **100MB** on Meta Messenger using the Graph API Attachment Upload protocol.
 - **Native Sticker & Animated GIF Engine**: Send stickers and GIFs natively across all supported platforms.
-- **Zero Heavy Core**: Core engine depends exclusively on Node.js / Bun standard library (`node:events`, native `fetch`).
+- **Zero Heavy Core**: Core engine depends exclusively on Node.js / Bun standard library (`node:events`, native `fetch`, `node:crypto`).
 
 ---
 
@@ -151,8 +155,8 @@ pnpm add @theowlops/channelhub
 
 ```typescript
 import { ChannelHub } from "@theowlops/channelhub/core";
-import { MessengerChannelAdapter } from "@theowlops/channelhub/channels/messenger";
-import { TelegramChannelAdapter } from "@theowlops/channelhub/channels/telegram";
+import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
+import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
 
 const hub = new ChannelHub();
 
@@ -161,12 +165,13 @@ hub.register(new TelegramChannelAdapter({
   botToken: process.env.TELEGRAM_BOT_TOKEN!
 }));
 
-// 2. Register Facebook Messenger
-hub.register(new MessengerChannelAdapter({
-  pageId: process.env.MESSENGER_PAGE_ID!,
-  pageAccessToken: process.env.MESSENGER_PAGE_TOKEN!,
-  verifyToken: "my_webhook_secret"
-}));
+// 2. Register TikTok for Business
+const tiktok = new TikTokBusinessAdapter({
+  appId: process.env.TIKTOK_APP_ID!,
+  clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
+  accessToken: process.env.TIKTOK_ACCESS_TOKEN!
+});
+hub.register(tiktok);
 
 // 3. Central message dispatcher
 hub.on("message", async (ctx) => {
@@ -185,15 +190,36 @@ await hub.startAll();
 
 ## 🔌 Channel Adapters
 
+### 🎵 TikTok for Business & Shop
+Supports TikTok Business Messaging API v1.3. Handles inbound webhooks with timing-safe HMAC-SHA256 signature verification and replay prevention.
+
+```typescript
+import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
+
+const tiktok = new TikTokBusinessAdapter({
+  appId: "YOUR_TIKTOK_APP_ID",
+  clientSecret: "YOUR_TIKTOK_CLIENT_SECRET",
+  accessToken: "YOUR_TIKTOK_ACCESS_TOKEN",
+  maxWebhookAgeSeconds: 300 // Replay attack protection (default 300s)
+});
+
+// In your HTTP server (Fastify, Express, Bun.serve)
+app.post("/webhook/tiktok", async (req, res) => {
+  const verified = await tiktok.handleWebhook(req.rawBody, req.headers["tiktok-signature"]);
+  if (!verified) return res.status(401).send("Unauthorized");
+  return res.status(200).send("OK");
+});
+```
+
 ### 🔵 Meta Messenger Adapter
 Supports Meta Graph API v19.0 with webhook challenge verification, personal Playwright session recovery, and large file support.
 
 ```typescript
-import { MessengerChannelAdapter } from "@theowlops/channelhub/channels/messenger";
+import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
 
 const messenger = new MessengerChannelAdapter({
   pageAccessToken: "EAA...",
-  verifyToken: "custom_token",
+  verifyToken: "custom_webhook_secret",
   pageId: "10029384912"
 });
 ```
@@ -202,7 +228,7 @@ const messenger = new MessengerChannelAdapter({
 Supports reverse-engineered Web API (`zca-js`) personal sessions and Official Account (OA) v3 OpenAPI. Includes anti-ban jitter algorithms and automatic quote object generation.
 
 ```typescript
-import { ZaloChannelAdapter } from "@theowlops/channelhub/channels/zalo";
+import { ZaloChannelAdapter } from "@theowlops/channelhub/zalo";
 
 const zalo = new ZaloChannelAdapter({
   credentialsPath: "./credentials.json", // Auto-captured session
@@ -215,11 +241,20 @@ const zalo = new ZaloChannelAdapter({
 Lightweight bot integration via Telegram Bot API with native webhook and polling dispatchers.
 
 ```typescript
-import { TelegramChannelAdapter } from "@theowlops/channelhub/channels/telegram";
+import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
 
 const telegram = new TelegramChannelAdapter({
   botToken: "123456:ABC-DEF..."
 });
+```
+
+### 🎮 Discord & 💼 Slack Adapters
+```typescript
+import { DiscordChannelAdapter } from "@theowlops/channelhub/discord";
+import { SlackChannelAdapter } from "@theowlops/channelhub/slack";
+
+const discord = new DiscordChannelAdapter({ botToken: "DISCORD_TOKEN" });
+const slack = new SlackChannelAdapter({ botToken: "xoxb-...", signingSecret: "..." });
 ```
 
 ---
@@ -254,9 +289,9 @@ await ctx.sendGif("https://media.giphy.com/media/cat.gif", "Cat Dancing");
 
 ## 🌊 SmartStreamer for LLMs
 
-LLMs generate responses token by token. Direct API calls per token will hit rate-limits and get your bots banned. `SmartStreamer` solves this:
-- **Editable Channels** (Discord, Telegram): Streams first chunk, then edits message at throttled intervals (`updateIntervalMs: 800`).
-- **Non-Editable Channels** (Zalo, Messenger): Accumulates tokens and flushes them chunk by chunk on sentence boundaries (`.`, `!`, `?`, `\n`) while emitting typing signals.
+LLMs generate responses token by token. Direct API calls per token hit rate limits. `SmartStreamer` batches tokens adaptively:
+- **Editable Channels** (Discord, Telegram): Streams first chunk, then edits the message at throttled intervals (`updateIntervalMs: 800`).
+- **Non-Editable Channels** (Zalo, Messenger, TikTok): Accumulates tokens and flushes them chunk by chunk on sentence boundaries (`.`, `!`, `?`, `\n`) while emitting typing signals.
 
 ```typescript
 import { SmartStreamer } from "@theowlops/channelhub/core";
@@ -331,6 +366,9 @@ Add to `claude_desktop_config.json`:
 
 ## 🛡 Security Hardening
 
+- **HMAC-SHA256 & Timing-Safe Verification**: All inbound webhooks (TikTok, Messenger, Slack) verify cryptographic signatures via `crypto.timingSafeEqual` to thwart timing attacks.
+- **Anti-Replay Attack Protection**: Webhook deliveries outside the allowed time window (default 300s) are immediately discarded.
+- **Zero Token Leak in URLs**: Authentication tokens are strictly transmitted in HTTP headers (`Access-Token`, `Authorization: Bearer`), never in URL query strings.
 - **Localhost Loopback Default**: Webhook bridge defaults to `127.0.0.1` rather than `0.0.0.0`.
 - **DoS Payload Limits**: Enforces a strict 1MB JSON body size ceiling before socket termination.
 - **Path Traversal Guard**: All file uploads run through `path.resolve` and verify `fs.statSync().isFile()`, preventing arbitrary file disclosure.

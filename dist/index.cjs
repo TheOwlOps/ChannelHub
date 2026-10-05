@@ -37519,15 +37519,16 @@ var exports_src = {};
 __export(exports_src, {
   BaseChannel: () => BaseChannel,
   CONFIG: () => CONFIG,
-  ChannelEventBus: () => ChannelEventBus,
   ChannelHub: () => ChannelHub,
   CommandRouter: () => CommandRouter,
   DiscordChannelAdapter: () => DiscordChannelAdapter,
+  IdempotencyCache: () => IdempotencyCache,
   MessengerChannelAdapter: () => MessengerChannelAdapter,
   SlackChannelAdapter: () => SlackChannelAdapter,
   SmartStreamer: () => SmartStreamer,
   TelegramChannelAdapter: () => TelegramChannelAdapter,
   TikTokBusinessAdapter: () => TikTokBusinessAdapter,
+  TokenBucketLimiter: () => TokenBucketLimiter,
   WebhookBridge: () => WebhookBridge,
   ZaloChannelAdapter: () => ZaloChannelAdapter,
   ZaloOABot: () => ZaloOABot,
@@ -37589,20 +37590,6 @@ class BaseChannel extends import_node_events.EventEmitter {
       type: "sticker",
       source: stickerIdOrUrl
     }, options);
-  }
-}
-// src/core/bus.ts
-var import_node_events2 = require("node:events");
-
-class ChannelEventBus extends import_node_events2.EventEmitter {
-  emitMessage(msg) {
-    return this.emit("message", msg);
-  }
-  emitError(err) {
-    return this.emit("error", err);
-  }
-  emitStatus(status) {
-    return this.emit("status", status);
   }
 }
 // src/core/stream.ts
@@ -37756,15 +37743,92 @@ function createMessageContext(message, channel) {
     }
   };
 }
+// src/core/bus.ts
+var import_node_events2 = require("node:events");
+
+class ChannelEventBus extends import_node_events2.EventEmitter {
+  emitMessage(msg) {
+    return this.emit("message", msg);
+  }
+  emitError(err) {
+    return this.emit("error", err);
+  }
+  emitStatus(status) {
+    return this.emit("status", status);
+  }
+}
+
+// src/core/dedup.ts
+class IdempotencyCache {
+  _maxEntries;
+  _ttlMs;
+  _map = new Map;
+  constructor(options = {}) {
+    this._maxEntries = options.maxEntries ?? 50000;
+    this._ttlMs = options.ttlMs ?? 300000;
+  }
+  checkAndSet(id) {
+    const now = Date.now();
+    const existing = this._map.get(id);
+    if (existing !== undefined) {
+      if (now < existing) {
+        return false;
+      }
+    }
+    if (this._map.size >= this._maxEntries) {
+      const oldestKey = this._map.keys().next().value;
+      if (oldestKey)
+        this._map.delete(oldestKey);
+    }
+    this._map.set(id, now + this._ttlMs);
+    return true;
+  }
+  has(id) {
+    const expiresAt = this._map.get(id);
+    if (expiresAt === undefined)
+      return false;
+    if (Date.now() >= expiresAt) {
+      this._map.delete(id);
+      return false;
+    }
+    return true;
+  }
+  cleanup() {
+    const now = Date.now();
+    let purged = 0;
+    for (const [key, expiresAt] of this._map.entries()) {
+      if (now >= expiresAt) {
+        this._map.delete(key);
+        purged++;
+      }
+    }
+    return purged;
+  }
+  get size() {
+    return this._map.size;
+  }
+  clear() {
+    this._map.clear();
+  }
+}
+
 // src/core/hub.ts
 class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _dedupCache;
+  _dlqHandler;
   _queue = [];
   _waiters = [];
   _queueDrainWaiters = [];
   _isClosed = false;
+  constructor(options = {}) {
+    if (options.enableDeduplication) {
+      this._dedupCache = new IdempotencyCache(options.dedupOptions);
+    }
+    this._dlqHandler = options.onDeadLetter;
+  }
   register(channel) {
     const provider = channel.provider || channel.name;
     const accountId = channel.accountId || "default";
@@ -37780,6 +37844,12 @@ class ChannelHub {
       this._channels.set(channel.name, channel);
     }
     channel.on("message", async (msg) => {
+      if (this._dedupCache && msg.id) {
+        const isNew = this._dedupCache.checkAndSet(`${channel.name}:${msg.id}`);
+        if (!isNew) {
+          return;
+        }
+      }
       this._bus.emitMessage(msg);
       const ctx = createMessageContext(msg, channel);
       if (this._waiters.length > 0) {
@@ -37797,7 +37867,21 @@ class ChannelHub {
         try {
           await handler(ctx);
         } catch (err) {
-          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
+          const errorObj = err instanceof Error ? err : new Error(String(err));
+          this._bus.emitError(errorObj);
+          if (this._dlqHandler) {
+            try {
+              await this._dlqHandler({
+                message: msg,
+                error: errorObj,
+                timestamp: Date.now(),
+                retryCount: 0,
+                channel: channel.name
+              });
+            } catch (dlqErr) {
+              this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
+            }
+          }
         }
       }
     });
@@ -37898,6 +37982,76 @@ class ChannelHub {
     }
     const uniqueChannels = Array.from(new Set(this._channels.values()));
     await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
+  }
+}
+// src/core/limiter.ts
+class TokenBucketLimiter {
+  _tokens;
+  _capacity;
+  _refillRate;
+  _refillIntervalMs;
+  _lastRefill;
+  constructor(options) {
+    this._capacity = Math.max(1, options.capacity);
+    this._tokens = this._capacity;
+    this._refillRate = Math.max(1, options.refillRate);
+    this._refillIntervalMs = Math.max(1, options.refillIntervalMs);
+    this._lastRefill = Date.now();
+  }
+  refill() {
+    const now = Date.now();
+    const elapsed = now - this._lastRefill;
+    if (elapsed >= this._refillIntervalMs) {
+      const intervals = Math.floor(elapsed / this._refillIntervalMs);
+      const addedTokens = intervals * this._refillRate;
+      this._tokens = Math.min(this._capacity, this._tokens + addedTokens);
+      this._lastRefill += intervals * this._refillIntervalMs;
+    }
+  }
+  async acquire(tokens = 1, maxWaitMs) {
+    if (tokens > this._capacity) {
+      throw new Error(`Cannot acquire ${tokens} tokens; exceeds bucket capacity of ${this._capacity}.`);
+    }
+    return new Promise((resolve, reject) => {
+      let timeoutId;
+      let intervalId;
+      const start = Date.now();
+      const tryAcquire = () => {
+        this.refill();
+        if (this._tokens >= tokens) {
+          this._tokens -= tokens;
+          cleanup();
+          resolve(true);
+          return true;
+        }
+        if (maxWaitMs !== undefined && Date.now() - start > maxWaitMs) {
+          cleanup();
+          reject(new Error(`Timeout of ${maxWaitMs}ms exceeded while waiting for rate limiter token.`));
+          return true;
+        }
+        return false;
+      };
+      const cleanup = () => {
+        if (timeoutId)
+          clearTimeout(timeoutId);
+        if (intervalId)
+          clearInterval(intervalId);
+      };
+      if (tryAcquire())
+        return;
+      const pollMs = Math.min(this._refillIntervalMs, 50);
+      intervalId = setInterval(tryAcquire, pollMs);
+      if (maxWaitMs !== undefined) {
+        timeoutId = setTimeout(() => {
+          cleanup();
+          reject(new Error(`Timeout of ${maxWaitMs}ms exceeded while waiting for rate limiter token.`));
+        }, maxWaitMs);
+      }
+    });
+  }
+  get tokensAvailable() {
+    this.refill();
+    return this._tokens;
   }
 }
 // src/channels/zalo/adapter.ts

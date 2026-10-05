@@ -181,15 +181,77 @@ function createMessageContext(message, channel) {
 }
 var init_context = () => {};
 
+// src/core/dedup.ts
+class IdempotencyCache {
+  _maxEntries;
+  _ttlMs;
+  _map = new Map;
+  constructor(options = {}) {
+    this._maxEntries = options.maxEntries ?? 50000;
+    this._ttlMs = options.ttlMs ?? 300000;
+  }
+  checkAndSet(id) {
+    const now = Date.now();
+    const existing = this._map.get(id);
+    if (existing !== undefined) {
+      if (now < existing) {
+        return false;
+      }
+    }
+    if (this._map.size >= this._maxEntries) {
+      const oldestKey = this._map.keys().next().value;
+      if (oldestKey)
+        this._map.delete(oldestKey);
+    }
+    this._map.set(id, now + this._ttlMs);
+    return true;
+  }
+  has(id) {
+    const expiresAt = this._map.get(id);
+    if (expiresAt === undefined)
+      return false;
+    if (Date.now() >= expiresAt) {
+      this._map.delete(id);
+      return false;
+    }
+    return true;
+  }
+  cleanup() {
+    const now = Date.now();
+    let purged = 0;
+    for (const [key, expiresAt] of this._map.entries()) {
+      if (now >= expiresAt) {
+        this._map.delete(key);
+        purged++;
+      }
+    }
+    return purged;
+  }
+  get size() {
+    return this._map.size;
+  }
+  clear() {
+    this._map.clear();
+  }
+}
+
 // src/core/hub.ts
 class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
   _messageHandlers = [];
+  _dedupCache;
+  _dlqHandler;
   _queue = [];
   _waiters = [];
   _queueDrainWaiters = [];
   _isClosed = false;
+  constructor(options = {}) {
+    if (options.enableDeduplication) {
+      this._dedupCache = new IdempotencyCache(options.dedupOptions);
+    }
+    this._dlqHandler = options.onDeadLetter;
+  }
   register(channel) {
     const provider = channel.provider || channel.name;
     const accountId = channel.accountId || "default";
@@ -205,6 +267,12 @@ class ChannelHub {
       this._channels.set(channel.name, channel);
     }
     channel.on("message", async (msg) => {
+      if (this._dedupCache && msg.id) {
+        const isNew = this._dedupCache.checkAndSet(`${channel.name}:${msg.id}`);
+        if (!isNew) {
+          return;
+        }
+      }
       this._bus.emitMessage(msg);
       const ctx = createMessageContext(msg, channel);
       if (this._waiters.length > 0) {
@@ -222,7 +290,21 @@ class ChannelHub {
         try {
           await handler(ctx);
         } catch (err) {
-          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
+          const errorObj = err instanceof Error ? err : new Error(String(err));
+          this._bus.emitError(errorObj);
+          if (this._dlqHandler) {
+            try {
+              await this._dlqHandler({
+                message: msg,
+                error: errorObj,
+                timestamp: Date.now(),
+                retryCount: 0,
+                channel: channel.name
+              });
+            } catch (dlqErr) {
+              this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
+            }
+          }
         }
       }
     });

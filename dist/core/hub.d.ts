@@ -1,14 +1,27 @@
 import { type MessageContext } from "./context";
+import { type IdempotencyCacheOptions } from "./dedup";
+import type { DeadLetterHandler } from "./dlq";
 import type { IChannelAdapter } from "./types";
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
+export interface ChannelHubOptions {
+    /** Enable message deduplication (prevents double processing from webhook retries). Default: false */
+    enableDeduplication?: boolean;
+    /** Deduplication cache options */
+    dedupOptions?: IdempotencyCacheOptions;
+    /** Dead Letter Queue callback for unhandled errors in message handlers */
+    onDeadLetter?: DeadLetterHandler;
+}
 export declare class ChannelHub {
     private _channels;
     private _bus;
     private _messageHandlers;
+    private _dedupCache?;
+    private _dlqHandler?;
     private _queue;
     private _waiters;
     private _queueDrainWaiters;
     private _isClosed;
+    constructor(options?: ChannelHubOptions);
     register(channel: IChannelAdapter): this;
     getChannel(providerOrKey: string, accountId?: string): IChannelAdapter | undefined;
     listChannels(): string[];

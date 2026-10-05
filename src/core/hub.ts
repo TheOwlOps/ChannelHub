@@ -1,19 +1,41 @@
 import { ChannelEventBus } from "./bus";
 import { createMessageContext, type MessageContext } from "./context";
+import { IdempotencyCache, type IdempotencyCacheOptions } from "./dedup";
+import type { DeadLetterHandler, DeadLetterItem } from "./dlq";
 import type { IChannelAdapter, UnifiedMessage } from "./types";
 
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
+
+export interface ChannelHubOptions {
+  /** Enable message deduplication (prevents double processing from webhook retries). Default: false */
+  enableDeduplication?: boolean;
+  /** Deduplication cache options */
+  dedupOptions?: IdempotencyCacheOptions;
+  /** Dead Letter Queue callback for unhandled errors in message handlers */
+  onDeadLetter?: DeadLetterHandler;
+}
 
 export class ChannelHub {
   private _channels = new Map<string, IChannelAdapter>();
   private _bus = new ChannelEventBus();
   private _messageHandlers: MessageHandler[] = [];
   
+  // Primitives
+  private _dedupCache?: IdempotencyCache;
+  private _dlqHandler?: DeadLetterHandler;
+
   // Async queue for backpressure support
   private _queue: MessageContext[] = [];
   private _waiters: Array<(ctx: MessageContext | null) => void> = [];
   private _queueDrainWaiters: Array<() => void> = [];
   private _isClosed = false;
+
+  constructor(options: ChannelHubOptions = {}) {
+    if (options.enableDeduplication) {
+      this._dedupCache = new IdempotencyCache(options.dedupOptions);
+    }
+    this._dlqHandler = options.onDeadLetter;
+  }
 
   register(channel: IChannelAdapter): this {
     const provider = channel.provider || channel.name;
@@ -35,6 +57,14 @@ export class ChannelHub {
     }
 
     channel.on("message", async (msg: UnifiedMessage) => {
+      // 0. Idempotency Check (Dedup)
+      if (this._dedupCache && msg.id) {
+        const isNew = this._dedupCache.checkAndSet(`${channel.name}:${msg.id}`);
+        if (!isNew) {
+          return; // Duplicate delivery dropped
+        }
+      }
+
       this._bus.emitMessage(msg);
       const ctx = createMessageContext(msg, channel);
 
@@ -56,7 +86,23 @@ export class ChannelHub {
         try {
           await handler(ctx);
         } catch (err: any) {
-          this._bus.emitError(err instanceof Error ? err : new Error(String(err)));
+          const errorObj = err instanceof Error ? err : new Error(String(err));
+          this._bus.emitError(errorObj);
+
+          // 3. Dead Letter Queue handling
+          if (this._dlqHandler) {
+            try {
+              await this._dlqHandler({
+                message: msg,
+                error: errorObj,
+                timestamp: Date.now(),
+                retryCount: 0,
+                channel: channel.name,
+              });
+            } catch (dlqErr: any) {
+              this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
+            }
+          }
         }
       }
     });

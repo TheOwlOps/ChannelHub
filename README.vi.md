@@ -1,5 +1,6 @@
 <div align="center">
   <img src="./assets/banner.svg" alt="ChannelHub Banner" width="100%" />
+  <img src="./assets/stats.svg" alt="ChannelHub Realtime Stats" width="100%" style="margin-top: -4px;" />
 </div>
 
 <div align="center">

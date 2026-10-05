@@ -41,4 +41,7 @@ if (process.platform !== "win32") {
 // 4. Generate TypeScript declarations (.d.ts)
 await $`bun x tsc --emitDeclarationOnly --declaration --outDir dist`;
 
+// 5. Generate Real-time Benchmark Badge
+await $`bun run scripts/generate-badge.ts`;
+
 console.log("✅ Build complete! All dist entrypoints ready for npm publish.");

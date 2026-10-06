@@ -151,6 +151,7 @@
   "peerDependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
     "playwright": "^1.63.0",
+    "sharp": "^0.33.0 || ^0.34.0 || ^0.35.0",
     "zca-js": "^2.2.0"
   },
   "peerDependenciesMeta": {
@@ -158,6 +159,9 @@
       "optional": true
     },
     "playwright": {
+      "optional": true
+    },
+    "sharp": {
       "optional": true
     },
     "zca-js": {
@@ -169,6 +173,7 @@
     "@types/node": "^22.0.0",
     "bun-types": "latest",
     "playwright": "^1.63.0",
+    "sharp": "^0.35.5",
     "typescript": "^5.7.0",
     "zca-js": "^2.2.0"
   },

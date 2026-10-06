@@ -4036,6 +4036,64 @@ class SharedTokenBucketLimiter {
     }
   }
 }
+// src/core/transcoder.ts
+class MediaTranscoder {
+  static sharpCache = null;
+  static async getSharp() {
+    if (this.sharpCache)
+      return this.sharpCache;
+    try {
+      const mod = await import("sharp");
+      this.sharpCache = mod.default || mod;
+      return this.sharpCache;
+    } catch (e) {
+      throw new Error("Cannot load optional dependency 'sharp'. Please install it: npm install sharp");
+    }
+  }
+  static async transcodeImage(source, options = {}) {
+    const sharp = await this.getSharp();
+    const {
+      maxWidth = 1920,
+      maxHeight = 1920,
+      quality = 80,
+      format = "webp",
+      stripMetadata = true
+    } = options;
+    const sourceBuf = Buffer.isBuffer(source) ? source : Buffer.from(source);
+    let pipeline = sharp(sourceBuf, { failOn: "none" });
+    if (stripMetadata) {
+      pipeline = pipeline.withMetadata(false);
+    }
+    pipeline = pipeline.rotate();
+    pipeline = pipeline.resize({
+      width: maxWidth,
+      height: maxHeight,
+      fit: "inside",
+      withoutEnlargement: true
+    });
+    let mimeType = "image/webp";
+    if (format === "webp") {
+      pipeline = pipeline.webp({ quality, effort: 4 });
+    } else if (format === "jpeg") {
+      pipeline = pipeline.jpeg({ quality, progressive: true, mozjpeg: true });
+      mimeType = "image/jpeg";
+    } else if (format === "png") {
+      pipeline = pipeline.png({ compressionLevel: 8, adaptiveFiltering: true });
+      mimeType = "image/png";
+    }
+    const { data: outputBuffer, info } = await pipeline.toBuffer({ resolveWithObject: true });
+    return {
+      buffer: outputBuffer,
+      format: info.format,
+      mimeType,
+      originalSize: sourceBuf.length,
+      transcodedSize: outputBuffer.length,
+      compressionRatio: outputBuffer.length / sourceBuf.length,
+      width: info.width,
+      height: info.height
+    };
+  }
+}
 // src/channels/zalo/adapter.ts
 var EMOJI_TO_ZALO = {
   "❤️": "HEART",
@@ -7954,6 +8012,7 @@ export {
   HumanHandoffManager,
   IdempotencyCache,
   IdentityStitcher,
+  MediaTranscoder,
   MessengerChannelAdapter,
   MessengerPersonalAdapter,
   SharedTokenBucketLimiter,

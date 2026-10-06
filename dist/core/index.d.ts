@@ -9,3 +9,4 @@ export * from "./shared-limiter";
 export * from "./dlq";
 export * from "./identity";
 export * from "./handoff";
+export * from "./transcoder";

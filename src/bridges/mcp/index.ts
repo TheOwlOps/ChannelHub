@@ -1,5 +1,6 @@
 import type { ChannelHub } from "../../core/hub";
 import type { MediaType } from "../../core/types";
+import { WebResearch } from "../../core/research";
 
 export interface McpToolDefinition {
   name: string;
@@ -298,6 +299,32 @@ export function getChannelHubMcpTools(): McpToolDefinition[] {
         },
       },
     },
+    {
+      name: "channelhub_web_search",
+      description: "Search the web for real-time information (free, 0-config via DuckDuckGo HTML). Can optionally extract deep markdown content for the top results.",
+      parameters: {
+        type: "object",
+        required: ["query"],
+        properties: {
+          query: { type: "string", description: "Search query" },
+          limit: { type: "number", description: "Max results (default: 5)" },
+          deepExtract: { type: "boolean", description: "If true, extracts full readable markdown for top 3 results using Jina Reader (takes longer but provides exact context)" },
+          provider: { type: "string", description: "duckduckgo (default), tavily, or brave" },
+          apiKey: { type: "string", description: "API key for tavily/brave if not using duckduckgo" },
+        },
+      },
+    },
+    {
+      name: "channelhub_web_extract",
+      description: "Extract full readable markdown content from any web URL (bypasses JS rendering and most paywalls via Jina Reader).",
+      parameters: {
+        type: "object",
+        required: ["url"],
+        properties: {
+          url: { type: "string", description: "Target URL" },
+        },
+      },
+    },
   ];
 }
 
@@ -463,6 +490,25 @@ export async function handleChannelHubMcpCall(
         const res = await ch.sendText(args.calendarId || "primary", args.text);
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_web_search": {
+        const res = await WebResearch.search(args.query, {
+          limit: args.limit,
+          deepExtract: args.deepExtract,
+          provider: args.provider,
+          apiKey: args.apiKey,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_web_extract": {
+        const res = await WebResearch.extract(args.url);
+        return {
+          content: [{ type: "text", text: res.content }],
         };
       }
 

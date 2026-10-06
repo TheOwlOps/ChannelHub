@@ -7,9 +7,9 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
-    "channelhub": "./dist/bin/cli.js",
-    "channelhub-mcp": "./dist/bin/mcp-server.js",
-    "zalohub": "./dist/bin/cli.js"
+    "channelhub": "dist/bin/cli.js",
+    "channelhub-mcp": "dist/bin/mcp-server.js",
+    "zalohub": "dist/bin/cli.js"
   },
   "exports": {
     ".": {

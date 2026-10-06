@@ -1,6 +1,7 @@
 import type { ChannelHub } from "../../core/hub";
 import type { MediaType } from "../../core/types";
 import { WebResearch } from "../../core/research";
+import { VideoEngine } from "../../core/video";
 
 export interface McpToolDefinition {
   name: string;
@@ -325,6 +326,47 @@ export function getChannelHubMcpTools(): McpToolDefinition[] {
         },
       },
     },
+    {
+      name: "channelhub_video_create_short",
+      description: "Convert any video into TikTok/Shorts (9:16 vertical) format using professional blurred background backdrop, cropping, or padding via local FFmpeg.",
+      parameters: {
+        type: "object",
+        required: ["input", "output"],
+        properties: {
+          input: { type: "string", description: "Path to input video" },
+          output: { type: "string", description: "Path to save vertical video" },
+          mode: { type: "string", description: "blur-backdrop (default), crop-center, or fit-pad" },
+        },
+      },
+    },
+    {
+      name: "channelhub_video_burn_subtitles",
+      description: "Burn subtitles (SRT/VTT string or file path) directly onto video frames using local FFmpeg.",
+      parameters: {
+        type: "object",
+        required: ["input", "output", "subtitles"],
+        properties: {
+          input: { type: "string", description: "Path to input video" },
+          output: { type: "string", description: "Path to save output video" },
+          subtitles: { type: "string", description: "Subtitles text (SRT/VTT) or absolute path to a .srt file" },
+        },
+      },
+    },
+    {
+      name: "channelhub_video_add_watermark",
+      description: "Add a logo/image watermark to the video.",
+      parameters: {
+        type: "object",
+        required: ["input", "watermark", "output"],
+        properties: {
+          input: { type: "string", description: "Path to input video" },
+          watermark: { type: "string", description: "Path to image logo" },
+          output: { type: "string", description: "Path to save output video" },
+          position: { type: "string", description: "top-right, top-left, bottom-right, bottom-left, center" },
+          opacity: { type: "number", description: "0.1 to 1.0 (default 0.9)" },
+        },
+      },
+    }
   ];
 }
 
@@ -509,6 +551,41 @@ export async function handleChannelHubMcpCall(
         const res = await WebResearch.extract(args.url);
         return {
           content: [{ type: "text", text: res.content }],
+        };
+      }
+
+      case "channelhub_video_create_short": {
+        const res = await VideoEngine.createShort({
+          input: args.input,
+          output: args.output,
+          mode: args.mode,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_video_burn_subtitles": {
+        const res = await VideoEngine.burnSubtitles({
+          input: args.input,
+          output: args.output,
+          subtitles: args.subtitles,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_video_add_watermark": {
+        const res = await VideoEngine.addWatermark({
+          input: args.input,
+          watermark: args.watermark,
+          output: args.output,
+          position: args.position,
+          opacity: args.opacity,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
         };
       }
 

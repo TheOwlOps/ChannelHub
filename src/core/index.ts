@@ -11,5 +11,7 @@ export * from "./identity";
 export * from "./handoff";
 export * from "./transcoder";
 export * from "./research";
+export * from "./video";
+
 
 

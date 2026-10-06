@@ -211,9 +211,9 @@ describe("WebhookGenericAdapter", () => {
 
 // --- MCP Tools count ---
 describe("MCP Tools Registry", () => {
-  test("exposes 16 total MCP tools", () => {
+  test("exposes 19 total MCP tools", () => {
     const tools = getChannelHubMcpTools();
-    expect(tools.length).toBe(16);
+    expect(tools.length).toBe(19);
     const names = tools.map((t: any) => t.name);
     expect(names).toContain("channelhub_send_email");
     expect(names).toContain("channelhub_github_comment");
@@ -221,5 +221,6 @@ describe("MCP Tools Registry", () => {
     expect(names).toContain("channelhub_calendar_quick_add");
     expect(names).toContain("channelhub_web_search");
     expect(names).toContain("channelhub_web_extract");
+    expect(names).toContain("channelhub_video_create_short");
   });
 });

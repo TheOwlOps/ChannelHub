@@ -61,9 +61,9 @@ describe("WebResearch Engine", () => {
     expect(results[0].content).toContain("# Deep Content from Jina");
   });
 
-  test("MCP Registry exposes 16 total tools including search and extract", () => {
+  test("MCP Registry exposes 19 total tools including search and extract", () => {
     const tools = getChannelHubMcpTools();
-    expect(tools.length).toBe(16);
+    expect(tools.length).toBe(19);
     const names = tools.map((t) => t.name);
     expect(names).toContain("channelhub_web_search");
     expect(names).toContain("channelhub_web_extract");

@@ -3352,6 +3352,8 @@ __export(exports_src, {
   TikTokBusinessAdapter: () => TikTokBusinessAdapter,
   TokenBucketLimiter: () => TokenBucketLimiter,
   TwilioChannelAdapter: () => TwilioChannelAdapter,
+  VideoEngine: () => VideoEngine,
+  WebResearch: () => WebResearch,
   WebhookBridge: () => WebhookBridge,
   WebhookGenericAdapter: () => WebhookGenericAdapter,
   ZaloChannelAdapter: () => ZaloChannelAdapter,
@@ -4147,6 +4149,393 @@ class MediaTranscoder {
       width: info.width,
       height: info.height
     };
+  }
+}
+// src/core/research.ts
+class WebResearch {
+  static async search(query, options = {}) {
+    const { limit = 5, provider = "duckduckgo", apiKey, deepExtract = false, signal } = options;
+    let results = [];
+    if (provider === "tavily") {
+      results = await this.searchTavily(query, apiKey, limit, signal);
+    } else if (provider === "brave") {
+      results = await this.searchBrave(query, apiKey, limit, signal);
+    } else {
+      results = await this.searchDuckDuckGo(query, limit, signal);
+    }
+    if (deepExtract && results.length > 0) {
+      const topToExtract = results.slice(0, 3);
+      await Promise.allSettled(topToExtract.map(async (r) => {
+        try {
+          const page = await this.extract(r.url, signal);
+          r.content = page.content.slice(0, 5000);
+        } catch {}
+      }));
+    }
+    return results;
+  }
+  static async extract(url, signal) {
+    try {
+      const res = await fetch(`https://r.jina.ai/${encodeURI(url)}`, {
+        headers: {
+          Accept: "text/plain",
+          "User-Agent": "ChannelHub-Agent/1.0"
+        },
+        signal
+      });
+      if (res.ok) {
+        const text = await res.text();
+        return {
+          url,
+          content: text.trim()
+        };
+      }
+    } catch {}
+    const rawRes = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      },
+      signal
+    });
+    const html = await rawRes.text();
+    const clean = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return {
+      url,
+      content: clean.slice(0, 1e4)
+    };
+  }
+  static async searchDuckDuckGo(query, limit, signal) {
+    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+      },
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`DuckDuckGo returned ${res.status}`);
+    const html = await res.text();
+    const results = [];
+    const blockRegex = /<div class="result results_links results_links_deep web-result[\s\S]*?<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/g;
+    let match;
+    while ((match = blockRegex.exec(html)) !== null && results.length < limit) {
+      const block = match[0];
+      const titleMatch = block.match(/<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+      const snippetMatch = block.match(/<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/);
+      if (titleMatch) {
+        let rawUrl = titleMatch[1];
+        if (rawUrl.includes("uddg=")) {
+          const extracted = rawUrl.split("uddg=")[1]?.split("&")[0];
+          if (extracted)
+            rawUrl = decodeURIComponent(extracted);
+        }
+        const title = titleMatch[2].replace(/<[^>]+>/g, "").trim();
+        const snippet = snippetMatch ? snippetMatch[1].replace(/<[^>]+>/g, "").trim() : "";
+        if (rawUrl.startsWith("http")) {
+          results.push({
+            title,
+            url: rawUrl,
+            snippet
+          });
+        }
+      }
+    }
+    return results;
+  }
+  static async searchTavily(query, apiKey, limit = 5, signal) {
+    if (!apiKey)
+      throw new Error("Tavily provider requires apiKey in options");
+    const res = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        query,
+        max_results: limit
+      }),
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`Tavily error: ${res.status}`);
+    const data = await res.json();
+    return (data.results || []).map((r) => ({
+      title: r.title,
+      url: r.url,
+      snippet: r.content
+    }));
+  }
+  static async searchBrave(query, apiKey, limit = 5, signal) {
+    if (!apiKey)
+      throw new Error("Brave provider requires apiKey in options");
+    const res = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${limit}`, {
+      headers: {
+        Accept: "application/json",
+        "X-Subscription-Token": apiKey
+      },
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`Brave search error: ${res.status}`);
+    const data = await res.json();
+    return (data.web?.results || []).map((r) => ({
+      title: r.title,
+      url: r.url,
+      snippet: r.description
+    }));
+  }
+}
+// src/core/video.ts
+var import_node_child_process = require("node:child_process");
+var import_node_fs = require("node:fs");
+var import_node_path = require("node:path");
+var import_node_os = require("node:os");
+
+class VideoEngine {
+  static async createShort(options) {
+    const {
+      input,
+      output,
+      mode = "blur-backdrop",
+      targetWidth = 1080,
+      targetHeight = 1920,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    let filterGraph = "";
+    if (mode === "blur-backdrop") {
+      filterGraph = [
+        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},boxblur=20:5[bg]`,
+        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease[fg]`,
+        `[bg][fg]overlay=(W-w)/2:(H-h)/2[outv]`
+      ].join(";");
+    } else if (mode === "crop-center") {
+      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight}[outv]`;
+    } else {
+      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:black[outv]`;
+    }
+    const args = [
+      "-y",
+      "-i",
+      input,
+      "-filter_complex",
+      filterGraph,
+      "-map",
+      "[outv]",
+      "-map",
+      "0:a?",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "veryfast",
+      "-crf",
+      "22",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "128k",
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async burnSubtitles(options) {
+    const { input, output, subtitles, style = {}, ffmpegPath = "ffmpeg" } = options;
+    let srtPath = subtitles;
+    let tempCreated = false;
+    if (!subtitles.endsWith(".srt") && !subtitles.endsWith(".vtt")) {
+      srtPath = import_node_path.join(import_node_os.tmpdir(), `sub_${Date.now()}_${Math.random().toString(36).slice(2)}.srt`);
+      await import_node_fs.promises.writeFile(srtPath, subtitles, "utf8");
+      tempCreated = true;
+    }
+    try {
+      const fontSize = style.fontSize || 24;
+      const fontColor = style.fontColor || "&H00FFFFFF";
+      const bold = style.bold ? 1 : 0;
+      const safeSrtPath = srtPath.replace(/\\/g, "/").replace(/:/g, "\\:");
+      const filter = `subtitles='${safeSrtPath}':force_style='FontSize=${fontSize},PrimaryColour=${fontColor},Bold=${bold}'`;
+      const args = [
+        "-y",
+        "-i",
+        input,
+        "-vf",
+        filter,
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "22",
+        "-c:a",
+        "copy",
+        output
+      ];
+      await this.runProcess(ffmpegPath, args);
+      return { output, command: [ffmpegPath, ...args] };
+    } finally {
+      if (tempCreated) {
+        await import_node_fs.promises.unlink(srtPath).catch(() => {});
+      }
+    }
+  }
+  static async addWatermark(options) {
+    const {
+      input,
+      watermark,
+      output,
+      position = "top-right",
+      opacity = 0.9,
+      scale = 0.15,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    let posExpr = "W-w-20:20";
+    if (position === "top-left")
+      posExpr = "20:20";
+    else if (position === "bottom-left")
+      posExpr = "20:H-h-20";
+    else if (position === "bottom-right")
+      posExpr = "W-w-20:H-h-20";
+    else if (position === "center")
+      posExpr = "(W-w)/2:(H-h)/2";
+    const filterGraph = [
+      `[1:v]scale=iw*${scale}:-1,format=rgba,colorchannelmixer=aa=${opacity}[wm]`,
+      `[0:v][wm]overlay=${posExpr}[outv]`
+    ].join(";");
+    const args = [
+      "-y",
+      "-i",
+      input,
+      "-i",
+      watermark,
+      "-filter_complex",
+      filterGraph,
+      "-map",
+      "[outv]",
+      "-map",
+      "0:a?",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "veryfast",
+      "-c:a",
+      "copy",
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async extractThumbnail(options) {
+    const { input, output, timestampSec = 1, width, ffmpegPath = "ffmpeg" } = options;
+    const args = [
+      "-y",
+      "-ss",
+      String(timestampSec),
+      "-i",
+      input,
+      "-vframes",
+      "1"
+    ];
+    if (width) {
+      args.push("-vf", `scale=${width}:-1`);
+    }
+    args.push(output);
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async generateMemeGif(options) {
+    const {
+      input,
+      output,
+      startSec = 0,
+      durationSec = 5,
+      fps = 15,
+      width = 480,
+      topText,
+      bottomText,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    const filterParts = [
+      `fps=${fps}`,
+      `scale=${width}:-1:flags=lanczos`
+    ];
+    if (topText) {
+      filterParts.push(`drawtext=text='${topText.replace(/'/g, "")}':x=(w-text_w)/2:y=20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
+    }
+    if (bottomText) {
+      filterParts.push(`drawtext=text='${bottomText.replace(/'/g, "")}':x=(w-text_w)/2:y=h-text_h-20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
+    }
+    const vf = `${filterParts.join(",")},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`;
+    const args = [
+      "-y",
+      "-ss",
+      String(startSec),
+      "-t",
+      String(durationSec),
+      "-i",
+      input,
+      "-vf",
+      vf,
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async renderShotstack(options) {
+    const {
+      timeline,
+      apiKey,
+      env = "stage",
+      outputFormat = "mp4",
+      aspectRatio = "9:16",
+      signal
+    } = options;
+    const baseUrl = env === "v1" ? "https://api.shotstack.io/edit/v1" : "https://api.shotstack.io/edit/stage";
+    const payload = {
+      timeline,
+      output: {
+        format: outputFormat,
+        aspectRatio,
+        fps: 30
+      }
+    };
+    const res = await fetch(`${baseUrl}/render`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey
+      },
+      body: JSON.stringify(payload),
+      signal
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Shotstack render error (${res.status}): ${errText}`);
+    }
+    const data = await res.json();
+    return {
+      renderId: data.response?.id,
+      status: data.response?.status || "queued",
+      url: data.response?.url
+    };
+  }
+  static runProcess(cmd, args) {
+    return new Promise((resolve, reject) => {
+      const child = import_node_child_process.spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
+      let stderr = "";
+      child.stderr?.on("data", (chunk) => {
+        stderr += chunk.toString();
+      });
+      child.on("error", (err) => {
+        reject(new Error(`Failed to execute ${cmd}: ${err.message}`));
+      });
+      child.on("close", (code) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(new Error(`${cmd} exited with code ${code}. Details:
+${stderr.slice(-500)}`));
+        }
+      });
+    });
   }
 }
 // src/channels/zalo/adapter.ts
@@ -5033,12 +5422,12 @@ class ZaloPersonalBot {
   }
 }
 // src/config/env.ts
-var import_node_path = __toESM(require("node:path"), 1);
+var import_node_path2 = __toESM(require("node:path"), 1);
 var import_dotenv = __toESM(require_main(), 1);
 import_dotenv.default.config();
 var CONFIG = {
   PERSONAL: {
-    CRED_PATH: process.env.ZALO_CRED_PATH || import_node_path.default.resolve("./credentials.json"),
+    CRED_PATH: process.env.ZALO_CRED_PATH || import_node_path2.default.resolve("./credentials.json"),
     DEFAULT_PREFIX: "!"
   },
   OA: {
@@ -5188,13 +5577,13 @@ class ZaloOABot {
   }
 }
 // src/personal/index.ts
-var import_node_fs = __toESM(require("node:fs"), 1);
+var import_node_fs2 = __toESM(require("node:fs"), 1);
 async function initPersonalBot() {
-  if (!import_node_fs.default.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
+  if (!import_node_fs2.default.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
     throw new Error(`Missing ${CONFIG.PERSONAL.CRED_PATH}. Run 'bun run login:personal' to scan QR code.`);
   }
   const { Zalo } = await import("zca-js");
-  const creds = JSON.parse(import_node_fs.default.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
+  const creds = JSON.parse(import_node_fs2.default.readFileSync(CONFIG.PERSONAL.CRED_PATH, "utf-8"));
   const zalo = new Zalo;
   const api = await zalo.login(creds);
   const bot = new ZaloPersonalBot(api);
@@ -6258,8 +6647,8 @@ class MessengerChannelAdapter extends BaseChannel {
   }
 }
 // src/channels/messenger/personal.ts
-var import_node_fs2 = __toESM(require("node:fs"), 1);
-var import_node_path2 = __toESM(require("node:path"), 1);
+var import_node_fs3 = __toESM(require("node:fs"), 1);
+var import_node_path3 = __toESM(require("node:path"), 1);
 class MessengerPersonalAdapter extends BaseChannel {
   name = "messenger";
   _config;
@@ -6285,7 +6674,7 @@ class MessengerPersonalAdapter extends BaseChannel {
       throw new Error("Playwright is required for MessengerPersonalAdapter. Install with: bun add -d playwright / npm install playwright");
     }
     const { chromium } = playwright;
-    const userDataDir = this._config.userDataDir || import_node_path2.default.resolve(process.cwd(), ".messenger-profile");
+    const userDataDir = this._config.userDataDir || import_node_path3.default.resolve(process.cwd(), ".messenger-profile");
     this._browserContext = await chromium.launchPersistentContext(userDataDir, {
       headless: this._config.headless,
       args: [
@@ -6295,10 +6684,10 @@ class MessengerPersonalAdapter extends BaseChannel {
       ],
       viewport: { width: 1280, height: 800 }
     });
-    const credPath = this._config.credentialsPath || import_node_path2.default.resolve(process.cwd(), "messenger.credentials.json");
-    if (import_node_fs2.default.existsSync(credPath)) {
+    const credPath = this._config.credentialsPath || import_node_path3.default.resolve(process.cwd(), "messenger.credentials.json");
+    if (import_node_fs3.default.existsSync(credPath)) {
       try {
-        const raw = import_node_fs2.default.readFileSync(credPath, "utf-8");
+        const raw = import_node_fs3.default.readFileSync(credPath, "utf-8");
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed.cookies)) {
           await this._browserContext.addCookies(parsed.cookies);
@@ -7552,6 +7941,73 @@ function getChannelHubMcpTools() {
           }
         }
       }
+    },
+    {
+      name: "channelhub_web_search",
+      description: "Search the web for real-time information (free, 0-config via DuckDuckGo HTML). Can optionally extract deep markdown content for the top results.",
+      parameters: {
+        type: "object",
+        required: ["query"],
+        properties: {
+          query: { type: "string", description: "Search query" },
+          limit: { type: "number", description: "Max results (default: 5)" },
+          deepExtract: { type: "boolean", description: "If true, extracts full readable markdown for top 3 results using Jina Reader (takes longer but provides exact context)" },
+          provider: { type: "string", description: "duckduckgo (default), tavily, or brave" },
+          apiKey: { type: "string", description: "API key for tavily/brave if not using duckduckgo" }
+        }
+      }
+    },
+    {
+      name: "channelhub_web_extract",
+      description: "Extract full readable markdown content from any web URL (bypasses JS rendering and most paywalls via Jina Reader).",
+      parameters: {
+        type: "object",
+        required: ["url"],
+        properties: {
+          url: { type: "string", description: "Target URL" }
+        }
+      }
+    },
+    {
+      name: "channelhub_video_create_short",
+      description: "Convert any video into TikTok/Shorts (9:16 vertical) format using professional blurred background backdrop, cropping, or padding via local FFmpeg.",
+      parameters: {
+        type: "object",
+        required: ["input", "output"],
+        properties: {
+          input: { type: "string", description: "Path to input video" },
+          output: { type: "string", description: "Path to save vertical video" },
+          mode: { type: "string", description: "blur-backdrop (default), crop-center, or fit-pad" }
+        }
+      }
+    },
+    {
+      name: "channelhub_video_burn_subtitles",
+      description: "Burn subtitles (SRT/VTT string or file path) directly onto video frames using local FFmpeg.",
+      parameters: {
+        type: "object",
+        required: ["input", "output", "subtitles"],
+        properties: {
+          input: { type: "string", description: "Path to input video" },
+          output: { type: "string", description: "Path to save output video" },
+          subtitles: { type: "string", description: "Subtitles text (SRT/VTT) or absolute path to a .srt file" }
+        }
+      }
+    },
+    {
+      name: "channelhub_video_add_watermark",
+      description: "Add a logo/image watermark to the video.",
+      parameters: {
+        type: "object",
+        required: ["input", "watermark", "output"],
+        properties: {
+          input: { type: "string", description: "Path to input video" },
+          watermark: { type: "string", description: "Path to image logo" },
+          output: { type: "string", description: "Path to save output video" },
+          position: { type: "string", description: "top-right, top-left, bottom-right, bottom-left, center" },
+          opacity: { type: "number", description: "0.1 to 1.0 (default 0.9)" }
+        }
+      }
     }
   ];
 }
@@ -7704,6 +8160,55 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
         if (!ch)
           throw new Error("Calendar channel adapter not registered.");
         const res = await ch.sendText(args.calendarId || "primary", args.text);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_web_search": {
+        const res = await WebResearch.search(args.query, {
+          limit: args.limit,
+          deepExtract: args.deepExtract,
+          provider: args.provider,
+          apiKey: args.apiKey
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_web_extract": {
+        const res = await WebResearch.extract(args.url);
+        return {
+          content: [{ type: "text", text: res.content }]
+        };
+      }
+      case "channelhub_video_create_short": {
+        const res = await VideoEngine.createShort({
+          input: args.input,
+          output: args.output,
+          mode: args.mode
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_video_burn_subtitles": {
+        const res = await VideoEngine.burnSubtitles({
+          input: args.input,
+          output: args.output,
+          subtitles: args.subtitles
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_video_add_watermark": {
+        const res = await VideoEngine.addWatermark({
+          input: args.input,
+          watermark: args.watermark,
+          output: args.output,
+          position: args.position,
+          opacity: args.opacity
+        });
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
         };

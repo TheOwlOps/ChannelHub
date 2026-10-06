@@ -62,6 +62,21 @@
       "types": "./dist/channels/email/index.d.ts",
       "require": "./dist/channels/email/index.cjs"
     },
+    "./github": {
+      "import": "./dist/channels/github/index.js",
+      "types": "./dist/channels/github/index.d.ts",
+      "require": "./dist/channels/github/index.cjs"
+    },
+    "./calendar": {
+      "import": "./dist/channels/calendar/index.js",
+      "types": "./dist/channels/calendar/index.d.ts",
+      "require": "./dist/channels/calendar/index.cjs"
+    },
+    "./webhook-generic": {
+      "import": "./dist/channels/webhook-generic/index.js",
+      "types": "./dist/channels/webhook-generic/index.d.ts",
+      "require": "./dist/channels/webhook-generic/index.cjs"
+    },
     "./mcp": {
       "import": "./dist/bridges/mcp/index.js",
       "types": "./dist/bridges/mcp/index.d.ts",

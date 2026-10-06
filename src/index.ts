@@ -18,6 +18,9 @@ export {
 export { TikTokBusinessAdapter, type TikTokBusinessConfig } from "./channels/tiktok/index";
 export { TwilioChannelAdapter, type TwilioAdapterConfig } from "./channels/twilio/index";
 export { EmailChannelAdapter, type EmailAdapterConfig, type EmailSendOptions } from "./channels/email/index";
+export { GitHubChannelAdapter, type GitHubAdapterConfig } from "./channels/github/index";
+export { CalendarChannelAdapter, type CalendarAdapterConfig, type CalendarEventPayload } from "./channels/calendar/index";
+export { WebhookGenericAdapter, type WebhookGenericAdapterConfig } from "./channels/webhook-generic/index";
 
 // 3. AI & Protocol Bridges
 export {

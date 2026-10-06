@@ -3333,10 +3333,12 @@ var exports_src = {};
 __export(exports_src, {
   BaseChannel: () => BaseChannel,
   CONFIG: () => CONFIG,
+  CalendarChannelAdapter: () => CalendarChannelAdapter,
   ChannelHub: () => ChannelHub,
   CommandRouter: () => CommandRouter,
   DiscordChannelAdapter: () => DiscordChannelAdapter,
   EmailChannelAdapter: () => EmailChannelAdapter,
+  GitHubChannelAdapter: () => GitHubChannelAdapter,
   HumanHandoffManager: () => HumanHandoffManager,
   IdempotencyCache: () => IdempotencyCache,
   IdentityStitcher: () => IdentityStitcher,
@@ -3350,6 +3352,7 @@ __export(exports_src, {
   TokenBucketLimiter: () => TokenBucketLimiter,
   TwilioChannelAdapter: () => TwilioChannelAdapter,
   WebhookBridge: () => WebhookBridge,
+  WebhookGenericAdapter: () => WebhookGenericAdapter,
   ZaloChannelAdapter: () => ZaloChannelAdapter,
   ZaloOABot: () => ZaloOABot,
   ZaloPersonalBot: () => ZaloPersonalBot,
@@ -6874,6 +6877,331 @@ class EmailChannelAdapter extends BaseChannel {
     return unified;
   }
 }
+// src/channels/github/adapter.ts
+var import_node_crypto5 = require("node:crypto");
+class GitHubChannelAdapter extends BaseChannel {
+  name = "github";
+  config;
+  apiUrl;
+  constructor(config) {
+    super();
+    if (!config.token)
+      throw new Error("GitHubAdapterConfig.token is required");
+    this.config = config;
+    this.apiUrl = (config.apiUrl || "https://api.github.com").replace(/\/+$/, "");
+  }
+  async connect(_signal) {
+    const res = await fetch(`${this.apiUrl}/user`, {
+      headers: this.headers(),
+      signal: _signal
+    });
+    if (!res.ok)
+      throw new Error(`GitHub auth failed: ${res.status}`);
+    this.setConnected(true);
+  }
+  async disconnect() {
+    this.setConnected(false);
+  }
+  verifyWebhookSignature(payload, signatureHeader) {
+    if (!this.config.webhookSecret || !signatureHeader)
+      return false;
+    const expected = "sha256=" + import_node_crypto5.createHmac("sha256", this.config.webhookSecret).update(payload).digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(signatureHeader);
+    if (a.length !== b.length)
+      return false;
+    return import_node_crypto5.timingSafeEqual(a, b);
+  }
+  normalizeWebhookEvent(event, payload) {
+    const action = payload.action || "";
+    const sender = payload.sender || {};
+    const repo = payload.repository || {};
+    const base = {
+      channel: "github",
+      sender: { id: String(sender.id || ""), name: sender.login || "" },
+      chat: { id: `${repo.full_name || "unknown"}`, type: "group" },
+      timestamp: Date.now(),
+      raw: payload
+    };
+    switch (event) {
+      case "issues": {
+        const issue = payload.issue;
+        if (!issue)
+          return null;
+        return {
+          ...base,
+          id: `issue-${issue.id}-${action}`,
+          content: { text: `[Issue ${action}] #${issue.number} ${issue.title}
+
+${issue.body || ""}`.trim() }
+        };
+      }
+      case "issue_comment": {
+        const comment = payload.comment;
+        if (!comment)
+          return null;
+        return {
+          ...base,
+          id: `comment-${comment.id}`,
+          content: { text: `[Comment on #${payload.issue?.number}] ${comment.body || ""}`.trim() }
+        };
+      }
+      case "pull_request": {
+        const pr = payload.pull_request;
+        if (!pr)
+          return null;
+        return {
+          ...base,
+          id: `pr-${pr.id}-${action}`,
+          content: { text: `[PR ${action}] #${pr.number} ${pr.title}
+
+${pr.body || ""}`.trim() }
+        };
+      }
+      case "pull_request_review": {
+        const review = payload.review;
+        if (!review)
+          return null;
+        return {
+          ...base,
+          id: `review-${review.id}`,
+          content: { text: `[Review ${review.state}] on PR #${payload.pull_request?.number}
+
+${review.body || ""}`.trim() }
+        };
+      }
+      case "pull_request_review_comment": {
+        const comment = payload.comment;
+        if (!comment)
+          return null;
+        return {
+          ...base,
+          id: `pr-comment-${comment.id}`,
+          content: { text: `[Review comment on PR #${payload.pull_request?.number}] ${comment.body || ""}`.trim() }
+        };
+      }
+      case "discussion": {
+        const disc = payload.discussion;
+        if (!disc)
+          return null;
+        return {
+          ...base,
+          id: `discussion-${disc.id}-${action}`,
+          content: { text: `[Discussion ${action}] ${disc.title}
+
+${disc.body || ""}`.trim() }
+        };
+      }
+      case "discussion_comment": {
+        const comment = payload.comment;
+        if (!comment)
+          return null;
+        return {
+          ...base,
+          id: `disc-comment-${comment.id}`,
+          content: { text: `[Discussion comment] ${comment.body || ""}`.trim() }
+        };
+      }
+      case "push": {
+        const commits = payload.commits || [];
+        const summary = commits.map((c) => `• ${c.message}`).join(`
+`);
+        return {
+          ...base,
+          id: `push-${payload.after?.slice(0, 7) || Date.now()}`,
+          content: { text: `[Push to ${payload.ref}] ${commits.length} commit(s)
+${summary}`.trim() }
+        };
+      }
+      default:
+        return null;
+    }
+  }
+  async sendText(chatId, text, options) {
+    const { owner, repo, number } = this.parseChatId(chatId);
+    const res = await fetch(`${this.apiUrl}/repos/${owner}/${repo}/issues/${number}/comments`, {
+      method: "POST",
+      headers: this.headers(),
+      body: JSON.stringify({ body: text }),
+      signal: options?.signal
+    });
+    if (!res.ok)
+      throw new Error(`GitHub API error: ${res.status} ${await res.text()}`);
+    const data = await res.json();
+    return { messageId: String(data.id), chatId, timestamp: Date.now() };
+  }
+  async sendMedia(_chatId, _media, _options) {
+    throw new Error("Use sendText with markdown image syntax: ![alt](url)");
+  }
+  async createIssue(repoFullName, title, body, labels, signal) {
+    const [owner, repo] = repoFullName.split("/");
+    const res = await fetch(`${this.apiUrl}/repos/${owner}/${repo}/issues`, {
+      method: "POST",
+      headers: this.headers(),
+      body: JSON.stringify({ title, body, labels }),
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`GitHub API error: ${res.status} ${await res.text()}`);
+    const data = await res.json();
+    return { number: data.number, id: data.id, url: data.html_url };
+  }
+  headers() {
+    return {
+      Authorization: `Bearer ${this.config.token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    };
+  }
+  parseChatId(chatId) {
+    const match = chatId.match(/^([^/]+)\/([^#]+)#(\d+)$/);
+    if (!match)
+      throw new Error(`Invalid GitHub chatId format "${chatId}". Expected "owner/repo#number".`);
+    return { owner: match[1], repo: match[2], number: match[3] };
+  }
+}
+// src/channels/calendar/adapter.ts
+class CalendarChannelAdapter extends BaseChannel {
+  name = "calendar";
+  config;
+  apiUrl;
+  calendarId;
+  constructor(config) {
+    super();
+    if (!config.accessToken)
+      throw new Error("CalendarAdapterConfig.accessToken is required");
+    this.config = config;
+    this.apiUrl = (config.apiUrl || "https://www.googleapis.com/calendar/v3").replace(/\/+$/, "");
+    this.calendarId = config.defaultCalendarId || "primary";
+  }
+  async connect(_signal) {
+    const res = await fetch(`${this.apiUrl}/users/me/calendarList?maxResults=1`, {
+      headers: this.headers(),
+      signal: _signal
+    });
+    if (!res.ok)
+      throw new Error(`Calendar auth failed: ${res.status}`);
+    this.setConnected(true);
+  }
+  async disconnect() {
+    this.setConnected(false);
+  }
+  async sendText(chatId, text, options) {
+    const calId = chatId || this.calendarId;
+    const res = await fetch(`${this.apiUrl}/calendars/${encodeURIComponent(calId)}/events/quickAdd?text=${encodeURIComponent(text)}`, {
+      method: "POST",
+      headers: this.headers(),
+      signal: options?.signal
+    });
+    if (!res.ok)
+      throw new Error(`Calendar QuickAdd failed: ${res.status} ${await res.text()}`);
+    const data = await res.json();
+    return { messageId: String(data.id), chatId: calId, timestamp: Date.now() };
+  }
+  async sendMedia(chatId, media, options) {
+    const calId = chatId || this.calendarId;
+    let payloadStr;
+    if (Buffer.isBuffer(media.source) || media.source instanceof Uint8Array) {
+      payloadStr = Buffer.from(media.source).toString("utf8");
+    } else if (typeof media.source === "string") {
+      if (media.source.startsWith("data:")) {
+        payloadStr = Buffer.from(media.source.split(",")[1], "base64").toString("utf8");
+      } else {
+        payloadStr = media.source;
+      }
+    } else {
+      throw new Error("CalendarAdapter sendMedia requires a JSON buffer or string representing a CalendarEventPayload.");
+    }
+    const res = await fetch(`${this.apiUrl}/calendars/${encodeURIComponent(calId)}/events`, {
+      method: "POST",
+      headers: this.headers(),
+      body: payloadStr,
+      signal: options?.signal
+    });
+    if (!res.ok)
+      throw new Error(`Calendar CreateEvent failed: ${res.status} ${await res.text()}`);
+    const data = await res.json();
+    return { messageId: String(data.id), chatId: calId, timestamp: Date.now() };
+  }
+  headers() {
+    return {
+      Authorization: `Bearer ${this.config.accessToken}`,
+      "Content-Type": "application/json"
+    };
+  }
+}
+// src/channels/webhook-generic/adapter.ts
+var import_node_crypto6 = require("node:crypto");
+class WebhookGenericAdapter extends BaseChannel {
+  name;
+  config;
+  constructor(config) {
+    super();
+    if (!config.serviceName)
+      throw new Error("WebhookGenericAdapterConfig.serviceName is required");
+    this.name = config.serviceName;
+    this.config = config;
+  }
+  async connect(_signal) {
+    this.setConnected(true);
+  }
+  async disconnect() {
+    this.setConnected(false);
+  }
+  verifySignature(payload, headerValue) {
+    if (!this.config.webhookSecret)
+      return true;
+    if (!headerValue)
+      return false;
+    const prefix = this.config.signaturePrefix || "";
+    let cleanHeader = headerValue;
+    if (prefix && cleanHeader.startsWith(prefix)) {
+      cleanHeader = cleanHeader.slice(prefix.length);
+    }
+    const expected = import_node_crypto6.createHmac("sha256", this.config.webhookSecret).update(payload).digest("hex");
+    const a = Buffer.from(expected);
+    const b = Buffer.from(cleanHeader);
+    if (a.length !== b.length)
+      return false;
+    return import_node_crypto6.timingSafeEqual(a, b);
+  }
+  getByPath(obj, path) {
+    if (!path)
+      return;
+    return path.split(".").reduce((acc, part) => acc && acc[part] !== undefined ? acc[part] : undefined, obj);
+  }
+  normalizePayload(payload) {
+    const fm = this.config.fieldMap || {};
+    const messageId = String(this.getByPath(payload, fm.messageId) || payload.id || `wh-${Date.now()}`);
+    const senderId = String(this.getByPath(payload, fm.senderId) || payload.sender || payload.user || "webhook");
+    const senderName = String(this.getByPath(payload, fm.senderName) || senderId);
+    const chatId = String(this.getByPath(payload, fm.chatId) || payload.channel || payload.room || "default");
+    const text = String(this.getByPath(payload, fm.text) || payload.message || payload.text || JSON.stringify(payload));
+    return {
+      channel: this.name,
+      id: messageId,
+      sender: { id: senderId, name: senderName },
+      chat: { id: chatId, type: "group" },
+      content: { text },
+      timestamp: Date.now(),
+      raw: payload
+    };
+  }
+  async sendText(chatId, text, _options) {
+    if (this.config.sendHandler) {
+      return await this.config.sendHandler(chatId, text);
+    }
+    return {
+      messageId: `sent-${Date.now()}`,
+      chatId,
+      timestamp: Date.now()
+    };
+  }
+  async sendMedia(chatId, _media, _options) {
+    throw new Error(`sendMedia is not implemented for generic webhook service "${this.name}".`);
+  }
+}
 // src/bridges/mcp/index.ts
 function getChannelHubMcpTools() {
   return [
@@ -7102,6 +7430,69 @@ function getChannelHubMcpTools() {
           }
         }
       }
+    },
+    {
+      name: "channelhub_github_comment",
+      description: "Post a comment on a GitHub issue or PR. chatId format: owner/repo#number",
+      parameters: {
+        type: "object",
+        required: ["chatId", "text"],
+        properties: {
+          chatId: {
+            type: "string",
+            description: 'Target in "owner/repo#number" format, e.g. "theowlops/channelhub#42"'
+          },
+          text: {
+            type: "string",
+            description: "Comment body (markdown supported)"
+          }
+        }
+      }
+    },
+    {
+      name: "channelhub_github_create_issue",
+      description: "Create a new GitHub issue on a repository.",
+      parameters: {
+        type: "object",
+        required: ["repo", "title"],
+        properties: {
+          repo: {
+            type: "string",
+            description: 'Repository in "owner/repo" format'
+          },
+          title: {
+            type: "string",
+            description: "Issue title"
+          },
+          body: {
+            type: "string",
+            description: "Issue body (markdown)"
+          },
+          labels: {
+            type: "array",
+            items: { type: "string" },
+            description: "Labels to apply"
+          }
+        }
+      }
+    },
+    {
+      name: "channelhub_calendar_quick_add",
+      description: "Create a Google Calendar event using natural language, e.g. 'Meeting with Ryan tomorrow at 2pm'.",
+      parameters: {
+        type: "object",
+        required: ["text"],
+        properties: {
+          calendarId: {
+            type: "string",
+            description: 'Calendar ID (defaults to "primary")'
+          },
+          text: {
+            type: "string",
+            description: "Natural language event description"
+          }
+        }
+      }
     }
   ];
 }
@@ -7231,6 +7622,33 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
         };
       }
+      case "channelhub_github_comment": {
+        const ch = hub.getChannel("github");
+        if (!ch)
+          throw new Error("GitHub channel adapter not registered.");
+        const res = await ch.sendText(args.chatId, args.text);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_github_create_issue": {
+        const ch = hub.getChannel("github");
+        if (!ch || !ch.createIssue)
+          throw new Error("GitHub channel adapter not registered.");
+        const res = await ch.createIssue(args.repo, args.title, args.body, args.labels);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_calendar_quick_add": {
+        const ch = hub.getChannel("calendar");
+        if (!ch)
+          throw new Error("Calendar channel adapter not registered.");
+        const res = await ch.sendText(args.calendarId || "primary", args.text);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
       default:
         throw new Error(`Unknown tool: ${toolName}`);
     }
@@ -7243,7 +7661,7 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
 }
 // src/bridges/webhook/index.ts
 var import_node_http2 = require("node:http");
-var import_node_crypto5 = require("node:crypto");
+var import_node_crypto7 = require("node:crypto");
 
 class WebhookBridge {
   hub;
@@ -7302,7 +7720,7 @@ class WebhookBridge {
     const keyBuf = Buffer.from(this.config.apiKey);
     if (tokenBuf.length !== keyBuf.length)
       return false;
-    return import_node_crypto5.timingSafeEqual(tokenBuf, keyBuf);
+    return import_node_crypto7.timingSafeEqual(tokenBuf, keyBuf);
   }
   async handle(req, res) {
     const p = this.path(req);

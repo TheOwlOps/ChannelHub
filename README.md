@@ -457,6 +457,10 @@ Add to `claude_desktop_config.json`:
 8. `channelhub_edit_message`: Edit previously dispatched messages.
 9. `channelhub_add_reaction`: React to messages with emojis.
 10. `channelhub_broadcast`: Broadcast a message across multiple channels in a single call.
+11. `channelhub_send_email`: Send emails via Resend or SendGrid with full support for HTML, Subject, CC, and BCC.
+12. `channelhub_github_comment`: Post review comments on GitHub issues and pull requests.
+13. `channelhub_github_create_issue`: Open new issues on any GitHub repository with tags and description.
+14. `channelhub_calendar_quick_add`: Schedule events directly into Google Calendar using natural language.
 
 ---
 

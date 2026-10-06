@@ -8,6 +8,9 @@ export { MessengerChannelAdapter, MessengerPersonalAdapter, type MessengerAdapte
 export { TikTokBusinessAdapter, type TikTokBusinessConfig } from "./channels/tiktok/index";
 export { TwilioChannelAdapter, type TwilioAdapterConfig } from "./channels/twilio/index";
 export { EmailChannelAdapter, type EmailAdapterConfig, type EmailSendOptions } from "./channels/email/index";
+export { GitHubChannelAdapter, type GitHubAdapterConfig } from "./channels/github/index";
+export { CalendarChannelAdapter, type CalendarAdapterConfig, type CalendarEventPayload } from "./channels/calendar/index";
+export { WebhookGenericAdapter, type WebhookGenericAdapterConfig } from "./channels/webhook-generic/index";
 export { getChannelHubMcpTools, handleChannelHubMcpCall, type McpToolDefinition, } from "./bridges/mcp/index";
 export { WebhookBridge, type WebhookBridgeConfig } from "./bridges/webhook/index";
 export { ZaloPersonalBot } from "./personal/client";

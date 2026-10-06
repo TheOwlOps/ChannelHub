@@ -226,6 +226,69 @@ function getChannelHubMcpTools() {
           }
         }
       }
+    },
+    {
+      name: "channelhub_github_comment",
+      description: "Post a comment on a GitHub issue or PR. chatId format: owner/repo#number",
+      parameters: {
+        type: "object",
+        required: ["chatId", "text"],
+        properties: {
+          chatId: {
+            type: "string",
+            description: 'Target in "owner/repo#number" format, e.g. "theowlops/channelhub#42"'
+          },
+          text: {
+            type: "string",
+            description: "Comment body (markdown supported)"
+          }
+        }
+      }
+    },
+    {
+      name: "channelhub_github_create_issue",
+      description: "Create a new GitHub issue on a repository.",
+      parameters: {
+        type: "object",
+        required: ["repo", "title"],
+        properties: {
+          repo: {
+            type: "string",
+            description: 'Repository in "owner/repo" format'
+          },
+          title: {
+            type: "string",
+            description: "Issue title"
+          },
+          body: {
+            type: "string",
+            description: "Issue body (markdown)"
+          },
+          labels: {
+            type: "array",
+            items: { type: "string" },
+            description: "Labels to apply"
+          }
+        }
+      }
+    },
+    {
+      name: "channelhub_calendar_quick_add",
+      description: "Create a Google Calendar event using natural language, e.g. 'Meeting with Ryan tomorrow at 2pm'.",
+      parameters: {
+        type: "object",
+        required: ["text"],
+        properties: {
+          calendarId: {
+            type: "string",
+            description: 'Calendar ID (defaults to "primary")'
+          },
+          text: {
+            type: "string",
+            description: "Natural language event description"
+          }
+        }
+      }
     }
   ];
 }
@@ -351,6 +414,33 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
           bcc: args.bcc,
           replyTo: args.replyTo
         });
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_github_comment": {
+        const ch = hub.getChannel("github");
+        if (!ch)
+          throw new Error("GitHub channel adapter not registered.");
+        const res = await ch.sendText(args.chatId, args.text);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_github_create_issue": {
+        const ch = hub.getChannel("github");
+        if (!ch || !ch.createIssue)
+          throw new Error("GitHub channel adapter not registered.");
+        const res = await ch.createIssue(args.repo, args.title, args.body, args.labels);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_calendar_quick_add": {
+        const ch = hub.getChannel("calendar");
+        if (!ch)
+          throw new Error("Calendar channel adapter not registered.");
+        const res = await ch.sendText(args.calendarId || "primary", args.text);
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
         };

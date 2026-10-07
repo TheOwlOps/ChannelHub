@@ -2,6 +2,9 @@ import type { ChannelHub } from "../../core/hub";
 import type { MediaType } from "../../core/types";
 import { WebResearch } from "../../core/research";
 import { VideoEngine } from "../../core/video";
+import { GroupManager } from "../../core/group-manager";
+
+const _groupManager = new GroupManager();
 
 export interface McpToolDefinition {
   name: string;
@@ -366,7 +369,192 @@ export function getChannelHubMcpTools(): McpToolDefinition[] {
           opacity: { type: "number", description: "0.1 to 1.0 (default 0.9)" },
         },
       },
-    }
+    },
+    {
+      name: "channelhub_messenger_get_threads",
+      description: "Scrapes recent conversations and group chats from personal Messenger to retrieve thread IDs and names for the bot.",
+      parameters: {
+        type: "object",
+        properties: {
+          limit: { type: "number", description: "Maximum number of threads to fetch (default: 30)" },
+        },
+      },
+    },
+    {
+      name: "channelhub_messenger_get_history",
+      description: "Scrapes recent message history from a specific Messenger thread ID.",
+      parameters: {
+        type: "object",
+        required: ["threadId"],
+        properties: {
+          threadId: { type: "string", description: "The thread or conversation ID" },
+          limit: { type: "number", description: "Max messages to retrieve (default: 20)" },
+        },
+      },
+    },
+    {
+      name: "channelhub_messenger_get_members",
+      description: "Scrapes visible group members or participant information for a specific Messenger group thread.",
+      parameters: {
+        type: "object",
+        required: ["threadId"],
+        properties: {
+          threadId: { type: "string", description: "The group thread ID" },
+        },
+      },
+    },
+    {
+      name: "channelhub_messenger_get_user_profile",
+      description: "Retrieves user or thread details including name, avatar URL, and ID from Messenger.",
+      parameters: {
+        type: "object",
+        required: ["userId"],
+        properties: {
+          userId: { type: "string", description: "The Facebook user ID or thread ID" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_recap",
+      description: "Summarize recent group discussion into key topics, decisions, and action items.",
+      parameters: {
+        type: "object",
+        required: ["messages"],
+        properties: {
+          messages: {
+            type: "array",
+            description: "Array of message objects: [{ sender?: string, text: string }]",
+          },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_check_spam",
+      description: "Inspect a message for spam, flood, blacklisted links, or repetitive text.",
+      parameters: {
+        type: "object",
+        required: ["senderId", "text"],
+        properties: {
+          senderId: { type: "string", description: "Unique identifier of the message author" },
+          text: { type: "string", description: "Message content" },
+          disallowLinks: { type: "boolean", description: "Flag to completely forbid URLs" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_welcome_challenge",
+      description: "Generate a welcome message and captcha math challenge for a newly joined group member.",
+      parameters: {
+        type: "object",
+        required: ["chatId", "memberId", "memberName"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          memberId: { type: "string", description: "ID of the joining member" },
+          memberName: { type: "string", description: "Display name of the member" },
+          groupRules: { type: "string", description: "Optional group rules text" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_verify_challenge",
+      description: "Verify a member's answer to the gatekeeper captcha challenge.",
+      parameters: {
+        type: "object",
+        required: ["chatId", "memberId", "answer"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          memberId: { type: "string", description: "ID of the member" },
+          answer: { type: "string", description: "Member's answer to the math captcha" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_leaderboard",
+      description: "Get the most active members leaderboard for a group chat.",
+      parameters: {
+        type: "object",
+        required: ["chatId"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          limit: { type: "number", description: "Max rankings to return (default: 10)" },
+        },
+      },
+    },
+    {
+      name: "channelhub_messenger_recall_message",
+      description: "Recall / unsend a message sent by the bot on Messenger.",
+      parameters: {
+        type: "object",
+        properties: {
+          chatId: { type: "string", description: "Conversation ID or thread ID" },
+          messageId: { type: "string", description: "Message ID (for Page Graph API) or omitted (for Personal DOM)" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_check_profanity",
+      description: "Check if text contains toxic words or profanity.",
+      parameters: {
+        type: "object",
+        required: ["text"],
+        properties: {
+          text: { type: "string", description: "Message content to inspect" },
+          badWords: { type: "array", description: "Optional custom list of prohibited words" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_issue_warning",
+      description: "Issue a warning strike to a member. Recommends kick if reaching strike limit (default: 3).",
+      parameters: {
+        type: "object",
+        required: ["chatId", "userId", "reason"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          userId: { type: "string", description: "ID of the offending member" },
+          reason: { type: "string", description: "Reason for the warning" },
+          maxStrikes: { type: "number", description: "Maximum strikes before kick (default: 3)" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_create_poll",
+      description: "Create an interactive voting poll for the group.",
+      parameters: {
+        type: "object",
+        required: ["chatId", "creatorId", "question", "options"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          creatorId: { type: "string", description: "User ID creating the poll" },
+          question: { type: "string", description: "Poll question" },
+          options: { type: "array", description: "Array of choice options (string[])" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_cast_vote",
+      description: "Cast a vote in an active group poll.",
+      parameters: {
+        type: "object",
+        required: ["pollId", "voterId", "optionIndex"],
+        properties: {
+          pollId: { type: "string", description: "Poll ID" },
+          voterId: { type: "string", description: "ID of the voter" },
+          optionIndex: { type: "number", description: "0-based index of chosen option" },
+        },
+      },
+    },
+    {
+      name: "channelhub_group_get_poll_results",
+      description: "Get real-time vote results and percentages for a group poll.",
+      parameters: {
+        type: "object",
+        required: ["pollId"],
+        properties: {
+          pollId: { type: "string", description: "Poll ID" },
+        },
+      },
+    },
   ];
 }
 
@@ -586,6 +774,137 @@ export async function handleChannelHubMcpCall(
         });
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_messenger_get_threads": {
+        const adapter = hub.getChannel("messenger") as any;
+        if (!adapter || typeof adapter.getThreads !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getThreads");
+        }
+        const threads = await adapter.getThreads(args.limit || 30);
+        return {
+          content: [{ type: "text", text: JSON.stringify(threads, null, 2) }],
+        };
+      }
+
+      case "channelhub_messenger_get_history": {
+        const adapter = hub.getChannel("messenger") as any;
+        if (!adapter || typeof adapter.getThreadHistory !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getThreadHistory");
+        }
+        const history = await adapter.getThreadHistory(args.threadId, args.limit || 20);
+        return {
+          content: [{ type: "text", text: JSON.stringify(history, null, 2) }],
+        };
+      }
+
+      case "channelhub_messenger_get_members": {
+        const adapter = hub.getChannel("messenger") as any;
+        if (!adapter || typeof adapter.getGroupMembers !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getGroupMembers");
+        }
+        const members = await adapter.getGroupMembers(args.threadId);
+        return {
+          content: [{ type: "text", text: JSON.stringify(members, null, 2) }],
+        };
+      }
+
+      case "channelhub_messenger_get_user_profile": {
+        const adapter = hub.getChannel("messenger") as any;
+        if (!adapter || typeof adapter.getUserProfile !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getUserProfile");
+        }
+        const profile = await adapter.getUserProfile(args.userId);
+        return {
+          content: [{ type: "text", text: JSON.stringify(profile, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_recap": {
+        const recap = _groupManager.generateRecap(args.messages || []);
+        return {
+          content: [{ type: "text", text: JSON.stringify(recap, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_check_spam": {
+        const result = _groupManager.checkSpam(args.senderId, args.text, {
+          disallowLinks: args.disallowLinks,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_welcome_challenge": {
+        const challenge = _groupManager.registerNewMember(
+          args.chatId,
+          { id: args.memberId, name: args.memberName },
+          args.groupRules
+        );
+        return {
+          content: [{ type: "text", text: JSON.stringify(challenge, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_verify_challenge": {
+        const valid = _groupManager.verifyMember(args.chatId, args.memberId, args.answer);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ success: valid }, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_leaderboard": {
+        const leaderboard = _groupManager.getLeaderboard(args.chatId, args.limit || 10);
+        return {
+          content: [{ type: "text", text: JSON.stringify(leaderboard, null, 2) }],
+        };
+      }
+
+      case "channelhub_messenger_recall_message": {
+        const adapter = hub.getChannel("messenger") as any;
+        if (!adapter || typeof adapter.recallMessage !== "function") {
+          throw new Error("Messenger adapter is not registered or does not support recallMessage");
+        }
+        const success = await adapter.recallMessage(args.chatId, args.messageId);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ success }, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_check_profanity": {
+        const res = _groupManager.checkProfanity(args.text, args.badWords);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_issue_warning": {
+        const res = _groupManager.issueWarning(args.chatId, args.userId, args.reason, args.maxStrikes);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_create_poll": {
+        const poll = _groupManager.createPoll(args.chatId, args.creatorId, args.question, args.options);
+        return {
+          content: [{ type: "text", text: JSON.stringify(poll, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_cast_vote": {
+        const success = _groupManager.castVote(args.pollId, args.voterId, args.optionIndex);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ success }, null, 2) }],
+        };
+      }
+
+      case "channelhub_group_get_poll_results": {
+        const results = _groupManager.getPollResults(args.pollId);
+        return {
+          content: [{ type: "text", text: JSON.stringify(results, null, 2) }],
         };
       }
 

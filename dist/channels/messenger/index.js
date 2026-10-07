@@ -200,6 +200,8 @@ class MessengerChannelAdapter extends BaseChannel {
       for (const event of entry.messaging) {
         if (!event.message && !event.postback)
           continue;
+        if (event.message?.is_echo)
+          continue;
         const senderId = event.sender?.id || "";
         let text = event.message?.text || event.postback?.title || event.postback?.payload || "";
         const attachments = [];
@@ -660,6 +662,145 @@ class MessengerPersonalAdapter extends BaseChannel {
   }
   async sendMedia(chatId, media, options) {
     throw new Error("Direct file upload on personal Messenger is disabled in safe mode to prevent account checkpoints. Use sendText or Page Graph API.");
+  }
+  async getThreads(limit = 30) {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+    return await this._activePage.evaluate((max) => {
+      const links = Array.from(document.querySelectorAll("a[href*='/t/']"));
+      const seen = new Set;
+      const list = [];
+      for (const a of links) {
+        const href = a.getAttribute("href") || "";
+        const match = href.match(/\/t\/([a-zA-Z0-9._]+)/);
+        if (match && match[1]) {
+          const id = match[1];
+          if (!seen.has(id)) {
+            seen.add(id);
+            const titleEl = a.querySelector("span[dir='auto'], div[dir='auto']");
+            const name = titleEl?.textContent?.trim() || a.getAttribute("aria-label") || id;
+            const imgEl = a.querySelector("img");
+            const avatarUrl = imgEl?.getAttribute("src") || undefined;
+            list.push({ id, name, avatarUrl });
+            if (list.length >= max)
+              break;
+          }
+        }
+      }
+      return list;
+    }, limit);
+  }
+  async getThreadHistory(threadId, limit = 20) {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+    const targetUrl = `https://www.messenger.com/t/${threadId}`;
+    if (this._activePage.url() !== targetUrl) {
+      await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+    }
+    return await this._activePage.evaluate((max) => {
+      const rows = Array.from(document.querySelectorAll("div[role='row'], div[role='main'] div[dir='auto']"));
+      const messages = [];
+      for (const row of rows) {
+        const text = row.textContent?.trim() || "";
+        const imgEls = Array.from(row.querySelectorAll("img[src*='fbcdn'], img[src*='scontent'], img[role='presentation']"));
+        const images = imgEls.map((img) => img.getAttribute("src")).filter(Boolean);
+        if ((text.length > 0 || images.length > 0) && !messages.some((m) => m.text === text && text.length > 0)) {
+          const sender = row.getAttribute("aria-label") || undefined;
+          messages.push({
+            text,
+            sender,
+            images: images.length > 0 ? images : undefined
+          });
+          if (messages.length >= max)
+            break;
+        }
+      }
+      return messages;
+    }, limit);
+  }
+  async getGroupMembers(threadId) {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+    const targetUrl = `https://www.messenger.com/t/${threadId}`;
+    if (this._activePage.url() !== targetUrl) {
+      await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+    }
+    return await this._activePage.evaluate(() => {
+      const memberLinks = Array.from(document.querySelectorAll("div[role='complementary'] a[href*='facebook.com'], div[role='main'] a[role='link']"));
+      const seen = new Set;
+      const members = [];
+      for (const link of memberLinks) {
+        const href = link.getAttribute("href") || "";
+        const name = link.textContent?.trim();
+        if (name && !seen.has(name) && !href.includes("/t/")) {
+          seen.add(name);
+          const idMatch = href.match(/facebook\.com\/([a-zA-Z0-9.]+)/);
+          const imgEl = link.querySelector("img") || link.closest("div")?.querySelector("img");
+          const avatarUrl = imgEl?.getAttribute("src") || undefined;
+          members.push({
+            name,
+            id: idMatch ? idMatch[1] : undefined,
+            avatarUrl
+          });
+        }
+      }
+      return members;
+    });
+  }
+  async getUserProfile(userId) {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+    const targetUrl = `https://www.messenger.com/t/${userId}`;
+    if (this._activePage.url() !== targetUrl) {
+      await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+    }
+    return await this._activePage.evaluate((uid) => {
+      const headerEl = document.querySelector("div[role='main'] header h1, div[role='main'] header span, div[role='complementary'] h2");
+      const name = headerEl?.textContent?.trim() || uid;
+      const imgEl = document.querySelector("div[role='main'] header img, div[role='complementary'] img");
+      const avatarUrl = imgEl?.getAttribute("src") || undefined;
+      return { id: uid, name, avatarUrl };
+    }, userId);
+  }
+  async recallMessage(chatId) {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+    if (chatId) {
+      const targetUrl = `https://www.messenger.com/t/${chatId}`;
+      if (this._activePage.url() !== targetUrl) {
+        await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+      }
+    }
+    return await this._activePage.evaluate(async () => {
+      const rows = Array.from(document.querySelectorAll("div[role='row']"));
+      const lastRow = rows[rows.length - 1];
+      if (!lastRow)
+        return false;
+      lastRow.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+      const moreBtn = lastRow.querySelector("div[aria-label*='More'], div[aria-label*='Xem thêm'], div[aria-label*='Khác'], div[aria-label*='Hành động khác']");
+      if (moreBtn) {
+        moreBtn.click();
+        await new Promise((r) => setTimeout(r, 400));
+        const menuItems = Array.from(document.querySelectorAll("div[role='menuitem']"));
+        const removeOption = menuItems.find((el) => /remove|gỡ|thu hồi|unsend/i.test(el.textContent || ""));
+        if (removeOption) {
+          removeOption.click();
+          await new Promise((r) => setTimeout(r, 400));
+          const dialogBtns = Array.from(document.querySelectorAll("div[role='dialog'] div[role='button']"));
+          const confirmBtn = dialogBtns.find((el) => /unsend|thu hồi|remove for everyone/i.test(el.textContent || ""));
+          if (confirmBtn) {
+            confirmBtn.click();
+            return true;
+          }
+        }
+      }
+      return false;
+    });
   }
   async disconnect() {
     this.setConnected(false);

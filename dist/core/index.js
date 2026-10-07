@@ -1168,9 +1168,290 @@ ${stderr.slice(-500)}`));
     });
   }
 }
+// src/core/group-manager.ts
+class GroupManager {
+  userMessageHistory = new Map;
+  reminders = new Map;
+  pendingChallenges = new Map;
+  chatActivities = new Map;
+  warnings = new Map;
+  polls = new Map;
+  generateRecap(messages) {
+    const participants = Array.from(new Set(messages.map((m) => m.sender || m.senderId || "Unknown")));
+    const keyTopics = [];
+    const decisions = [];
+    const actionItems = [];
+    for (const msg of messages) {
+      const text = msg.text.trim();
+      const lower = text.toLowerCase();
+      if (lower.startsWith("chốt:") || lower.startsWith("quyết định:") || lower.includes("thống nhất") || lower.startsWith("agree:") || lower.startsWith("decided:")) {
+        decisions.push(text);
+      }
+      if (lower.includes("cần làm") || lower.includes("todo:") || lower.includes("giao cho") || lower.includes("hạn chót") || lower.startsWith("task:")) {
+        actionItems.push({
+          task: text,
+          assignee: msg.sender
+        });
+      }
+      if (text.length > 15 && !keyTopics.includes(text) && keyTopics.length < 5) {
+        if (!decisions.includes(text) && !actionItems.some((a) => a.task === text)) {
+          keyTopics.push(text.length > 80 ? text.slice(0, 77) + "..." : text);
+        }
+      }
+    }
+    const summaryLines = [
+      `\uD83D\uDCCA **Tóm tắt cuộc thảo luận (${messages.length} tin nhắn)**:`,
+      `\uD83D\uDC65 **Thành viên tham gia:** ${participants.join(", ") || "Không có"}`,
+      `\uD83D\uDCCC **Chủ đề chính:** ${keyTopics.length > 0 ? keyTopics.join(" | ") : "Thảo luận thông thường"}`,
+      `✅ **Quyết định đã chốt:** ${decisions.length > 0 ? decisions.join("; ") : "Không có"}`,
+      `\uD83D\uDCDD **Đầu việc (Action items):** ${actionItems.length > 0 ? actionItems.map((a) => a.task).join("; ") : "Không có"}`
+    ];
+    return {
+      totalMessages: messages.length,
+      participants,
+      keyTopics,
+      decisions,
+      actionItems,
+      summaryText: summaryLines.join(`
+`)
+    };
+  }
+  checkSpam(senderId, text, options = {}) {
+    const now = Date.now();
+    const windowMs = options.windowMs || 1e4;
+    const maxMessages = options.maxMessagesPerWindow || 5;
+    const blacklisted = options.blacklistedDomains || ["t.me/", "bit.ly/", "cutt.ly/", "tini.vn/"];
+    const urlMatches = text.match(/https?:\/\/[^\s]+/gi) || [];
+    if (options.disallowLinks && urlMatches.length > 0) {
+      return {
+        isSpam: true,
+        reason: "links_disabled",
+        recommendedAction: "delete",
+        messageCountInWindow: 1
+      };
+    }
+    for (const url of urlMatches) {
+      if (blacklisted.some((bad) => url.toLowerCase().includes(bad.toLowerCase()))) {
+        return {
+          isSpam: true,
+          reason: "blacklisted_link",
+          recommendedAction: "kick",
+          messageCountInWindow: 1
+        };
+      }
+    }
+    const userHistory = this.userMessageHistory.get(senderId) || [];
+    const validHistory = userHistory.filter((item) => now - item.timestamp < windowMs);
+    const identicalCount = validHistory.filter((item) => item.text === text).length;
+    if (identicalCount >= 2) {
+      return {
+        isSpam: true,
+        reason: "repetitive_text",
+        recommendedAction: "warn",
+        messageCountInWindow: validHistory.length + 1
+      };
+    }
+    validHistory.push({ text, timestamp: now });
+    this.userMessageHistory.set(senderId, validHistory);
+    if (validHistory.length >= maxMessages) {
+      return {
+        isSpam: true,
+        reason: "flood",
+        recommendedAction: "warn",
+        messageCountInWindow: validHistory.length
+      };
+    }
+    return {
+      isSpam: false,
+      recommendedAction: "allow",
+      messageCountInWindow: validHistory.length
+    };
+  }
+  registerNewMember(chatId, member, groupRules = "Vui lòng tôn trọng thành viên và không gửi link quảng cáo.", timeoutSeconds = 60) {
+    const a = Math.floor(Math.random() * 8) + 1;
+    const b = Math.floor(Math.random() * 8) + 1;
+    const answer = String(a + b);
+    const expiresAt = Date.now() + timeoutSeconds * 1000;
+    const challengeKey = `${chatId}:${member.id}`;
+    const challenge = {
+      memberId: member.id,
+      memberName: member.name,
+      welcomeMessage: `\uD83C\uDF89 Chào mừng **${member.name}** đã tham gia nhóm!
+\uD83D\uDCDC Nội quy: ${groupRules}
+\uD83D\uDD12 Để tránh tài khoản clone, bạn hãy trả lời câu hỏi bảo mật trong vòng ${timeoutSeconds}s:`,
+      question: `Bạn hãy tính: ${a} + ${b} = ?`,
+      expectedAnswer: answer,
+      expiresAt
+    };
+    this.pendingChallenges.set(challengeKey, challenge);
+    return challenge;
+  }
+  verifyMember(chatId, memberId, answer) {
+    const challengeKey = `${chatId}:${memberId}`;
+    const challenge = this.pendingChallenges.get(challengeKey);
+    if (!challenge)
+      return true;
+    if (Date.now() > challenge.expiresAt) {
+      this.pendingChallenges.delete(challengeKey);
+      return false;
+    }
+    if (answer.trim() === challenge.expectedAnswer) {
+      this.pendingChallenges.delete(challengeKey);
+      return true;
+    }
+    return false;
+  }
+  scheduleReminder(chatId, text, triggerAt, recurringIntervalMs) {
+    const id = `remind_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const timestamp = typeof triggerAt === "number" ? triggerAt : triggerAt.getTime();
+    const reminder = {
+      id,
+      chatId,
+      text,
+      triggerAt: timestamp,
+      recurringIntervalMs,
+      executed: false
+    };
+    this.reminders.set(id, reminder);
+    return reminder;
+  }
+  pollDueReminders() {
+    const now = Date.now();
+    const dueList = [];
+    for (const [id, r] of this.reminders.entries()) {
+      if (!r.executed && r.triggerAt <= now) {
+        dueList.push({ ...r });
+        if (r.recurringIntervalMs && r.recurringIntervalMs > 0) {
+          r.triggerAt = now + r.recurringIntervalMs;
+        } else {
+          r.executed = true;
+          this.reminders.delete(id);
+        }
+      }
+    }
+    return dueList;
+  }
+  recordActivity(chatId, senderId, senderName = senderId, timestamp = Date.now()) {
+    let groupMap = this.chatActivities.get(chatId);
+    if (!groupMap) {
+      groupMap = new Map;
+      this.chatActivities.set(chatId, groupMap);
+    }
+    const current = groupMap.get(senderId) || {
+      userId: senderId,
+      name: senderName,
+      messageCount: 0,
+      lastActiveAt: timestamp
+    };
+    current.messageCount += 1;
+    current.name = senderName;
+    current.lastActiveAt = timestamp;
+    groupMap.set(senderId, current);
+  }
+  getLeaderboard(chatId, limit = 10) {
+    const groupMap = this.chatActivities.get(chatId);
+    if (!groupMap)
+      return [];
+    return Array.from(groupMap.values()).sort((a, b) => b.messageCount - a.messageCount).slice(0, limit);
+  }
+  getInactiveMembers(chatId, cutoffDays = 7) {
+    const groupMap = this.chatActivities.get(chatId);
+    if (!groupMap)
+      return [];
+    const threshold = Date.now() - cutoffDays * 24 * 60 * 60 * 1000;
+    return Array.from(groupMap.values()).filter((m) => m.lastActiveAt < threshold);
+  }
+  checkProfanity(text, badWords = ["dm", "vcl", "fuck", "bitch", "scam", "lua dao"]) {
+    const lower = text.toLowerCase();
+    const flagged = [];
+    for (const w of badWords) {
+      const regex = new RegExp(`(^|\\s|[^a-zA-Z0-9_])${w}([^a-zA-Z0-9_]|\\s|$)`, "i");
+      if (regex.test(lower)) {
+        flagged.push(w);
+      }
+    }
+    return {
+      isClean: flagged.length === 0,
+      flaggedWords: flagged
+    };
+  }
+  issueWarning(chatId, userId, reason, maxStrikes = 3) {
+    let chatMap = this.warnings.get(chatId);
+    if (!chatMap) {
+      chatMap = new Map;
+      this.warnings.set(chatId, chatMap);
+    }
+    const userWarns = chatMap.get(userId) || [];
+    userWarns.push({ reason, timestamp: Date.now() });
+    chatMap.set(userId, userWarns);
+    return {
+      strikes: userWarns.length,
+      action: userWarns.length >= maxStrikes ? "kick" : "warn"
+    };
+  }
+  getWarnings(chatId, userId) {
+    return this.warnings.get(chatId)?.get(userId) || [];
+  }
+  clearWarnings(chatId, userId) {
+    this.warnings.get(chatId)?.delete(userId);
+  }
+  createPoll(chatId, creatorId, question, options) {
+    const id = `poll_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const poll = {
+      id,
+      chatId,
+      creatorId,
+      question,
+      options,
+      votes: new Map,
+      active: true
+    };
+    this.polls.set(id, poll);
+    return poll;
+  }
+  castVote(pollId, voterId, optionIndex) {
+    const poll = this.polls.get(pollId);
+    if (!poll || !poll.active || optionIndex < 0 || optionIndex >= poll.options.length) {
+      return false;
+    }
+    poll.votes.set(voterId, optionIndex);
+    return true;
+  }
+  getPollResults(pollId) {
+    const poll = this.polls.get(pollId);
+    if (!poll)
+      return null;
+    const counts = new Array(poll.options.length).fill(0);
+    for (const optIdx of poll.votes.values()) {
+      counts[optIdx]++;
+    }
+    const total = poll.votes.size;
+    const results = poll.options.map((option, idx) => ({
+      option,
+      votes: counts[idx],
+      percentage: total > 0 ? Math.round(counts[idx] / total * 100) : 0
+    }));
+    return {
+      question: poll.question,
+      totalVotes: total,
+      active: poll.active,
+      results
+    };
+  }
+  closePoll(pollId, creatorId) {
+    const poll = this.polls.get(pollId);
+    if (!poll)
+      return false;
+    if (creatorId && poll.creatorId !== creatorId)
+      return false;
+    poll.active = false;
+    return true;
+  }
+}
 export {
   BaseChannel,
   ChannelHub,
+  GroupManager,
   HumanHandoffManager,
   IdempotencyCache,
   IdentityStitcher,

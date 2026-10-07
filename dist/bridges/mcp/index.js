@@ -387,7 +387,289 @@ ${stderr.slice(-500)}`));
   }
 }
 
+// src/core/group-manager.ts
+class GroupManager {
+  userMessageHistory = new Map;
+  reminders = new Map;
+  pendingChallenges = new Map;
+  chatActivities = new Map;
+  warnings = new Map;
+  polls = new Map;
+  generateRecap(messages) {
+    const participants = Array.from(new Set(messages.map((m) => m.sender || m.senderId || "Unknown")));
+    const keyTopics = [];
+    const decisions = [];
+    const actionItems = [];
+    for (const msg of messages) {
+      const text = msg.text.trim();
+      const lower = text.toLowerCase();
+      if (lower.startsWith("chốt:") || lower.startsWith("quyết định:") || lower.includes("thống nhất") || lower.startsWith("agree:") || lower.startsWith("decided:")) {
+        decisions.push(text);
+      }
+      if (lower.includes("cần làm") || lower.includes("todo:") || lower.includes("giao cho") || lower.includes("hạn chót") || lower.startsWith("task:")) {
+        actionItems.push({
+          task: text,
+          assignee: msg.sender
+        });
+      }
+      if (text.length > 15 && !keyTopics.includes(text) && keyTopics.length < 5) {
+        if (!decisions.includes(text) && !actionItems.some((a) => a.task === text)) {
+          keyTopics.push(text.length > 80 ? text.slice(0, 77) + "..." : text);
+        }
+      }
+    }
+    const summaryLines = [
+      `\uD83D\uDCCA **Tóm tắt cuộc thảo luận (${messages.length} tin nhắn)**:`,
+      `\uD83D\uDC65 **Thành viên tham gia:** ${participants.join(", ") || "Không có"}`,
+      `\uD83D\uDCCC **Chủ đề chính:** ${keyTopics.length > 0 ? keyTopics.join(" | ") : "Thảo luận thông thường"}`,
+      `✅ **Quyết định đã chốt:** ${decisions.length > 0 ? decisions.join("; ") : "Không có"}`,
+      `\uD83D\uDCDD **Đầu việc (Action items):** ${actionItems.length > 0 ? actionItems.map((a) => a.task).join("; ") : "Không có"}`
+    ];
+    return {
+      totalMessages: messages.length,
+      participants,
+      keyTopics,
+      decisions,
+      actionItems,
+      summaryText: summaryLines.join(`
+`)
+    };
+  }
+  checkSpam(senderId, text, options = {}) {
+    const now = Date.now();
+    const windowMs = options.windowMs || 1e4;
+    const maxMessages = options.maxMessagesPerWindow || 5;
+    const blacklisted = options.blacklistedDomains || ["t.me/", "bit.ly/", "cutt.ly/", "tini.vn/"];
+    const urlMatches = text.match(/https?:\/\/[^\s]+/gi) || [];
+    if (options.disallowLinks && urlMatches.length > 0) {
+      return {
+        isSpam: true,
+        reason: "links_disabled",
+        recommendedAction: "delete",
+        messageCountInWindow: 1
+      };
+    }
+    for (const url of urlMatches) {
+      if (blacklisted.some((bad) => url.toLowerCase().includes(bad.toLowerCase()))) {
+        return {
+          isSpam: true,
+          reason: "blacklisted_link",
+          recommendedAction: "kick",
+          messageCountInWindow: 1
+        };
+      }
+    }
+    const userHistory = this.userMessageHistory.get(senderId) || [];
+    const validHistory = userHistory.filter((item) => now - item.timestamp < windowMs);
+    const identicalCount = validHistory.filter((item) => item.text === text).length;
+    if (identicalCount >= 2) {
+      return {
+        isSpam: true,
+        reason: "repetitive_text",
+        recommendedAction: "warn",
+        messageCountInWindow: validHistory.length + 1
+      };
+    }
+    validHistory.push({ text, timestamp: now });
+    this.userMessageHistory.set(senderId, validHistory);
+    if (validHistory.length >= maxMessages) {
+      return {
+        isSpam: true,
+        reason: "flood",
+        recommendedAction: "warn",
+        messageCountInWindow: validHistory.length
+      };
+    }
+    return {
+      isSpam: false,
+      recommendedAction: "allow",
+      messageCountInWindow: validHistory.length
+    };
+  }
+  registerNewMember(chatId, member, groupRules = "Vui lòng tôn trọng thành viên và không gửi link quảng cáo.", timeoutSeconds = 60) {
+    const a = Math.floor(Math.random() * 8) + 1;
+    const b = Math.floor(Math.random() * 8) + 1;
+    const answer = String(a + b);
+    const expiresAt = Date.now() + timeoutSeconds * 1000;
+    const challengeKey = `${chatId}:${member.id}`;
+    const challenge = {
+      memberId: member.id,
+      memberName: member.name,
+      welcomeMessage: `\uD83C\uDF89 Chào mừng **${member.name}** đã tham gia nhóm!
+\uD83D\uDCDC Nội quy: ${groupRules}
+\uD83D\uDD12 Để tránh tài khoản clone, bạn hãy trả lời câu hỏi bảo mật trong vòng ${timeoutSeconds}s:`,
+      question: `Bạn hãy tính: ${a} + ${b} = ?`,
+      expectedAnswer: answer,
+      expiresAt
+    };
+    this.pendingChallenges.set(challengeKey, challenge);
+    return challenge;
+  }
+  verifyMember(chatId, memberId, answer) {
+    const challengeKey = `${chatId}:${memberId}`;
+    const challenge = this.pendingChallenges.get(challengeKey);
+    if (!challenge)
+      return true;
+    if (Date.now() > challenge.expiresAt) {
+      this.pendingChallenges.delete(challengeKey);
+      return false;
+    }
+    if (answer.trim() === challenge.expectedAnswer) {
+      this.pendingChallenges.delete(challengeKey);
+      return true;
+    }
+    return false;
+  }
+  scheduleReminder(chatId, text, triggerAt, recurringIntervalMs) {
+    const id = `remind_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const timestamp = typeof triggerAt === "number" ? triggerAt : triggerAt.getTime();
+    const reminder = {
+      id,
+      chatId,
+      text,
+      triggerAt: timestamp,
+      recurringIntervalMs,
+      executed: false
+    };
+    this.reminders.set(id, reminder);
+    return reminder;
+  }
+  pollDueReminders() {
+    const now = Date.now();
+    const dueList = [];
+    for (const [id, r] of this.reminders.entries()) {
+      if (!r.executed && r.triggerAt <= now) {
+        dueList.push({ ...r });
+        if (r.recurringIntervalMs && r.recurringIntervalMs > 0) {
+          r.triggerAt = now + r.recurringIntervalMs;
+        } else {
+          r.executed = true;
+          this.reminders.delete(id);
+        }
+      }
+    }
+    return dueList;
+  }
+  recordActivity(chatId, senderId, senderName = senderId, timestamp = Date.now()) {
+    let groupMap = this.chatActivities.get(chatId);
+    if (!groupMap) {
+      groupMap = new Map;
+      this.chatActivities.set(chatId, groupMap);
+    }
+    const current = groupMap.get(senderId) || {
+      userId: senderId,
+      name: senderName,
+      messageCount: 0,
+      lastActiveAt: timestamp
+    };
+    current.messageCount += 1;
+    current.name = senderName;
+    current.lastActiveAt = timestamp;
+    groupMap.set(senderId, current);
+  }
+  getLeaderboard(chatId, limit = 10) {
+    const groupMap = this.chatActivities.get(chatId);
+    if (!groupMap)
+      return [];
+    return Array.from(groupMap.values()).sort((a, b) => b.messageCount - a.messageCount).slice(0, limit);
+  }
+  getInactiveMembers(chatId, cutoffDays = 7) {
+    const groupMap = this.chatActivities.get(chatId);
+    if (!groupMap)
+      return [];
+    const threshold = Date.now() - cutoffDays * 24 * 60 * 60 * 1000;
+    return Array.from(groupMap.values()).filter((m) => m.lastActiveAt < threshold);
+  }
+  checkProfanity(text, badWords = ["dm", "vcl", "fuck", "bitch", "scam", "lua dao"]) {
+    const lower = text.toLowerCase();
+    const flagged = [];
+    for (const w of badWords) {
+      const regex = new RegExp(`(^|\\s|[^a-zA-Z0-9_])${w}([^a-zA-Z0-9_]|\\s|$)`, "i");
+      if (regex.test(lower)) {
+        flagged.push(w);
+      }
+    }
+    return {
+      isClean: flagged.length === 0,
+      flaggedWords: flagged
+    };
+  }
+  issueWarning(chatId, userId, reason, maxStrikes = 3) {
+    let chatMap = this.warnings.get(chatId);
+    if (!chatMap) {
+      chatMap = new Map;
+      this.warnings.set(chatId, chatMap);
+    }
+    const userWarns = chatMap.get(userId) || [];
+    userWarns.push({ reason, timestamp: Date.now() });
+    chatMap.set(userId, userWarns);
+    return {
+      strikes: userWarns.length,
+      action: userWarns.length >= maxStrikes ? "kick" : "warn"
+    };
+  }
+  getWarnings(chatId, userId) {
+    return this.warnings.get(chatId)?.get(userId) || [];
+  }
+  clearWarnings(chatId, userId) {
+    this.warnings.get(chatId)?.delete(userId);
+  }
+  createPoll(chatId, creatorId, question, options) {
+    const id = `poll_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const poll = {
+      id,
+      chatId,
+      creatorId,
+      question,
+      options,
+      votes: new Map,
+      active: true
+    };
+    this.polls.set(id, poll);
+    return poll;
+  }
+  castVote(pollId, voterId, optionIndex) {
+    const poll = this.polls.get(pollId);
+    if (!poll || !poll.active || optionIndex < 0 || optionIndex >= poll.options.length) {
+      return false;
+    }
+    poll.votes.set(voterId, optionIndex);
+    return true;
+  }
+  getPollResults(pollId) {
+    const poll = this.polls.get(pollId);
+    if (!poll)
+      return null;
+    const counts = new Array(poll.options.length).fill(0);
+    for (const optIdx of poll.votes.values()) {
+      counts[optIdx]++;
+    }
+    const total = poll.votes.size;
+    const results = poll.options.map((option, idx) => ({
+      option,
+      votes: counts[idx],
+      percentage: total > 0 ? Math.round(counts[idx] / total * 100) : 0
+    }));
+    return {
+      question: poll.question,
+      totalVotes: total,
+      active: poll.active,
+      results
+    };
+  }
+  closePoll(pollId, creatorId) {
+    const poll = this.polls.get(pollId);
+    if (!poll)
+      return false;
+    if (creatorId && poll.creatorId !== creatorId)
+      return false;
+    poll.active = false;
+    return true;
+  }
+}
+
 // src/bridges/mcp/index.ts
+var _groupManager = new GroupManager;
 function getChannelHubMcpTools() {
   return [
     {
@@ -745,6 +1027,191 @@ function getChannelHubMcpTools() {
           opacity: { type: "number", description: "0.1 to 1.0 (default 0.9)" }
         }
       }
+    },
+    {
+      name: "channelhub_messenger_get_threads",
+      description: "Scrapes recent conversations and group chats from personal Messenger to retrieve thread IDs and names for the bot.",
+      parameters: {
+        type: "object",
+        properties: {
+          limit: { type: "number", description: "Maximum number of threads to fetch (default: 30)" }
+        }
+      }
+    },
+    {
+      name: "channelhub_messenger_get_history",
+      description: "Scrapes recent message history from a specific Messenger thread ID.",
+      parameters: {
+        type: "object",
+        required: ["threadId"],
+        properties: {
+          threadId: { type: "string", description: "The thread or conversation ID" },
+          limit: { type: "number", description: "Max messages to retrieve (default: 20)" }
+        }
+      }
+    },
+    {
+      name: "channelhub_messenger_get_members",
+      description: "Scrapes visible group members or participant information for a specific Messenger group thread.",
+      parameters: {
+        type: "object",
+        required: ["threadId"],
+        properties: {
+          threadId: { type: "string", description: "The group thread ID" }
+        }
+      }
+    },
+    {
+      name: "channelhub_messenger_get_user_profile",
+      description: "Retrieves user or thread details including name, avatar URL, and ID from Messenger.",
+      parameters: {
+        type: "object",
+        required: ["userId"],
+        properties: {
+          userId: { type: "string", description: "The Facebook user ID or thread ID" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_recap",
+      description: "Summarize recent group discussion into key topics, decisions, and action items.",
+      parameters: {
+        type: "object",
+        required: ["messages"],
+        properties: {
+          messages: {
+            type: "array",
+            description: "Array of message objects: [{ sender?: string, text: string }]"
+          }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_check_spam",
+      description: "Inspect a message for spam, flood, blacklisted links, or repetitive text.",
+      parameters: {
+        type: "object",
+        required: ["senderId", "text"],
+        properties: {
+          senderId: { type: "string", description: "Unique identifier of the message author" },
+          text: { type: "string", description: "Message content" },
+          disallowLinks: { type: "boolean", description: "Flag to completely forbid URLs" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_welcome_challenge",
+      description: "Generate a welcome message and captcha math challenge for a newly joined group member.",
+      parameters: {
+        type: "object",
+        required: ["chatId", "memberId", "memberName"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          memberId: { type: "string", description: "ID of the joining member" },
+          memberName: { type: "string", description: "Display name of the member" },
+          groupRules: { type: "string", description: "Optional group rules text" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_verify_challenge",
+      description: "Verify a member's answer to the gatekeeper captcha challenge.",
+      parameters: {
+        type: "object",
+        required: ["chatId", "memberId", "answer"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          memberId: { type: "string", description: "ID of the member" },
+          answer: { type: "string", description: "Member's answer to the math captcha" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_leaderboard",
+      description: "Get the most active members leaderboard for a group chat.",
+      parameters: {
+        type: "object",
+        required: ["chatId"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          limit: { type: "number", description: "Max rankings to return (default: 10)" }
+        }
+      }
+    },
+    {
+      name: "channelhub_messenger_recall_message",
+      description: "Recall / unsend a message sent by the bot on Messenger.",
+      parameters: {
+        type: "object",
+        properties: {
+          chatId: { type: "string", description: "Conversation ID or thread ID" },
+          messageId: { type: "string", description: "Message ID (for Page Graph API) or omitted (for Personal DOM)" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_check_profanity",
+      description: "Check if text contains toxic words or profanity.",
+      parameters: {
+        type: "object",
+        required: ["text"],
+        properties: {
+          text: { type: "string", description: "Message content to inspect" },
+          badWords: { type: "array", description: "Optional custom list of prohibited words" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_issue_warning",
+      description: "Issue a warning strike to a member. Recommends kick if reaching strike limit (default: 3).",
+      parameters: {
+        type: "object",
+        required: ["chatId", "userId", "reason"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          userId: { type: "string", description: "ID of the offending member" },
+          reason: { type: "string", description: "Reason for the warning" },
+          maxStrikes: { type: "number", description: "Maximum strikes before kick (default: 3)" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_create_poll",
+      description: "Create an interactive voting poll for the group.",
+      parameters: {
+        type: "object",
+        required: ["chatId", "creatorId", "question", "options"],
+        properties: {
+          chatId: { type: "string", description: "Group conversation ID" },
+          creatorId: { type: "string", description: "User ID creating the poll" },
+          question: { type: "string", description: "Poll question" },
+          options: { type: "array", description: "Array of choice options (string[])" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_cast_vote",
+      description: "Cast a vote in an active group poll.",
+      parameters: {
+        type: "object",
+        required: ["pollId", "voterId", "optionIndex"],
+        properties: {
+          pollId: { type: "string", description: "Poll ID" },
+          voterId: { type: "string", description: "ID of the voter" },
+          optionIndex: { type: "number", description: "0-based index of chosen option" }
+        }
+      }
+    },
+    {
+      name: "channelhub_group_get_poll_results",
+      description: "Get real-time vote results and percentages for a group poll.",
+      parameters: {
+        type: "object",
+        required: ["pollId"],
+        properties: {
+          pollId: { type: "string", description: "Poll ID" }
+        }
+      }
     }
   ];
 }
@@ -948,6 +1415,118 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
         });
         return {
           content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_messenger_get_threads": {
+        const adapter = hub.getChannel("messenger");
+        if (!adapter || typeof adapter.getThreads !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getThreads");
+        }
+        const threads = await adapter.getThreads(args.limit || 30);
+        return {
+          content: [{ type: "text", text: JSON.stringify(threads, null, 2) }]
+        };
+      }
+      case "channelhub_messenger_get_history": {
+        const adapter = hub.getChannel("messenger");
+        if (!adapter || typeof adapter.getThreadHistory !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getThreadHistory");
+        }
+        const history = await adapter.getThreadHistory(args.threadId, args.limit || 20);
+        return {
+          content: [{ type: "text", text: JSON.stringify(history, null, 2) }]
+        };
+      }
+      case "channelhub_messenger_get_members": {
+        const adapter = hub.getChannel("messenger");
+        if (!adapter || typeof adapter.getGroupMembers !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getGroupMembers");
+        }
+        const members = await adapter.getGroupMembers(args.threadId);
+        return {
+          content: [{ type: "text", text: JSON.stringify(members, null, 2) }]
+        };
+      }
+      case "channelhub_messenger_get_user_profile": {
+        const adapter = hub.getChannel("messenger");
+        if (!adapter || typeof adapter.getUserProfile !== "function") {
+          throw new Error("Messenger personal adapter is not registered or does not support getUserProfile");
+        }
+        const profile = await adapter.getUserProfile(args.userId);
+        return {
+          content: [{ type: "text", text: JSON.stringify(profile, null, 2) }]
+        };
+      }
+      case "channelhub_group_recap": {
+        const recap = _groupManager.generateRecap(args.messages || []);
+        return {
+          content: [{ type: "text", text: JSON.stringify(recap, null, 2) }]
+        };
+      }
+      case "channelhub_group_check_spam": {
+        const result = _groupManager.checkSpam(args.senderId, args.text, {
+          disallowLinks: args.disallowLinks
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }]
+        };
+      }
+      case "channelhub_group_welcome_challenge": {
+        const challenge = _groupManager.registerNewMember(args.chatId, { id: args.memberId, name: args.memberName }, args.groupRules);
+        return {
+          content: [{ type: "text", text: JSON.stringify(challenge, null, 2) }]
+        };
+      }
+      case "channelhub_group_verify_challenge": {
+        const valid = _groupManager.verifyMember(args.chatId, args.memberId, args.answer);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ success: valid }, null, 2) }]
+        };
+      }
+      case "channelhub_group_leaderboard": {
+        const leaderboard = _groupManager.getLeaderboard(args.chatId, args.limit || 10);
+        return {
+          content: [{ type: "text", text: JSON.stringify(leaderboard, null, 2) }]
+        };
+      }
+      case "channelhub_messenger_recall_message": {
+        const adapter = hub.getChannel("messenger");
+        if (!adapter || typeof adapter.recallMessage !== "function") {
+          throw new Error("Messenger adapter is not registered or does not support recallMessage");
+        }
+        const success = await adapter.recallMessage(args.chatId, args.messageId);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ success }, null, 2) }]
+        };
+      }
+      case "channelhub_group_check_profanity": {
+        const res = _groupManager.checkProfanity(args.text, args.badWords);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_group_issue_warning": {
+        const res = _groupManager.issueWarning(args.chatId, args.userId, args.reason, args.maxStrikes);
+        return {
+          content: [{ type: "text", text: JSON.stringify(res, null, 2) }]
+        };
+      }
+      case "channelhub_group_create_poll": {
+        const poll = _groupManager.createPoll(args.chatId, args.creatorId, args.question, args.options);
+        return {
+          content: [{ type: "text", text: JSON.stringify(poll, null, 2) }]
+        };
+      }
+      case "channelhub_group_cast_vote": {
+        const success = _groupManager.castVote(args.pollId, args.voterId, args.optionIndex);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ success }, null, 2) }]
+        };
+      }
+      case "channelhub_group_get_poll_results": {
+        const results = _groupManager.getPollResults(args.pollId);
+        return {
+          content: [{ type: "text", text: JSON.stringify(results, null, 2) }]
         };
       }
       default:

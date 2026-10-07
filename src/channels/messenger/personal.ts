@@ -220,6 +220,215 @@ export class MessengerPersonalAdapter extends BaseChannel {
     );
   }
 
+  /**
+   * Scrapes recent conversations and groups from the Messenger sidebar.
+   * Extracts the thread ID (chatId/userId), conversation name, and avatar image URL.
+   */
+  async getThreads(
+    limit: number = 30
+  ): Promise<Array<{ id: string; name: string; avatarUrl?: string }>> {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+
+    return await this._activePage.evaluate((max: number) => {
+      const links = Array.from(document.querySelectorAll("a[href*='/t/']"));
+      const seen = new Set<string>();
+      const list: Array<{ id: string; name: string; avatarUrl?: string }> = [];
+
+      for (const a of links) {
+        const href = a.getAttribute("href") || "";
+        const match = href.match(/\/t\/([a-zA-Z0-9._]+)/);
+        if (match && match[1]) {
+          const id = match[1];
+          if (!seen.has(id)) {
+            seen.add(id);
+            const titleEl = a.querySelector("span[dir='auto'], div[dir='auto']");
+            const name = titleEl?.textContent?.trim() || a.getAttribute("aria-label") || id;
+            const imgEl = a.querySelector("img");
+            const avatarUrl = imgEl?.getAttribute("src") || undefined;
+            list.push({ id, name, avatarUrl });
+            if (list.length >= max) break;
+          }
+        }
+      }
+      return list;
+    }, limit);
+  }
+
+  /**
+   * Scrapes recent chat messages from a specific Messenger thread, including image attachments.
+   */
+  async getThreadHistory(
+    threadId: string,
+    limit: number = 20
+  ): Promise<Array<{ text: string; sender?: string; images?: string[] }>> {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+
+    const targetUrl = `https://www.messenger.com/t/${threadId}`;
+    if (this._activePage.url() !== targetUrl) {
+      await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+    }
+
+    return await this._activePage.evaluate((max: number) => {
+      const rows = Array.from(
+        document.querySelectorAll("div[role='row'], div[role='main'] div[dir='auto']")
+      );
+      const messages: Array<{ text: string; sender?: string; images?: string[] }> = [];
+
+      for (const row of rows) {
+        const text = row.textContent?.trim() || "";
+        const imgEls = Array.from(
+          row.querySelectorAll("img[src*='fbcdn'], img[src*='scontent'], img[role='presentation']")
+        );
+        const images = imgEls
+          .map((img) => img.getAttribute("src"))
+          .filter(Boolean) as string[];
+
+        if ((text.length > 0 || images.length > 0) && !messages.some((m) => m.text === text && text.length > 0)) {
+          const sender = row.getAttribute("aria-label") || undefined;
+          messages.push({
+            text,
+            sender,
+            images: images.length > 0 ? images : undefined,
+          });
+          if (messages.length >= max) break;
+        }
+      }
+      return messages;
+    }, limit);
+  }
+
+  /**
+   * Attempts to extract visible group member names, IDs, and avatar images for a thread.
+   */
+  async getGroupMembers(
+    threadId: string
+  ): Promise<Array<{ name: string; id?: string; avatarUrl?: string }>> {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+
+    const targetUrl = `https://www.messenger.com/t/${threadId}`;
+    if (this._activePage.url() !== targetUrl) {
+      await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+    }
+
+    return await this._activePage.evaluate(() => {
+      const memberLinks = Array.from(
+        document.querySelectorAll(
+          "div[role='complementary'] a[href*='facebook.com'], div[role='main'] a[role='link']"
+        )
+      );
+      const seen = new Set<string>();
+      const members: Array<{ name: string; id?: string; avatarUrl?: string }> = [];
+
+      for (const link of memberLinks) {
+        const href = link.getAttribute("href") || "";
+        const name = link.textContent?.trim();
+        if (name && !seen.has(name) && !href.includes("/t/")) {
+          seen.add(name);
+          const idMatch = href.match(/facebook\.com\/([a-zA-Z0-9.]+)/);
+          const imgEl = link.querySelector("img") || link.closest("div")?.querySelector("img");
+          const avatarUrl = imgEl?.getAttribute("src") || undefined;
+          members.push({
+            name,
+            id: idMatch ? idMatch[1] : undefined,
+            avatarUrl,
+          });
+        }
+      }
+      return members;
+    });
+  }
+
+  /**
+   * Retrieves profile details (name, avatar, ID) for a user or thread.
+   */
+  async getUserProfile(
+    userId: string
+  ): Promise<{ id: string; name: string; avatarUrl?: string }> {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+
+    const targetUrl = `https://www.messenger.com/t/${userId}`;
+    if (this._activePage.url() !== targetUrl) {
+      await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+    }
+
+    return await this._activePage.evaluate((uid: string) => {
+      const headerEl = document.querySelector(
+        "div[role='main'] header h1, div[role='main'] header span, div[role='complementary'] h2"
+      );
+      const name = headerEl?.textContent?.trim() || uid;
+      const imgEl = document.querySelector(
+        "div[role='main'] header img, div[role='complementary'] img"
+      );
+      const avatarUrl = imgEl?.getAttribute("src") || undefined;
+      return { id: uid, name, avatarUrl };
+    }, userId);
+  }
+
+  /**
+   * Unsends / recalls the most recent message sent by the bot in the current chat.
+   */
+  async recallMessage(chatId?: string): Promise<boolean> {
+    if (!this.isConnected() || !this._activePage) {
+      throw new Error("MessengerPersonalAdapter is not connected");
+    }
+
+    if (chatId) {
+      const targetUrl = `https://www.messenger.com/t/${chatId}`;
+      if (this._activePage.url() !== targetUrl) {
+        await this._activePage.goto(targetUrl, { waitUntil: "domcontentloaded" });
+      }
+    }
+
+    return await this._activePage.evaluate(async () => {
+      const rows = Array.from(document.querySelectorAll("div[role='row']"));
+      const lastRow = rows[rows.length - 1];
+      if (!lastRow) return false;
+
+      // Hover over row to display floating actions
+      lastRow.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+
+      const moreBtn = lastRow.querySelector(
+        "div[aria-label*='More'], div[aria-label*='Xem thêm'], div[aria-label*='Khác'], div[aria-label*='Hành động khác']"
+      ) as HTMLElement;
+
+      if (moreBtn) {
+        moreBtn.click();
+        await new Promise((r) => setTimeout(r, 400));
+
+        const menuItems = Array.from(document.querySelectorAll("div[role='menuitem']"));
+        const removeOption = menuItems.find((el) =>
+          /remove|gỡ|thu hồi|unsend/i.test(el.textContent || "")
+        ) as HTMLElement;
+
+        if (removeOption) {
+          removeOption.click();
+          await new Promise((r) => setTimeout(r, 400));
+
+          const dialogBtns = Array.from(
+            document.querySelectorAll("div[role='dialog'] div[role='button']")
+          );
+          const confirmBtn = dialogBtns.find((el) =>
+            /unsend|thu hồi|remove for everyone/i.test(el.textContent || "")
+          ) as HTMLElement;
+
+          if (confirmBtn) {
+            confirmBtn.click();
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+  }
+
   async disconnect(): Promise<void> {
     this.setConnected(false);
     if (this._browserContext) {

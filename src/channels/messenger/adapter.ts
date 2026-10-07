@@ -188,6 +188,11 @@ export class MessengerChannelAdapter extends BaseChannel {
         // Handle normal messages and postbacks
         if (!event.message && !event.postback) continue;
 
+        // CRITICAL ANTI-LOOP FIX: Ignore echo events (messages sent by the bot itself)
+        // Meta sends is_echo: true whenever the page sends a message.
+        // Treating echo as inbound triggers an infinite message spam loop.
+        if (event.message?.is_echo) continue;
+
         const senderId = event.sender?.id || "";
         let text = event.message?.text || event.postback?.title || event.postback?.payload || "";
         const attachments: any[] = [];

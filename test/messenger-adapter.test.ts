@@ -183,6 +183,33 @@ describe("MessengerChannelAdapter", () => {
       expect(requestedBody.subscribed_fields).toEqual(["messages", "messaging_postbacks"]);
     });
 
+    test("ignores echo events to prevent infinite loops", () => {
+      const mockAdapter = new MessengerChannelAdapter({
+        pageAccessToken: "test_token",
+      });
+
+      const payload = {
+        object: "page",
+        entry: [
+          {
+            messaging: [
+              {
+                sender: { id: "page_123" },
+                recipient: { id: "user_456" },
+                message: {
+                  is_echo: true,
+                  text: "Bot sent this message",
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const msgs = mockAdapter.normalizeEvent(payload);
+      expect(msgs).toHaveLength(0); // Should completely ignore echo messages
+    });
+
     test("sends message with HUMAN_AGENT tag outside 24h window", async () => {
       const mockAdapter = new MessengerChannelAdapter({
         pageAccessToken: "test_token",

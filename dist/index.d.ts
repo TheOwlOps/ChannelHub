@@ -13,6 +13,7 @@ export { CalendarChannelAdapter, type CalendarAdapterConfig, type CalendarEventP
 export { WebhookGenericAdapter, type WebhookGenericAdapterConfig } from "./channels/webhook-generic/index";
 export { getChannelHubMcpTools, handleChannelHubMcpCall, type McpToolDefinition, } from "./bridges/mcp/index";
 export { WebhookBridge, type WebhookBridgeConfig } from "./bridges/webhook/index";
+export { DashboardBridge, type DashboardBridgeConfig } from "./bridges/dashboard/index";
 export { ZaloPersonalBot } from "./personal/client";
 export { ZaloOABot } from "./oa/client";
 export { initPersonalBot } from "./personal/index";

@@ -183,6 +183,27 @@ channelhub-mcp
 
 ---
 
+## 📊 实时仪表盘 (Live Dashboard)
+
+内置零依赖的 Web 仪表盘：无需数据库、无需外部服务，**一行代码**即可启用。
+
+```ts
+import { ChannelHub } from "@theowlops/channelhub";
+
+const hub = new ChannelHub();
+// ... 注册渠道适配器
+
+await hub.dashboard(); // 📊 → http://127.0.0.1:8790 — 完成！
+// 端口 / apiKey / dataFile 均为可选参数：
+// await hub.dashboard({ port: 3000, apiKey: process.env.DASHBOARD_KEY, dataFile: "./stats.json" });
+```
+
+实时展示收发消息计数、活跃用户、错误数、24 小时柱状图、14 天流量趋势、7×24 活动热力图以及 Top 渠道 / Top 用户排行，页面每 5 秒自动刷新；`GET /api/stats` 返回相同的 JSON 快照供自建工具使用。
+
+**安全模型**：默认仅绑定 `127.0.0.1`（无需密钥）；绑定到非回环地址时必须设置 `apiKey`（或环境变量 `CHANNELHUB_DASHBOARD_KEY`），否则 API 一律返回 401（fail-closed）。配置密钥后，端点使用 timing-safe 的 Bearer 校验保护。
+
+---
+
 ## 📄 开源许可证
 
 本项目基于 [MIT 许可证](LICENSE) 发布。由 TheOwlOps 核心开发团队构建维护。

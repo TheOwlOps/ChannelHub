@@ -41,6 +41,7 @@
 - [SmartStreamer for LLMs](#-smartstreamer-for-llms)
 - [Bộ Công Cụ CLI (CLI Toolkit)](#-cli-toolkit)
 - [Model Context Protocol (MCP) Server](#-model-context-protocol-mcp-server)
+- [Live Dashboard (Bảng Điều Khiển)](#-live-dashboard-bảng-điều-khiển)
 - [Bảo Mật Hệ Thống](#-security-hardening)
 - [License](#-license)
 
@@ -463,6 +464,27 @@ Add to `claude_desktop_config.json`:
 12. `channelhub_github_comment`: Post review comments on GitHub issues and pull requests.
 13. `channelhub_github_create_issue`: Open new issues on any GitHub repository with tags and description.
 14. `channelhub_calendar_quick_add`: Schedule events directly into Google Calendar using natural language.
+
+---
+
+## 📊 Live Dashboard (Bảng Điều Khiển)
+
+Dashboard web tích hợp sẵn, không thêm dependency nào — không cần database, không cần dịch vụ ngoài, **chỉ 1 dòng code**.
+
+```ts
+import { ChannelHub } from "@theowlops/channelhub";
+
+const hub = new ChannelHub();
+// ... đăng ký các channel adapter
+
+await hub.dashboard(); // 📊 → http://127.0.0.1:8790 — xong!
+// Tùy chọn port, apiKey, dataFile đều truyền vào cùng lời gọi đó:
+// await hub.dashboard({ port: 3000, apiKey: process.env.DASHBOARD_KEY, dataFile: "./stats.json" });
+```
+
+Trang dashboard hiển thị trực tiếp: bộ đếm tin nhắn vào/ra, người dùng hoạt động, số lỗi, **biểu đồ cột 24 giờ**, **xu hướng 14 ngày**, **heatmap hoạt động 7 ngày × 24 giờ** và bảng xếp hạng **top kênh / top người dùng**. Trang tự làm mới mỗi 5 giây; `GET /api/stats` trả về cùng JSON snapshot cho tooling riêng của bạn.
+
+**Mô hình bảo mật**: trang HTML là tĩnh; toàn bộ dữ liệu đi qua `GET /api/stats`. Bind mặc định `127.0.0.1` thì không cần key. Nếu bind ra ngoài loopback mà không có `apiKey`, API fail-closed (401 toàn bộ). Có `apiKey` thì endpoint được bảo vệ bằng Bearer token so sánh timing-safe — trang sẽ hỏi key và lưu trong `sessionStorage`.
 
 ---
 

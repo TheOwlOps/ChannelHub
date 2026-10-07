@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Live Dashboard (`DashboardBridge`)**: Built-in zero-dependency web dashboard (`@theowlops/channelhub/dashboard`) showing live inbound/outbound counters, per-channel traffic, daily active users, a 24-hour bar chart, a 14-day trend, a 7×24 activity heatmap and top-user rankings. Auto-refreshes every 5s, serves the same snapshot at `GET /api/stats`, with optional timing-safe Bearer auth (`apiKey` / `CHANNELHUB_DASHBOARD_KEY`) and JSON persistence across restarts (`dataFile` / `CHANNELHUB_STATS_FILE`). Fails closed when bound beyond loopback without a key. Start it with the one-liner `await hub.dashboard()` or explicitly via `new DashboardBridge(hub, options)`.
+- **`StatsCollector` Core Primitive**: In-memory, retention-bounded traffic recorder (`recordInbound` / `recordOutbound` / `recordError`, `snapshot()`, `toJSON()` / `hydrate()`). Attachable via `new ChannelHub({ stats })` or the new `hub.stats` accessor; the hub records inbound messages (post-dedup), successful outbound sends and channel errors automatically.
+
+---
+
 ## [1.6.0] - 2026-10-06
 
 ### Added

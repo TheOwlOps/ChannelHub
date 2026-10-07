@@ -18,37 +18,80 @@
 
 </div>
 
+> **One SDK, every inbox.** ChannelHub unifies Zalo, Telegram, Messenger, TikTok, Discord, Slack, WhatsApp/SMS (Twilio), Email, GitHub and Calendar behind a single, strongly-typed `UnifiedMessage` contract — with a built-in MCP server, a live web dashboard, and zero heavy runtime dependencies. Write your agent's communication logic once; run it everywhere.
+
 ---
 
 ## 📖 Table of Contents
 
-- [Overview & Architecture](#-overview--architecture)
+- [Why ChannelHub?](#-why-channelhub)
 - [Channel Capability Matrix](#-channel-capability-matrix)
+- [Performance Benchmarks](#-performance-benchmarks)
 - [How It Works Deep Dive](#-how-it-works-deep-dive)
-- [Key Features](#-key-features)
 - [Installation](#-installation)
 - [Quick Start (Zero-Config)](#-quick-start-zero-config)
 - [Channel Adapters](#-channel-adapters)
-  - [🎵 TikTok for Business & Shop](#-tiktok-for-business-adapter)
-  - [💬 Meta Messenger](#-meta-messenger-adapter)
-  - [🔵 Zalo (Personal & OA)](#-zalo-adapter)
-  - [✈️ Telegram](#-telegram-adapter)
-  - [🎮 Discord](#-discord-adapter)
-  - [💼 Slack](#-slack-adapter)
-  - [📱 Twilio (WhatsApp & SMS)](#-twilio-adapter)
-- [Advanced Engine Features (v1.6.0)](#-advanced-engine-features-v160)
+  - [🎵 TikTok for Business](#-tiktok-for-business--shop) · [💬 Messenger](#-meta-messenger-adapter) · [🔵 Zalo](#-zalo-adapter) · [✈️ Telegram](#-telegram-adapter) · [📱 Twilio](#-twilio-adapter) · [🎮 Discord / 💼 Slack](#-discord--slack-adapters)
+- [Advanced Engine Features](#-advanced-engine-features)
 - [Rich Media, Stickers & GIFs](#-rich-media-stickers--gifs)
 - [SmartStreamer for LLMs](#-smartstreamer-for-llms)
 - [CLI Toolkit](#-cli-toolkit)
 - [Model Context Protocol (MCP) Server](#-model-context-protocol-mcp-server)
+- [Live Dashboard](#-live-dashboard)
 - [Security Hardening](#-security-hardening)
 - [License](#-license)
 
 ---
 
-## 🏛 Overview & Architecture
+## ✨ Why ChannelHub?
 
-**ChannelHub** (`@theowlops/channelhub`) is an ultra-lightweight, high-performance messaging abstraction library designed for AI Agents, autonomous systems, and modern backend services. Instead of integrating multiple bespoke SDKs (`grammy`, `discord.js`, `zca-js`, Facebook/TikTok APIs), ChannelHub unifies them all behind a single, ergonomic, and strongly-typed contract with zero unnecessary runtime dependencies.
+| | Capability | What you get |
+| :---: | :--- | :--- |
+| 🔌 | **Unified Multi-Platform API** | Write your agent's communication logic once; execute identically across TikTok, Zalo, Telegram, Discord, Messenger and Slack. |
+| 🤖 | **AI-Native MCP Daemon** | Built-in Model Context Protocol stdio server exposing **30+ high-level tools** for Claude Desktop, Hermes Agent, OpenClaw and Codex. |
+| 🌊 | **SmartStreamer Token Batcher** | Converts LLM token streams into real-time in-place message edits or sentence-boundary chunks — without hitting rate limits. |
+| 🧅 | **Onion Middleware Pipeline** | Express/Koa-style `hub.use()` to intercept, modify or short-circuit any message. |
+| 🛡 | **Backpressure & Bounded Ingress Queue** | Built-in 2,000-item buffer with async-generator drain waiters to avoid memory leaks during message spikes. |
+| 🎬 | **Video Engine & 100MB Uploads** | Native resumable upload of video assets up to 100MB on Meta Messenger, plus an AI-Shorts VideoEngine (FFmpeg / Shotstack). |
+| 🐱 | **Native Sticker & GIF Engine** | Send stickers and animated GIFs natively across all supported platforms. |
+| 📊 | **Live Web Dashboard** | One-line traffic dashboard — message counts, active users, hourly heatmap — with zero extra dependencies. |
+| 🪶 | **Zero Heavy Core** | The engine depends exclusively on the Node.js / Bun standard library (`node:events`, native `fetch`, `node:crypto`). |
+
+---
+
+## 📊 Channel Capability Matrix
+
+| Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Auth Mode | Current Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| 🔵 **Zalo** | ✅ Full API | ✅ Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | Session Cookie / OA Token | **Stable Inbound/Outbound** |
+| ✈️ **Telegram** | ✅ Bot API | ✅ Polling & Webhook | ✅ Photo, Video, File, Sticker, GIF | ✅ Full Native | ✅ In-place Edit Stream | Bot Token | **Stable Inbound/Outbound** |
+| 🎵 **TikTok** | ✅ Business API v1.3 | ✅ HMAC Webhook (`message.receive`) | ✅ Images (via `media_id`) | ❌ N/A | ❌ N/A | OAuth2 Access-Token | **Stable Webhook Inbound/Outbound** |
+| 💬 **Messenger**| ✅ Graph API v19.0 | ⚡ Webhook Normalizer | ✅ Image, Video (100MB), File, Sticker | ⏳ Planned | ⚡ Typing Indicator | Page Token & Secret | **Stable Outbound + Normalizer** |
+| 🎮 **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer | ✅ Embeds & Attachments | ✅ Full Native | ⚡ In-place Edit Stream | Bot Token | **Stable Outbound + Normalizer** |
+| 💼 **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer | ✅ Files & Blocks | ⏳ Planned | ⚡ Typing Indicator | Bot Token | **Stable Outbound + Normalizer** |
+| 📱 **Twilio** | ✅ WhatsApp / SMS / MMS | ✅ HMAC Webhook | ✅ Media via URL | ❌ N/A | ❌ N/A | Account SID & Auth Token | **Stable Inbound/Outbound** |
+
+---
+
+## ⚡ Performance Benchmarks
+
+Measured on standard development hardware (Bun v1.4.2 / Node v26.3 runtime, x64 Windows 11). Run `bun run bench` to reproduce locally:
+
+| Subsystem | Metric | Measured Result | Latency / Overhead |
+| :--- | :--- | :---: | :---: |
+| **Idempotency Cache** | Sliding-window deduplication | **3,500,000+ ops/sec** | ~280 ns / op |
+| **Token Bucket Limiter** | Egress rate throttle & burst control | **2,300,000+ ops/sec** | ~430 ns / op |
+| **Ingress Pipeline** | Dedup + Context Wrap + Backpressure Queue | **640,000+ msgs/sec** | ~1.5 µs / message |
+| **SmartStreamer** | LLM sentence boundary batching & typing pulse | **Instant (< 2ms)** | Sub-millisecond |
+
+```bash
+# Execute the benchmark suite
+bun run bench
+```
+
+---
+
+## 🔬 How It Works Deep Dive
 
 ```
                               ┌──────────────────────────────────────────┐
@@ -74,43 +117,8 @@
              Messaging API         Resumable Upload    & OA v3 API         REST Webhooks
 ```
 
----
-
-## 📊 Channel Capability Matrix
-
-| Channel | Outbound Send | Inbound Ingestion | Rich Media & Attachments | Native Reactions | Streaming & Typing | Auth Mode | Current Status |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| 🔵 **Zalo** | ✅ Full API | ✅ Listener / Polling | ✅ Image, Video, File, Sticker, GIF | ✅ Full Native | ✅ Typing & Sentence Stream | Session Cookie / OA Token | **Stable Inbound/Outbound** |
-| ✈️ **Telegram** | ✅ Bot API | ✅ Polling & Webhook | ✅ Photo, Video, File, Sticker, GIF | ✅ Full Native | ✅ In-place Edit Stream | Bot Token | **Stable Inbound/Outbound** |
-| 🎵 **TikTok** | ✅ Business API v1.3 | ✅ HMAC Webhook (`message.receive`) | ✅ Images (via `media_id`) | ❌ N/A | ❌ N/A | OAuth2 Access-Token | **Stable Webhook Inbound/Outbound** |
-| 💬 **Messenger**| ✅ Graph API v19.0 | ⚡ Webhook Normalizer | ✅ Image, Video (100MB), File, Sticker | ⏳ Planned | ⚡ Typing Indicator | Page Token & Secret | **Stable Outbound + Normalizer** |
-| 🎮 **Discord** | ✅ Bot REST API | ⚡ Webhook Normalizer | ✅ Embeds & Attachments | ✅ Full Native | ⚡ In-place Edit Stream | Bot Token | **Stable Outbound + Normalizer** |
-| 💼 **Slack** | ✅ Web API / Chat | ⚡ Events Normalizer | ✅ Files & Blocks | ⏳ Planned | ⚡ Typing Indicator | Bot Token | **Stable Outbound + Normalizer** |
-
----
-
-## ⚡ Performance Benchmarks
-
-Measured on standard development hardware (Bun v1.4.2 / Node v26.3 runtime, x64 Windows 11). Run `bun run bench` to reproduce locally:
-
-| Subsystem | Metric | Measured Result | Latency / Overhead |
-| :--- | :--- | :---: | :---: |
-| **Idempotency Cache** | Sliding-window deduplication | **3,500,000+ ops/sec** | ~280 ns / op |
-| **Token Bucket Limiter** | Egress rate throttle & burst control | **2,300,000+ ops/sec** | ~430 ns / op |
-| **Ingress Pipeline** | Dedup + Context Wrap + Backpressure Queue | **640,000+ msgs/sec** | ~1.5 µs / message |
-| **SmartStreamer** | LLM sentence boundary batching & typing pulse | **Instant (< 2ms)** | Sub-millisecond |
-
-```bash
-# Execute the benchmark suite
-bun run bench
-```
-
----
-
-## 🔬 How It Works Deep Dive
-
 ### 1. Unified Message Protocol (`UnifiedMessage`)
-Every incoming payload—regardless of originating protocol (TikTok Webhook, Telegram Polling, Discord WebSocket, Meta Graph API)—is normalized into an immutable, cross-platform standard representation:
+Every incoming payload — regardless of originating protocol (TikTok Webhook, Telegram Polling, Discord WebSocket, Meta Graph API) — is normalized into an immutable, cross-platform standard representation:
 
 ```typescript
 export interface UnifiedMessage {
@@ -145,22 +153,7 @@ When an event occurs, ChannelHub constructs a `MessageContext` wrapper around th
 
 ---
 
-## 🌟 Key Features
-
-- **Unified Multi-Platform API**: Write your agent's communication logic once; execute identically across TikTok, Zalo, Telegram, Discord, Messenger, and Slack.
-- **AI-Native MCP Daemon**: Built-in Model Context Protocol (MCP) stdio server exposing **10 high-level tools** for Claude Desktop, Hermes Agent, and Codex.
-- **SmartStreamer Token Batcher**: Converts LLM token streams into real-time in-place message edits or sentence-boundary chunks with typing indicators without hitting rate limits.
-- **Backpressure & Bounded Ingress Queue**: Built-in 2,000 items buffer with async generator drain waiters to avoid memory leaks during message spikes.
-- **Large Video Resumable Upload**: Native support for video assets up to **100MB** on Meta Messenger using the Graph API Attachment Upload protocol.
-- **Native Sticker & Animated GIF Engine**: Send stickers and GIFs natively across all supported platforms.
-- **Zero Heavy Core**: Core engine depends exclusively on Node.js / Bun standard library (`node:events`, native `fetch`, `node:crypto`).
-
----
-
-
 ## 📦 Installation
-
-If you are adding ChannelHub to an existing Node.js or Bun project, install it via your preferred package manager:
 
 ```bash
 # Bun (Recommended)
@@ -203,6 +196,22 @@ bun bot.ts   # or npx tsx bot.ts
 **Not working?** ChannelHub comes with a built-in doctor to check your environment and tokens. Run:
 ```bash
 npx @theowlops/channelhub doctor
+```
+
+Or skip scaffolding entirely and wire a bot + live dashboard by hand:
+
+```typescript
+import { ChannelHub, TelegramChannelAdapter } from "@theowlops/channelhub";
+
+const hub = new ChannelHub();
+hub.register(new TelegramChannelAdapter({ botToken: process.env.TELEGRAM_BOT_TOKEN }));
+
+hub.onMessage(async (ctx) => {
+  await ctx.reply(`Echo: ${ctx.message.content.text}`);
+});
+
+await hub.dashboard(); // 📊 live dashboard → http://127.0.0.1:8790
+await hub.startAll();
 ```
 
 ---
@@ -283,7 +292,6 @@ const telegram = new TelegramChannelAdapter({
 });
 ```
 
-
 ### 📱 Twilio Adapter
 Omnichannel adapter for WhatsApp, SMS, MMS, and RCS via Twilio API. Supports timing-safe HMAC-SHA1 signature verification for webhooks.
 
@@ -308,10 +316,7 @@ const slack = new SlackChannelAdapter({ botToken: "xoxb-...", signingSecret: "..
 
 ---
 
-
----
-
-## ⚡ Advanced Engine Features (v1.6.0)
+## ⚡ Advanced Engine Features
 
 ### 1. Onion Middleware Pipeline (`hub.use`)
 Express / Koa-style middleware pipeline allows intercepting, modifying, or short-circuiting message dispatching:
@@ -356,6 +361,8 @@ if (limiter.tryAcquire(1)) {
   // Dispatched safely within provider quota
 }
 ```
+
+---
 
 ## 🎨 Rich Media, Stickers & GIFs
 
@@ -446,21 +453,52 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
-### 10 Standard MCP Tools
-1. `channelhub_list_channels`: List active registered channels.
-2. `channelhub_get_status`: Health-check channel connectivity.
-3. `channelhub_send_message`: Send or reply to messages with text.
-4. `channelhub_send_media`: Send photos, audio, documents, and videos.
-5. `channelhub_send_sticker`: Send native stickers to any channel.
-6. `channelhub_send_gif`: Send animated GIFs.
-7. `channelhub_send_typing`: Simulate human-like typing status.
-8. `channelhub_edit_message`: Edit previously dispatched messages.
-9. `channelhub_add_reaction`: React to messages with emojis.
-10. `channelhub_broadcast`: Broadcast a message across multiple channels in a single call.
-11. `channelhub_send_email`: Send emails via Resend or SendGrid with full support for HTML, Subject, CC, and BCC.
-12. `channelhub_github_comment`: Post review comments on GitHub issues and pull requests.
-13. `channelhub_github_create_issue`: Open new issues on any GitHub repository with tags and description.
-14. `channelhub_calendar_quick_add`: Schedule events directly into Google Calendar using natural language.
+### Available MCP Tools (30+)
+
+| Group | Tools |
+| :--- | :--- |
+| **Messaging** | `channelhub_send_message` · `channelhub_send_media` · `channelhub_send_sticker` · `channelhub_send_gif` · `channelhub_send_typing` · `channelhub_edit_message` · `channelhub_add_reaction` · `channelhub_broadcast` · `channelhub_list_channels` · `channelhub_get_status` |
+| **Group Management** | `channelhub_group_create_poll` · `channelhub_group_cast_vote` · `channelhub_group_get_poll_results` · `channelhub_group_check_spam` · `channelhub_group_check_profanity` · `channelhub_group_issue_warning` · `channelhub_group_leaderboard` · `channelhub_group_recap` · `channelhub_group_welcome_challenge` · `channelhub_group_verify_challenge` |
+| **Messenger (Personal)** | `channelhub_messenger_get_threads` · `channelhub_messenger_get_history` · `channelhub_messenger_get_members` · `channelhub_messenger_get_user_profile` · `channelhub_messenger_recall_message` |
+| **Productivity** | `channelhub_send_email` · `channelhub_github_create_issue` · `channelhub_github_comment` · `channelhub_calendar_quick_add` |
+| **Media & Research** | `channelhub_video_create_short` · `channelhub_video_burn_subtitles` · `channelhub_video_add_watermark` · `channelhub_web_search` · `channelhub_web_extract` |
+
+---
+
+## 📊 Live Dashboard
+
+A built-in, zero-dependency web dashboard for your bot traffic — no database, no external service, **one line of code**:
+
+```typescript
+await hub.dashboard(); // 📊 → http://127.0.0.1:8790 — that's it
+```
+
+<div align="center">
+  <img src="./assets/dashboard.png" alt="ChannelHub Live Dashboard" width="100%" />
+</div>
+
+| Widget | What it shows |
+| :--- | :--- |
+| **Counters** | Inbound / outbound totals, today's traffic, active users, errors, connected channels |
+| **24h Bar Chart** | Hourly inbound vs outbound messages |
+| **14-Day Trend** | Daily traffic with hover tooltips |
+| **Activity Heatmap** | 7 days × 24 hours inbound intensity |
+| **Top Channels / Users** | Ranked tables with last-seen timestamps |
+
+The page auto-refreshes every 5 seconds; `GET /api/stats` returns the same JSON snapshot for your own tooling. Non-default port, auth and persistence are optional flags on the same call:
+
+```typescript
+await hub.dashboard({
+  port: 3000,                          // default 8790, binds 127.0.0.1
+  // host: "0.0.0.0",                  // expose beyond localhost — requires apiKey
+  apiKey: process.env.DASHBOARD_KEY,   // or CHANNELHUB_DASHBOARD_KEY env
+  dataFile: "./channelhub-stats.json", // persist stats across restarts
+});
+```
+
+Prefer explicit control? `new DashboardBridge(hub, options)` + `await start()` is exactly equivalent.
+
+**Security model**: the HTML page is static and public; all data flows through `GET /api/stats`. On the default loopback binding no key is needed. When `host` is set beyond loopback without an `apiKey`, the API fails closed (401 for every request). With `apiKey` (or the `CHANNELHUB_DASHBOARD_KEY` env), a timing-safe Bearer check protects the endpoint — the page prompts for the key and keeps it in `sessionStorage`.
 
 ---
 
@@ -469,7 +507,7 @@ Add to `claude_desktop_config.json`:
 - **HMAC-SHA256 & Timing-Safe Verification**: All inbound webhooks (TikTok, Messenger, Slack) verify cryptographic signatures via `crypto.timingSafeEqual` to thwart timing attacks.
 - **Anti-Replay Attack Protection**: Webhook deliveries outside the allowed time window (default 300s) are immediately discarded.
 - **Zero Token Leak in URLs**: Authentication tokens are strictly transmitted in HTTP headers (`Access-Token`, `Authorization: Bearer`), never in URL query strings.
-- **Localhost Loopback Default**: Webhook bridge defaults to `127.0.0.1` rather than `0.0.0.0`.
+- **Localhost Loopback Default**: Webhook bridge and dashboard default to `127.0.0.1` rather than `0.0.0.0`.
 - **DoS Payload Limits**: Enforces a strict 1MB JSON body size ceiling before socket termination.
 - **Path Traversal Guard**: All file uploads run through `path.resolve` and verify `fs.statSync().isFile()`, preventing arbitrary file disclosure.
 - **Credential Hygiene**: Auto-masks sensitive tokens in logs (`[REDACTED]`) and enforces `.gitignore` rules against credential files.

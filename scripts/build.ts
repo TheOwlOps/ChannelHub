@@ -22,6 +22,7 @@ const subpaths = [
   ["src/channels/webhook-generic/index.ts", "./dist/channels/webhook-generic/index"],
   ["src/bridges/mcp/index.ts", "./dist/bridges/mcp/index"],
   ["src/bridges/webhook/index.ts", "./dist/bridges/webhook/index"],
+  ["src/bridges/dashboard/index.ts", "./dist/bridges/dashboard/index"],
   ["src/personal/index.ts", "./dist/personal/index"],
   ["src/oa/index.ts", "./dist/oa/index"],
 ];

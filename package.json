@@ -87,6 +87,11 @@
       "types": "./dist/bridges/webhook/index.d.ts",
       "require": "./dist/bridges/webhook/index.cjs"
     },
+    "./dashboard": {
+      "import": "./dist/bridges/dashboard/index.js",
+      "types": "./dist/bridges/dashboard/index.d.ts",
+      "require": "./dist/bridges/dashboard/index.cjs"
+    },
     "./personal": {
       "import": "./dist/personal/index.js",
       "types": "./dist/personal/index.d.ts",
@@ -134,6 +139,7 @@
     "openclaw",
     "chatbot",
     "webhook",
+    "dashboard",
     "sdk"
   ],
   "repository": {

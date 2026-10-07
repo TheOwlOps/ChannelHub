@@ -4,6 +4,8 @@ import { IdempotencyCache, type IdempotencyCacheOptions } from "./dedup";
 import { IdentityStitcher } from "./identity";
 import { HumanHandoffManager } from "./handoff";
 import type { DeadLetterHandler, DeadLetterItem } from "./dlq";
+import type { StatsCollector } from "./stats";
+import type { DashboardBridge, DashboardBridgeConfig } from "../bridges/dashboard/index";
 import type { IChannelAdapter, UnifiedMessage } from "./types";
 
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
@@ -22,6 +24,8 @@ export interface ChannelHubOptions {
   onDeadLetter?: DeadLetterHandler;
   /** Custom IdentityStitcher for resolving universal user identities. Auto-created if omitted. */
   identityStitcher?: IdentityStitcher;
+  /** Optional StatsCollector that records inbound/outbound traffic for the live dashboard. */
+  stats?: StatsCollector;
 }
 
 export class ChannelHub {
@@ -35,6 +39,8 @@ export class ChannelHub {
   private _dlqHandler?: DeadLetterHandler;
   private _identityStitcher: IdentityStitcher;
   private _handoffManager: HumanHandoffManager;
+  private _stats: StatsCollector | null;
+  private _instrumented = new WeakSet<IChannelAdapter>();
 
   // Async queue for backpressure support
   private _queue: MessageContext[] = [];
@@ -49,6 +55,7 @@ export class ChannelHub {
     this._dlqHandler = options.onDeadLetter;
     this._identityStitcher = options.identityStitcher ?? new IdentityStitcher();
     this._handoffManager = new HumanHandoffManager();
+    this._stats = options.stats ?? null;
   }
 
   /** Gets the active identity stitcher. */
@@ -59,6 +66,21 @@ export class ChannelHub {
   /** Gets the human handoff manager. */
   get handoff(): HumanHandoffManager {
     return this._handoffManager;
+  }
+
+  /** Live traffic collector, when one is attached. */
+  get stats(): StatsCollector | null {
+    return this._stats;
+  }
+
+  /** Attaches (or replaces) the traffic collector and instruments already-registered channels. */
+  set stats(collector: StatsCollector | null) {
+    this._stats = collector;
+    if (collector) {
+      for (const ch of new Set(this._channels.values())) {
+        this._instrumentOutbound(ch);
+      }
+    }
   }
 
   /**
@@ -89,6 +111,8 @@ export class ChannelHub {
       this._channels.set(channel.name, channel);
     }
 
+    this._instrumentOutbound(channel);
+
     channel.on("message", async (msg: UnifiedMessage) => {
       // 0. Idempotency Check (Dedup)
       if (this._dedupCache && msg.id) {
@@ -97,6 +121,9 @@ export class ChannelHub {
           return; // Duplicate delivery dropped
         }
       }
+
+      // Record traffic stats after dedup so webhook retries are not double-counted
+      this._stats?.recordInbound(msg);
 
       this._bus.emitMessage(msg);
 
@@ -146,6 +173,7 @@ export class ChannelHub {
         await executePipeline(0);
       } catch (err: any) {
         const errorObj = err instanceof Error ? err : new Error(String(err));
+        this._stats?.recordError(channel.name);
         this._bus.emitError(errorObj);
 
         // 3. Dead Letter Queue handling
@@ -166,10 +194,36 @@ export class ChannelHub {
     });
 
     channel.on("error", (err: Error) => {
+      this._stats?.recordError(channel.name);
       this._bus.emitError(err);
     });
 
     return this;
+  }
+
+  /**
+   * Wraps a channel's send methods so successful outbound sends are
+   * counted by the StatsCollector without touching adapter internals.
+   * Idempotent per channel; the collector is read late-bound so it can be
+   * replaced after channels are registered.
+   */
+  private _instrumentOutbound(channel: IChannelAdapter): void {
+    if (!this._stats || this._instrumented.has(channel)) return;
+    this._instrumented.add(channel);
+    const hub = this;
+    const wrap = <A extends unknown[], R>(fn: (...args: A) => Promise<R>) =>
+      async (...args: A): Promise<R> => {
+        const result = await fn(...args);
+        hub._stats?.recordOutbound(channel.name);
+        return result;
+      };
+    const target = channel as unknown as Record<string, unknown>;
+    for (const method of ["sendText", "sendMedia"] as const) {
+      const original = target[method];
+      if (typeof original === "function") {
+        target[method] = wrap((original as (...args: unknown[]) => Promise<unknown>).bind(channel));
+      }
+    }
   }
 
   getChannel(providerOrKey: string, accountId?: string): IChannelAdapter | undefined {
@@ -265,6 +319,19 @@ export class ChannelHub {
 
   async startAll(signal?: AbortSignal): Promise<void> {
     return this.start(signal);
+  }
+
+  /**
+   * One-liner dashboard: creates, starts and attaches a DashboardBridge
+   * to this hub. Equivalent to `new DashboardBridge(this, options)` + `start()`.
+   * Returns the running bridge — `bridge.endpoint` is the local URL,
+   * `bridge.stats` the underlying StatsCollector.
+   */
+  async dashboard(options: DashboardBridgeConfig = {}): Promise<DashboardBridge> {
+    const { DashboardBridge } = await import("../bridges/dashboard/index");
+    const bridge = new DashboardBridge(this, options);
+    await bridge.start();
+    return bridge;
   }
 
   async stop(signal?: AbortSignal): Promise<void> {

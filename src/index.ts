@@ -29,6 +29,7 @@ export {
   type McpToolDefinition,
 } from "./bridges/mcp/index";
 export { WebhookBridge, type WebhookBridgeConfig } from "./bridges/webhook/index";
+export { DashboardBridge, type DashboardBridgeConfig } from "./bridges/dashboard/index";
 
 // 4. Backward Compatibility with ZaloHub v1
 export { ZaloPersonalBot } from "./personal/client";

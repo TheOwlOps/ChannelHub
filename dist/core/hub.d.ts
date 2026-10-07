@@ -3,6 +3,8 @@ import { type IdempotencyCacheOptions } from "./dedup";
 import { IdentityStitcher } from "./identity";
 import { HumanHandoffManager } from "./handoff";
 import type { DeadLetterHandler } from "./dlq";
+import type { StatsCollector } from "./stats";
+import type { DashboardBridge, DashboardBridgeConfig } from "../bridges/dashboard/index";
 import type { IChannelAdapter } from "./types";
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
 export type Middleware = (ctx: MessageContext, next: () => Promise<void>) => Promise<void> | void;
@@ -15,6 +17,8 @@ export interface ChannelHubOptions {
     onDeadLetter?: DeadLetterHandler;
     /** Custom IdentityStitcher for resolving universal user identities. Auto-created if omitted. */
     identityStitcher?: IdentityStitcher;
+    /** Optional StatsCollector that records inbound/outbound traffic for the live dashboard. */
+    stats?: StatsCollector;
 }
 export declare class ChannelHub {
     private _channels;
@@ -25,6 +29,8 @@ export declare class ChannelHub {
     private _dlqHandler?;
     private _identityStitcher;
     private _handoffManager;
+    private _stats;
+    private _instrumented;
     private _queue;
     private _waiters;
     private _queueDrainWaiters;
@@ -34,12 +40,23 @@ export declare class ChannelHub {
     get identityStitcher(): IdentityStitcher;
     /** Gets the human handoff manager. */
     get handoff(): HumanHandoffManager;
+    /** Live traffic collector, when one is attached. */
+    get stats(): StatsCollector | null;
+    /** Attaches (or replaces) the traffic collector and instruments already-registered channels. */
+    set stats(collector: StatsCollector | null);
     /**
      * Registers a middleware function to the pipeline.
      * Middlewares run sequentially before registered message handlers.
      */
     use(middleware: Middleware): this;
     register(channel: IChannelAdapter): this;
+    /**
+     * Wraps a channel's send methods so successful outbound sends are
+     * counted by the StatsCollector without touching adapter internals.
+     * Idempotent per channel; the collector is read late-bound so it can be
+     * replaced after channels are registered.
+     */
+    private _instrumentOutbound;
     getChannel(providerOrKey: string, accountId?: string): IChannelAdapter | undefined;
     listChannels(): string[];
     onMessage(handler: MessageHandler): this;
@@ -50,5 +67,12 @@ export declare class ChannelHub {
     messages(signal?: AbortSignal): AsyncIterable<MessageContext>;
     start(signal?: AbortSignal): Promise<void>;
     startAll(signal?: AbortSignal): Promise<void>;
+    /**
+     * One-liner dashboard: creates, starts and attaches a DashboardBridge
+     * to this hub. Equivalent to `new DashboardBridge(this, options)` + `start()`.
+     * Returns the running bridge — `bridge.endpoint` is the local URL,
+     * `bridge.stats` the underlying StatsCollector.
+     */
+    dashboard(options?: DashboardBridgeConfig): Promise<DashboardBridge>;
     stop(signal?: AbortSignal): Promise<void>;
 }

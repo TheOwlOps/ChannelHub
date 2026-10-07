@@ -117,7 +117,8 @@
     "bench": "bun run scripts/benchmark.ts",
     "stats": "bun run scripts/generate-badge.ts",
     "test:smoke": "bun test test/clean-install.test.ts",
-    "prepublishOnly": "bun run build && bun test"
+    "prepublishOnly": "bun run build && bun test",
+    "release": "npm version patch && git push origin main --tags"
   },
   "keywords": [
     "channelhub",

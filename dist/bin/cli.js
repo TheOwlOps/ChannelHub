@@ -559,7 +559,7 @@ var init_hub = __esm(() => {
 // bin/cli.ts
 import fs from "node:fs";
 import path from "node:path";
-var __dirname = "D:\\channelhub\\bin";
+var __dirname = "/home/runner/work/ChannelHub/ChannelHub/bin";
 var args = process.argv.slice(2);
 var command = args[0] || "help";
 function printHelp() {

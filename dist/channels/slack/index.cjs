@@ -1781,11 +1781,23 @@ var require_websocket = __commonJS(function(exports2, module2) {
         this._isServer = false;
         this._redirects = 0;
         if (protocols === undefined) {
-          protocols = [];
+          if (!options || options.protocols === undefined) {
+            protocols = [];
+          } else if (Array.isArray(options.protocols)) {
+            protocols = options.protocols;
+          } else {
+            protocols = [options.protocols];
+          }
         } else if (!Array.isArray(protocols)) {
           if (typeof protocols === "object" && protocols !== null) {
             options = protocols;
-            protocols = [];
+            if (options.protocols === undefined) {
+              protocols = [];
+            } else if (Array.isArray(options.protocols)) {
+              protocols = options.protocols;
+            } else {
+              protocols = [options.protocols];
+            }
           } else {
             protocols = [protocols];
           }
@@ -1904,7 +1916,6 @@ var require_websocket = __commonJS(function(exports2, module2) {
         }
         return;
       }
-      this._readyState = WebSocket.CLOSING;
       this._sender.close(code, data, !this._isServer, (err) => {
         if (err)
           return;
@@ -1913,6 +1924,7 @@ var require_websocket = __commonJS(function(exports2, module2) {
           this._socket.end();
         }
       });
+      this._readyState = WebSocket.CLOSING;
       setCloseTimer(this);
     }
     pause() {
@@ -2100,6 +2112,7 @@ var require_websocket = __commonJS(function(exports2, module2) {
       socketPath: undefined,
       hostname: undefined,
       protocol: undefined,
+      protocols: undefined,
       timeout: undefined,
       method: "GET",
       host: undefined,

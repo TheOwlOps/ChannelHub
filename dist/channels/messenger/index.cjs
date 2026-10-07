@@ -207,6 +207,8 @@ class MessengerChannelAdapter extends BaseChannel {
                 res.writeHead(401).end("Invalid Signature");
                 return;
               }
+            } else {
+              console.warn("[Messenger] Warning: appSecret is not configured. Webhook X-Hub-Signature-256 verification is bypassed (Insecure).");
             }
             try {
               const data = JSON.parse(body);

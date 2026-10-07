@@ -16,6 +16,8 @@ export interface ZaloAdapterConfig {
   minDelayMs?: number;
   maxDelayMs?: number;
   cacheLimit?: number;
+  proxy?: string;
+  autoReconnect?: boolean;
 }
 
 export const EMOJI_TO_ZALO: Record<string, string> = {
@@ -68,8 +70,13 @@ export class ZaloChannelAdapter extends BaseChannel {
   private config: ZaloAdapterConfig;
 
   // Caches for Zalo-specific quirks
-  private threadTypeCache = new Map<string, number>(); // chatId -> 1 (Group) | 0 (User DM)
-  private messageCache = new Map<string, CachedMessage>(); // msgId / cliMsgId -> CachedMessage
+  private threadTypeCache = new Map<string, number>();
+  private groupTitleCache = new Map<string, string>();
+  private stickerUrlCache = new Map<string, string>();
+  private messageCache = new Map<string, CachedMessage>();
+  private reconnectAttempts = 0;
+  private isReconnecting = false;
+  private reconnectTimer?: ReturnType<typeof setTimeout>;
   private sendQueue: Promise<unknown> = Promise.resolve();
 
   constructor(config: ZaloAdapterConfig = {}) {
@@ -78,6 +85,7 @@ export class ZaloChannelAdapter extends BaseChannel {
       minDelayMs: 300,
       maxDelayMs: 800,
       cacheLimit: 1000,
+      autoReconnect: true,
       ...config,
     };
     if (config.api) {
@@ -88,6 +96,7 @@ export class ZaloChannelAdapter extends BaseChannel {
 
   async connect(signal?: AbortSignal): Promise<void> {
     this.assertNotAborted(signal);
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
     if (!this.api && this.config.credentialsPath) {
       const fs = await import("node:fs");
       const { Zalo } = await import("zca-js");
@@ -97,7 +106,16 @@ export class ZaloChannelAdapter extends BaseChannel {
         );
       }
       const creds = JSON.parse(fs.readFileSync(this.config.credentialsPath, "utf-8"));
-      const zalo = new Zalo();
+      const proxyUrl = this.config.proxy || process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY;
+      let agent: any = undefined;
+      if (proxyUrl) {
+        try {
+          // @ts-ignore
+          const { HttpsProxyAgent } = await import("https-proxy-agent");
+          agent = new HttpsProxyAgent(proxyUrl);
+        } catch {}
+      }
+      const zalo = new Zalo({ ...(agent ? { agent } : {}) });
       this.api = await zalo.login(creds);
     }
 
@@ -111,6 +129,7 @@ export class ZaloChannelAdapter extends BaseChannel {
 
   async disconnect(signal?: AbortSignal): Promise<void> {
     this.assertNotAborted(signal);
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
     if (this.api?.listener?.stop) {
       try {
         this.api.listener.stop();
@@ -126,36 +145,52 @@ export class ZaloChannelAdapter extends BaseChannel {
 
     this.api.listener.on("message", async (raw: any) => {
       this.recordInbound(raw);
-      const unified = this.normalizeMessage(raw);
+      const unified = await this.normalizeMessage(raw);
       if (unified) {
         await this.dispatchMessage(unified);
       }
     });
 
-    // Session watcher / disconnect alert
     const onSessionDrop = (err?: any) => {
-      this.emit("session:expired", {
-        reason: "SESSION_EXPIRED_OR_DROPPED",
-        raw: err,
-        requiresQrScan: true,
-      });
-      this.setConnected(false);
+      const msg = String(err?.message || err || "");
+      const isAuthRevoked = msg.includes("1002") || msg.includes("Forbidden") || msg.includes("session expired") || msg.includes("auth");
+
+      if (isAuthRevoked) {
+        this.emit("session:expired", { reason: "SESSION_EXPIRED_OR_REVOKED", raw: err, requiresQrScan: true });
+        this.setConnected(false);
+        return;
+      }
+
+      if (this.config.autoReconnect !== false && !this.isReconnecting) {
+        this.isReconnecting = true;
+        const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+        this.reconnectAttempts++;
+
+        this.reconnectTimer = setTimeout(async () => {
+          try {
+            if (this.api?.listener?.start) {
+              await this.api.listener.start({ retryOnClose: true });
+              this.reconnectAttempts = 0;
+              this.setConnected(true);
+            }
+          } catch (recErr) {
+            onSessionDrop(recErr);
+          } finally {
+            this.isReconnecting = false;
+          }
+        }, delay);
+      } else {
+        this.setConnected(false);
+      }
     };
 
     this.api.listener.on("closed", onSessionDrop);
-    this.api.listener.on("error", (err: any) => {
-      const msg = String(err?.message || err);
-      if (msg.includes("1002") || msg.includes("session") || msg.includes("auth")) {
-        onSessionDrop(err);
-      }
-    });
+    this.api.listener.on("error", (err: any) => onSessionDrop(err));
 
     if (this.api.listener.start) {
       try {
-        this.api.listener.start();
-      } catch {
-        // listener might already be running
-      }
+        this.api.listener.start({ retryOnClose: true });
+      } catch {}
     }
   }
 
@@ -171,6 +206,10 @@ export class ZaloChannelAdapter extends BaseChannel {
 
     if (chatId) {
       this.threadTypeCache.set(chatId, isGroup ? 1 : 0);
+    }
+    const groupName = raw.groupName || data.groupName || (isGroup && data.dName ? data.dName : undefined);
+    if (isGroup && chatId && groupName) {
+      this.groupTitleCache.set(chatId, groupName);
     }
 
     const cached: CachedMessage = {
@@ -192,11 +231,21 @@ export class ZaloChannelAdapter extends BaseChannel {
     if (cliMsgId) this.messageCache.set(cliMsgId, cached);
   }
 
-  private resolveThreadType(chatId: string): number {
-    if (this.threadTypeCache.has(chatId)) {
-      return this.threadTypeCache.get(chatId)!;
+  private async resolveThreadType(chatId: string): Promise<number> {
+    if (this.threadTypeCache.has(chatId)) return this.threadTypeCache.get(chatId)!;
+    if (this.api?.getGroupInfo) {
+      try {
+        const info = await this.api.getGroupInfo(chatId);
+        if (info && (info.gridInfoMap || info.groupId || info.name)) {
+          this.threadTypeCache.set(chatId, 1);
+          if (info.name) this.groupTitleCache.set(chatId, info.name);
+          return 1;
+        }
+      } catch {}
+      this.threadTypeCache.set(chatId, 0);
+      return 0;
     }
-    return (this.config.defaultIsGroup ?? true) ? 1 : 0;
+    return (this.config.defaultIsGroup ?? false) ? 1 : 0;
   }
 
   private resolveQuote(replyToId?: string): any {
@@ -234,35 +283,69 @@ export class ZaloChannelAdapter extends BaseChannel {
     return next;
   }
 
-  private normalizeMessage(raw: any): UnifiedMessage | null {
+  private async normalizeMessage(raw: any): Promise<any> {
     if (!raw) return null;
-
     const data = raw.data || raw;
     const isGroup = raw.type === 1 || raw.type === "group" || Boolean(raw.isGroup);
-    const chatId = raw.threadId || data.idTo || data.threadId || "";
-    const senderId = data.uidFrom || raw.senderId || "";
-    const senderName = data.dName || data.senderName;
-    const text = typeof data.content === "string" ? data.content : data.msg || "";
-    const msgId = data.msgId || raw.msgId || String(Date.now());
+    const chatId = String(raw.threadId || data.idTo || data.threadId || "");
+    const senderId = String(data.uidFrom || raw.senderId || "");
+    const msgId = String(data.msgId || raw.msgId || Date.now());
     const ts = Number(data.ts || raw.timestamp) || Date.now();
+    const msgType = String(data.msgType || raw.msgType || "");
+
+    let text = typeof data.content === "string" ? data.content : data.msg || "";
+    const attachments: any[] = [];
+
+    if (msgType === "chat.photo" || data.photo || data.thumb || data.href) {
+      const url = data.href || data.url || data.thumb || (typeof data.content === "object" ? data.content?.href || data.content?.url : "");
+      if (url) attachments.push({ type: "image", url });
+      if (!text) text = "[Ảnh]";
+    } else if (msgType === "chat.sticker" || (typeof data.content === "object" && data.content?.id && data.content?.catId)) {
+      const stickerObj = typeof data.content === "object" ? data.content : data;
+      const stickerId = String(stickerObj.id || stickerObj.stickerId || "");
+      let stickerUrl = this.stickerUrlCache.get(stickerId);
+      if (!stickerUrl && stickerId) {
+        if (this.api?.getStickersDetail) {
+          try {
+            const detail = await this.api.getStickersDetail(stickerId);
+            if (detail?.stickerUrl || detail?.url) stickerUrl = detail.stickerUrl || detail.url;
+          } catch {}
+        }
+        if (!stickerUrl) stickerUrl = `https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=${stickerId}&size=130`;
+        this.stickerUrlCache.set(stickerId, stickerUrl);
+      }
+      if (stickerUrl) attachments.push({ type: "sticker", url: stickerUrl });
+      if (!text) text = "[Sticker]";
+    } else if (msgType === "share.file" || (typeof data.content === "object" && (data.content?.title || data.content?.filename || data.content?.fileUrl))) {
+      const fileObj = typeof data.content === "object" ? data.content : data;
+      const filename = fileObj.filename || fileObj.title || fileObj.fileName || "Tệp đính kèm";
+      const fileUrl = fileObj.fileUrl || fileObj.href || fileObj.url || "";
+      attachments.push({ type: "file", url: fileUrl, filename, size: Number(fileObj.fileSize || fileObj.size) || undefined });
+      if (!text) text = `[File] ${filename}`;
+    }
+
+    let chatTitle: string | undefined = undefined;
+    let senderName = data.senderName;
+    if (isGroup) {
+      chatTitle = this.groupTitleCache.get(chatId) || raw.groupName || data.groupName;
+      if (!chatTitle && this.api?.getGroupInfo) {
+        try {
+          const info = await this.api.getGroupInfo(chatId);
+          if (info?.name) { chatTitle = info.name; this.groupTitleCache.set(chatId, info.name); }
+        } catch {}
+      }
+      senderName = senderName || data.dName;
+    } else {
+      senderName = data.dName || senderName;
+    }
 
     return {
       id: String(msgId),
       channel: "zalo",
-      sender: {
-        id: String(senderId),
-        name: senderName,
-        isBot: this.ownId ? String(senderId) === String(this.ownId) : false,
-      },
-      chat: {
-        id: String(chatId),
-        type: isGroup ? "group" : "dm",
-      },
-      content: {
-        text,
-      },
-      raw,
-      timestamp: ts,
+      sender: { id: String(senderId), name: senderName, isBot: this.ownId ? String(senderId) === String(this.ownId) : false },
+      chat: { id: String(chatId), type: isGroup ? "group" : "dm", ...(chatTitle ? { title: chatTitle } : {}) },
+      content: { text, ...(attachments.length > 0 ? { attachments } : {}) },
+      raw, timestamp: ts
     };
   }
 
@@ -274,7 +357,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api) throw new Error("Zalo adapter is not connected.");
 
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     const quote = this.resolveQuote(options?.replyToId);
     const payload: any = { msg: text, quote };
 
@@ -297,7 +380,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api) throw new Error("Zalo adapter is not connected.");
 
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     const quote = this.resolveQuote(options?.replyToId);
 
     return await this.enqueueSend(async () => {
@@ -343,7 +426,7 @@ export class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api?.addReaction) return;
 
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     const isGroup = threadType === 1;
     const reactionCode = EMOJI_TO_ZALO[emoji] || emoji;
 
@@ -359,7 +442,7 @@ export class ZaloChannelAdapter extends BaseChannel {
   async sendTyping(chatId: string, options?: { signal?: AbortSignal }): Promise<void> {
     this.assertNotAborted(options?.signal);
     if (!this.api?.sendTypingEvent) return;
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     try {
       await this.api.sendTypingEvent(chatId, true, threadType);
     } catch {

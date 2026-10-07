@@ -106,18 +106,76 @@ describe("ZaloChannelAdapter refinements", () => {
   test("emits session:expired on listener closed", async () => {
     const expired = mock(() => undefined);
     adapter.on("session:expired", expired);
-    api.listener._emit("closed", { reason: "session_expired" });
+    api.listener._emit("closed", new Error("session expired"));
     expect(expired).toHaveBeenCalled();
   });
 
-  test("normalizes inbound message with cliMsgId preserved in raw cache", async () => {
+  test("normalizes inbound photo, sticker, and file media attachments", async () => {
     let seen: any;
     adapter.on("message", (m: any) => {
       seen = m;
     });
-    api.listener._emit("message", makeRaw());
-    expect(seen.id).toBe("m-1");
-    expect(seen.chat.type).toBe("group");
-    expect(seen.content.text).toBe("hello");
+
+    // 1. Photo
+    api.listener._emit("message", {
+      type: 0,
+      threadId: "u-1",
+      data: {
+        msgId: "m-photo",
+        uidFrom: "u-1",
+        msgType: "chat.photo",
+        href: "https://zalo.me/photo.jpg",
+        content: "",
+      },
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(seen.content.text).toBe("[Ảnh]");
+    expect(seen.content.attachments?.[0].type).toBe("image");
+    expect(seen.content.attachments?.[0].url).toBe("https://zalo.me/photo.jpg");
+
+    // 2. Sticker with CDN fallback URL
+    api.listener._emit("message", {
+      type: 0,
+      threadId: "u-1",
+      data: {
+        msgId: "m-sticker",
+        uidFrom: "u-1",
+        msgType: "chat.sticker",
+        content: { id: "12345", catId: "1" },
+      },
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(seen.content.text).toBe("[Sticker]");
+    expect(seen.content.attachments?.[0].type).toBe("sticker");
+    expect(seen.content.attachments?.[0].url).toContain("eid=12345");
+
+    // 3. File
+    api.listener._emit("message", {
+      type: 0,
+      threadId: "u-1",
+      data: {
+        msgId: "m-file",
+        uidFrom: "u-1",
+        msgType: "share.file",
+        content: { title: "bao_cao.pdf", fileUrl: "https://zalo.me/doc.pdf", size: 1024 },
+      },
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(seen.content.text).toBe("[File] bao_cao.pdf");
+    expect(seen.content.attachments?.[0].type).toBe("file");
+    expect(seen.content.attachments?.[0].filename).toBe("bao_cao.pdf");
+  });
+
+  test("resolveThreadType probes getGroupInfo to avoid mistaking DM for group", async () => {
+    api.getGroupInfo = mock(async (id: string) => {
+      if (id === "real-group") return { gridInfoMap: {}, name: "My Group" };
+      throw new Error("Not a group");
+    });
+
+    const isGroupType = await adapter.resolveThreadType("real-group");
+    expect(isGroupType).toBe(1);
+
+    const isDmType = await adapter.resolveThreadType("user-dm");
+    expect(isDmType).toBe(0);
   });
 });

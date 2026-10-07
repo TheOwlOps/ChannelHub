@@ -9,6 +9,8 @@ export interface ZaloAdapterConfig {
     minDelayMs?: number;
     maxDelayMs?: number;
     cacheLimit?: number;
+    proxy?: string;
+    autoReconnect?: boolean;
 }
 export declare const EMOJI_TO_ZALO: Record<string, string>;
 export declare class ZaloChannelAdapter extends BaseChannel {
@@ -26,7 +28,12 @@ export declare class ZaloChannelAdapter extends BaseChannel {
     private ownId?;
     private config;
     private threadTypeCache;
+    private groupTitleCache;
+    private stickerUrlCache;
     private messageCache;
+    private reconnectAttempts;
+    private isReconnecting;
+    private reconnectTimer?;
     private sendQueue;
     constructor(config?: ZaloAdapterConfig);
     connect(signal?: AbortSignal): Promise<void>;

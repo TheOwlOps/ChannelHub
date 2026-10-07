@@ -75,7 +75,7 @@ export class DiscordChannelAdapter extends BaseChannel {
             op: 2,
             d: {
               token: this.config.botToken,
-              intents: this.config.intents ?? 33280, // Guilds + GuildMessages + DirectMessages + MessageContent
+              intents: this.config.intents ?? 37377, // Guilds (1) + GuildMessages (512) + DirectMessages (4096) + MessageContent (32768)
               properties: {
                 os: process.platform,
                 browser: "channelhub",

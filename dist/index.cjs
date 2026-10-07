@@ -2851,23 +2851,11 @@ var require_websocket = __commonJS(function(exports2, module2) {
         this._isServer = false;
         this._redirects = 0;
         if (protocols === undefined) {
-          if (!options || options.protocols === undefined) {
-            protocols = [];
-          } else if (Array.isArray(options.protocols)) {
-            protocols = options.protocols;
-          } else {
-            protocols = [options.protocols];
-          }
+          protocols = [];
         } else if (!Array.isArray(protocols)) {
           if (typeof protocols === "object" && protocols !== null) {
             options = protocols;
-            if (options.protocols === undefined) {
-              protocols = [];
-            } else if (Array.isArray(options.protocols)) {
-              protocols = options.protocols;
-            } else {
-              protocols = [options.protocols];
-            }
+            protocols = [];
           } else {
             protocols = [protocols];
           }
@@ -2986,6 +2974,7 @@ var require_websocket = __commonJS(function(exports2, module2) {
         }
         return;
       }
+      this._readyState = WebSocket.CLOSING;
       this._sender.close(code, data, !this._isServer, (err) => {
         if (err)
           return;
@@ -2994,7 +2983,6 @@ var require_websocket = __commonJS(function(exports2, module2) {
           this._socket.end();
         }
       });
-      this._readyState = WebSocket.CLOSING;
       setCloseTimer(this);
     }
     pause() {
@@ -3182,7 +3170,6 @@ var require_websocket = __commonJS(function(exports2, module2) {
       socketPath: undefined,
       hostname: undefined,
       protocol: undefined,
-      protocols: undefined,
       timeout: undefined,
       method: "GET",
       host: undefined,
@@ -5635,7 +5622,12 @@ class ZaloChannelAdapter extends BaseChannel {
   ownId;
   config;
   threadTypeCache = new Map;
+  groupTitleCache = new Map;
+  stickerUrlCache = new Map;
   messageCache = new Map;
+  reconnectAttempts = 0;
+  isReconnecting = false;
+  reconnectTimer;
   sendQueue = Promise.resolve();
   constructor(config = {}) {
     super();
@@ -5643,6 +5635,7 @@ class ZaloChannelAdapter extends BaseChannel {
       minDelayMs: 300,
       maxDelayMs: 800,
       cacheLimit: 1000,
+      autoReconnect: true,
       ...config
     };
     if (config.api) {
@@ -5652,6 +5645,8 @@ class ZaloChannelAdapter extends BaseChannel {
   }
   async connect(signal) {
     this.assertNotAborted(signal);
+    if (this.reconnectTimer)
+      clearTimeout(this.reconnectTimer);
     if (!this.api && this.config.credentialsPath) {
       const fs = await import("node:fs");
       const { Zalo } = await import("zca-js");
@@ -5659,7 +5654,15 @@ class ZaloChannelAdapter extends BaseChannel {
         throw new Error(`Credentials not found at ${this.config.credentialsPath}. Please run login first.`);
       }
       const creds = JSON.parse(fs.readFileSync(this.config.credentialsPath, "utf-8"));
-      const zalo = new Zalo;
+      const proxyUrl = this.config.proxy || process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY;
+      let agent = undefined;
+      if (proxyUrl) {
+        try {
+          const { HttpsProxyAgent } = await import("https-proxy-agent");
+          agent = new HttpsProxyAgent(proxyUrl);
+        } catch {}
+      }
+      const zalo = new Zalo({ ...agent ? { agent } : {} });
       this.api = await zalo.login(creds);
     }
     if (!this.api) {
@@ -5670,6 +5673,8 @@ class ZaloChannelAdapter extends BaseChannel {
   }
   async disconnect(signal) {
     this.assertNotAborted(signal);
+    if (this.reconnectTimer)
+      clearTimeout(this.reconnectTimer);
     if (this.api?.listener?.stop) {
       try {
         this.api.listener.stop();
@@ -5682,29 +5687,45 @@ class ZaloChannelAdapter extends BaseChannel {
       return;
     this.api.listener.on("message", async (raw) => {
       this.recordInbound(raw);
-      const unified = this.normalizeMessage(raw);
+      const unified = await this.normalizeMessage(raw);
       if (unified) {
         await this.dispatchMessage(unified);
       }
     });
     const onSessionDrop = (err) => {
-      this.emit("session:expired", {
-        reason: "SESSION_EXPIRED_OR_DROPPED",
-        raw: err,
-        requiresQrScan: true
-      });
-      this.setConnected(false);
+      const msg = String(err?.message || err || "");
+      const isAuthRevoked = msg.includes("1002") || msg.includes("Forbidden") || msg.includes("session expired") || msg.includes("auth");
+      if (isAuthRevoked) {
+        this.emit("session:expired", { reason: "SESSION_EXPIRED_OR_REVOKED", raw: err, requiresQrScan: true });
+        this.setConnected(false);
+        return;
+      }
+      if (this.config.autoReconnect !== false && !this.isReconnecting) {
+        this.isReconnecting = true;
+        const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+        this.reconnectAttempts++;
+        this.reconnectTimer = setTimeout(async () => {
+          try {
+            if (this.api?.listener?.start) {
+              await this.api.listener.start({ retryOnClose: true });
+              this.reconnectAttempts = 0;
+              this.setConnected(true);
+            }
+          } catch (recErr) {
+            onSessionDrop(recErr);
+          } finally {
+            this.isReconnecting = false;
+          }
+        }, delay);
+      } else {
+        this.setConnected(false);
+      }
     };
     this.api.listener.on("closed", onSessionDrop);
-    this.api.listener.on("error", (err) => {
-      const msg = String(err?.message || err);
-      if (msg.includes("1002") || msg.includes("session") || msg.includes("auth")) {
-        onSessionDrop(err);
-      }
-    });
+    this.api.listener.on("error", (err) => onSessionDrop(err));
     if (this.api.listener.start) {
       try {
-        this.api.listener.start();
+        this.api.listener.start({ retryOnClose: true });
       } catch {}
     }
   }
@@ -5720,6 +5741,10 @@ class ZaloChannelAdapter extends BaseChannel {
     const content = typeof data.content === "string" ? data.content : data.msg || "";
     if (chatId) {
       this.threadTypeCache.set(chatId, isGroup ? 1 : 0);
+    }
+    const groupName = raw.groupName || data.groupName || (isGroup && data.dName ? data.dName : undefined);
+    if (isGroup && chatId && groupName) {
+      this.groupTitleCache.set(chatId, groupName);
     }
     const cached = {
       msgId,
@@ -5740,11 +5765,23 @@ class ZaloChannelAdapter extends BaseChannel {
     if (cliMsgId)
       this.messageCache.set(cliMsgId, cached);
   }
-  resolveThreadType(chatId) {
-    if (this.threadTypeCache.has(chatId)) {
+  async resolveThreadType(chatId) {
+    if (this.threadTypeCache.has(chatId))
       return this.threadTypeCache.get(chatId);
+    if (this.api?.getGroupInfo) {
+      try {
+        const info = await this.api.getGroupInfo(chatId);
+        if (info && (info.gridInfoMap || info.groupId || info.name)) {
+          this.threadTypeCache.set(chatId, 1);
+          if (info.name)
+            this.groupTitleCache.set(chatId, info.name);
+          return 1;
+        }
+      } catch {}
+      this.threadTypeCache.set(chatId, 0);
+      return 0;
     }
-    return this.config.defaultIsGroup ?? true ? 1 : 0;
+    return this.config.defaultIsGroup ?? false ? 1 : 0;
   }
   resolveQuote(replyToId) {
     if (!replyToId)
@@ -5776,32 +5813,75 @@ class ZaloChannelAdapter extends BaseChannel {
     this.sendQueue = next.catch(() => {});
     return next;
   }
-  normalizeMessage(raw) {
+  async normalizeMessage(raw) {
     if (!raw)
       return null;
     const data = raw.data || raw;
     const isGroup = raw.type === 1 || raw.type === "group" || Boolean(raw.isGroup);
-    const chatId = raw.threadId || data.idTo || data.threadId || "";
-    const senderId = data.uidFrom || raw.senderId || "";
-    const senderName = data.dName || data.senderName;
-    const text = typeof data.content === "string" ? data.content : data.msg || "";
-    const msgId = data.msgId || raw.msgId || String(Date.now());
+    const chatId = String(raw.threadId || data.idTo || data.threadId || "");
+    const senderId = String(data.uidFrom || raw.senderId || "");
+    const msgId = String(data.msgId || raw.msgId || Date.now());
     const ts = Number(data.ts || raw.timestamp) || Date.now();
+    const msgType = String(data.msgType || raw.msgType || "");
+    let text = typeof data.content === "string" ? data.content : data.msg || "";
+    const attachments = [];
+    if (msgType === "chat.photo" || data.photo || data.thumb || data.href) {
+      const url = data.href || data.url || data.thumb || (typeof data.content === "object" ? data.content?.href || data.content?.url : "");
+      if (url)
+        attachments.push({ type: "image", url });
+      if (!text)
+        text = "[Ảnh]";
+    } else if (msgType === "chat.sticker" || typeof data.content === "object" && data.content?.id && data.content?.catId) {
+      const stickerObj = typeof data.content === "object" ? data.content : data;
+      const stickerId = String(stickerObj.id || stickerObj.stickerId || "");
+      let stickerUrl = this.stickerUrlCache.get(stickerId);
+      if (!stickerUrl && stickerId) {
+        if (this.api?.getStickersDetail) {
+          try {
+            const detail = await this.api.getStickersDetail(stickerId);
+            if (detail?.stickerUrl || detail?.url)
+              stickerUrl = detail.stickerUrl || detail.url;
+          } catch {}
+        }
+        if (!stickerUrl)
+          stickerUrl = `https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=${stickerId}&size=130`;
+        this.stickerUrlCache.set(stickerId, stickerUrl);
+      }
+      if (stickerUrl)
+        attachments.push({ type: "sticker", url: stickerUrl });
+      if (!text)
+        text = "[Sticker]";
+    } else if (msgType === "share.file" || typeof data.content === "object" && (data.content?.title || data.content?.filename || data.content?.fileUrl)) {
+      const fileObj = typeof data.content === "object" ? data.content : data;
+      const filename = fileObj.filename || fileObj.title || fileObj.fileName || "Tệp đính kèm";
+      const fileUrl = fileObj.fileUrl || fileObj.href || fileObj.url || "";
+      attachments.push({ type: "file", url: fileUrl, filename, size: Number(fileObj.fileSize || fileObj.size) || undefined });
+      if (!text)
+        text = `[File] ${filename}`;
+    }
+    let chatTitle = undefined;
+    let senderName = data.senderName;
+    if (isGroup) {
+      chatTitle = this.groupTitleCache.get(chatId) || raw.groupName || data.groupName;
+      if (!chatTitle && this.api?.getGroupInfo) {
+        try {
+          const info = await this.api.getGroupInfo(chatId);
+          if (info?.name) {
+            chatTitle = info.name;
+            this.groupTitleCache.set(chatId, info.name);
+          }
+        } catch {}
+      }
+      senderName = senderName || data.dName;
+    } else {
+      senderName = data.dName || senderName;
+    }
     return {
       id: String(msgId),
       channel: "zalo",
-      sender: {
-        id: String(senderId),
-        name: senderName,
-        isBot: this.ownId ? String(senderId) === String(this.ownId) : false
-      },
-      chat: {
-        id: String(chatId),
-        type: isGroup ? "group" : "dm"
-      },
-      content: {
-        text
-      },
+      sender: { id: String(senderId), name: senderName, isBot: this.ownId ? String(senderId) === String(this.ownId) : false },
+      chat: { id: String(chatId), type: isGroup ? "group" : "dm", ...chatTitle ? { title: chatTitle } : {} },
+      content: { text, ...attachments.length > 0 ? { attachments } : {} },
       raw,
       timestamp: ts
     };
@@ -5810,7 +5890,7 @@ class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api)
       throw new Error("Zalo adapter is not connected.");
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     const quote = this.resolveQuote(options?.replyToId);
     const payload = { msg: text, quote };
     return await this.enqueueSend(async () => {
@@ -5827,7 +5907,7 @@ class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api)
       throw new Error("Zalo adapter is not connected.");
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     const quote = this.resolveQuote(options?.replyToId);
     return await this.enqueueSend(async () => {
       let res;
@@ -5854,7 +5934,7 @@ class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api?.addReaction)
       return;
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     const isGroup = threadType === 1;
     const reactionCode = EMOJI_TO_ZALO[emoji] || emoji;
     const cached = this.messageCache.get(messageId);
@@ -5867,7 +5947,7 @@ class ZaloChannelAdapter extends BaseChannel {
     this.assertNotAborted(options?.signal);
     if (!this.api?.sendTypingEvent)
       return;
-    const threadType = this.resolveThreadType(chatId);
+    const threadType = await this.resolveThreadType(chatId);
     try {
       await this.api.sendTypingEvent(chatId, true, threadType);
     } catch {}
@@ -6912,7 +6992,7 @@ class DiscordChannelAdapter extends BaseChannel {
             op: 2,
             d: {
               token: this.config.botToken,
-              intents: this.config.intents ?? 33280,
+              intents: this.config.intents ?? 37377,
               properties: {
                 os: process.platform,
                 browser: "channelhub",
@@ -7325,6 +7405,8 @@ class MessengerChannelAdapter extends BaseChannel {
                 res.writeHead(401).end("Invalid Signature");
                 return;
               }
+            } else {
+              console.warn("[Messenger] Warning: appSecret is not configured. Webhook X-Hub-Signature-256 verification is bypassed (Insecure).");
             }
             try {
               const data = JSON.parse(body);

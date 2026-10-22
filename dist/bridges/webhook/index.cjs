@@ -42,6 +42,8 @@ __export(exports_webhook, {
   WebhookBridge: () => WebhookBridge
 });
 module.exports = __toCommonJS(exports_webhook);
+
+// src/bridges/webhook/webhook.ts
 var import_node_http = require("node:http");
 var import_node_crypto = require("node:crypto");
 

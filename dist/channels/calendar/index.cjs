@@ -43,7 +43,7 @@ __export(exports_calendar, {
 });
 module.exports = __toCommonJS(exports_calendar);
 
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 var import_node_events = require("node:events");
 
 class BaseChannel extends import_node_events.EventEmitter {

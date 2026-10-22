@@ -74,7 +74,7 @@ var __esm = (fn, res, err) => () => {
   return res;
 };
 
-// src/core/stats.ts
+// src/core/insights/stats.ts
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -646,7 +646,7 @@ var DASHBOARD_HTML = `<!doctype html>
 </body>
 </html>`;
 
-// src/bridges/dashboard/index.ts
+// src/bridges/dashboard/dashboard.ts
 class DashboardBridge {
   hub;
   config;
@@ -4061,6 +4061,7 @@ __export(exports_src, {
   BaseChannel: () => BaseChannel,
   CONFIG: () => CONFIG,
   CalendarChannelAdapter: () => CalendarChannelAdapter,
+  ChannelEventBus: () => ChannelEventBus,
   ChannelHub: () => ChannelHub,
   CommandRouter: () => CommandRouter,
   DashboardBridge: () => DashboardBridge,
@@ -4098,7 +4099,7 @@ __export(exports_src, {
   initPersonalBot: () => initPersonalBot
 });
 module.exports = __toCommonJS(exports_src);
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 var import_node_events = require("node:events");
 
 class BaseChannel extends import_node_events.EventEmitter {
@@ -4148,7 +4149,7 @@ class BaseChannel extends import_node_events.EventEmitter {
     }, options);
   }
 }
-// src/core/stream.ts
+// src/core/engine/stream.ts
 class SmartStreamer {
   adapter;
   options;
@@ -4268,7 +4269,7 @@ class SmartStreamer {
   }
 }
 
-// src/core/context.ts
+// src/core/contracts/context.ts
 function createMessageContext(message, channel, identity, handoffManager) {
   const isHandedOff = handoffManager ? handoffManager.isPaused(channel.name, message.chat.id) : false;
   return {
@@ -4315,7 +4316,7 @@ function createMessageContext(message, channel, identity, handoffManager) {
     }
   };
 }
-// src/core/bus.ts
+// src/core/engine/bus.ts
 var import_node_events2 = require("node:events");
 
 class ChannelEventBus extends import_node_events2.EventEmitter {
@@ -4330,7 +4331,7 @@ class ChannelEventBus extends import_node_events2.EventEmitter {
   }
 }
 
-// src/core/dedup.ts
+// src/core/reliability/dedup.ts
 class IdempotencyCache {
   _maxEntries;
   _ttlMs;
@@ -4384,7 +4385,7 @@ class IdempotencyCache {
   }
 }
 
-// src/core/identity.ts
+// src/core/identity/identity.ts
 class IdentityStitcher {
   _lookup = new Map;
   _identities = new Map;
@@ -4448,7 +4449,7 @@ class IdentityStitcher {
   }
 }
 
-// src/core/handoff.ts
+// src/core/engine/handoff.ts
 class HumanHandoffManager {
   _states = new Map;
   _getKey(channel, chatId) {
@@ -4481,7 +4482,7 @@ class HumanHandoffManager {
   }
 }
 
-// src/core/hub.ts
+// src/core/engine/hub.ts
 class ChannelHub {
   _channels = new Map;
   _bus = new ChannelEventBus;
@@ -4726,7 +4727,7 @@ class ChannelHub {
     await Promise.allSettled(uniqueChannels.map((ch) => ch.disconnect(signal)));
   }
 }
-// src/core/limiter.ts
+// src/core/reliability/limiter.ts
 class TokenBucketLimiter {
   _tokens;
   _capacity;
@@ -4796,7 +4797,7 @@ class TokenBucketLimiter {
     return this._tokens;
   }
 }
-// src/core/shared-limiter.ts
+// src/core/reliability/shared-limiter.ts
 var delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class SharedTokenBucketLimiter {
@@ -4865,456 +4866,7 @@ class SharedTokenBucketLimiter {
     }
   }
 }
-// src/core/transcoder.ts
-class MediaTranscoder {
-  static sharpCache = null;
-  static async getSharp() {
-    if (this.sharpCache)
-      return this.sharpCache;
-    try {
-      const mod = await import("sharp");
-      this.sharpCache = mod.default || mod;
-      return this.sharpCache;
-    } catch (e) {
-      throw new Error("Cannot load optional dependency 'sharp'. Please install it: npm install sharp");
-    }
-  }
-  static async transcodeImage(source, options = {}) {
-    const sharp = await this.getSharp();
-    const {
-      maxWidth = 1920,
-      maxHeight = 1920,
-      quality = 80,
-      format = "webp",
-      stripMetadata = true
-    } = options;
-    const sourceBuf = Buffer.isBuffer(source) ? source : Buffer.from(source);
-    let pipeline = sharp(sourceBuf, { failOn: "none" });
-    if (stripMetadata) {
-      pipeline = pipeline.withMetadata(false);
-    }
-    pipeline = pipeline.rotate();
-    pipeline = pipeline.resize({
-      width: maxWidth,
-      height: maxHeight,
-      fit: "inside",
-      withoutEnlargement: true
-    });
-    let mimeType = "image/webp";
-    if (format === "webp") {
-      pipeline = pipeline.webp({ quality, effort: 4 });
-    } else if (format === "jpeg") {
-      pipeline = pipeline.jpeg({ quality, progressive: true, mozjpeg: true });
-      mimeType = "image/jpeg";
-    } else if (format === "png") {
-      pipeline = pipeline.png({ compressionLevel: 8, adaptiveFiltering: true });
-      mimeType = "image/png";
-    }
-    const { data: outputBuffer, info } = await pipeline.toBuffer({ resolveWithObject: true });
-    return {
-      buffer: outputBuffer,
-      format: info.format,
-      mimeType,
-      originalSize: sourceBuf.length,
-      transcodedSize: outputBuffer.length,
-      compressionRatio: outputBuffer.length / sourceBuf.length,
-      width: info.width,
-      height: info.height
-    };
-  }
-}
-// src/core/research.ts
-class WebResearch {
-  static async search(query, options = {}) {
-    const { limit = 5, provider = "duckduckgo", apiKey, deepExtract = false, signal } = options;
-    let results = [];
-    if (provider === "tavily") {
-      results = await this.searchTavily(query, apiKey, limit, signal);
-    } else if (provider === "brave") {
-      results = await this.searchBrave(query, apiKey, limit, signal);
-    } else {
-      results = await this.searchDuckDuckGo(query, limit, signal);
-    }
-    if (deepExtract && results.length > 0) {
-      const topToExtract = results.slice(0, 3);
-      await Promise.allSettled(topToExtract.map(async (r) => {
-        try {
-          const page = await this.extract(r.url, signal);
-          r.content = page.content.slice(0, 5000);
-        } catch {}
-      }));
-    }
-    return results;
-  }
-  static async extract(url, signal) {
-    try {
-      const res = await fetch(`https://r.jina.ai/${encodeURI(url)}`, {
-        headers: {
-          Accept: "text/plain",
-          "User-Agent": "ChannelHub-Agent/1.0"
-        },
-        signal
-      });
-      if (res.ok) {
-        const text = await res.text();
-        return {
-          url,
-          content: text.trim()
-        };
-      }
-    } catch {}
-    const rawRes = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-      },
-      signal
-    });
-    const html = await rawRes.text();
-    const clean = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    return {
-      url,
-      content: clean.slice(0, 1e4)
-    };
-  }
-  static async searchDuckDuckGo(query, limit, signal) {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
-      },
-      signal
-    });
-    if (!res.ok)
-      throw new Error(`DuckDuckGo returned ${res.status}`);
-    const html = await res.text();
-    const results = [];
-    const blockRegex = /<div class="result results_links results_links_deep web-result[\s\S]*?<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/g;
-    let match;
-    while ((match = blockRegex.exec(html)) !== null && results.length < limit) {
-      const block = match[0];
-      const titleMatch = block.match(/<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
-      const snippetMatch = block.match(/<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/);
-      if (titleMatch) {
-        let rawUrl = titleMatch[1];
-        if (rawUrl.includes("uddg=")) {
-          const extracted = rawUrl.split("uddg=")[1]?.split("&")[0];
-          if (extracted)
-            rawUrl = decodeURIComponent(extracted);
-        }
-        const title = titleMatch[2].replace(/<[^>]+>/g, "").trim();
-        const snippet = snippetMatch ? snippetMatch[1].replace(/<[^>]+>/g, "").trim() : "";
-        if (rawUrl.startsWith("http")) {
-          results.push({
-            title,
-            url: rawUrl,
-            snippet
-          });
-        }
-      }
-    }
-    return results;
-  }
-  static async searchTavily(query, apiKey, limit = 5, signal) {
-    if (!apiKey)
-      throw new Error("Tavily provider requires apiKey in options");
-    const res = await fetch("https://api.tavily.com/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        api_key: apiKey,
-        query,
-        max_results: limit
-      }),
-      signal
-    });
-    if (!res.ok)
-      throw new Error(`Tavily error: ${res.status}`);
-    const data = await res.json();
-    return (data.results || []).map((r) => ({
-      title: r.title,
-      url: r.url,
-      snippet: r.content
-    }));
-  }
-  static async searchBrave(query, apiKey, limit = 5, signal) {
-    if (!apiKey)
-      throw new Error("Brave provider requires apiKey in options");
-    const res = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${limit}`, {
-      headers: {
-        Accept: "application/json",
-        "X-Subscription-Token": apiKey
-      },
-      signal
-    });
-    if (!res.ok)
-      throw new Error(`Brave search error: ${res.status}`);
-    const data = await res.json();
-    return (data.web?.results || []).map((r) => ({
-      title: r.title,
-      url: r.url,
-      snippet: r.description
-    }));
-  }
-}
-// src/core/video.ts
-var import_node_child_process = require("node:child_process");
-var import_node_fs2 = require("node:fs");
-var import_node_path2 = require("node:path");
-var import_node_os = require("node:os");
-
-class VideoEngine {
-  static async createShort(options) {
-    const {
-      input,
-      output,
-      mode = "blur-backdrop",
-      targetWidth = 1080,
-      targetHeight = 1920,
-      ffmpegPath = "ffmpeg"
-    } = options;
-    let filterGraph = "";
-    if (mode === "blur-backdrop") {
-      filterGraph = [
-        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},boxblur=20:5[bg]`,
-        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease[fg]`,
-        `[bg][fg]overlay=(W-w)/2:(H-h)/2[outv]`
-      ].join(";");
-    } else if (mode === "crop-center") {
-      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight}[outv]`;
-    } else {
-      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:black[outv]`;
-    }
-    const args = [
-      "-y",
-      "-i",
-      input,
-      "-filter_complex",
-      filterGraph,
-      "-map",
-      "[outv]",
-      "-map",
-      "0:a?",
-      "-c:v",
-      "libx264",
-      "-preset",
-      "veryfast",
-      "-crf",
-      "22",
-      "-c:a",
-      "aac",
-      "-b:a",
-      "128k",
-      output
-    ];
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async burnSubtitles(options) {
-    const { input, output, subtitles, style = {}, ffmpegPath = "ffmpeg" } = options;
-    let srtPath = subtitles;
-    let tempCreated = false;
-    if (!subtitles.endsWith(".srt") && !subtitles.endsWith(".vtt")) {
-      srtPath = import_node_path2.join(import_node_os.tmpdir(), `sub_${Date.now()}_${Math.random().toString(36).slice(2)}.srt`);
-      await import_node_fs2.promises.writeFile(srtPath, subtitles, "utf8");
-      tempCreated = true;
-    }
-    try {
-      const fontSize = style.fontSize || 24;
-      const fontColor = style.fontColor || "&H00FFFFFF";
-      const bold = style.bold ? 1 : 0;
-      const safeSrtPath = srtPath.replace(/\\/g, "/").replace(/:/g, "\\:");
-      const filter = `subtitles='${safeSrtPath}':force_style='FontSize=${fontSize},PrimaryColour=${fontColor},Bold=${bold}'`;
-      const args = [
-        "-y",
-        "-i",
-        input,
-        "-vf",
-        filter,
-        "-c:v",
-        "libx264",
-        "-preset",
-        "veryfast",
-        "-crf",
-        "22",
-        "-c:a",
-        "copy",
-        output
-      ];
-      await this.runProcess(ffmpegPath, args);
-      return { output, command: [ffmpegPath, ...args] };
-    } finally {
-      if (tempCreated) {
-        await import_node_fs2.promises.unlink(srtPath).catch(() => {});
-      }
-    }
-  }
-  static async addWatermark(options) {
-    const {
-      input,
-      watermark,
-      output,
-      position = "top-right",
-      opacity = 0.9,
-      scale = 0.15,
-      ffmpegPath = "ffmpeg"
-    } = options;
-    let posExpr = "W-w-20:20";
-    if (position === "top-left")
-      posExpr = "20:20";
-    else if (position === "bottom-left")
-      posExpr = "20:H-h-20";
-    else if (position === "bottom-right")
-      posExpr = "W-w-20:H-h-20";
-    else if (position === "center")
-      posExpr = "(W-w)/2:(H-h)/2";
-    const filterGraph = [
-      `[1:v]scale=iw*${scale}:-1,format=rgba,colorchannelmixer=aa=${opacity}[wm]`,
-      `[0:v][wm]overlay=${posExpr}[outv]`
-    ].join(";");
-    const args = [
-      "-y",
-      "-i",
-      input,
-      "-i",
-      watermark,
-      "-filter_complex",
-      filterGraph,
-      "-map",
-      "[outv]",
-      "-map",
-      "0:a?",
-      "-c:v",
-      "libx264",
-      "-preset",
-      "veryfast",
-      "-c:a",
-      "copy",
-      output
-    ];
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async extractThumbnail(options) {
-    const { input, output, timestampSec = 1, width, ffmpegPath = "ffmpeg" } = options;
-    const args = [
-      "-y",
-      "-ss",
-      String(timestampSec),
-      "-i",
-      input,
-      "-vframes",
-      "1"
-    ];
-    if (width) {
-      args.push("-vf", `scale=${width}:-1`);
-    }
-    args.push(output);
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async generateMemeGif(options) {
-    const {
-      input,
-      output,
-      startSec = 0,
-      durationSec = 5,
-      fps = 15,
-      width = 480,
-      topText,
-      bottomText,
-      ffmpegPath = "ffmpeg"
-    } = options;
-    const filterParts = [
-      `fps=${fps}`,
-      `scale=${width}:-1:flags=lanczos`
-    ];
-    if (topText) {
-      filterParts.push(`drawtext=text='${topText.replace(/'/g, "")}':x=(w-text_w)/2:y=20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
-    }
-    if (bottomText) {
-      filterParts.push(`drawtext=text='${bottomText.replace(/'/g, "")}':x=(w-text_w)/2:y=h-text_h-20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
-    }
-    const vf = `${filterParts.join(",")},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`;
-    const args = [
-      "-y",
-      "-ss",
-      String(startSec),
-      "-t",
-      String(durationSec),
-      "-i",
-      input,
-      "-vf",
-      vf,
-      output
-    ];
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async renderShotstack(options) {
-    const {
-      timeline,
-      apiKey,
-      env = "stage",
-      outputFormat = "mp4",
-      aspectRatio = "9:16",
-      signal
-    } = options;
-    const baseUrl = env === "v1" ? "https://api.shotstack.io/edit/v1" : "https://api.shotstack.io/edit/stage";
-    const payload = {
-      timeline,
-      output: {
-        format: outputFormat,
-        aspectRatio,
-        fps: 30
-      }
-    };
-    const res = await fetch(`${baseUrl}/render`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey
-      },
-      body: JSON.stringify(payload),
-      signal
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Shotstack render error (${res.status}): ${errText}`);
-    }
-    const data = await res.json();
-    return {
-      renderId: data.response?.id,
-      status: data.response?.status || "queued",
-      url: data.response?.url
-    };
-  }
-  static runProcess(cmd, args) {
-    return new Promise((resolve, reject) => {
-      const child = import_node_child_process.spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
-      let stderr = "";
-      child.stderr?.on("data", (chunk) => {
-        stderr += chunk.toString();
-      });
-      child.on("error", (err) => {
-        reject(new Error(`Failed to execute ${cmd}: ${err.message}`));
-      });
-      child.on("close", (code) => {
-        if (code === 0) {
-          resolve();
-        } else {
-          reject(new Error(`${cmd} exited with code ${code}. Details:
-${stderr.slice(-500)}`));
-        }
-      });
-    });
-  }
-}
-
-// src/core/index.ts
-init_stats();
-
-// src/core/group-manager.ts
+// src/core/identity/group-manager.ts
 class GroupManager {
   userMessageHistory = new Map;
   reminders = new Map;
@@ -5592,6 +5144,455 @@ class GroupManager {
       return false;
     poll.active = false;
     return true;
+  }
+}
+// src/core/media/video.ts
+var import_node_child_process = require("node:child_process");
+var import_node_fs2 = require("node:fs");
+var import_node_path2 = require("node:path");
+var import_node_os = require("node:os");
+
+class VideoEngine {
+  static async createShort(options) {
+    const {
+      input,
+      output,
+      mode = "blur-backdrop",
+      targetWidth = 1080,
+      targetHeight = 1920,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    let filterGraph = "";
+    if (mode === "blur-backdrop") {
+      filterGraph = [
+        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},boxblur=20:5[bg]`,
+        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease[fg]`,
+        `[bg][fg]overlay=(W-w)/2:(H-h)/2[outv]`
+      ].join(";");
+    } else if (mode === "crop-center") {
+      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight}[outv]`;
+    } else {
+      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:black[outv]`;
+    }
+    const args = [
+      "-y",
+      "-i",
+      input,
+      "-filter_complex",
+      filterGraph,
+      "-map",
+      "[outv]",
+      "-map",
+      "0:a?",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "veryfast",
+      "-crf",
+      "22",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "128k",
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async burnSubtitles(options) {
+    const { input, output, subtitles, style = {}, ffmpegPath = "ffmpeg" } = options;
+    let srtPath = subtitles;
+    let tempCreated = false;
+    if (!subtitles.endsWith(".srt") && !subtitles.endsWith(".vtt")) {
+      srtPath = import_node_path2.join(import_node_os.tmpdir(), `sub_${Date.now()}_${Math.random().toString(36).slice(2)}.srt`);
+      await import_node_fs2.promises.writeFile(srtPath, subtitles, "utf8");
+      tempCreated = true;
+    }
+    try {
+      const fontSize = style.fontSize || 24;
+      const fontColor = style.fontColor || "&H00FFFFFF";
+      const bold = style.bold ? 1 : 0;
+      const safeSrtPath = srtPath.replace(/\\/g, "/").replace(/:/g, "\\:");
+      const filter = `subtitles='${safeSrtPath}':force_style='FontSize=${fontSize},PrimaryColour=${fontColor},Bold=${bold}'`;
+      const args = [
+        "-y",
+        "-i",
+        input,
+        "-vf",
+        filter,
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "22",
+        "-c:a",
+        "copy",
+        output
+      ];
+      await this.runProcess(ffmpegPath, args);
+      return { output, command: [ffmpegPath, ...args] };
+    } finally {
+      if (tempCreated) {
+        await import_node_fs2.promises.unlink(srtPath).catch(() => {});
+      }
+    }
+  }
+  static async addWatermark(options) {
+    const {
+      input,
+      watermark,
+      output,
+      position = "top-right",
+      opacity = 0.9,
+      scale = 0.15,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    let posExpr = "W-w-20:20";
+    if (position === "top-left")
+      posExpr = "20:20";
+    else if (position === "bottom-left")
+      posExpr = "20:H-h-20";
+    else if (position === "bottom-right")
+      posExpr = "W-w-20:H-h-20";
+    else if (position === "center")
+      posExpr = "(W-w)/2:(H-h)/2";
+    const filterGraph = [
+      `[1:v]scale=iw*${scale}:-1,format=rgba,colorchannelmixer=aa=${opacity}[wm]`,
+      `[0:v][wm]overlay=${posExpr}[outv]`
+    ].join(";");
+    const args = [
+      "-y",
+      "-i",
+      input,
+      "-i",
+      watermark,
+      "-filter_complex",
+      filterGraph,
+      "-map",
+      "[outv]",
+      "-map",
+      "0:a?",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "veryfast",
+      "-c:a",
+      "copy",
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async extractThumbnail(options) {
+    const { input, output, timestampSec = 1, width, ffmpegPath = "ffmpeg" } = options;
+    const args = [
+      "-y",
+      "-ss",
+      String(timestampSec),
+      "-i",
+      input,
+      "-vframes",
+      "1"
+    ];
+    if (width) {
+      args.push("-vf", `scale=${width}:-1`);
+    }
+    args.push(output);
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async generateMemeGif(options) {
+    const {
+      input,
+      output,
+      startSec = 0,
+      durationSec = 5,
+      fps = 15,
+      width = 480,
+      topText,
+      bottomText,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    const filterParts = [
+      `fps=${fps}`,
+      `scale=${width}:-1:flags=lanczos`
+    ];
+    if (topText) {
+      filterParts.push(`drawtext=text='${topText.replace(/'/g, "")}':x=(w-text_w)/2:y=20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
+    }
+    if (bottomText) {
+      filterParts.push(`drawtext=text='${bottomText.replace(/'/g, "")}':x=(w-text_w)/2:y=h-text_h-20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
+    }
+    const vf = `${filterParts.join(",")},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`;
+    const args = [
+      "-y",
+      "-ss",
+      String(startSec),
+      "-t",
+      String(durationSec),
+      "-i",
+      input,
+      "-vf",
+      vf,
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async renderShotstack(options) {
+    const {
+      timeline,
+      apiKey,
+      env = "stage",
+      outputFormat = "mp4",
+      aspectRatio = "9:16",
+      signal
+    } = options;
+    const baseUrl = env === "v1" ? "https://api.shotstack.io/edit/v1" : "https://api.shotstack.io/edit/stage";
+    const payload = {
+      timeline,
+      output: {
+        format: outputFormat,
+        aspectRatio,
+        fps: 30
+      }
+    };
+    const res = await fetch(`${baseUrl}/render`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey
+      },
+      body: JSON.stringify(payload),
+      signal
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Shotstack render error (${res.status}): ${errText}`);
+    }
+    const data = await res.json();
+    return {
+      renderId: data.response?.id,
+      status: data.response?.status || "queued",
+      url: data.response?.url
+    };
+  }
+  static runProcess(cmd, args) {
+    return new Promise((resolve, reject) => {
+      const child = import_node_child_process.spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
+      let stderr = "";
+      child.stderr?.on("data", (chunk) => {
+        stderr += chunk.toString();
+      });
+      child.on("error", (err) => {
+        reject(new Error(`Failed to execute ${cmd}: ${err.message}`));
+      });
+      child.on("close", (code) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(new Error(`${cmd} exited with code ${code}. Details:
+${stderr.slice(-500)}`));
+        }
+      });
+    });
+  }
+}
+// src/core/media/transcoder.ts
+class MediaTranscoder {
+  static sharpCache = null;
+  static async getSharp() {
+    if (this.sharpCache)
+      return this.sharpCache;
+    try {
+      const mod = await import("sharp");
+      this.sharpCache = mod.default || mod;
+      return this.sharpCache;
+    } catch (e) {
+      throw new Error("Cannot load optional dependency 'sharp'. Please install it: npm install sharp");
+    }
+  }
+  static async transcodeImage(source, options = {}) {
+    const sharp = await this.getSharp();
+    const {
+      maxWidth = 1920,
+      maxHeight = 1920,
+      quality = 80,
+      format = "webp",
+      stripMetadata = true
+    } = options;
+    const sourceBuf = Buffer.isBuffer(source) ? source : Buffer.from(source);
+    let pipeline = sharp(sourceBuf, { failOn: "none" });
+    if (stripMetadata) {
+      pipeline = pipeline.withMetadata(false);
+    }
+    pipeline = pipeline.rotate();
+    pipeline = pipeline.resize({
+      width: maxWidth,
+      height: maxHeight,
+      fit: "inside",
+      withoutEnlargement: true
+    });
+    let mimeType = "image/webp";
+    if (format === "webp") {
+      pipeline = pipeline.webp({ quality, effort: 4 });
+    } else if (format === "jpeg") {
+      pipeline = pipeline.jpeg({ quality, progressive: true, mozjpeg: true });
+      mimeType = "image/jpeg";
+    } else if (format === "png") {
+      pipeline = pipeline.png({ compressionLevel: 8, adaptiveFiltering: true });
+      mimeType = "image/png";
+    }
+    const { data: outputBuffer, info } = await pipeline.toBuffer({ resolveWithObject: true });
+    return {
+      buffer: outputBuffer,
+      format: info.format,
+      mimeType,
+      originalSize: sourceBuf.length,
+      transcodedSize: outputBuffer.length,
+      compressionRatio: outputBuffer.length / sourceBuf.length,
+      width: info.width,
+      height: info.height
+    };
+  }
+}
+
+// src/core/index.ts
+init_stats();
+
+// src/core/insights/research.ts
+class WebResearch {
+  static async search(query, options = {}) {
+    const { limit = 5, provider = "duckduckgo", apiKey, deepExtract = false, signal } = options;
+    let results = [];
+    if (provider === "tavily") {
+      results = await this.searchTavily(query, apiKey, limit, signal);
+    } else if (provider === "brave") {
+      results = await this.searchBrave(query, apiKey, limit, signal);
+    } else {
+      results = await this.searchDuckDuckGo(query, limit, signal);
+    }
+    if (deepExtract && results.length > 0) {
+      const topToExtract = results.slice(0, 3);
+      await Promise.allSettled(topToExtract.map(async (r) => {
+        try {
+          const page = await this.extract(r.url, signal);
+          r.content = page.content.slice(0, 5000);
+        } catch {}
+      }));
+    }
+    return results;
+  }
+  static async extract(url, signal) {
+    try {
+      const res = await fetch(`https://r.jina.ai/${encodeURI(url)}`, {
+        headers: {
+          Accept: "text/plain",
+          "User-Agent": "ChannelHub-Agent/1.0"
+        },
+        signal
+      });
+      if (res.ok) {
+        const text = await res.text();
+        return {
+          url,
+          content: text.trim()
+        };
+      }
+    } catch {}
+    const rawRes = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      },
+      signal
+    });
+    const html = await rawRes.text();
+    const clean = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return {
+      url,
+      content: clean.slice(0, 1e4)
+    };
+  }
+  static async searchDuckDuckGo(query, limit, signal) {
+    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+      },
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`DuckDuckGo returned ${res.status}`);
+    const html = await res.text();
+    const results = [];
+    const blockRegex = /<div class="result results_links results_links_deep web-result[\s\S]*?<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/g;
+    let match;
+    while ((match = blockRegex.exec(html)) !== null && results.length < limit) {
+      const block = match[0];
+      const titleMatch = block.match(/<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+      const snippetMatch = block.match(/<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/);
+      if (titleMatch) {
+        let rawUrl = titleMatch[1];
+        if (rawUrl.includes("uddg=")) {
+          const extracted = rawUrl.split("uddg=")[1]?.split("&")[0];
+          if (extracted)
+            rawUrl = decodeURIComponent(extracted);
+        }
+        const title = titleMatch[2].replace(/<[^>]+>/g, "").trim();
+        const snippet = snippetMatch ? snippetMatch[1].replace(/<[^>]+>/g, "").trim() : "";
+        if (rawUrl.startsWith("http")) {
+          results.push({
+            title,
+            url: rawUrl,
+            snippet
+          });
+        }
+      }
+    }
+    return results;
+  }
+  static async searchTavily(query, apiKey, limit = 5, signal) {
+    if (!apiKey)
+      throw new Error("Tavily provider requires apiKey in options");
+    const res = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        query,
+        max_results: limit
+      }),
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`Tavily error: ${res.status}`);
+    const data = await res.json();
+    return (data.results || []).map((r) => ({
+      title: r.title,
+      url: r.url,
+      snippet: r.content
+    }));
+  }
+  static async searchBrave(query, apiKey, limit = 5, signal) {
+    if (!apiKey)
+      throw new Error("Brave provider requires apiKey in options");
+    const res = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${limit}`, {
+      headers: {
+        Accept: "application/json",
+        "X-Subscription-Token": apiKey
+      },
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`Brave search error: ${res.status}`);
+    const data = await res.json();
+    return (data.web?.results || []).map((r) => ({
+      title: r.title,
+      url: r.url,
+      snippet: r.description
+    }));
   }
 }
 // src/channels/zalo/adapter.ts
@@ -6029,7 +6030,7 @@ var ZaloReactions = {
   BEER: "/-beer",
   NONE: ""
 };
-// src/personal/client.ts
+// src/legacy/zalo/personal/client.ts
 class ZaloPersonalBot {
   api;
   constructor(apiInstance) {
@@ -6588,7 +6589,7 @@ var CONFIG = {
   }
 };
 
-// src/oa/client.ts
+// src/legacy/zalo/oa/client.ts
 class ZaloOABot {
   accessToken;
   baseUrl;
@@ -6725,7 +6726,7 @@ class ZaloOABot {
     return data;
   }
 }
-// src/personal/index.ts
+// src/legacy/zalo/personal/index.ts
 var import_node_fs3 = __toESM(require("node:fs"), 1);
 async function initPersonalBot() {
   if (!import_node_fs3.default.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
@@ -6740,7 +6741,7 @@ async function initPersonalBot() {
   console.log(`[Personal Bot] Logged in successfully. Bot UID: ${ownId}`);
   return { bot, api };
 }
-// src/oa/index.ts
+// src/legacy/zalo/oa/index.ts
 function initOABot() {
   return new ZaloOABot;
 }
@@ -7799,7 +7800,7 @@ class MessengerChannelAdapter extends BaseChannel {
     return await res.json();
   }
 }
-// src/channels/messenger/personal.ts
+// src/channels/messenger-personal/adapter.ts
 var import_node_fs4 = __toESM(require("node:fs"), 1);
 var import_node_path4 = __toESM(require("node:path"), 1);
 class MessengerPersonalAdapter extends BaseChannel {
@@ -8942,8 +8943,7 @@ class WebhookGenericAdapter extends BaseChannel {
     throw new Error(`sendMedia is not implemented for generic webhook service "${this.name}".`);
   }
 }
-// src/bridges/mcp/index.ts
-var _groupManager = new GroupManager;
+// src/bridges/mcp/tools.ts
 function getChannelHubMcpTools() {
   return [
     {
@@ -9489,6 +9489,8 @@ function getChannelHubMcpTools() {
     }
   ];
 }
+// src/bridges/mcp/handler.ts
+var _groupManager = new GroupManager;
 async function handleChannelHubMcpCall(hub, toolName, args) {
   try {
     switch (toolName) {
@@ -9813,7 +9815,7 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
     };
   }
 }
-// src/bridges/webhook/index.ts
+// src/bridges/webhook/webhook.ts
 var import_node_http3 = require("node:http");
 var import_node_crypto8 = require("node:crypto");
 
@@ -9972,11 +9974,9 @@ class WebhookBridge {
     });
   }
 }
-
-// src/index.ts
+// src/bridges/dashboard/index.ts
 init_dashboard();
-
-// src/commands/modules/general.ts
+// src/legacy/commands/modules/general.ts
 var heartCommand = {
   name: "heart",
   description: "React with heart to the message",
@@ -10003,7 +10003,7 @@ var pingCommand = {
   }
 };
 
-// src/commands/modules/group.ts
+// src/legacy/commands/modules/group.ts
 var kickCommand = {
   name: "kick",
   description: "Kick member from group via @mention tag",
@@ -10050,7 +10050,7 @@ Owner UID: ${gData.creatorId}`;
   }
 };
 
-// src/commands/modules/reaction.ts
+// src/legacy/commands/modules/reaction.ts
 var EMOJI_TO_REACTION = {
   "❤️": ZaloReactions.HEART,
   "\uD83D\uDC96": ZaloReactions.HEART,
@@ -10102,7 +10102,7 @@ var reactCommand = {
   }
 };
 
-// src/commands/router.ts
+// src/legacy/commands/router.ts
 class CommandRouter {
   commands = new Map;
   constructor() {

@@ -1,13 +1,13 @@
 import http from "node:http";
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { BaseChannel } from "../../core/adapter";
+import { BaseChannel } from "../../core/contracts/adapter";
 import type {
   ChannelType,
   MediaPayload,
   SendOptions,
   SentMessageResult,
   UnifiedMessage,
-} from "../../core/types";
+} from "../../core/contracts/types";
 import type {
   MessengerAdapterConfig,
   MessengerPermission,

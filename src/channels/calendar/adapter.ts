@@ -1,10 +1,10 @@
-import { BaseChannel } from "../../core/adapter";
+import { BaseChannel } from "../../core/contracts/adapter";
 import type {
   ChannelType,
   MediaPayload,
   SendOptions,
   SentMessageResult,
-} from "../../core/types";
+} from "../../core/contracts/types";
 import type { CalendarAdapterConfig, CalendarEventPayload } from "./types";
 
 /**

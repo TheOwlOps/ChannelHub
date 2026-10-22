@@ -1,11 +1,7 @@
-import { BaseChannel } from "../../core/adapter";
-import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/types";
-export interface SlackAdapterConfig {
-    botToken: string;
-    accountId?: string;
-    appToken?: string;
-    signingSecret?: string;
-}
+import { BaseChannel } from "../../core/contracts/adapter";
+import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/contracts/types";
+import type { SlackAdapterConfig } from "./types";
+export type { SlackAdapterConfig } from "./types";
 export declare class SlackChannelAdapter extends BaseChannel {
     readonly name: ChannelType;
     readonly capabilities: {

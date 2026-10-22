@@ -46,7 +46,7 @@ module.exports = __toCommonJS(exports_github);
 // src/channels/github/adapter.ts
 var import_node_crypto = require("node:crypto");
 
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 var import_node_events = require("node:events");
 
 class BaseChannel extends import_node_events.EventEmitter {

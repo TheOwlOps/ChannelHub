@@ -1,18 +1,14 @@
-import { BaseChannel } from "../../core/adapter";
+import { BaseChannel } from "../../core/contracts/adapter";
 import type {
   ChannelType,
   MediaPayload,
   SendOptions,
   SentMessageResult,
   UnifiedMessage,
-} from "../../core/types";
+} from "../../core/contracts/types";
 
-export interface DiscordAdapterConfig {
-  botToken: string;
-  accountId?: string;
-  intents?: number;
-  autoStart?: boolean;
-}
+import type { DiscordAdapterConfig } from "./types";
+export type { DiscordAdapterConfig } from "./types";
 
 /**
  * Lightweight Discord adapter using Discord HTTP REST API.

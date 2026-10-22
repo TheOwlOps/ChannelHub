@@ -434,7 +434,7 @@ __export(exports_zalo, {
 });
 module.exports = __toCommonJS(exports_zalo);
 
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 var import_node_events = require("node:events");
 
 class BaseChannel extends import_node_events.EventEmitter {
@@ -921,7 +921,7 @@ var ZaloReactions = {
   NONE: ""
 };
 var Reactions = ZaloReactions;
-// src/personal/client.ts
+// src/legacy/zalo/personal/client.ts
 class ZaloPersonalBot {
   api;
   constructor(apiInstance) {
@@ -1480,7 +1480,7 @@ var CONFIG = {
   }
 };
 
-// src/oa/client.ts
+// src/legacy/zalo/oa/client.ts
 class ZaloOABot {
   accessToken;
   baseUrl;
@@ -1617,7 +1617,7 @@ class ZaloOABot {
     return data;
   }
 }
-// src/personal/index.ts
+// src/legacy/zalo/personal/index.ts
 var import_node_fs = __toESM(require("node:fs"), 1);
 async function initPersonalBot() {
   if (!import_node_fs.default.existsSync(CONFIG.PERSONAL.CRED_PATH)) {
@@ -1632,7 +1632,7 @@ async function initPersonalBot() {
   console.log(`[Personal Bot] Logged in successfully. Bot UID: ${ownId}`);
   return { bot, api };
 }
-// src/oa/index.ts
+// src/legacy/zalo/oa/index.ts
 function initOABot() {
   return new ZaloOABot;
 }

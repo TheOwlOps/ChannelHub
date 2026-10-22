@@ -1,11 +1,7 @@
-import { BaseChannel } from "../../core/adapter";
-import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/types";
-export interface DiscordAdapterConfig {
-    botToken: string;
-    accountId?: string;
-    intents?: number;
-    autoStart?: boolean;
-}
+import { BaseChannel } from "../../core/contracts/adapter";
+import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/contracts/types";
+import type { DiscordAdapterConfig } from "./types";
+export type { DiscordAdapterConfig } from "./types";
 /**
  * Lightweight Discord adapter using Discord HTTP REST API.
  * Gateway WS is optional — messages can be pushed via normalizeEvent() for webhook/gateway bridges.

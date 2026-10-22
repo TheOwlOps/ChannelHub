@@ -50,7 +50,7 @@ jobs:
 
       - name: Run Node.js clean-install smoke test
         if: matrix.runtime == 'node'
-        run: node dist/bin/cli.js doctor
+        run: node dist/apps/cli.js doctor
 
   publish:
     needs: test-matrix

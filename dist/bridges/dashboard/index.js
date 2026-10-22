@@ -1,10 +1,10 @@
-// src/bridges/dashboard/index.ts
+// src/bridges/dashboard/dashboard.ts
 import { createServer } from "node:http";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { timingSafeEqual } from "node:crypto";
 
-// src/core/stats.ts
+// src/core/insights/stats.ts
 var WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -573,7 +573,7 @@ var DASHBOARD_HTML = `<!doctype html>
 </body>
 </html>`;
 
-// src/bridges/dashboard/index.ts
+// src/bridges/dashboard/dashboard.ts
 class DashboardBridge {
   hub;
   config;

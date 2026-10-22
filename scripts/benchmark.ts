@@ -1,10 +1,10 @@
-import { ChannelHub } from "../src/core/hub";
-import { BaseChannel } from "../src/core/adapter";
-import { IdempotencyCache } from "../src/core/dedup";
-import { TokenBucketLimiter } from "../src/core/limiter";
-import { SmartStreamer } from "../src/core/stream";
-import { createMessageContext } from "../src/core/context";
-import type { ChannelType, UnifiedMessage } from "../src/core/types";
+import { ChannelHub } from "../src/core/engine/hub";
+import { BaseChannel } from "../src/core/contracts/adapter";
+import { IdempotencyCache } from "../src/core/reliability/dedup";
+import { TokenBucketLimiter } from "../src/core/reliability/limiter";
+import { SmartStreamer } from "../src/core/engine/stream";
+import { createMessageContext } from "../src/core/contracts/context";
+import type { ChannelType, UnifiedMessage } from "../src/core/contracts/types";
 
 class BenchmarkChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "benchmark";

@@ -1,5 +1,5 @@
-import { BaseChannel } from "../../core/adapter";
-import type { ChannelType, MediaPayload, SendOptions, SentMessageResult } from "../../core/types";
+import { BaseChannel } from "../../core/contracts/adapter";
+import type { ChannelType, MediaPayload, SendOptions, SentMessageResult } from "../../core/contracts/types";
 export interface ZaloAdapterConfig {
     api?: any;
     credentialsPath?: string;

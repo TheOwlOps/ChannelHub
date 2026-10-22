@@ -2968,8 +2968,7 @@ var init_wrapper = __esm(() => {
   import_websocket_server = __toESM(require_websocket_server(), 1);
   wrapper_default = import_websocket.default;
 });
-
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {

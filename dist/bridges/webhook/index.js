@@ -1,4 +1,4 @@
-// src/bridges/webhook/index.ts
+// src/bridges/webhook/webhook.ts
 import { createServer } from "node:http";
 import { timingSafeEqual } from "node:crypto";
 

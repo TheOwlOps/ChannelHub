@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import { execSync } from "node:child_process";
-import { IdempotencyCache } from "../src/core/dedup";
-import { SharedTokenBucketLimiter } from "../src/core/shared-limiter";
-import { ChannelHub } from "../src/core/hub";
-import { BaseChannel } from "../src/core/adapter";
+import { IdempotencyCache } from "../src/core/reliability/dedup";
+import { SharedTokenBucketLimiter } from "../src/core/reliability/shared-limiter";
+import { ChannelHub } from "../src/core/engine/hub";
+import { BaseChannel } from "../src/core/contracts/adapter";
 
 class BenchAdapter extends BaseChannel {
   readonly name = "bench";

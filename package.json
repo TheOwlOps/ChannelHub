@@ -1,15 +1,15 @@
 {
   "name": "@theowlops/channelhub",
-  "version": "1.6.7",
-  "description": "ChannelHub SDK - Unified multi-channel messaging toolkit (Zalo, Telegram, Discord, Slack, TikTok, Twilio) for AI agents, standalone bots, and enterprise automation.",
+  "version": "2.0.0",
+  "description": "ChannelHub SDK v2 - Unified multi-channel messaging toolkit (Zalo, Telegram, Discord, Slack, TikTok, Twilio) for AI agents, standalone bots, and enterprise automation.",
   "module": "dist/index.js",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
-    "channelhub": "dist/bin/cli.js",
-    "channelhub-mcp": "dist/bin/mcp-server.js",
-    "zalohub": "dist/bin/cli.js"
+    "channelhub": "dist/apps/cli.js",
+    "channelhub-mcp": "dist/apps/mcp-server.js",
+    "zalohub": "dist/apps/cli.js"
   },
   "exports": {
     ".": {
@@ -19,88 +19,88 @@
     },
     "./core": {
       "import": "./dist/core/index.js",
-      "types": "./dist/core/index.d.ts",
-      "require": "./dist/core/index.cjs"
+      "require": "./dist/core/index.cjs",
+      "types": "./dist/core/index.d.ts"
     },
-    "./zalo": {
+    "./channels/zalo": {
       "import": "./dist/channels/zalo/index.js",
-      "types": "./dist/channels/zalo/index.d.ts",
-      "require": "./dist/channels/zalo/index.cjs"
+      "require": "./dist/channels/zalo/index.cjs",
+      "types": "./dist/channels/zalo/index.d.ts"
     },
-    "./telegram": {
+    "./channels/telegram": {
       "import": "./dist/channels/telegram/index.js",
-      "types": "./dist/channels/telegram/index.d.ts",
-      "require": "./dist/channels/telegram/index.cjs"
+      "require": "./dist/channels/telegram/index.cjs",
+      "types": "./dist/channels/telegram/index.d.ts"
     },
-    "./discord": {
+    "./channels/discord": {
       "import": "./dist/channels/discord/index.js",
-      "types": "./dist/channels/discord/index.d.ts",
-      "require": "./dist/channels/discord/index.cjs"
+      "require": "./dist/channels/discord/index.cjs",
+      "types": "./dist/channels/discord/index.d.ts"
     },
-    "./slack": {
+    "./channels/slack": {
       "import": "./dist/channels/slack/index.js",
-      "types": "./dist/channels/slack/index.d.ts",
-      "require": "./dist/channels/slack/index.cjs"
+      "require": "./dist/channels/slack/index.cjs",
+      "types": "./dist/channels/slack/index.d.ts"
     },
-    "./messenger": {
+    "./channels/messenger": {
       "import": "./dist/channels/messenger/index.js",
-      "types": "./dist/channels/messenger/index.d.ts",
-      "require": "./dist/channels/messenger/index.cjs"
+      "require": "./dist/channels/messenger/index.cjs",
+      "types": "./dist/channels/messenger/index.d.ts"
     },
-    "./tiktok": {
+    "./channels/messenger-personal": {
+      "import": "./dist/channels/messenger-personal/index.js",
+      "require": "./dist/channels/messenger-personal/index.cjs",
+      "types": "./dist/channels/messenger-personal/index.d.ts"
+    },
+    "./channels/tiktok": {
       "import": "./dist/channels/tiktok/index.js",
-      "types": "./dist/channels/tiktok/index.d.ts",
-      "require": "./dist/channels/tiktok/index.cjs"
+      "require": "./dist/channels/tiktok/index.cjs",
+      "types": "./dist/channels/tiktok/index.d.ts"
     },
-    "./twilio": {
+    "./channels/twilio": {
       "import": "./dist/channels/twilio/index.js",
-      "types": "./dist/channels/twilio/index.d.ts",
-      "require": "./dist/channels/twilio/index.cjs"
+      "require": "./dist/channels/twilio/index.cjs",
+      "types": "./dist/channels/twilio/index.d.ts"
     },
-    "./email": {
+    "./channels/email": {
       "import": "./dist/channels/email/index.js",
-      "types": "./dist/channels/email/index.d.ts",
-      "require": "./dist/channels/email/index.cjs"
+      "require": "./dist/channels/email/index.cjs",
+      "types": "./dist/channels/email/index.d.ts"
     },
-    "./github": {
+    "./channels/github": {
       "import": "./dist/channels/github/index.js",
-      "types": "./dist/channels/github/index.d.ts",
-      "require": "./dist/channels/github/index.cjs"
+      "require": "./dist/channels/github/index.cjs",
+      "types": "./dist/channels/github/index.d.ts"
     },
-    "./calendar": {
+    "./channels/calendar": {
       "import": "./dist/channels/calendar/index.js",
-      "types": "./dist/channels/calendar/index.d.ts",
-      "require": "./dist/channels/calendar/index.cjs"
+      "require": "./dist/channels/calendar/index.cjs",
+      "types": "./dist/channels/calendar/index.d.ts"
     },
-    "./webhook-generic": {
+    "./channels/webhook-generic": {
       "import": "./dist/channels/webhook-generic/index.js",
-      "types": "./dist/channels/webhook-generic/index.d.ts",
-      "require": "./dist/channels/webhook-generic/index.cjs"
+      "require": "./dist/channels/webhook-generic/index.cjs",
+      "types": "./dist/channels/webhook-generic/index.d.ts"
     },
-    "./mcp": {
+    "./bridges/mcp": {
       "import": "./dist/bridges/mcp/index.js",
-      "types": "./dist/bridges/mcp/index.d.ts",
-      "require": "./dist/bridges/mcp/index.cjs"
+      "require": "./dist/bridges/mcp/index.cjs",
+      "types": "./dist/bridges/mcp/index.d.ts"
     },
-    "./webhook": {
+    "./bridges/webhook": {
       "import": "./dist/bridges/webhook/index.js",
-      "types": "./dist/bridges/webhook/index.d.ts",
-      "require": "./dist/bridges/webhook/index.cjs"
+      "require": "./dist/bridges/webhook/index.cjs",
+      "types": "./dist/bridges/webhook/index.d.ts"
     },
-    "./dashboard": {
+    "./bridges/dashboard": {
       "import": "./dist/bridges/dashboard/index.js",
-      "types": "./dist/bridges/dashboard/index.d.ts",
-      "require": "./dist/bridges/dashboard/index.cjs"
+      "require": "./dist/bridges/dashboard/index.cjs",
+      "types": "./dist/bridges/dashboard/index.d.ts"
     },
-    "./personal": {
-      "import": "./dist/personal/index.js",
-      "types": "./dist/personal/index.d.ts",
-      "require": "./dist/personal/index.cjs"
-    },
-    "./oa": {
-      "import": "./dist/oa/index.js",
-      "types": "./dist/oa/index.d.ts",
-      "require": "./dist/oa/index.cjs"
+    "./legacy/zalo": {
+      "import": "./dist/legacy/zalo/index.js",
+      "require": "./dist/legacy/zalo/index.cjs",
+      "types": "./dist/legacy/zalo/index.d.ts"
     }
   },
   "files": [
@@ -113,17 +113,18 @@
   "scripts": {
     "login:personal": "bun run scripts/login_personal.ts",
     "login:messenger": "bun run scripts/login_messenger.ts",
-    "mcp": "node dist/bin/mcp-server.js",
+    "mcp": "node dist/apps/mcp-server.js",
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
     "build": "bun run scripts/build.ts",
     "build:check": "bun x tsc --noEmit",
-    "test": "bun test",
+    "test": "bun test tests/",
     "bench": "bun run scripts/benchmark.ts",
     "stats": "bun run scripts/generate-badge.ts",
     "test:smoke": "bun test test/clean-install.test.ts",
     "prepublishOnly": "bun run build && bun test",
-    "release": "npm version patch && git push origin main --tags"
+    "release": "npm version patch && git push origin main --tags",
+    "cli": "bun run apps/cli/main.ts"
   },
   "keywords": [
     "channelhub",

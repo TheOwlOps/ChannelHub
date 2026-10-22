@@ -1,5 +1,5 @@
-import { BaseChannel } from "../../core/adapter";
-import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/types";
+import { BaseChannel } from "../../core/contracts/adapter";
+import type { ChannelType, MediaPayload, SendOptions, SentMessageResult, UnifiedMessage } from "../../core/contracts/types";
 import type { GitHubAdapterConfig } from "./types";
 /**
  * GitHubChannelAdapter — receive GitHub webhook events (issues, PRs, comments,

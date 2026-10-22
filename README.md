@@ -222,7 +222,7 @@ await hub.startAll();
 Supports TikTok Business Messaging API v1.3. Handles inbound webhooks with timing-safe HMAC-SHA256 signature verification and replay prevention.
 
 ```typescript
-import { TikTokBusinessAdapter } from "@theowlops/channelhub/tiktok";
+import { TikTokBusinessAdapter } from "@theowlops/channelhub/channels/tiktok";
 
 const tiktok = new TikTokBusinessAdapter({
   appId: "YOUR_TIKTOK_APP_ID",
@@ -245,7 +245,7 @@ ChannelHub provides two native Messenger integrations:
 **1. Meta Graph API (Official Page Bot)**
 Supports webhook challenge verification, permissions discovery, and large file support.
 ```typescript
-import { MessengerChannelAdapter } from "@theowlops/channelhub/messenger";
+import { MessengerChannelAdapter } from "@theowlops/channelhub/channels/messenger";
 
 const messenger = new MessengerChannelAdapter({
   pageAccessToken: "EAA...",
@@ -258,7 +258,7 @@ const messenger = new MessengerChannelAdapter({
 **2. Personal Profile Adapter (Playwright Stealth)**
 Automates your personal Facebook account. Uses a persistent browser context to emulate human behavior and bypass Meta security checkpoints.
 ```typescript
-import { MessengerPersonalAdapter } from "@theowlops/channelhub/messenger";
+import { MessengerPersonalAdapter } from "@theowlops/channelhub/channels/messenger";
 
 // Run 'channelhub login:messenger' first to generate cookies!
 const personal = new MessengerPersonalAdapter({
@@ -272,7 +272,7 @@ const personal = new MessengerPersonalAdapter({
 Supports reverse-engineered Web API (`zca-js`) personal sessions and Official Account (OA) v3 OpenAPI. Includes anti-ban jitter algorithms and automatic quote object generation.
 
 ```typescript
-import { ZaloChannelAdapter } from "@theowlops/channelhub/zalo";
+import { ZaloChannelAdapter } from "@theowlops/channelhub/channels/zalo";
 
 const zalo = new ZaloChannelAdapter({
   credentialsPath: "./credentials.json", // Auto-captured session
@@ -285,7 +285,7 @@ const zalo = new ZaloChannelAdapter({
 Lightweight bot integration via Telegram Bot API with native webhook and polling dispatchers.
 
 ```typescript
-import { TelegramChannelAdapter } from "@theowlops/channelhub/telegram";
+import { TelegramChannelAdapter } from "@theowlops/channelhub/channels/telegram";
 
 const telegram = new TelegramChannelAdapter({
   botToken: "123456:ABC-DEF..."
@@ -296,7 +296,7 @@ const telegram = new TelegramChannelAdapter({
 Omnichannel adapter for WhatsApp, SMS, MMS, and RCS via Twilio API. Supports timing-safe HMAC-SHA1 signature verification for webhooks.
 
 ```typescript
-import { TwilioChannelAdapter } from "@theowlops/channelhub/twilio";
+import { TwilioChannelAdapter } from "@theowlops/channelhub/channels/twilio";
 
 const twilio = new TwilioChannelAdapter({
   accountSid: "AC...",
@@ -307,8 +307,8 @@ const twilio = new TwilioChannelAdapter({
 
 ### 🎮 Discord & 💼 Slack Adapters
 ```typescript
-import { DiscordChannelAdapter } from "@theowlops/channelhub/discord";
-import { SlackChannelAdapter } from "@theowlops/channelhub/slack";
+import { DiscordChannelAdapter } from "@theowlops/channelhub/channels/discord";
+import { SlackChannelAdapter } from "@theowlops/channelhub/channels/slack";
 
 const discord = new DiscordChannelAdapter({ botToken: "DISCORD_TOKEN" });
 const slack = new SlackChannelAdapter({ botToken: "xoxb-...", signingSecret: "..." });

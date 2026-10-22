@@ -44,678 +44,7 @@ __export(exports_mcp, {
 });
 module.exports = __toCommonJS(exports_mcp);
 
-// src/core/research.ts
-class WebResearch {
-  static async search(query, options = {}) {
-    const { limit = 5, provider = "duckduckgo", apiKey, deepExtract = false, signal } = options;
-    let results = [];
-    if (provider === "tavily") {
-      results = await this.searchTavily(query, apiKey, limit, signal);
-    } else if (provider === "brave") {
-      results = await this.searchBrave(query, apiKey, limit, signal);
-    } else {
-      results = await this.searchDuckDuckGo(query, limit, signal);
-    }
-    if (deepExtract && results.length > 0) {
-      const topToExtract = results.slice(0, 3);
-      await Promise.allSettled(topToExtract.map(async (r) => {
-        try {
-          const page = await this.extract(r.url, signal);
-          r.content = page.content.slice(0, 5000);
-        } catch {}
-      }));
-    }
-    return results;
-  }
-  static async extract(url, signal) {
-    try {
-      const res = await fetch(`https://r.jina.ai/${encodeURI(url)}`, {
-        headers: {
-          Accept: "text/plain",
-          "User-Agent": "ChannelHub-Agent/1.0"
-        },
-        signal
-      });
-      if (res.ok) {
-        const text = await res.text();
-        return {
-          url,
-          content: text.trim()
-        };
-      }
-    } catch {}
-    const rawRes = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-      },
-      signal
-    });
-    const html = await rawRes.text();
-    const clean = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    return {
-      url,
-      content: clean.slice(0, 1e4)
-    };
-  }
-  static async searchDuckDuckGo(query, limit, signal) {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
-      },
-      signal
-    });
-    if (!res.ok)
-      throw new Error(`DuckDuckGo returned ${res.status}`);
-    const html = await res.text();
-    const results = [];
-    const blockRegex = /<div class="result results_links results_links_deep web-result[\s\S]*?<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/g;
-    let match;
-    while ((match = blockRegex.exec(html)) !== null && results.length < limit) {
-      const block = match[0];
-      const titleMatch = block.match(/<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
-      const snippetMatch = block.match(/<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/);
-      if (titleMatch) {
-        let rawUrl = titleMatch[1];
-        if (rawUrl.includes("uddg=")) {
-          const extracted = rawUrl.split("uddg=")[1]?.split("&")[0];
-          if (extracted)
-            rawUrl = decodeURIComponent(extracted);
-        }
-        const title = titleMatch[2].replace(/<[^>]+>/g, "").trim();
-        const snippet = snippetMatch ? snippetMatch[1].replace(/<[^>]+>/g, "").trim() : "";
-        if (rawUrl.startsWith("http")) {
-          results.push({
-            title,
-            url: rawUrl,
-            snippet
-          });
-        }
-      }
-    }
-    return results;
-  }
-  static async searchTavily(query, apiKey, limit = 5, signal) {
-    if (!apiKey)
-      throw new Error("Tavily provider requires apiKey in options");
-    const res = await fetch("https://api.tavily.com/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        api_key: apiKey,
-        query,
-        max_results: limit
-      }),
-      signal
-    });
-    if (!res.ok)
-      throw new Error(`Tavily error: ${res.status}`);
-    const data = await res.json();
-    return (data.results || []).map((r) => ({
-      title: r.title,
-      url: r.url,
-      snippet: r.content
-    }));
-  }
-  static async searchBrave(query, apiKey, limit = 5, signal) {
-    if (!apiKey)
-      throw new Error("Brave provider requires apiKey in options");
-    const res = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${limit}`, {
-      headers: {
-        Accept: "application/json",
-        "X-Subscription-Token": apiKey
-      },
-      signal
-    });
-    if (!res.ok)
-      throw new Error(`Brave search error: ${res.status}`);
-    const data = await res.json();
-    return (data.web?.results || []).map((r) => ({
-      title: r.title,
-      url: r.url,
-      snippet: r.description
-    }));
-  }
-}
-
-// src/core/video.ts
-var import_node_child_process = require("node:child_process");
-var import_node_fs = require("node:fs");
-var import_node_path = require("node:path");
-var import_node_os = require("node:os");
-
-class VideoEngine {
-  static async createShort(options) {
-    const {
-      input,
-      output,
-      mode = "blur-backdrop",
-      targetWidth = 1080,
-      targetHeight = 1920,
-      ffmpegPath = "ffmpeg"
-    } = options;
-    let filterGraph = "";
-    if (mode === "blur-backdrop") {
-      filterGraph = [
-        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},boxblur=20:5[bg]`,
-        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease[fg]`,
-        `[bg][fg]overlay=(W-w)/2:(H-h)/2[outv]`
-      ].join(";");
-    } else if (mode === "crop-center") {
-      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight}[outv]`;
-    } else {
-      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:black[outv]`;
-    }
-    const args = [
-      "-y",
-      "-i",
-      input,
-      "-filter_complex",
-      filterGraph,
-      "-map",
-      "[outv]",
-      "-map",
-      "0:a?",
-      "-c:v",
-      "libx264",
-      "-preset",
-      "veryfast",
-      "-crf",
-      "22",
-      "-c:a",
-      "aac",
-      "-b:a",
-      "128k",
-      output
-    ];
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async burnSubtitles(options) {
-    const { input, output, subtitles, style = {}, ffmpegPath = "ffmpeg" } = options;
-    let srtPath = subtitles;
-    let tempCreated = false;
-    if (!subtitles.endsWith(".srt") && !subtitles.endsWith(".vtt")) {
-      srtPath = import_node_path.join(import_node_os.tmpdir(), `sub_${Date.now()}_${Math.random().toString(36).slice(2)}.srt`);
-      await import_node_fs.promises.writeFile(srtPath, subtitles, "utf8");
-      tempCreated = true;
-    }
-    try {
-      const fontSize = style.fontSize || 24;
-      const fontColor = style.fontColor || "&H00FFFFFF";
-      const bold = style.bold ? 1 : 0;
-      const safeSrtPath = srtPath.replace(/\\/g, "/").replace(/:/g, "\\:");
-      const filter = `subtitles='${safeSrtPath}':force_style='FontSize=${fontSize},PrimaryColour=${fontColor},Bold=${bold}'`;
-      const args = [
-        "-y",
-        "-i",
-        input,
-        "-vf",
-        filter,
-        "-c:v",
-        "libx264",
-        "-preset",
-        "veryfast",
-        "-crf",
-        "22",
-        "-c:a",
-        "copy",
-        output
-      ];
-      await this.runProcess(ffmpegPath, args);
-      return { output, command: [ffmpegPath, ...args] };
-    } finally {
-      if (tempCreated) {
-        await import_node_fs.promises.unlink(srtPath).catch(() => {});
-      }
-    }
-  }
-  static async addWatermark(options) {
-    const {
-      input,
-      watermark,
-      output,
-      position = "top-right",
-      opacity = 0.9,
-      scale = 0.15,
-      ffmpegPath = "ffmpeg"
-    } = options;
-    let posExpr = "W-w-20:20";
-    if (position === "top-left")
-      posExpr = "20:20";
-    else if (position === "bottom-left")
-      posExpr = "20:H-h-20";
-    else if (position === "bottom-right")
-      posExpr = "W-w-20:H-h-20";
-    else if (position === "center")
-      posExpr = "(W-w)/2:(H-h)/2";
-    const filterGraph = [
-      `[1:v]scale=iw*${scale}:-1,format=rgba,colorchannelmixer=aa=${opacity}[wm]`,
-      `[0:v][wm]overlay=${posExpr}[outv]`
-    ].join(";");
-    const args = [
-      "-y",
-      "-i",
-      input,
-      "-i",
-      watermark,
-      "-filter_complex",
-      filterGraph,
-      "-map",
-      "[outv]",
-      "-map",
-      "0:a?",
-      "-c:v",
-      "libx264",
-      "-preset",
-      "veryfast",
-      "-c:a",
-      "copy",
-      output
-    ];
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async extractThumbnail(options) {
-    const { input, output, timestampSec = 1, width, ffmpegPath = "ffmpeg" } = options;
-    const args = [
-      "-y",
-      "-ss",
-      String(timestampSec),
-      "-i",
-      input,
-      "-vframes",
-      "1"
-    ];
-    if (width) {
-      args.push("-vf", `scale=${width}:-1`);
-    }
-    args.push(output);
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async generateMemeGif(options) {
-    const {
-      input,
-      output,
-      startSec = 0,
-      durationSec = 5,
-      fps = 15,
-      width = 480,
-      topText,
-      bottomText,
-      ffmpegPath = "ffmpeg"
-    } = options;
-    const filterParts = [
-      `fps=${fps}`,
-      `scale=${width}:-1:flags=lanczos`
-    ];
-    if (topText) {
-      filterParts.push(`drawtext=text='${topText.replace(/'/g, "")}':x=(w-text_w)/2:y=20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
-    }
-    if (bottomText) {
-      filterParts.push(`drawtext=text='${bottomText.replace(/'/g, "")}':x=(w-text_w)/2:y=h-text_h-20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
-    }
-    const vf = `${filterParts.join(",")},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`;
-    const args = [
-      "-y",
-      "-ss",
-      String(startSec),
-      "-t",
-      String(durationSec),
-      "-i",
-      input,
-      "-vf",
-      vf,
-      output
-    ];
-    await this.runProcess(ffmpegPath, args);
-    return { output, command: [ffmpegPath, ...args] };
-  }
-  static async renderShotstack(options) {
-    const {
-      timeline,
-      apiKey,
-      env = "stage",
-      outputFormat = "mp4",
-      aspectRatio = "9:16",
-      signal
-    } = options;
-    const baseUrl = env === "v1" ? "https://api.shotstack.io/edit/v1" : "https://api.shotstack.io/edit/stage";
-    const payload = {
-      timeline,
-      output: {
-        format: outputFormat,
-        aspectRatio,
-        fps: 30
-      }
-    };
-    const res = await fetch(`${baseUrl}/render`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey
-      },
-      body: JSON.stringify(payload),
-      signal
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Shotstack render error (${res.status}): ${errText}`);
-    }
-    const data = await res.json();
-    return {
-      renderId: data.response?.id,
-      status: data.response?.status || "queued",
-      url: data.response?.url
-    };
-  }
-  static runProcess(cmd, args) {
-    return new Promise((resolve, reject) => {
-      const child = import_node_child_process.spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
-      let stderr = "";
-      child.stderr?.on("data", (chunk) => {
-        stderr += chunk.toString();
-      });
-      child.on("error", (err) => {
-        reject(new Error(`Failed to execute ${cmd}: ${err.message}`));
-      });
-      child.on("close", (code) => {
-        if (code === 0) {
-          resolve();
-        } else {
-          reject(new Error(`${cmd} exited with code ${code}. Details:
-${stderr.slice(-500)}`));
-        }
-      });
-    });
-  }
-}
-
-// src/core/group-manager.ts
-class GroupManager {
-  userMessageHistory = new Map;
-  reminders = new Map;
-  pendingChallenges = new Map;
-  chatActivities = new Map;
-  warnings = new Map;
-  polls = new Map;
-  generateRecap(messages) {
-    const participants = Array.from(new Set(messages.map((m) => m.sender || m.senderId || "Unknown")));
-    const keyTopics = [];
-    const decisions = [];
-    const actionItems = [];
-    for (const msg of messages) {
-      const text = msg.text.trim();
-      const lower = text.toLowerCase();
-      if (lower.startsWith("chốt:") || lower.startsWith("quyết định:") || lower.includes("thống nhất") || lower.startsWith("agree:") || lower.startsWith("decided:")) {
-        decisions.push(text);
-      }
-      if (lower.includes("cần làm") || lower.includes("todo:") || lower.includes("giao cho") || lower.includes("hạn chót") || lower.startsWith("task:")) {
-        actionItems.push({
-          task: text,
-          assignee: msg.sender
-        });
-      }
-      if (text.length > 15 && !keyTopics.includes(text) && keyTopics.length < 5) {
-        if (!decisions.includes(text) && !actionItems.some((a) => a.task === text)) {
-          keyTopics.push(text.length > 80 ? text.slice(0, 77) + "..." : text);
-        }
-      }
-    }
-    const summaryLines = [
-      `\uD83D\uDCCA **Tóm tắt cuộc thảo luận (${messages.length} tin nhắn)**:`,
-      `\uD83D\uDC65 **Thành viên tham gia:** ${participants.join(", ") || "Không có"}`,
-      `\uD83D\uDCCC **Chủ đề chính:** ${keyTopics.length > 0 ? keyTopics.join(" | ") : "Thảo luận thông thường"}`,
-      `✅ **Quyết định đã chốt:** ${decisions.length > 0 ? decisions.join("; ") : "Không có"}`,
-      `\uD83D\uDCDD **Đầu việc (Action items):** ${actionItems.length > 0 ? actionItems.map((a) => a.task).join("; ") : "Không có"}`
-    ];
-    return {
-      totalMessages: messages.length,
-      participants,
-      keyTopics,
-      decisions,
-      actionItems,
-      summaryText: summaryLines.join(`
-`)
-    };
-  }
-  checkSpam(senderId, text, options = {}) {
-    const now = Date.now();
-    const windowMs = options.windowMs || 1e4;
-    const maxMessages = options.maxMessagesPerWindow || 5;
-    const blacklisted = options.blacklistedDomains || ["t.me/", "bit.ly/", "cutt.ly/", "tini.vn/"];
-    const urlMatches = text.match(/https?:\/\/[^\s]+/gi) || [];
-    if (options.disallowLinks && urlMatches.length > 0) {
-      return {
-        isSpam: true,
-        reason: "links_disabled",
-        recommendedAction: "delete",
-        messageCountInWindow: 1
-      };
-    }
-    for (const url of urlMatches) {
-      if (blacklisted.some((bad) => url.toLowerCase().includes(bad.toLowerCase()))) {
-        return {
-          isSpam: true,
-          reason: "blacklisted_link",
-          recommendedAction: "kick",
-          messageCountInWindow: 1
-        };
-      }
-    }
-    const userHistory = this.userMessageHistory.get(senderId) || [];
-    const validHistory = userHistory.filter((item) => now - item.timestamp < windowMs);
-    const identicalCount = validHistory.filter((item) => item.text === text).length;
-    if (identicalCount >= 2) {
-      return {
-        isSpam: true,
-        reason: "repetitive_text",
-        recommendedAction: "warn",
-        messageCountInWindow: validHistory.length + 1
-      };
-    }
-    validHistory.push({ text, timestamp: now });
-    this.userMessageHistory.set(senderId, validHistory);
-    if (validHistory.length >= maxMessages) {
-      return {
-        isSpam: true,
-        reason: "flood",
-        recommendedAction: "warn",
-        messageCountInWindow: validHistory.length
-      };
-    }
-    return {
-      isSpam: false,
-      recommendedAction: "allow",
-      messageCountInWindow: validHistory.length
-    };
-  }
-  registerNewMember(chatId, member, groupRules = "Vui lòng tôn trọng thành viên và không gửi link quảng cáo.", timeoutSeconds = 60) {
-    const a = Math.floor(Math.random() * 8) + 1;
-    const b = Math.floor(Math.random() * 8) + 1;
-    const answer = String(a + b);
-    const expiresAt = Date.now() + timeoutSeconds * 1000;
-    const challengeKey = `${chatId}:${member.id}`;
-    const challenge = {
-      memberId: member.id,
-      memberName: member.name,
-      welcomeMessage: `\uD83C\uDF89 Chào mừng **${member.name}** đã tham gia nhóm!
-\uD83D\uDCDC Nội quy: ${groupRules}
-\uD83D\uDD12 Để tránh tài khoản clone, bạn hãy trả lời câu hỏi bảo mật trong vòng ${timeoutSeconds}s:`,
-      question: `Bạn hãy tính: ${a} + ${b} = ?`,
-      expectedAnswer: answer,
-      expiresAt
-    };
-    this.pendingChallenges.set(challengeKey, challenge);
-    return challenge;
-  }
-  verifyMember(chatId, memberId, answer) {
-    const challengeKey = `${chatId}:${memberId}`;
-    const challenge = this.pendingChallenges.get(challengeKey);
-    if (!challenge)
-      return true;
-    if (Date.now() > challenge.expiresAt) {
-      this.pendingChallenges.delete(challengeKey);
-      return false;
-    }
-    if (answer.trim() === challenge.expectedAnswer) {
-      this.pendingChallenges.delete(challengeKey);
-      return true;
-    }
-    return false;
-  }
-  scheduleReminder(chatId, text, triggerAt, recurringIntervalMs) {
-    const id = `remind_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    const timestamp = typeof triggerAt === "number" ? triggerAt : triggerAt.getTime();
-    const reminder = {
-      id,
-      chatId,
-      text,
-      triggerAt: timestamp,
-      recurringIntervalMs,
-      executed: false
-    };
-    this.reminders.set(id, reminder);
-    return reminder;
-  }
-  pollDueReminders() {
-    const now = Date.now();
-    const dueList = [];
-    for (const [id, r] of this.reminders.entries()) {
-      if (!r.executed && r.triggerAt <= now) {
-        dueList.push({ ...r });
-        if (r.recurringIntervalMs && r.recurringIntervalMs > 0) {
-          r.triggerAt = now + r.recurringIntervalMs;
-        } else {
-          r.executed = true;
-          this.reminders.delete(id);
-        }
-      }
-    }
-    return dueList;
-  }
-  recordActivity(chatId, senderId, senderName = senderId, timestamp = Date.now()) {
-    let groupMap = this.chatActivities.get(chatId);
-    if (!groupMap) {
-      groupMap = new Map;
-      this.chatActivities.set(chatId, groupMap);
-    }
-    const current = groupMap.get(senderId) || {
-      userId: senderId,
-      name: senderName,
-      messageCount: 0,
-      lastActiveAt: timestamp
-    };
-    current.messageCount += 1;
-    current.name = senderName;
-    current.lastActiveAt = timestamp;
-    groupMap.set(senderId, current);
-  }
-  getLeaderboard(chatId, limit = 10) {
-    const groupMap = this.chatActivities.get(chatId);
-    if (!groupMap)
-      return [];
-    return Array.from(groupMap.values()).sort((a, b) => b.messageCount - a.messageCount).slice(0, limit);
-  }
-  getInactiveMembers(chatId, cutoffDays = 7) {
-    const groupMap = this.chatActivities.get(chatId);
-    if (!groupMap)
-      return [];
-    const threshold = Date.now() - cutoffDays * 24 * 60 * 60 * 1000;
-    return Array.from(groupMap.values()).filter((m) => m.lastActiveAt < threshold);
-  }
-  checkProfanity(text, badWords = ["dm", "vcl", "fuck", "bitch", "scam", "lua dao"]) {
-    const lower = text.toLowerCase();
-    const flagged = [];
-    for (const w of badWords) {
-      const regex = new RegExp(`(^|\\s|[^a-zA-Z0-9_])${w}([^a-zA-Z0-9_]|\\s|$)`, "i");
-      if (regex.test(lower)) {
-        flagged.push(w);
-      }
-    }
-    return {
-      isClean: flagged.length === 0,
-      flaggedWords: flagged
-    };
-  }
-  issueWarning(chatId, userId, reason, maxStrikes = 3) {
-    let chatMap = this.warnings.get(chatId);
-    if (!chatMap) {
-      chatMap = new Map;
-      this.warnings.set(chatId, chatMap);
-    }
-    const userWarns = chatMap.get(userId) || [];
-    userWarns.push({ reason, timestamp: Date.now() });
-    chatMap.set(userId, userWarns);
-    return {
-      strikes: userWarns.length,
-      action: userWarns.length >= maxStrikes ? "kick" : "warn"
-    };
-  }
-  getWarnings(chatId, userId) {
-    return this.warnings.get(chatId)?.get(userId) || [];
-  }
-  clearWarnings(chatId, userId) {
-    this.warnings.get(chatId)?.delete(userId);
-  }
-  createPoll(chatId, creatorId, question, options) {
-    const id = `poll_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    const poll = {
-      id,
-      chatId,
-      creatorId,
-      question,
-      options,
-      votes: new Map,
-      active: true
-    };
-    this.polls.set(id, poll);
-    return poll;
-  }
-  castVote(pollId, voterId, optionIndex) {
-    const poll = this.polls.get(pollId);
-    if (!poll || !poll.active || optionIndex < 0 || optionIndex >= poll.options.length) {
-      return false;
-    }
-    poll.votes.set(voterId, optionIndex);
-    return true;
-  }
-  getPollResults(pollId) {
-    const poll = this.polls.get(pollId);
-    if (!poll)
-      return null;
-    const counts = new Array(poll.options.length).fill(0);
-    for (const optIdx of poll.votes.values()) {
-      counts[optIdx]++;
-    }
-    const total = poll.votes.size;
-    const results = poll.options.map((option, idx) => ({
-      option,
-      votes: counts[idx],
-      percentage: total > 0 ? Math.round(counts[idx] / total * 100) : 0
-    }));
-    return {
-      question: poll.question,
-      totalVotes: total,
-      active: poll.active,
-      results
-    };
-  }
-  closePoll(pollId, creatorId) {
-    const poll = this.polls.get(pollId);
-    if (!poll)
-      return false;
-    if (creatorId && poll.creatorId !== creatorId)
-      return false;
-    poll.active = false;
-    return true;
-  }
-}
-
-// src/bridges/mcp/index.ts
-var _groupManager = new GroupManager;
+// src/bridges/mcp/tools.ts
 function getChannelHubMcpTools() {
   return [
     {
@@ -1261,6 +590,678 @@ function getChannelHubMcpTools() {
     }
   ];
 }
+// src/core/insights/research.ts
+class WebResearch {
+  static async search(query, options = {}) {
+    const { limit = 5, provider = "duckduckgo", apiKey, deepExtract = false, signal } = options;
+    let results = [];
+    if (provider === "tavily") {
+      results = await this.searchTavily(query, apiKey, limit, signal);
+    } else if (provider === "brave") {
+      results = await this.searchBrave(query, apiKey, limit, signal);
+    } else {
+      results = await this.searchDuckDuckGo(query, limit, signal);
+    }
+    if (deepExtract && results.length > 0) {
+      const topToExtract = results.slice(0, 3);
+      await Promise.allSettled(topToExtract.map(async (r) => {
+        try {
+          const page = await this.extract(r.url, signal);
+          r.content = page.content.slice(0, 5000);
+        } catch {}
+      }));
+    }
+    return results;
+  }
+  static async extract(url, signal) {
+    try {
+      const res = await fetch(`https://r.jina.ai/${encodeURI(url)}`, {
+        headers: {
+          Accept: "text/plain",
+          "User-Agent": "ChannelHub-Agent/1.0"
+        },
+        signal
+      });
+      if (res.ok) {
+        const text = await res.text();
+        return {
+          url,
+          content: text.trim()
+        };
+      }
+    } catch {}
+    const rawRes = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      },
+      signal
+    });
+    const html = await rawRes.text();
+    const clean = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return {
+      url,
+      content: clean.slice(0, 1e4)
+    };
+  }
+  static async searchDuckDuckGo(query, limit, signal) {
+    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+      },
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`DuckDuckGo returned ${res.status}`);
+    const html = await res.text();
+    const results = [];
+    const blockRegex = /<div class="result results_links results_links_deep web-result[\s\S]*?<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/g;
+    let match;
+    while ((match = blockRegex.exec(html)) !== null && results.length < limit) {
+      const block = match[0];
+      const titleMatch = block.match(/<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+      const snippetMatch = block.match(/<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/);
+      if (titleMatch) {
+        let rawUrl = titleMatch[1];
+        if (rawUrl.includes("uddg=")) {
+          const extracted = rawUrl.split("uddg=")[1]?.split("&")[0];
+          if (extracted)
+            rawUrl = decodeURIComponent(extracted);
+        }
+        const title = titleMatch[2].replace(/<[^>]+>/g, "").trim();
+        const snippet = snippetMatch ? snippetMatch[1].replace(/<[^>]+>/g, "").trim() : "";
+        if (rawUrl.startsWith("http")) {
+          results.push({
+            title,
+            url: rawUrl,
+            snippet
+          });
+        }
+      }
+    }
+    return results;
+  }
+  static async searchTavily(query, apiKey, limit = 5, signal) {
+    if (!apiKey)
+      throw new Error("Tavily provider requires apiKey in options");
+    const res = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        query,
+        max_results: limit
+      }),
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`Tavily error: ${res.status}`);
+    const data = await res.json();
+    return (data.results || []).map((r) => ({
+      title: r.title,
+      url: r.url,
+      snippet: r.content
+    }));
+  }
+  static async searchBrave(query, apiKey, limit = 5, signal) {
+    if (!apiKey)
+      throw new Error("Brave provider requires apiKey in options");
+    const res = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${limit}`, {
+      headers: {
+        Accept: "application/json",
+        "X-Subscription-Token": apiKey
+      },
+      signal
+    });
+    if (!res.ok)
+      throw new Error(`Brave search error: ${res.status}`);
+    const data = await res.json();
+    return (data.web?.results || []).map((r) => ({
+      title: r.title,
+      url: r.url,
+      snippet: r.description
+    }));
+  }
+}
+
+// src/core/media/video.ts
+var import_node_child_process = require("node:child_process");
+var import_node_fs = require("node:fs");
+var import_node_path = require("node:path");
+var import_node_os = require("node:os");
+
+class VideoEngine {
+  static async createShort(options) {
+    const {
+      input,
+      output,
+      mode = "blur-backdrop",
+      targetWidth = 1080,
+      targetHeight = 1920,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    let filterGraph = "";
+    if (mode === "blur-backdrop") {
+      filterGraph = [
+        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},boxblur=20:5[bg]`,
+        `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease[fg]`,
+        `[bg][fg]overlay=(W-w)/2:(H-h)/2[outv]`
+      ].join(";");
+    } else if (mode === "crop-center") {
+      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight}[outv]`;
+    } else {
+      filterGraph = `[0:v]scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:black[outv]`;
+    }
+    const args = [
+      "-y",
+      "-i",
+      input,
+      "-filter_complex",
+      filterGraph,
+      "-map",
+      "[outv]",
+      "-map",
+      "0:a?",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "veryfast",
+      "-crf",
+      "22",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "128k",
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async burnSubtitles(options) {
+    const { input, output, subtitles, style = {}, ffmpegPath = "ffmpeg" } = options;
+    let srtPath = subtitles;
+    let tempCreated = false;
+    if (!subtitles.endsWith(".srt") && !subtitles.endsWith(".vtt")) {
+      srtPath = import_node_path.join(import_node_os.tmpdir(), `sub_${Date.now()}_${Math.random().toString(36).slice(2)}.srt`);
+      await import_node_fs.promises.writeFile(srtPath, subtitles, "utf8");
+      tempCreated = true;
+    }
+    try {
+      const fontSize = style.fontSize || 24;
+      const fontColor = style.fontColor || "&H00FFFFFF";
+      const bold = style.bold ? 1 : 0;
+      const safeSrtPath = srtPath.replace(/\\/g, "/").replace(/:/g, "\\:");
+      const filter = `subtitles='${safeSrtPath}':force_style='FontSize=${fontSize},PrimaryColour=${fontColor},Bold=${bold}'`;
+      const args = [
+        "-y",
+        "-i",
+        input,
+        "-vf",
+        filter,
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "22",
+        "-c:a",
+        "copy",
+        output
+      ];
+      await this.runProcess(ffmpegPath, args);
+      return { output, command: [ffmpegPath, ...args] };
+    } finally {
+      if (tempCreated) {
+        await import_node_fs.promises.unlink(srtPath).catch(() => {});
+      }
+    }
+  }
+  static async addWatermark(options) {
+    const {
+      input,
+      watermark,
+      output,
+      position = "top-right",
+      opacity = 0.9,
+      scale = 0.15,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    let posExpr = "W-w-20:20";
+    if (position === "top-left")
+      posExpr = "20:20";
+    else if (position === "bottom-left")
+      posExpr = "20:H-h-20";
+    else if (position === "bottom-right")
+      posExpr = "W-w-20:H-h-20";
+    else if (position === "center")
+      posExpr = "(W-w)/2:(H-h)/2";
+    const filterGraph = [
+      `[1:v]scale=iw*${scale}:-1,format=rgba,colorchannelmixer=aa=${opacity}[wm]`,
+      `[0:v][wm]overlay=${posExpr}[outv]`
+    ].join(";");
+    const args = [
+      "-y",
+      "-i",
+      input,
+      "-i",
+      watermark,
+      "-filter_complex",
+      filterGraph,
+      "-map",
+      "[outv]",
+      "-map",
+      "0:a?",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "veryfast",
+      "-c:a",
+      "copy",
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async extractThumbnail(options) {
+    const { input, output, timestampSec = 1, width, ffmpegPath = "ffmpeg" } = options;
+    const args = [
+      "-y",
+      "-ss",
+      String(timestampSec),
+      "-i",
+      input,
+      "-vframes",
+      "1"
+    ];
+    if (width) {
+      args.push("-vf", `scale=${width}:-1`);
+    }
+    args.push(output);
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async generateMemeGif(options) {
+    const {
+      input,
+      output,
+      startSec = 0,
+      durationSec = 5,
+      fps = 15,
+      width = 480,
+      topText,
+      bottomText,
+      ffmpegPath = "ffmpeg"
+    } = options;
+    const filterParts = [
+      `fps=${fps}`,
+      `scale=${width}:-1:flags=lanczos`
+    ];
+    if (topText) {
+      filterParts.push(`drawtext=text='${topText.replace(/'/g, "")}':x=(w-text_w)/2:y=20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
+    }
+    if (bottomText) {
+      filterParts.push(`drawtext=text='${bottomText.replace(/'/g, "")}':x=(w-text_w)/2:y=h-text_h-20:fontsize=24:fontcolor=white:borderw=2:bordercolor=black`);
+    }
+    const vf = `${filterParts.join(",")},split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`;
+    const args = [
+      "-y",
+      "-ss",
+      String(startSec),
+      "-t",
+      String(durationSec),
+      "-i",
+      input,
+      "-vf",
+      vf,
+      output
+    ];
+    await this.runProcess(ffmpegPath, args);
+    return { output, command: [ffmpegPath, ...args] };
+  }
+  static async renderShotstack(options) {
+    const {
+      timeline,
+      apiKey,
+      env = "stage",
+      outputFormat = "mp4",
+      aspectRatio = "9:16",
+      signal
+    } = options;
+    const baseUrl = env === "v1" ? "https://api.shotstack.io/edit/v1" : "https://api.shotstack.io/edit/stage";
+    const payload = {
+      timeline,
+      output: {
+        format: outputFormat,
+        aspectRatio,
+        fps: 30
+      }
+    };
+    const res = await fetch(`${baseUrl}/render`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey
+      },
+      body: JSON.stringify(payload),
+      signal
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Shotstack render error (${res.status}): ${errText}`);
+    }
+    const data = await res.json();
+    return {
+      renderId: data.response?.id,
+      status: data.response?.status || "queued",
+      url: data.response?.url
+    };
+  }
+  static runProcess(cmd, args) {
+    return new Promise((resolve, reject) => {
+      const child = import_node_child_process.spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
+      let stderr = "";
+      child.stderr?.on("data", (chunk) => {
+        stderr += chunk.toString();
+      });
+      child.on("error", (err) => {
+        reject(new Error(`Failed to execute ${cmd}: ${err.message}`));
+      });
+      child.on("close", (code) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(new Error(`${cmd} exited with code ${code}. Details:
+${stderr.slice(-500)}`));
+        }
+      });
+    });
+  }
+}
+
+// src/core/identity/group-manager.ts
+class GroupManager {
+  userMessageHistory = new Map;
+  reminders = new Map;
+  pendingChallenges = new Map;
+  chatActivities = new Map;
+  warnings = new Map;
+  polls = new Map;
+  generateRecap(messages) {
+    const participants = Array.from(new Set(messages.map((m) => m.sender || m.senderId || "Unknown")));
+    const keyTopics = [];
+    const decisions = [];
+    const actionItems = [];
+    for (const msg of messages) {
+      const text = msg.text.trim();
+      const lower = text.toLowerCase();
+      if (lower.startsWith("chốt:") || lower.startsWith("quyết định:") || lower.includes("thống nhất") || lower.startsWith("agree:") || lower.startsWith("decided:")) {
+        decisions.push(text);
+      }
+      if (lower.includes("cần làm") || lower.includes("todo:") || lower.includes("giao cho") || lower.includes("hạn chót") || lower.startsWith("task:")) {
+        actionItems.push({
+          task: text,
+          assignee: msg.sender
+        });
+      }
+      if (text.length > 15 && !keyTopics.includes(text) && keyTopics.length < 5) {
+        if (!decisions.includes(text) && !actionItems.some((a) => a.task === text)) {
+          keyTopics.push(text.length > 80 ? text.slice(0, 77) + "..." : text);
+        }
+      }
+    }
+    const summaryLines = [
+      `\uD83D\uDCCA **Tóm tắt cuộc thảo luận (${messages.length} tin nhắn)**:`,
+      `\uD83D\uDC65 **Thành viên tham gia:** ${participants.join(", ") || "Không có"}`,
+      `\uD83D\uDCCC **Chủ đề chính:** ${keyTopics.length > 0 ? keyTopics.join(" | ") : "Thảo luận thông thường"}`,
+      `✅ **Quyết định đã chốt:** ${decisions.length > 0 ? decisions.join("; ") : "Không có"}`,
+      `\uD83D\uDCDD **Đầu việc (Action items):** ${actionItems.length > 0 ? actionItems.map((a) => a.task).join("; ") : "Không có"}`
+    ];
+    return {
+      totalMessages: messages.length,
+      participants,
+      keyTopics,
+      decisions,
+      actionItems,
+      summaryText: summaryLines.join(`
+`)
+    };
+  }
+  checkSpam(senderId, text, options = {}) {
+    const now = Date.now();
+    const windowMs = options.windowMs || 1e4;
+    const maxMessages = options.maxMessagesPerWindow || 5;
+    const blacklisted = options.blacklistedDomains || ["t.me/", "bit.ly/", "cutt.ly/", "tini.vn/"];
+    const urlMatches = text.match(/https?:\/\/[^\s]+/gi) || [];
+    if (options.disallowLinks && urlMatches.length > 0) {
+      return {
+        isSpam: true,
+        reason: "links_disabled",
+        recommendedAction: "delete",
+        messageCountInWindow: 1
+      };
+    }
+    for (const url of urlMatches) {
+      if (blacklisted.some((bad) => url.toLowerCase().includes(bad.toLowerCase()))) {
+        return {
+          isSpam: true,
+          reason: "blacklisted_link",
+          recommendedAction: "kick",
+          messageCountInWindow: 1
+        };
+      }
+    }
+    const userHistory = this.userMessageHistory.get(senderId) || [];
+    const validHistory = userHistory.filter((item) => now - item.timestamp < windowMs);
+    const identicalCount = validHistory.filter((item) => item.text === text).length;
+    if (identicalCount >= 2) {
+      return {
+        isSpam: true,
+        reason: "repetitive_text",
+        recommendedAction: "warn",
+        messageCountInWindow: validHistory.length + 1
+      };
+    }
+    validHistory.push({ text, timestamp: now });
+    this.userMessageHistory.set(senderId, validHistory);
+    if (validHistory.length >= maxMessages) {
+      return {
+        isSpam: true,
+        reason: "flood",
+        recommendedAction: "warn",
+        messageCountInWindow: validHistory.length
+      };
+    }
+    return {
+      isSpam: false,
+      recommendedAction: "allow",
+      messageCountInWindow: validHistory.length
+    };
+  }
+  registerNewMember(chatId, member, groupRules = "Vui lòng tôn trọng thành viên và không gửi link quảng cáo.", timeoutSeconds = 60) {
+    const a = Math.floor(Math.random() * 8) + 1;
+    const b = Math.floor(Math.random() * 8) + 1;
+    const answer = String(a + b);
+    const expiresAt = Date.now() + timeoutSeconds * 1000;
+    const challengeKey = `${chatId}:${member.id}`;
+    const challenge = {
+      memberId: member.id,
+      memberName: member.name,
+      welcomeMessage: `\uD83C\uDF89 Chào mừng **${member.name}** đã tham gia nhóm!
+\uD83D\uDCDC Nội quy: ${groupRules}
+\uD83D\uDD12 Để tránh tài khoản clone, bạn hãy trả lời câu hỏi bảo mật trong vòng ${timeoutSeconds}s:`,
+      question: `Bạn hãy tính: ${a} + ${b} = ?`,
+      expectedAnswer: answer,
+      expiresAt
+    };
+    this.pendingChallenges.set(challengeKey, challenge);
+    return challenge;
+  }
+  verifyMember(chatId, memberId, answer) {
+    const challengeKey = `${chatId}:${memberId}`;
+    const challenge = this.pendingChallenges.get(challengeKey);
+    if (!challenge)
+      return true;
+    if (Date.now() > challenge.expiresAt) {
+      this.pendingChallenges.delete(challengeKey);
+      return false;
+    }
+    if (answer.trim() === challenge.expectedAnswer) {
+      this.pendingChallenges.delete(challengeKey);
+      return true;
+    }
+    return false;
+  }
+  scheduleReminder(chatId, text, triggerAt, recurringIntervalMs) {
+    const id = `remind_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const timestamp = typeof triggerAt === "number" ? triggerAt : triggerAt.getTime();
+    const reminder = {
+      id,
+      chatId,
+      text,
+      triggerAt: timestamp,
+      recurringIntervalMs,
+      executed: false
+    };
+    this.reminders.set(id, reminder);
+    return reminder;
+  }
+  pollDueReminders() {
+    const now = Date.now();
+    const dueList = [];
+    for (const [id, r] of this.reminders.entries()) {
+      if (!r.executed && r.triggerAt <= now) {
+        dueList.push({ ...r });
+        if (r.recurringIntervalMs && r.recurringIntervalMs > 0) {
+          r.triggerAt = now + r.recurringIntervalMs;
+        } else {
+          r.executed = true;
+          this.reminders.delete(id);
+        }
+      }
+    }
+    return dueList;
+  }
+  recordActivity(chatId, senderId, senderName = senderId, timestamp = Date.now()) {
+    let groupMap = this.chatActivities.get(chatId);
+    if (!groupMap) {
+      groupMap = new Map;
+      this.chatActivities.set(chatId, groupMap);
+    }
+    const current = groupMap.get(senderId) || {
+      userId: senderId,
+      name: senderName,
+      messageCount: 0,
+      lastActiveAt: timestamp
+    };
+    current.messageCount += 1;
+    current.name = senderName;
+    current.lastActiveAt = timestamp;
+    groupMap.set(senderId, current);
+  }
+  getLeaderboard(chatId, limit = 10) {
+    const groupMap = this.chatActivities.get(chatId);
+    if (!groupMap)
+      return [];
+    return Array.from(groupMap.values()).sort((a, b) => b.messageCount - a.messageCount).slice(0, limit);
+  }
+  getInactiveMembers(chatId, cutoffDays = 7) {
+    const groupMap = this.chatActivities.get(chatId);
+    if (!groupMap)
+      return [];
+    const threshold = Date.now() - cutoffDays * 24 * 60 * 60 * 1000;
+    return Array.from(groupMap.values()).filter((m) => m.lastActiveAt < threshold);
+  }
+  checkProfanity(text, badWords = ["dm", "vcl", "fuck", "bitch", "scam", "lua dao"]) {
+    const lower = text.toLowerCase();
+    const flagged = [];
+    for (const w of badWords) {
+      const regex = new RegExp(`(^|\\s|[^a-zA-Z0-9_])${w}([^a-zA-Z0-9_]|\\s|$)`, "i");
+      if (regex.test(lower)) {
+        flagged.push(w);
+      }
+    }
+    return {
+      isClean: flagged.length === 0,
+      flaggedWords: flagged
+    };
+  }
+  issueWarning(chatId, userId, reason, maxStrikes = 3) {
+    let chatMap = this.warnings.get(chatId);
+    if (!chatMap) {
+      chatMap = new Map;
+      this.warnings.set(chatId, chatMap);
+    }
+    const userWarns = chatMap.get(userId) || [];
+    userWarns.push({ reason, timestamp: Date.now() });
+    chatMap.set(userId, userWarns);
+    return {
+      strikes: userWarns.length,
+      action: userWarns.length >= maxStrikes ? "kick" : "warn"
+    };
+  }
+  getWarnings(chatId, userId) {
+    return this.warnings.get(chatId)?.get(userId) || [];
+  }
+  clearWarnings(chatId, userId) {
+    this.warnings.get(chatId)?.delete(userId);
+  }
+  createPoll(chatId, creatorId, question, options) {
+    const id = `poll_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const poll = {
+      id,
+      chatId,
+      creatorId,
+      question,
+      options,
+      votes: new Map,
+      active: true
+    };
+    this.polls.set(id, poll);
+    return poll;
+  }
+  castVote(pollId, voterId, optionIndex) {
+    const poll = this.polls.get(pollId);
+    if (!poll || !poll.active || optionIndex < 0 || optionIndex >= poll.options.length) {
+      return false;
+    }
+    poll.votes.set(voterId, optionIndex);
+    return true;
+  }
+  getPollResults(pollId) {
+    const poll = this.polls.get(pollId);
+    if (!poll)
+      return null;
+    const counts = new Array(poll.options.length).fill(0);
+    for (const optIdx of poll.votes.values()) {
+      counts[optIdx]++;
+    }
+    const total = poll.votes.size;
+    const results = poll.options.map((option, idx) => ({
+      option,
+      votes: counts[idx],
+      percentage: total > 0 ? Math.round(counts[idx] / total * 100) : 0
+    }));
+    return {
+      question: poll.question,
+      totalVotes: total,
+      active: poll.active,
+      results
+    };
+  }
+  closePoll(pollId, creatorId) {
+    const poll = this.polls.get(pollId);
+    if (!poll)
+      return false;
+    if (creatorId && poll.creatorId !== creatorId)
+      return false;
+    poll.active = false;
+    return true;
+  }
+}
+
+// src/bridges/mcp/handler.ts
+var _groupManager = new GroupManager;
 async function handleChannelHubMcpCall(hub, toolName, args) {
   try {
     switch (toolName) {

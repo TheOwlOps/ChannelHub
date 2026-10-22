@@ -2968,11 +2968,10 @@ var init_wrapper = __esm(() => {
   import_websocket_server = __toESM(require_websocket_server(), 1);
   wrapper_default = import_websocket.default;
 });
-
 // src/channels/slack/adapter.ts
 import { createHmac, timingSafeEqual } from "node:crypto";
 
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {

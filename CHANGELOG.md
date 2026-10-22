@@ -15,6 +15,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.0] - 2026-10-23
+
+### Changed — Repository Restructure (BREAKING, import paths only)
+- **Core regrouped by concern**: `src/core/contracts` (types, adapter, context), `engine` (hub, bus, handoff, stream), `reliability` (dedup, dlq, limiter, shared-limiter), `identity`, `media`, `insights`. The flat 18-file `src/core/` is gone.
+- **Package subpaths namespaced**: `@theowlops/channelhub/telegram` → `@theowlops/channelhub/channels/telegram` (same for all channels); `.../mcp` → `.../bridges/mcp`; `.../personal` + `.../oa` → `.../legacy/zalo`. Root and `/core` imports are unchanged. Full mapping: `docs/MIGRATION-v1-to-v2.md`.
+- **Uniform channel template**: every channel is `adapter.ts` + `types.ts` + `index.ts` (Discord/Slack configs extracted to `types.ts`); Messenger Personal is now its own channel (`channels/messenger-personal`).
+- **MCP bridge split**: the 920-line `bridges/mcp/index.ts` monolith is now `types.ts` + `tools.ts` + `handler.ts` behind a barrel.
+- **Apps separated from the library**: `bin/` → `apps/` (`cli`, `mcp-server`); the legacy root bot (`index.ts`, `login.ts`) → `apps/legacy-zalo-bot/`; build output `dist/bin/*` → `dist/apps/*`.
+- **Legacy quarantined**: `src/personal`, `src/oa`, `src/commands` → `src/legacy/` (frozen, still exported and tested).
+- **Tests mirrored by domain**: `test/` (flat) → `tests/{core,channels,bridges,security,release}/`.
+
+### Fixed
+- `scripts/build.ts` now builds the `tiktok`, `twilio` and `messenger-personal` subpaths that `package.json` exports (v1 exported tiktok/twilio but never built them).
+
+### Unchanged
+- All exported names/signatures, CLI commands, the 34 MCP tools, dashboard/webhook contracts, and env config. The full test suite (150 tests) passes; see `docs/STRUCTURE.md` for the new layout.
+
+---
+
 ## [1.6.0] - 2026-10-06
 
 ### Added

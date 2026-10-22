@@ -1,19 +1,15 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { BaseChannel } from "../../core/adapter";
+import { BaseChannel } from "../../core/contracts/adapter";
 import type {
   ChannelType,
   MediaPayload,
   SendOptions,
   SentMessageResult,
   UnifiedMessage,
-} from "../../core/types";
+} from "../../core/contracts/types";
 
-export interface SlackAdapterConfig {
-  botToken: string;
-  accountId?: string;
-  appToken?: string;
-  signingSecret?: string;
-}
+import type { SlackAdapterConfig } from "./types";
+export type { SlackAdapterConfig } from "./types";
 
 export class SlackChannelAdapter extends BaseChannel {
   readonly name: ChannelType = "slack";

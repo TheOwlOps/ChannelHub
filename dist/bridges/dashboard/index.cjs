@@ -42,12 +42,14 @@ __export(exports_dashboard, {
   DashboardBridge: () => DashboardBridge
 });
 module.exports = __toCommonJS(exports_dashboard);
+
+// src/bridges/dashboard/dashboard.ts
 var import_node_http = require("node:http");
 var import_node_fs = require("node:fs");
 var import_node_path = require("node:path");
 var import_node_crypto = require("node:crypto");
 
-// src/core/stats.ts
+// src/core/insights/stats.ts
 var WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -616,7 +618,7 @@ var DASHBOARD_HTML = `<!doctype html>
 </body>
 </html>`;
 
-// src/bridges/dashboard/index.ts
+// src/bridges/dashboard/dashboard.ts
 class DashboardBridge {
   hub;
   config;

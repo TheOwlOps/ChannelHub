@@ -1,4 +1,4 @@
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 import { EventEmitter } from "node:events";
 
 class BaseChannel extends EventEmitter {

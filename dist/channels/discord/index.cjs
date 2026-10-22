@@ -2992,7 +2992,7 @@ __export(exports_discord, {
 });
 module.exports = __toCommonJS(exports_discord);
 
-// src/core/adapter.ts
+// src/core/contracts/adapter.ts
 var import_node_events = require("node:events");
 
 class BaseChannel extends import_node_events.EventEmitter {

@@ -6,6 +6,10 @@ import type { DeadLetterHandler } from "../reliability/dlq";
 import type { StatsCollector } from "../insights/stats";
 import type { DashboardBridge, DashboardBridgeConfig } from "../../bridges/dashboard/dashboard";
 import type { IChannelAdapter } from "../contracts/types";
+import { SessionStore, type SessionStoreOptions } from "./session";
+import { CommandRouter, type CommandHandler, type RouteRule } from "./router";
+import { type BroadcastContent, type BroadcastOptions, type BroadcastReport, type BroadcastTarget } from "./broadcast";
+import { MessageScheduler, type ScheduledJob, type ScheduleInput } from "../reliability/scheduler";
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
 export type Middleware = (ctx: MessageContext, next: () => Promise<void>) => Promise<void> | void;
 export interface ChannelHubOptions {
@@ -19,6 +23,10 @@ export interface ChannelHubOptions {
     identityStitcher?: IdentityStitcher;
     /** Optional StatsCollector that records inbound/outbound traffic for the live dashboard. */
     stats?: StatsCollector;
+    /** Session store options (conversation memory). A SessionStore is always created; these tune it. */
+    sessionOptions?: SessionStoreOptions;
+    /** Scheduler tick interval in ms for scheduled messages. Default: 250 */
+    schedulerTickMs?: number;
 }
 export declare class ChannelHub {
     private _channels;
@@ -29,6 +37,9 @@ export declare class ChannelHub {
     private _dlqHandler?;
     private _identityStitcher;
     private _handoffManager;
+    private _sessionStore;
+    private _router;
+    private _scheduler;
     private _stats;
     private _instrumented;
     private _queue;
@@ -40,6 +51,31 @@ export declare class ChannelHub {
     get identityStitcher(): IdentityStitcher;
     /** Gets the human handoff manager. */
     get handoff(): HumanHandoffManager;
+    /** Conversation session store (per-chat state + history for AI agents). */
+    get sessions(): SessionStore;
+    /** Command + rule router. */
+    get router(): CommandRouter;
+    /** Scheduled-message engine. Timers start lazily on the first schedule() call. */
+    get scheduler(): MessageScheduler;
+    /**
+     * Registers a bot command (e.g. hub.command("ping", handler) matches "/ping" and "!ping").
+     * Commands and routes are dispatched before generic onMessage handlers; when one
+     * handles a message, generic handlers are skipped for that message.
+     */
+    command(name: string, handler: CommandHandler, opts?: {
+        aliases?: string[];
+        description?: string;
+    }): this;
+    /** Registers a declarative routing rule (channel / chat type / pattern / predicate). */
+    route(rule: RouteRule): this;
+    /** Sends one message (text and/or media, with {{template}} vars) to many chats across channels. */
+    broadcast(targets: BroadcastTarget[], content: BroadcastContent, options?: BroadcastOptions): Promise<BroadcastReport>;
+    /** Schedules a message for later (one-shot or recurring). Starts the scheduler timer on first use. */
+    schedule(input: ScheduleInput): ScheduledJob;
+    /** Lists pending scheduled jobs, soonest first. */
+    listScheduled(): ScheduledJob[];
+    /** Cancels a scheduled job by id. Returns false when the id is unknown. */
+    cancelScheduled(id: string): boolean;
     /** Live traffic collector, when one is attached. */
     get stats(): StatsCollector | null;
     /** Attaches (or replaces) the traffic collector and instruments already-registered channels. */

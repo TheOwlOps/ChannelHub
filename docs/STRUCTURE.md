@@ -9,8 +9,8 @@ ChannelHub/
 │   ├── index.ts                # Root barrel — the public API surface
 │   ├── core/                   # Platform-agnostic engine, grouped by concern:
 │   │   ├── contracts/          #   types.ts · adapter.ts (BaseChannel) · context.ts
-│   │   ├── engine/             #   hub.ts · bus.ts · handoff.ts · stream.ts (SmartStreamer)
-│   │   ├── reliability/        #   dedup.ts · dlq.ts · limiter.ts · shared-limiter.ts
+│   │   ├── engine/             #   hub.ts · bus.ts · handoff.ts · stream.ts (SmartStreamer) · session.ts · router.ts · broadcast.ts
+│   │   ├── reliability/        #   dedup.ts · dlq.ts · limiter.ts · shared-limiter.ts · retry.ts · scheduler.ts
 │   │   ├── identity/           #   identity.ts · group-manager.ts
 │   │   ├── media/              #   video.ts · transcoder.ts
 │   │   ├── insights/           #   stats.ts · research.ts

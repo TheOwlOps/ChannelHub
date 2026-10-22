@@ -10,12 +10,17 @@ export * from "./engine/hub";
 export * from "./engine/bus";
 export * from "./engine/handoff";
 export * from "./engine/stream";
+export * from "./engine/session";
+export * from "./engine/router";
+export * from "./engine/broadcast";
 
 // Reliability: idempotency, rate limiting, dead-letter queue
 export * from "./reliability/dedup";
 export * from "./reliability/limiter";
 export * from "./reliability/shared-limiter";
 export * from "./reliability/dlq";
+export * from "./reliability/retry";
+export * from "./reliability/scheduler";
 
 // Identity: cross-channel identity + group management
 export * from "./identity/identity";

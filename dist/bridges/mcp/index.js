@@ -541,6 +541,62 @@ function getChannelHubMcpTools() {
           pollId: { type: "string", description: "Poll ID" }
         }
       }
+    },
+    {
+      name: "channelhub_broadcast",
+      description: "Broadcast one message to many chats across channels at once. Supports {{var}} template placeholders per target and returns a per-target delivery report.",
+      parameters: {
+        type: "object",
+        required: ["targets", "text"],
+        properties: {
+          targets: {
+            type: "array",
+            description: "Array of { channel, chatId, vars? } targets",
+            items: {
+              type: "object",
+              required: ["channel", "chatId"],
+              properties: {
+                channel: { type: "string", description: "Channel name, e.g. telegram" },
+                chatId: { type: "string", description: "Destination chat ID" },
+                vars: { type: "object", description: "Per-target template variables" }
+              }
+            }
+          },
+          text: { type: "string", description: "Message text, may contain {{placeholders}}" }
+        }
+      }
+    },
+    {
+      name: "channelhub_schedule_message",
+      description: "Schedule a message to be sent later (one-shot via delayMs/at timestamp, or recurring via everyMs). The hub scheduler must be running (it starts automatically on first schedule).",
+      parameters: {
+        type: "object",
+        required: ["channel", "chatId", "text"],
+        properties: {
+          channel: { type: "string", description: "Channel name, e.g. zalo" },
+          chatId: { type: "string", description: "Destination chat ID" },
+          text: { type: "string", description: "Message text" },
+          delayMs: { type: "number", description: "Send after this many milliseconds" },
+          at: { type: "number", description: "Send at this epoch-ms timestamp" },
+          everyMs: { type: "number", description: "Repeat every this many milliseconds" }
+        }
+      }
+    },
+    {
+      name: "channelhub_list_scheduled",
+      description: "List pending scheduled messages, soonest first.",
+      parameters: { type: "object", properties: {} }
+    },
+    {
+      name: "channelhub_cancel_scheduled",
+      description: "Cancel a scheduled message by job ID.",
+      parameters: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string", description: "Scheduled job ID" }
+        }
+      }
     }
   ];
 }
@@ -1528,6 +1584,36 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
         const results = _groupManager.getPollResults(args.pollId);
         return {
           content: [{ type: "text", text: JSON.stringify(results, null, 2) }]
+        };
+      }
+      case "channelhub_broadcast": {
+        const report = await hub.broadcast(args.targets || [], { text: args.text });
+        return {
+          content: [{ type: "text", text: JSON.stringify(report, null, 2) }]
+        };
+      }
+      case "channelhub_schedule_message": {
+        const job = hub.schedule({
+          channel: args.channel,
+          chatId: args.chatId,
+          text: args.text,
+          delayMs: args.delayMs,
+          at: args.at,
+          everyMs: args.everyMs
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(job, null, 2) }]
+        };
+      }
+      case "channelhub_list_scheduled": {
+        return {
+          content: [{ type: "text", text: JSON.stringify(hub.listScheduled(), null, 2) }]
+        };
+      }
+      case "channelhub_cancel_scheduled": {
+        const cancelled = hub.cancelScheduled(args.id);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ cancelled }, null, 2) }]
         };
       }
       default:

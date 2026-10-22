@@ -149,12 +149,17 @@ class SmartStreamer {
 }
 
 // src/core/contracts/context.ts
-function createMessageContext(message, channel, identity, handoffManager) {
+function createMessageContext(message, channel, identity, handoffManager, sessionStore) {
   const isHandedOff = handoffManager ? handoffManager.isPaused(channel.name, message.chat.id) : false;
+  const session = sessionStore?.getOrCreate(channel.name, message.chat.id);
+  const recordAssistant = (text) => {
+    sessionStore?.pushHistory(channel.name, message.chat.id, { role: "assistant", text });
+  };
   return {
     message,
     channel,
     identity,
+    session,
     isHandedOff,
     handoff: (durationMs, reason) => {
       if (handoffManager) {
@@ -164,19 +169,31 @@ function createMessageContext(message, channel, identity, handoffManager) {
     resume: () => {
       return handoffManager ? handoffManager.resume(channel.name, message.chat.id) : false;
     },
-    reply: (text, options) => channel.sendText(message.chat.id, text, {
-      replyToId: message.id,
-      ...options
-    }),
-    replyWithActions: (text, actions, options) => channel.sendText(message.chat.id, text, {
-      replyToId: message.id,
-      actions,
-      ...options
-    }),
-    replyMedia: (media, options) => channel.sendMedia(message.chat.id, media, {
-      replyToId: message.id,
-      ...options
-    }),
+    reply: async (text, options) => {
+      const res = await channel.sendText(message.chat.id, text, {
+        replyToId: message.id,
+        ...options
+      });
+      recordAssistant(text);
+      return res;
+    },
+    replyWithActions: async (text, actions, options) => {
+      const res = await channel.sendText(message.chat.id, text, {
+        replyToId: message.id,
+        actions,
+        ...options
+      });
+      recordAssistant(text);
+      return res;
+    },
+    replyMedia: async (media, options) => {
+      const res = await channel.sendMedia(message.chat.id, media, {
+        replyToId: message.id,
+        ...options
+      });
+      recordAssistant(media.caption ?? `[${media.type}]`);
+      return res;
+    },
     react: async (emoji) => {
       if (channel.addReaction) {
         await channel.addReaction(message.chat.id, message.id, emoji);
@@ -345,6 +362,461 @@ class HumanHandoffManager {
     if (!this.isPaused(channel, chatId))
       return;
     return this._states.get(this._getKey(channel, chatId));
+  }
+}
+
+// src/core/engine/session.ts
+class SessionStore {
+  sessions = new Map;
+  ttlMs;
+  maxHistory;
+  now;
+  constructor(options = {}) {
+    this.ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
+    this.maxHistory = options.maxHistory ?? DEFAULT_MAX_HISTORY;
+    this.now = options.now ?? Date.now;
+  }
+  static keyFor(channel, chatId) {
+    return `${channel}:${chatId}`;
+  }
+  getOrCreate(channel, chatId) {
+    const existing = this.live(SessionStore.keyFor(channel, chatId));
+    if (existing) {
+      this.touch(existing);
+      return existing;
+    }
+    const at = this.now();
+    const session = {
+      key: SessionStore.keyFor(channel, chatId),
+      channel,
+      chatId,
+      state: {},
+      history: [],
+      createdAt: at,
+      updatedAt: at,
+      expiresAt: at + this.ttlMs
+    };
+    this.sessions.set(session.key, session);
+    return session;
+  }
+  get(channel, chatId) {
+    const session = this.live(SessionStore.keyFor(channel, chatId));
+    if (!session)
+      return;
+    this.touch(session);
+    return session;
+  }
+  setState(channel, chatId, key, value) {
+    this.getOrCreate(channel, chatId).state[key] = value;
+  }
+  getState(channel, chatId, key) {
+    return this.get(channel, chatId)?.state[key];
+  }
+  pushHistory(channel, chatId, msg) {
+    const session = this.getOrCreate(channel, chatId);
+    session.history.push({ ...msg, at: msg.at ?? this.now() });
+    if (session.history.length > this.maxHistory) {
+      session.history.splice(0, session.history.length - this.maxHistory);
+    }
+    return session;
+  }
+  history(channel, chatId) {
+    return [...this.get(channel, chatId)?.history ?? []];
+  }
+  clear(channel, chatId) {
+    return this.sessions.delete(SessionStore.keyFor(channel, chatId));
+  }
+  sweep() {
+    let removed = 0;
+    for (const [key, session] of this.sessions) {
+      if (this.now() > session.expiresAt) {
+        this.sessions.delete(key);
+        removed++;
+      }
+    }
+    return removed;
+  }
+  get size() {
+    return this.sessions.size;
+  }
+  live(key) {
+    const session = this.sessions.get(key);
+    if (!session)
+      return;
+    if (this.now() > session.expiresAt) {
+      this.sessions.delete(key);
+      return;
+    }
+    return session;
+  }
+  touch(session) {
+    const at = this.now();
+    session.updatedAt = at;
+    session.expiresAt = at + this.ttlMs;
+  }
+}
+var DEFAULT_TTL_MS, DEFAULT_MAX_HISTORY = 50;
+var init_session = __esm(() => {
+  DEFAULT_TTL_MS = 30 * 60000;
+});
+
+// src/core/engine/router.ts
+function splitArgs(input) {
+  const args = [];
+  let current = "";
+  let inQuotes = false;
+  let hasToken = false;
+  for (const ch of input) {
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+      hasToken = true;
+    } else if (!inQuotes && /\s/.test(ch)) {
+      if (hasToken) {
+        args.push(current);
+        current = "";
+        hasToken = false;
+      }
+    } else {
+      current += ch;
+      hasToken = true;
+    }
+  }
+  if (hasToken)
+    args.push(current);
+  return args;
+}
+function parseCommand(text, prefixes = DEFAULT_PREFIXES) {
+  if (typeof text !== "string")
+    return null;
+  const trimmed = text.trim();
+  if (!trimmed)
+    return null;
+  const prefix = [...prefixes].sort((a, b) => b.length - a.length).find((p) => p.length > 0 && trimmed.startsWith(p));
+  if (!prefix)
+    return null;
+  const body = trimmed.slice(prefix.length);
+  if (!body || /^\s/.test(body))
+    return null;
+  const firstSpace = body.search(/\s/);
+  const token = firstSpace === -1 ? body : body.slice(0, firstSpace);
+  const rawArgs = firstSpace === -1 ? "" : body.slice(firstSpace).trim();
+  const name = token.split("@")[0].toLowerCase();
+  if (!name)
+    return null;
+  return { name, args: splitArgs(rawArgs), rawArgs };
+}
+function matchesAny(value, expected) {
+  if (expected === undefined)
+    return true;
+  return Array.isArray(expected) ? expected.includes(value) : expected === value;
+}
+function matchesPattern(text, pattern) {
+  if (pattern === undefined)
+    return true;
+  if (typeof pattern === "string") {
+    return text.toLowerCase().includes(pattern.toLowerCase());
+  }
+  pattern.lastIndex = 0;
+  return pattern.test(text);
+}
+
+class CommandRouter {
+  commands = new Map;
+  commandInfos = [];
+  routes = [];
+  registerCommand(name, handler, opts) {
+    const canonical = name.trim().toLowerCase();
+    const aliases = (opts?.aliases ?? []).map((a) => a.trim().toLowerCase());
+    const entry = {
+      info: { name: canonical, aliases, description: opts?.description },
+      handler
+    };
+    this.commands.set(canonical, entry);
+    for (const alias of aliases)
+      this.commands.set(alias, entry);
+    this.commandInfos.push(entry.info);
+    return this;
+  }
+  addRoute(rule) {
+    this.routes.push(rule);
+    return this;
+  }
+  listCommands() {
+    return [...this.commandInfos];
+  }
+  get routeCount() {
+    return this.routes.length;
+  }
+  get hasEntries() {
+    return this.commands.size > 0 || this.routes.length > 0;
+  }
+  async dispatch(ctx) {
+    const text = ctx.message.content.text ?? "";
+    const parsed = parseCommand(text);
+    if (parsed) {
+      const entry = this.commands.get(parsed.name);
+      if (entry) {
+        await entry.handler(ctx, parsed.args, parsed.rawArgs);
+        return true;
+      }
+    }
+    for (const rule of this.routes) {
+      if (!matchesAny(ctx.channel.name, rule.channel))
+        continue;
+      if (!matchesAny(ctx.message.chat.type, rule.chatType))
+        continue;
+      if (!matchesPattern(text, rule.pattern))
+        continue;
+      if (rule.predicate && !rule.predicate(ctx))
+        continue;
+      await rule.handler(ctx);
+      return true;
+    }
+    return false;
+  }
+}
+var DEFAULT_PREFIXES;
+var init_router = __esm(() => {
+  DEFAULT_PREFIXES = ["/", "!"];
+});
+
+// src/core/reliability/retry.ts
+function defaultSleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+function computeBackoffDelay(attempt, options) {
+  const baseDelayMs = options?.baseDelayMs ?? DEFAULT_BASE_DELAY_MS;
+  const maxDelayMs = options?.maxDelayMs ?? DEFAULT_MAX_DELAY_MS;
+  const jitter = options?.jitter ?? true;
+  const exponential = baseDelayMs * 2 ** (attempt - 1);
+  const capped = Math.min(maxDelayMs, exponential);
+  if (!jitter)
+    return capped;
+  return Math.round(capped * (0.7 + Math.random() * 0.6));
+}
+async function withRetry(fn, options) {
+  const retries = options?.retries ?? DEFAULT_RETRIES;
+  const sleep = options?.sleep ?? defaultSleep;
+  let lastError;
+  for (let attempt = 0;attempt <= retries; attempt++) {
+    try {
+      return await fn(attempt);
+    } catch (err) {
+      lastError = err;
+      if (attempt >= retries)
+        break;
+      if (options?.shouldRetry && !options.shouldRetry(err, attempt))
+        throw err;
+      const retryNumber = attempt + 1;
+      const delayMs = computeBackoffDelay(retryNumber, options);
+      options?.onRetry?.(err, retryNumber, delayMs);
+      await sleep(delayMs);
+    }
+  }
+  throw lastError;
+}
+var DEFAULT_BASE_DELAY_MS = 200, DEFAULT_MAX_DELAY_MS = 5000, DEFAULT_RETRIES = 3;
+
+// src/core/engine/broadcast.ts
+function renderTemplate(template, vars) {
+  return template.replace(/\{\{([^{}]+)\}\}/g, (match, rawKey) => {
+    const key = rawKey.trim();
+    return Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : match;
+  });
+}
+async function broadcastMessage(hub, targets, content, options = {}) {
+  if (!content.text && !content.media) {
+    throw new Error("broadcastMessage: content must include text or media");
+  }
+  const concurrency = Math.max(1, Math.floor(options.concurrency ?? 5));
+  const startedAt = Date.now();
+  const results = new Array(targets.length);
+  let cursor = 0;
+  const worker = async () => {
+    while (true) {
+      const index = cursor++;
+      if (index >= targets.length)
+        return;
+      results[index] = await deliver(hub, targets[index], content, options.retry);
+    }
+  };
+  const workerCount = Math.min(concurrency, targets.length);
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  const sent = results.filter((r) => r.ok).length;
+  return {
+    total: targets.length,
+    sent,
+    failed: targets.length - sent,
+    durationMs: Date.now() - startedAt,
+    results
+  };
+}
+async function deliver(hub, target, content, retry) {
+  const base = { channel: target.channel, chatId: target.chatId };
+  const adapter = hub.getChannel(target.channel);
+  if (!adapter) {
+    return {
+      ...base,
+      ok: false,
+      attempts: 0,
+      error: `Channel "${target.channel}" not found (no adapter registered)`
+    };
+  }
+  const vars = {
+    channel: target.channel,
+    chatId: target.chatId,
+    ...target.vars
+  };
+  const renderedText = content.text !== undefined ? renderTemplate(content.text, vars) : undefined;
+  const doSend = async () => {
+    if (content.media) {
+      const media = { ...content.media };
+      if (renderedText !== undefined && !media.caption) {
+        media.caption = renderedText;
+      }
+      return adapter.sendMedia(target.chatId, media);
+    }
+    return adapter.sendText(target.chatId, renderedText);
+  };
+  let attempts = 0;
+  try {
+    let result;
+    if (retry === false) {
+      attempts = 1;
+      result = await doSend();
+    } else {
+      result = await withRetry(async (attempt) => {
+        attempts = attempt + 1;
+        return doSend();
+      }, retry);
+    }
+    return { ...base, ok: true, messageId: result.messageId, attempts };
+  } catch (err) {
+    return {
+      ...base,
+      ok: false,
+      error: err instanceof Error ? err.message : String(err),
+      attempts
+    };
+  }
+}
+var init_broadcast = () => {};
+
+// src/core/reliability/scheduler.ts
+class MessageScheduler {
+  _sendFn;
+  _now;
+  _tickMs;
+  _jobs = new Map;
+  _counter = 0;
+  _timer = null;
+  _ticking = false;
+  constructor(sendFn, options = {}) {
+    if (typeof sendFn !== "function") {
+      throw new Error("MessageScheduler: sendFn must be a function.");
+    }
+    this._sendFn = sendFn;
+    this._now = options.now ?? (() => Date.now());
+    this._tickMs = Math.max(1, options.tickMs ?? 250);
+  }
+  schedule(input) {
+    if (!input.text || !input.text.trim()) {
+      throw new Error('MessageScheduler.schedule: "text" must be a non-empty string.');
+    }
+    if (!input.channel || !input.channel.trim()) {
+      throw new Error('MessageScheduler.schedule: "channel" must be a non-empty string.');
+    }
+    if (!input.chatId || !input.chatId.trim()) {
+      throw new Error('MessageScheduler.schedule: "chatId" must be a non-empty string.');
+    }
+    if (input.everyMs !== undefined && !(input.everyMs > 0)) {
+      throw new Error('MessageScheduler.schedule: "everyMs" must be a positive number.');
+    }
+    const now = this._now();
+    let at;
+    if (input.at !== undefined) {
+      at = input.at;
+    } else if (input.delayMs !== undefined) {
+      at = now + input.delayMs;
+    } else if (input.everyMs !== undefined) {
+      at = now + input.everyMs;
+    } else {
+      at = now;
+    }
+    const job = {
+      id: `job_${(++this._counter).toString(36)}_${Math.random().toString(36).slice(2, 10)}`,
+      at,
+      everyMs: input.everyMs,
+      channel: input.channel,
+      chatId: input.chatId,
+      text: input.text,
+      createdAt: now,
+      runs: 0
+    };
+    this._jobs.set(job.id, job);
+    return job;
+  }
+  cancel(id) {
+    return this._jobs.delete(id);
+  }
+  get(id) {
+    return this._jobs.get(id);
+  }
+  list() {
+    return [...this._jobs.values()].sort((a, b) => a.at - b.at || a.createdAt - b.createdAt).map((job) => ({ ...job }));
+  }
+  get size() {
+    return this._jobs.size;
+  }
+  clear() {
+    this._jobs.clear();
+  }
+  async runDue(referenceNow) {
+    const now = referenceNow ?? this._now();
+    const due = [...this._jobs.values()].filter((job) => job.at <= now).sort((a, b) => a.at - b.at || a.createdAt - b.createdAt);
+    let executed = 0;
+    for (const job of due) {
+      if (!this._jobs.has(job.id))
+        continue;
+      executed++;
+      job.runs++;
+      job.lastRunAt = now;
+      try {
+        await this._sendFn(job);
+        delete job.lastError;
+      } catch (err) {
+        job.lastError = err instanceof Error ? err.message : String(err);
+      }
+      if (job.everyMs !== undefined) {
+        const missed = Math.floor((now - job.at) / job.everyMs);
+        job.at = job.at + job.everyMs * (missed + 1);
+      } else {
+        this._jobs.delete(job.id);
+      }
+    }
+    return executed;
+  }
+  start() {
+    if (this._timer !== null)
+      return;
+    this._timer = setInterval(() => {
+      if (this._ticking)
+        return;
+      this._ticking = true;
+      this.runDue().catch(() => {}).finally(() => {
+        this._ticking = false;
+      });
+    }, this._tickMs);
+    this._timer.unref?.();
+  }
+  stop() {
+    if (this._timer !== null) {
+      clearInterval(this._timer);
+      this._timer = null;
+    }
+  }
+  get running() {
+    return this._timer !== null;
   }
 }
 
@@ -1072,6 +1544,9 @@ class ChannelHub {
   _dlqHandler;
   _identityStitcher;
   _handoffManager;
+  _sessionStore;
+  _router;
+  _scheduler;
   _stats;
   _instrumented = new WeakSet;
   _queue = [];
@@ -1085,6 +1560,14 @@ class ChannelHub {
     this._dlqHandler = options.onDeadLetter;
     this._identityStitcher = options.identityStitcher ?? new IdentityStitcher;
     this._handoffManager = new HumanHandoffManager;
+    this._sessionStore = new SessionStore(options.sessionOptions);
+    this._router = new CommandRouter;
+    this._scheduler = new MessageScheduler(async (job) => {
+      const ch = this.getChannel(job.channel);
+      if (!ch)
+        throw new Error(`Scheduled message: channel '${job.channel}' is not registered.`);
+      await ch.sendText(job.chatId, job.text);
+    }, { tickMs: options.schedulerTickMs });
     this._stats = options.stats ?? null;
   }
   get identityStitcher() {
@@ -1092,6 +1575,37 @@ class ChannelHub {
   }
   get handoff() {
     return this._handoffManager;
+  }
+  get sessions() {
+    return this._sessionStore;
+  }
+  get router() {
+    return this._router;
+  }
+  get scheduler() {
+    return this._scheduler;
+  }
+  command(name, handler, opts) {
+    this._router.registerCommand(name, handler, opts);
+    return this;
+  }
+  route(rule) {
+    this._router.addRoute(rule);
+    return this;
+  }
+  async broadcast(targets, content, options) {
+    return broadcastMessage(this, targets, content, options);
+  }
+  schedule(input) {
+    const job = this._scheduler.schedule(input);
+    this._scheduler.start();
+    return job;
+  }
+  listScheduled() {
+    return this._scheduler.list();
+  }
+  cancelScheduled(id) {
+    return this._scheduler.cancel(id);
   }
   get stats() {
     return this._stats;
@@ -1133,7 +1647,14 @@ class ChannelHub {
       this._stats?.recordInbound(msg);
       this._bus.emitMessage(msg);
       const identity = this._identityStitcher.resolve(channel.name, msg.sender.id);
-      const ctx = createMessageContext(msg, channel, identity, this._handoffManager);
+      if (msg.content?.text) {
+        this._sessionStore.pushHistory(channel.name, msg.chat.id, {
+          role: "user",
+          text: msg.content.text,
+          senderId: msg.sender.id
+        });
+      }
+      const ctx = createMessageContext(msg, channel, identity, this._handoffManager, this._sessionStore);
       if (ctx.isHandedOff) {
         this._bus.emit("handoff", ctx);
       }
@@ -1155,8 +1676,11 @@ class ChannelHub {
           return;
         }
         if (!ctx.isHandedOff) {
-          for (const handler of this._messageHandlers) {
-            await handler(ctx);
+          const handled = this._router.hasEntries ? await this._router.dispatch(ctx) : false;
+          if (!handled) {
+            for (const handler of this._messageHandlers) {
+              await handler(ctx);
+            }
           }
         }
       };
@@ -1294,6 +1818,7 @@ class ChannelHub {
     return bridge;
   }
   async stop(signal) {
+    this._scheduler.stop();
     this._isClosed = true;
     for (const waiter of this._waiters) {
       waiter(null);
@@ -1310,6 +1835,9 @@ class ChannelHub {
 var init_hub = __esm(() => {
   init_bus();
   init_context();
+  init_session();
+  init_router();
+  init_broadcast();
 });
 
 // apps/cli/main.ts

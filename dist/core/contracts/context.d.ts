@@ -2,11 +2,14 @@ import type { ActionNode, IChannelAdapter, MediaPayload, SendOptions, SentMessag
 import type { UniversalIdentity } from "../identity/identity";
 import type { HumanHandoffManager } from "../engine/handoff";
 import { type StreamOptions } from "../engine/stream";
+import type { SessionData, SessionStore } from "../engine/session";
 export interface MessageContext {
     message: UnifiedMessage;
     channel: IChannelAdapter;
     /** Canonical stitched user identity across all channels */
     identity?: UniversalIdentity;
+    /** Per-chat conversation session (state + history) when a SessionStore is attached */
+    session?: SessionData;
     /** Whether this chat is currently paused for human takeover */
     isHandedOff?: boolean;
     /** Pause bot/AI from responding to this chat */
@@ -20,4 +23,4 @@ export interface MessageContext {
     sendTyping: () => Promise<void>;
     stream: (tokenStream: AsyncIterable<string>, options?: StreamOptions) => Promise<SentMessageResult[]>;
 }
-export declare function createMessageContext(message: UnifiedMessage, channel: IChannelAdapter, identity?: UniversalIdentity, handoffManager?: HumanHandoffManager): MessageContext;
+export declare function createMessageContext(message: UnifiedMessage, channel: IChannelAdapter, identity?: UniversalIdentity, handoffManager?: HumanHandoffManager, sessionStore?: SessionStore): MessageContext;

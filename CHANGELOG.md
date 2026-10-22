@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.0] - 2026-10-23
+
+### Added — Feature Pack
+- **Conversation Sessions (`SessionStore`, `ctx.session`)**: per-chat state + message history for AI agents, sliding 30-min TTL, 50-message history cap. Inbound messages and `ctx.reply*` calls are recorded automatically; access via `hub.sessions` or `ctx.session`.
+- **Command & Rule Router (`hub.command`, `hub.route`)**: bot-framework routing — `/ping` / `!ping` commands with aliases, quoted-arg parsing and `@BotName` stripping, plus declarative rules (channel / chat type / string|RegExp pattern / predicate). Commands and routes claim messages before generic `onMessage` handlers.
+- **Broadcast (`hub.broadcast`)**: fan-out one message to many chats across channels with per-target `{{template}}` vars, concurrency pool (default 5), automatic retry, and a per-target delivery report. Also exposed as the MCP tool `channelhub_broadcast`.
+- **Scheduled Messages (`hub.schedule`, `MessageScheduler`)**: one-shot (delay or timestamp) and recurring (`everyMs`) message jobs with list/cancel, failure capture per job, and timers that never keep the process alive. MCP tools: `channelhub_schedule_message`, `channelhub_list_scheduled`, `channelhub_cancel_scheduled`.
+- **Retry with backoff (`withRetry`, `computeBackoffDelay`)**: exponential backoff with jitter, per-error retry predicates and hooks — used internally by broadcast, exported for general use.
+- MCP registry grows from 34 → **38 tools**.
+
+---
+
 ## [2.0.0] - 2026-10-23
 
 ### Changed — Repository Restructure (BREAKING, import paths only)

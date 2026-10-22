@@ -543,5 +543,61 @@ export function getChannelHubMcpTools(): McpToolDefinition[] {
         },
       },
     },
+    {
+      name: "channelhub_broadcast",
+      description: "Broadcast one message to many chats across channels at once. Supports {{var}} template placeholders per target and returns a per-target delivery report.",
+      parameters: {
+        type: "object",
+        required: ["targets", "text"],
+        properties: {
+          targets: {
+            type: "array",
+            description: "Array of { channel, chatId, vars? } targets",
+            items: {
+              type: "object",
+              required: ["channel", "chatId"],
+              properties: {
+                channel: { type: "string", description: "Channel name, e.g. telegram" },
+                chatId: { type: "string", description: "Destination chat ID" },
+                vars: { type: "object", description: "Per-target template variables" },
+              },
+            },
+          },
+          text: { type: "string", description: "Message text, may contain {{placeholders}}" },
+        },
+      },
+    },
+    {
+      name: "channelhub_schedule_message",
+      description: "Schedule a message to be sent later (one-shot via delayMs/at timestamp, or recurring via everyMs). The hub scheduler must be running (it starts automatically on first schedule).",
+      parameters: {
+        type: "object",
+        required: ["channel", "chatId", "text"],
+        properties: {
+          channel: { type: "string", description: "Channel name, e.g. zalo" },
+          chatId: { type: "string", description: "Destination chat ID" },
+          text: { type: "string", description: "Message text" },
+          delayMs: { type: "number", description: "Send after this many milliseconds" },
+          at: { type: "number", description: "Send at this epoch-ms timestamp" },
+          everyMs: { type: "number", description: "Repeat every this many milliseconds" },
+        },
+      },
+    },
+    {
+      name: "channelhub_list_scheduled",
+      description: "List pending scheduled messages, soonest first.",
+      parameters: { type: "object", properties: {} },
+    },
+    {
+      name: "channelhub_cancel_scheduled",
+      description: "Cancel a scheduled message by job ID.",
+      parameters: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string", description: "Scheduled job ID" },
+        },
+      },
+    },
   ];
 }

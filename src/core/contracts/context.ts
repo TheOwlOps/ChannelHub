@@ -9,12 +9,15 @@ import type {
 import type { UniversalIdentity } from "../identity/identity";
 import type { HumanHandoffManager } from "../engine/handoff";
 import { SmartStreamer, type StreamOptions } from "../engine/stream";
+import type { SessionData, SessionStore } from "../engine/session";
 
 export interface MessageContext {
   message: UnifiedMessage;
   channel: IChannelAdapter;
   /** Canonical stitched user identity across all channels */
   identity?: UniversalIdentity;
+  /** Per-chat conversation session (state + history) when a SessionStore is attached */
+  session?: SessionData;
   /** Whether this chat is currently paused for human takeover */
   isHandedOff?: boolean;
   /** Pause bot/AI from responding to this chat */
@@ -37,13 +40,19 @@ export function createMessageContext(
   channel: IChannelAdapter,
   identity?: UniversalIdentity,
   handoffManager?: HumanHandoffManager,
+  sessionStore?: SessionStore,
 ): MessageContext {
   const isHandedOff = handoffManager ? handoffManager.isPaused(channel.name, message.chat.id) : false;
+  const session = sessionStore?.getOrCreate(channel.name, message.chat.id);
+  const recordAssistant = (text: string) => {
+    sessionStore?.pushHistory(channel.name, message.chat.id, { role: "assistant", text });
+  };
 
   return {
     message,
     channel,
     identity,
+    session,
     isHandedOff,
     handoff: (durationMs?: number, reason?: string) => {
       if (handoffManager) {
@@ -53,22 +62,31 @@ export function createMessageContext(
     resume: () => {
       return handoffManager ? handoffManager.resume(channel.name, message.chat.id) : false;
     },
-    reply: (text: string, options?: SendOptions) =>
-      channel.sendText(message.chat.id, text, {
+    reply: async (text: string, options?: SendOptions) => {
+      const res = await channel.sendText(message.chat.id, text, {
         replyToId: message.id,
         ...options,
-      }),
-    replyWithActions: (text: string, actions: ActionNode[], options?: SendOptions) =>
-      channel.sendText(message.chat.id, text, {
+      });
+      recordAssistant(text);
+      return res;
+    },
+    replyWithActions: async (text: string, actions: ActionNode[], options?: SendOptions) => {
+      const res = await channel.sendText(message.chat.id, text, {
         replyToId: message.id,
         actions,
         ...options,
-      }),
-    replyMedia: (media: MediaPayload, options?: SendOptions) =>
-      channel.sendMedia(message.chat.id, media, {
+      });
+      recordAssistant(text);
+      return res;
+    },
+    replyMedia: async (media: MediaPayload, options?: SendOptions) => {
+      const res = await channel.sendMedia(message.chat.id, media, {
         replyToId: message.id,
         ...options,
-      }),
+      });
+      recordAssistant(media.caption ?? `[${media.type}]`);
+      return res;
+    },
     react: async (emoji: string) => {
       if (channel.addReaction) {
         await channel.addReaction(message.chat.id, message.id, emoji);

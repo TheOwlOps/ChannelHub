@@ -7,6 +7,10 @@ import type { DeadLetterHandler, DeadLetterItem } from "../reliability/dlq";
 import type { StatsCollector } from "../insights/stats";
 import type { DashboardBridge, DashboardBridgeConfig } from "../../bridges/dashboard/dashboard";
 import type { IChannelAdapter, UnifiedMessage } from "../contracts/types";
+import { SessionStore, type SessionStoreOptions } from "./session";
+import { CommandRouter, type CommandHandler, type RouteRule } from "./router";
+import { broadcastMessage, type BroadcastContent, type BroadcastOptions, type BroadcastReport, type BroadcastTarget } from "./broadcast";
+import { MessageScheduler, type ScheduledJob, type ScheduleInput } from "../reliability/scheduler";
 
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
 
@@ -26,6 +30,10 @@ export interface ChannelHubOptions {
   identityStitcher?: IdentityStitcher;
   /** Optional StatsCollector that records inbound/outbound traffic for the live dashboard. */
   stats?: StatsCollector;
+  /** Session store options (conversation memory). A SessionStore is always created; these tune it. */
+  sessionOptions?: SessionStoreOptions;
+  /** Scheduler tick interval in ms for scheduled messages. Default: 250 */
+  schedulerTickMs?: number;
 }
 
 export class ChannelHub {
@@ -39,6 +47,9 @@ export class ChannelHub {
   private _dlqHandler?: DeadLetterHandler;
   private _identityStitcher: IdentityStitcher;
   private _handoffManager: HumanHandoffManager;
+  private _sessionStore: SessionStore;
+  private _router: CommandRouter;
+  private _scheduler: MessageScheduler;
   private _stats: StatsCollector | null;
   private _instrumented = new WeakSet<IChannelAdapter>();
 
@@ -55,6 +66,13 @@ export class ChannelHub {
     this._dlqHandler = options.onDeadLetter;
     this._identityStitcher = options.identityStitcher ?? new IdentityStitcher();
     this._handoffManager = new HumanHandoffManager();
+    this._sessionStore = new SessionStore(options.sessionOptions);
+    this._router = new CommandRouter();
+    this._scheduler = new MessageScheduler(async (job) => {
+      const ch = this.getChannel(job.channel);
+      if (!ch) throw new Error(`Scheduled message: channel '${job.channel}' is not registered.`);
+      await ch.sendText(job.chatId, job.text);
+    }, { tickMs: options.schedulerTickMs });
     this._stats = options.stats ?? null;
   }
 
@@ -66,6 +84,59 @@ export class ChannelHub {
   /** Gets the human handoff manager. */
   get handoff(): HumanHandoffManager {
     return this._handoffManager;
+  }
+
+  /** Conversation session store (per-chat state + history for AI agents). */
+  get sessions(): SessionStore {
+    return this._sessionStore;
+  }
+
+  /** Command + rule router. */
+  get router(): CommandRouter {
+    return this._router;
+  }
+
+  /** Scheduled-message engine. Timers start lazily on the first schedule() call. */
+  get scheduler(): MessageScheduler {
+    return this._scheduler;
+  }
+
+  /**
+   * Registers a bot command (e.g. hub.command("ping", handler) matches "/ping" and "!ping").
+   * Commands and routes are dispatched before generic onMessage handlers; when one
+   * handles a message, generic handlers are skipped for that message.
+   */
+  command(name: string, handler: CommandHandler, opts?: { aliases?: string[]; description?: string }): this {
+    this._router.registerCommand(name, handler, opts);
+    return this;
+  }
+
+  /** Registers a declarative routing rule (channel / chat type / pattern / predicate). */
+  route(rule: RouteRule): this {
+    this._router.addRoute(rule);
+    return this;
+  }
+
+  /** Sends one message (text and/or media, with {{template}} vars) to many chats across channels. */
+  async broadcast(targets: BroadcastTarget[], content: BroadcastContent, options?: BroadcastOptions): Promise<BroadcastReport> {
+    return broadcastMessage(this, targets, content, options);
+  }
+
+  /** Schedules a message for later (one-shot or recurring). Starts the scheduler timer on first use. */
+  schedule(input: ScheduleInput): ScheduledJob {
+    const job = this._scheduler.schedule(input);
+    this._scheduler.start();
+    return job;
+  }
+
+  /** Lists pending scheduled jobs, soonest first. */
+  listScheduled(): ScheduledJob[] {
+    return this._scheduler.list();
+  }
+
+  /** Cancels a scheduled job by id. Returns false when the id is unknown. */
+  cancelScheduled(id: string): boolean {
+    return this._scheduler.cancel(id);
   }
 
   /** Live traffic collector, when one is attached. */
@@ -133,7 +204,16 @@ export class ChannelHub {
         msg.sender.id,
       );
 
-      const ctx = createMessageContext(msg, channel, identity, this._handoffManager);
+      // Record the inbound message in the chat's conversation session
+      if (msg.content?.text) {
+        this._sessionStore.pushHistory(channel.name, msg.chat.id, {
+          role: "user",
+          text: msg.content.text,
+          senderId: msg.sender.id,
+        });
+      }
+
+      const ctx = createMessageContext(msg, channel, identity, this._handoffManager, this._sessionStore);
 
       // If chat is currently handed off to a human, emit event and do not pass to automated handlers
       if (ctx.isHandedOff) {
@@ -163,8 +243,13 @@ export class ChannelHub {
 
         // Only invoke automated bot handlers if the conversation is not paused for human takeover
         if (!ctx.isHandedOff) {
-          for (const handler of this._messageHandlers) {
-            await handler(ctx);
+          // Commands & routes get first claim on the message; generic handlers
+          // run only when the router did not handle it.
+          const handled = this._router.hasEntries ? await this._router.dispatch(ctx) : false;
+          if (!handled) {
+            for (const handler of this._messageHandlers) {
+              await handler(ctx);
+            }
           }
         }
       };
@@ -335,6 +420,7 @@ export class ChannelHub {
   }
 
   async stop(signal?: AbortSignal): Promise<void> {
+    this._scheduler.stop();
     this._isClosed = true;
     for (const waiter of this._waiters) {
       waiter(null);

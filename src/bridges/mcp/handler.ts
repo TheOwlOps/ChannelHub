@@ -356,6 +356,40 @@ export async function handleChannelHubMcpCall(
         };
       }
 
+      case "channelhub_broadcast": {
+        const report = await hub.broadcast(args.targets || [], { text: args.text });
+        return {
+          content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
+        };
+      }
+
+      case "channelhub_schedule_message": {
+        const job = hub.schedule({
+          channel: args.channel,
+          chatId: args.chatId,
+          text: args.text,
+          delayMs: args.delayMs,
+          at: args.at,
+          everyMs: args.everyMs,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(job, null, 2) }],
+        };
+      }
+
+      case "channelhub_list_scheduled": {
+        return {
+          content: [{ type: "text", text: JSON.stringify(hub.listScheduled(), null, 2) }],
+        };
+      }
+
+      case "channelhub_cancel_scheduled": {
+        const cancelled = hub.cancelScheduled(args.id);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ cancelled }, null, 2) }],
+        };
+      }
+
       default:
         throw new Error(`Unknown tool: ${toolName}`);
     }

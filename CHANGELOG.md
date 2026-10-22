@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0] - 2026-10-23
+
+### Added
+- **Conversation flows** — multi-step wizard dialogs (`hub.defineFlow`, `hub.flows`) with parse/validate, cancel keywords, state kept in the session; active flows claim messages before commands/routes/handlers.
+- **AI responder** — provider-agnostic `createAiResponder` handler: session history as context, streaming via `ctx.stream`, fallback provider, optional friendly error reply.
+- **Dead letter store** — `deadLetterStore` hub option persists failed messages in a bounded `DeadLetterStore`; inspect with `hub.deadLetters()`, replay with `hub.replayDeadLetters()`.
+- **Message journal** — always-on bounded audit log (`hub.journal`) of inbound/outbound/errors with query, summary and JSONL export.
+- **Connection watchdog** — auto-reconnect for dropped channels with exponential backoff and `gave_up` after `maxFailures` (`hub.startWatchdog()`, `hub.watchdog.status()`).
+- **Hub health** — `hub.health()` snapshot (channels, scheduled jobs, dead letters, journal summary).
+- MCP tools 38 → 42: `channelhub_dead_letters`, `channelhub_replay_dead_letters`, `channelhub_journal_recent`, `channelhub_health`.
+
+### Fixed
+- `OmniBus.emitError()` no longer throws when no `error` listener is registered (Node EventEmitter semantics) — previously this crashed the hub's error path before dead letter handling could run.
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

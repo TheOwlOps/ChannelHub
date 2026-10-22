@@ -965,6 +965,8 @@ class ChannelEventBus extends EventEmitter2 {
     return this.emit("message", msg);
   }
   emitError(err) {
+    if (this.listenerCount("error") === 0)
+      return false;
     return this.emit("error", err);
   }
   emitStatus(status) {
@@ -1575,6 +1577,351 @@ class MessageScheduler {
   }
 }
 
+// src/core/engine/flow.ts
+var FLOW_STATE_KEY = "__flow";
+var DEFAULT_CANCEL_KEYWORDS = ["/cancel", "cancel", "hủy", "huỷ"];
+
+class FlowManager {
+  flows = new Map;
+  define(def) {
+    if (!def.steps || def.steps.length === 0) {
+      throw new Error(`Flow "${def.name}" must define at least one step.`);
+    }
+    this.flows.set(def.name, def);
+    return this;
+  }
+  listFlows() {
+    return [...this.flows.keys()];
+  }
+  has(name) {
+    return this.flows.has(name);
+  }
+  async start(ctx, name) {
+    const def = this.flows.get(name);
+    if (!def || !ctx.session)
+      return false;
+    const state = { flow: name, stepIndex: 0, data: {}, startedAt: Date.now() };
+    ctx.session.state[FLOW_STATE_KEY] = state;
+    await ctx.reply(await this.promptFor(def.steps[0], ctx, state.data));
+    return true;
+  }
+  active(ctx) {
+    if (!ctx.session)
+      return;
+    const state = ctx.session.state[FLOW_STATE_KEY];
+    return state && typeof state.flow === "string" ? state : undefined;
+  }
+  cancel(ctx) {
+    if (!ctx.session || !this.active(ctx))
+      return false;
+    delete ctx.session.state[FLOW_STATE_KEY];
+    return true;
+  }
+  async handle(ctx) {
+    const state = this.active(ctx);
+    if (!state || !ctx.session)
+      return false;
+    const def = this.flows.get(state.flow);
+    if (!def) {
+      delete ctx.session.state[FLOW_STATE_KEY];
+      return false;
+    }
+    const step = def.steps[state.stepIndex];
+    if (!step) {
+      delete ctx.session.state[FLOW_STATE_KEY];
+      return false;
+    }
+    const text = ctx.message.content.text ?? "";
+    const keywords = (def.cancelKeywords ?? DEFAULT_CANCEL_KEYWORDS).map((k) => k.trim().toLowerCase());
+    if (keywords.includes(text.trim().toLowerCase())) {
+      const data = state.data;
+      delete ctx.session.state[FLOW_STATE_KEY];
+      await def.onCancel?.(ctx, data);
+      return true;
+    }
+    const value = step.parse ? step.parse(text, ctx) : text;
+    if (step.validate) {
+      const verdict = step.validate(value, state.data);
+      if (typeof verdict === "string") {
+        await ctx.reply(verdict);
+        return true;
+      }
+    }
+    state.data[step.id] = value;
+    if (state.stepIndex < def.steps.length - 1) {
+      state.stepIndex++;
+      await ctx.reply(await this.promptFor(def.steps[state.stepIndex], ctx, state.data));
+      return true;
+    }
+    const data = state.data;
+    delete ctx.session.state[FLOW_STATE_KEY];
+    await def.onComplete?.(ctx, data);
+    return true;
+  }
+  async promptFor(step, ctx, data) {
+    return typeof step.prompt === "function" ? await step.prompt(ctx, data) : step.prompt;
+  }
+}
+
+// src/core/reliability/dead-letter-store.ts
+class DeadLetterStore {
+  _maxEntries;
+  _items = [];
+  constructor(options = {}) {
+    this._maxEntries = Math.max(1, options.maxEntries ?? 100);
+  }
+  add(item) {
+    this._items.push(item);
+    while (this._items.length > this._maxEntries) {
+      this._items.shift();
+    }
+  }
+  list(filter) {
+    if (filter?.channel === undefined) {
+      return [...this._items];
+    }
+    return this._items.filter((item) => item.channel === filter.channel);
+  }
+  get size() {
+    return this._items.length;
+  }
+  clear() {
+    this._items = [];
+  }
+  async replay(handler) {
+    const snapshot = [...this._items];
+    let replayed = 0;
+    let failed = 0;
+    for (const item of snapshot) {
+      try {
+        await handler(item);
+        const idx = this._items.indexOf(item);
+        if (idx !== -1)
+          this._items.splice(idx, 1);
+        replayed++;
+      } catch {
+        item.retryCount++;
+        failed++;
+      }
+    }
+    return { replayed, failed };
+  }
+  takeFailed() {
+    const drained = this._items;
+    this._items = [];
+    return drained;
+  }
+}
+
+// src/core/insights/journal.ts
+class MessageJournal {
+  _maxEntries;
+  _now;
+  _entries = [];
+  _nextId = 1;
+  constructor(options = {}) {
+    this._maxEntries = Math.max(1, options.maxEntries ?? 1000);
+    this._now = options.now ?? Date.now;
+  }
+  record(entry) {
+    const stored = {
+      ...entry,
+      id: this._nextId++,
+      at: entry.at ?? this._now()
+    };
+    this._entries.push(stored);
+    if (this._entries.length > this._maxEntries) {
+      this._entries.splice(0, this._entries.length - this._maxEntries);
+    }
+    return stored;
+  }
+  inbound(msg) {
+    return this.record({ ...msg, type: "inbound" });
+  }
+  outbound(msg) {
+    return this.record({ ...msg, type: "outbound" });
+  }
+  error(channel, err, chatId) {
+    return this.record({
+      type: "error",
+      channel,
+      chatId,
+      error: err instanceof Error ? err.message : err
+    });
+  }
+  query(q = {}) {
+    const limit = q.limit ?? 50;
+    const out = [];
+    for (let i = this._entries.length - 1;i >= 0 && out.length < limit; i--) {
+      const e = this._entries[i];
+      if (q.channel !== undefined && e.channel !== q.channel)
+        continue;
+      if (q.chatId !== undefined && e.chatId !== q.chatId)
+        continue;
+      if (q.type !== undefined && e.type !== q.type)
+        continue;
+      out.push(e);
+    }
+    return out;
+  }
+  recent(n = 50) {
+    return this.query({ limit: n });
+  }
+  summary() {
+    const s = { total: 0, inbound: 0, outbound: 0, errors: 0, perChannel: {} };
+    for (const e of this._entries) {
+      s.total++;
+      if (e.type === "inbound")
+        s.inbound++;
+      else if (e.type === "outbound")
+        s.outbound++;
+      else
+        s.errors++;
+      s.perChannel[e.channel] = (s.perChannel[e.channel] ?? 0) + 1;
+    }
+    return s;
+  }
+  toJSONL() {
+    return this._entries.map((e) => JSON.stringify(e)).join(`
+`);
+  }
+  get size() {
+    return this._entries.length;
+  }
+  clear() {
+    this._entries = [];
+  }
+}
+
+// src/core/reliability/watchdog.ts
+class ConnectionWatchdog {
+  _getChannels;
+  _intervalMs;
+  _baseDelayMs;
+  _maxDelayMs;
+  _maxFailures;
+  _now;
+  _onEvent;
+  _states = new Map;
+  _timer = null;
+  _checking = false;
+  constructor(getChannels, options = {}) {
+    this._getChannels = getChannels;
+    this._intervalMs = options.intervalMs ?? 30000;
+    this._baseDelayMs = options.baseDelayMs ?? 1000;
+    this._maxDelayMs = options.maxDelayMs ?? 60000;
+    this._maxFailures = options.maxFailures ?? 0;
+    this._now = options.now ?? Date.now;
+    this._onEvent = options.onEvent;
+  }
+  _stateFor(name) {
+    let state = this._states.get(name);
+    if (!state) {
+      state = { failures: 0, gaveUp: false };
+      this._states.set(name, state);
+    }
+    return state;
+  }
+  _emit(event) {
+    this._onEvent?.(event);
+  }
+  async checkOnce() {
+    const now = this._now();
+    for (const channel of this._getChannels()) {
+      const state = this._stateFor(channel.name);
+      if (channel.isConnected()) {
+        if (state.failures > 0 || state.gaveUp || state.nextAttemptAt !== undefined) {
+          state.failures = 0;
+          state.nextAttemptAt = undefined;
+          state.gaveUp = false;
+          state.lastError = undefined;
+        }
+        continue;
+      }
+      if (state.gaveUp)
+        continue;
+      if (state.nextAttemptAt !== undefined && now < state.nextAttemptAt)
+        continue;
+      try {
+        await channel.connect();
+        const hadFailures = state.failures > 0;
+        state.failures = 0;
+        state.nextAttemptAt = undefined;
+        state.gaveUp = false;
+        state.lastError = undefined;
+        if (hadFailures) {
+          this._emit({ type: "reconnected", channel: channel.name, failures: 0, at: this._now() });
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        state.failures++;
+        state.lastError = message;
+        const delay = Math.min(this._maxDelayMs, this._baseDelayMs * 2 ** (state.failures - 1));
+        state.nextAttemptAt = now + delay;
+        const at = this._now();
+        this._emit({
+          type: "reconnect_failed",
+          channel: channel.name,
+          failures: state.failures,
+          error: message,
+          at
+        });
+        if (this._maxFailures > 0 && state.failures >= this._maxFailures) {
+          state.gaveUp = true;
+          this._emit({
+            type: "gave_up",
+            channel: channel.name,
+            failures: state.failures,
+            error: message,
+            at
+          });
+        }
+      }
+    }
+  }
+  status() {
+    return this._getChannels().map((channel) => {
+      const state = this._states.get(channel.name);
+      return {
+        channel: channel.name,
+        connected: channel.isConnected(),
+        failures: state?.failures ?? 0,
+        nextAttemptAt: state?.nextAttemptAt,
+        gaveUp: state?.gaveUp ?? false
+      };
+    });
+  }
+  start() {
+    if (this._timer)
+      return;
+    this._timer = setInterval(() => {
+      if (this._checking)
+        return;
+      this._checking = true;
+      this.checkOnce().catch(() => {}).finally(() => {
+        this._checking = false;
+      });
+    }, this._intervalMs);
+    this._timer.unref?.();
+  }
+  stop() {
+    if (this._timer) {
+      clearInterval(this._timer);
+      this._timer = null;
+    }
+  }
+  get running() {
+    return this._timer !== null;
+  }
+  reset(channelName) {
+    if (channelName !== undefined) {
+      this._states.delete(channelName);
+    } else {
+      this._states.clear();
+    }
+  }
+}
+
 // src/core/engine/hub.ts
 class ChannelHub {
   _channels = new Map;
@@ -1588,6 +1935,11 @@ class ChannelHub {
   _sessionStore;
   _router;
   _scheduler;
+  _flows;
+  _deadLetterStore;
+  _journal;
+  _watchdogOptions;
+  _watchdog;
   _stats;
   _instrumented = new WeakSet;
   _queue = [];
@@ -1609,6 +1961,12 @@ class ChannelHub {
         throw new Error(`Scheduled message: channel '${job.channel}' is not registered.`);
       await ch.sendText(job.chatId, job.text);
     }, { tickMs: options.schedulerTickMs });
+    this._flows = new FlowManager;
+    if (options.deadLetterStore) {
+      this._deadLetterStore = new DeadLetterStore(typeof options.deadLetterStore === "object" ? options.deadLetterStore : {});
+    }
+    this._journal = new MessageJournal({ maxEntries: options.journalMaxEntries });
+    this._watchdogOptions = options.watchdog;
     this._stats = options.stats ?? null;
   }
   get identityStitcher() {
@@ -1648,6 +2006,60 @@ class ChannelHub {
   cancelScheduled(id) {
     return this._scheduler.cancel(id);
   }
+  get flows() {
+    return this._flows;
+  }
+  defineFlow(def) {
+    this._flows.define(def);
+    return this;
+  }
+  get journal() {
+    return this._journal;
+  }
+  get deadLetterStore() {
+    return this._deadLetterStore;
+  }
+  deadLetters() {
+    return this._deadLetterStore?.list() ?? [];
+  }
+  async replayDeadLetters() {
+    if (!this._deadLetterStore)
+      return { replayed: 0, failed: 0 };
+    return this._deadLetterStore.replay(async (item) => {
+      const ch = this.getChannel(item.channel);
+      if (!ch)
+        throw new Error(`Channel '${item.channel}' is not registered.`);
+      const ctx = createMessageContext(item.message, ch, undefined, this._handoffManager, this._sessionStore);
+      for (const handler of this._messageHandlers) {
+        await handler(ctx);
+      }
+    });
+  }
+  get watchdog() {
+    if (!this._watchdog) {
+      this._watchdog = new ConnectionWatchdog(() => Array.from(new Set(this._channels.values())), this._watchdogOptions);
+    }
+    return this._watchdog;
+  }
+  startWatchdog() {
+    this.watchdog.start();
+    return this;
+  }
+  stopWatchdog() {
+    this._watchdog?.stop();
+    return this;
+  }
+  health() {
+    return {
+      channels: this.listChannels().map((key) => ({
+        key,
+        connected: this.getChannel(key)?.isConnected() ?? false
+      })),
+      scheduledJobs: this._scheduler.size,
+      deadLetters: this._deadLetterStore?.size ?? 0,
+      journal: this._journal.summary()
+    };
+  }
   get stats() {
     return this._stats;
   }
@@ -1686,6 +2098,12 @@ class ChannelHub {
         }
       }
       this._stats?.recordInbound(msg);
+      this._journal.inbound({
+        channel: channel.name,
+        chatId: msg.chat.id,
+        senderId: msg.sender.id,
+        text: msg.content?.text
+      });
       this._bus.emitMessage(msg);
       const identity = this._identityStitcher.resolve(channel.name, msg.sender.id);
       if (msg.content?.text) {
@@ -1717,7 +2135,13 @@ class ChannelHub {
           return;
         }
         if (!ctx.isHandedOff) {
-          const handled = this._router.hasEntries ? await this._router.dispatch(ctx) : false;
+          let handled = false;
+          if (ctx.session?.state?.["__flow"]) {
+            handled = await this._flows.handle(ctx);
+          }
+          if (!handled && this._router.hasEntries) {
+            handled = await this._router.dispatch(ctx);
+          }
           if (!handled) {
             for (const handler of this._messageHandlers) {
               await handler(ctx);
@@ -1730,16 +2154,19 @@ class ChannelHub {
       } catch (err) {
         const errorObj = err instanceof Error ? err : new Error(String(err));
         this._stats?.recordError(channel.name);
+        this._journal.error(channel.name, errorObj, msg.chat.id);
         this._bus.emitError(errorObj);
+        const dlqItem = {
+          message: msg,
+          error: errorObj,
+          timestamp: Date.now(),
+          retryCount: 0,
+          channel: channel.name
+        };
+        this._deadLetterStore?.add(dlqItem);
         if (this._dlqHandler) {
           try {
-            await this._dlqHandler({
-              message: msg,
-              error: errorObj,
-              timestamp: Date.now(),
-              retryCount: 0,
-              channel: channel.name
-            });
+            await this._dlqHandler(dlqItem);
           } catch (dlqErr) {
             this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
           }
@@ -1753,13 +2180,20 @@ class ChannelHub {
     return this;
   }
   _instrumentOutbound(channel) {
-    if (!this._stats || this._instrumented.has(channel))
+    if (this._instrumented.has(channel))
       return;
     this._instrumented.add(channel);
     const hub = this;
     const wrap = (fn) => async (...args) => {
       const result = await fn(...args);
       hub._stats?.recordOutbound(channel.name);
+      const first = args[0];
+      const second = args[1];
+      hub._journal.outbound({
+        channel: channel.name,
+        chatId: first,
+        text: typeof second === "string" ? second : second?.caption
+      });
       return result;
     };
     const target = channel;
@@ -1859,6 +2293,7 @@ class ChannelHub {
     return bridge;
   }
   async stop(signal) {
+    this._watchdog?.stop();
     this._scheduler.stop();
     this._isClosed = true;
     for (const waiter of this._waiters) {
@@ -2741,16 +3176,83 @@ class WebResearch {
     }));
   }
 }
+// src/core/ai/responder.ts
+var DEFAULT_MAX_HISTORY2 = 20;
+function isAsyncIterable(x) {
+  return typeof x === "object" && x !== null && Symbol.asyncIterator in x && typeof x[Symbol.asyncIterator] === "function";
+}
+function buildMessages(ctx, options) {
+  const messages = [];
+  if (options.systemPrompt) {
+    messages.push({ role: "system", content: options.systemPrompt });
+  }
+  const maxHistory = options.maxHistory ?? DEFAULT_MAX_HISTORY2;
+  const history = ctx.session?.history ?? [];
+  const turns = [];
+  for (const entry of history) {
+    if (entry.role === "system")
+      continue;
+    turns.push({ role: entry.role, content: entry.text });
+  }
+  if (turns.length > 0) {
+    messages.push(...turns.slice(-maxHistory));
+  } else {
+    const text = ctx.message.content.text;
+    if (text)
+      messages.push({ role: "user", content: text });
+  }
+  return messages;
+}
+function createAiResponder(options) {
+  return async (ctx) => {
+    if (options.onlyWhen && !options.onlyWhen(ctx))
+      return;
+    const messages = buildMessages(ctx, options);
+    const deliver = async (provider) => {
+      const completion = await provider.complete(messages);
+      if (typeof completion === "string") {
+        if (completion)
+          await ctx.reply(completion);
+      } else if (isAsyncIterable(completion)) {
+        await ctx.stream(completion);
+      } else {
+        throw new TypeError(`AiProvider${provider.name ? ` "${provider.name}"` : ""} returned an unsupported completion: expected string or AsyncIterable<string>.`);
+      }
+    };
+    try {
+      await deliver(options.provider);
+      return;
+    } catch (primaryError) {
+      if (options.fallbackProvider) {
+        try {
+          await deliver(options.fallbackProvider);
+          return;
+        } catch {}
+      }
+      if (options.errorReply !== undefined) {
+        await ctx.reply(options.errorReply);
+        return;
+      }
+      throw primaryError;
+    }
+  };
+}
 export {
   BaseChannel,
   ChannelEventBus,
   ChannelHub,
   CommandRouter,
+  ConnectionWatchdog,
+  DEFAULT_CANCEL_KEYWORDS,
+  DeadLetterStore,
+  FLOW_STATE_KEY,
+  FlowManager,
   GroupManager,
   HumanHandoffManager,
   IdempotencyCache,
   IdentityStitcher,
   MediaTranscoder,
+  MessageJournal,
   MessageScheduler,
   SessionStore,
   SharedTokenBucketLimiter,
@@ -2761,7 +3263,9 @@ export {
   WebResearch,
   broadcastMessage,
   computeBackoffDelay,
+  createAiResponder,
   createMessageContext,
+  isAsyncIterable,
   parseCommand,
   renderTemplate,
   withRetry

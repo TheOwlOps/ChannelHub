@@ -140,13 +140,13 @@ describe("ChannelHub v2.1 features (integration)", () => {
     await hub.stop();
   });
 
-  test("MCP exposes the 4 new tools (38 total) and broadcast works through the handler", async () => {
+  test("MCP exposes the 4 new tools (42 total) and broadcast works through the handler", async () => {
     const hub = new ChannelHub();
     const zalo = new FakeChannel("zalo");
     hub.register(zalo);
 
     const tools = getChannelHubMcpTools();
-    expect(tools.length).toBe(38);
+    expect(tools.length).toBe(42);
     const names = tools.map((t) => t.name);
     for (const n of ["channelhub_broadcast", "channelhub_schedule_message", "channelhub_list_scheduled", "channelhub_cancel_scheduled"]) {
       expect(names).toContain(n);

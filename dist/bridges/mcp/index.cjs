@@ -643,6 +643,32 @@ function getChannelHubMcpTools() {
           id: { type: "string", description: "Scheduled job ID" }
         }
       }
+    },
+    {
+      name: "channelhub_dead_letters",
+      description: "List messages that failed processing and were captured in the dead letter store (requires the hub deadLetterStore option).",
+      parameters: { type: "object", properties: {} }
+    },
+    {
+      name: "channelhub_replay_dead_letters",
+      description: "Replay stored dead letters through the hub's message handlers. Returns { replayed, failed }.",
+      parameters: { type: "object", properties: {} }
+    },
+    {
+      name: "channelhub_journal_recent",
+      description: "Read recent entries from the hub message journal (inbound / outbound / errors), newest first.",
+      parameters: {
+        type: "object",
+        properties: {
+          limit: { type: "number", description: "Max entries to return (default 20)" },
+          channel: { type: "string", description: "Only entries for this channel" }
+        }
+      }
+    },
+    {
+      name: "channelhub_health",
+      description: "Hub health snapshot: per-channel connection state, scheduled job count, dead letter count, and journal summary.",
+      parameters: { type: "object", properties: {} }
     }
   ];
 }
@@ -1661,6 +1687,28 @@ async function handleChannelHubMcpCall(hub, toolName, args) {
         return {
           content: [{ type: "text", text: JSON.stringify({ cancelled }, null, 2) }]
         };
+      }
+      case "channelhub_dead_letters": {
+        const items = hub.deadLetters().map((i) => ({
+          channel: i.channel,
+          error: i.error.message,
+          timestamp: i.timestamp,
+          retryCount: i.retryCount,
+          text: i.message.content?.text,
+          chatId: i.message.chat?.id
+        }));
+        return { content: [{ type: "text", text: JSON.stringify(items, null, 2) }] };
+      }
+      case "channelhub_replay_dead_letters": {
+        const result = await hub.replayDeadLetters();
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
+      case "channelhub_journal_recent": {
+        const entries = hub.journal.query({ limit: args.limit ?? 20, channel: args.channel });
+        return { content: [{ type: "text", text: JSON.stringify(entries, null, 2) }] };
+      }
+      case "channelhub_health": {
+        return { content: [{ type: "text", text: JSON.stringify(hub.health(), null, 2) }] };
       }
       default:
         throw new Error(`Unknown tool: ${toolName}`);

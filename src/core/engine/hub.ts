@@ -11,6 +11,11 @@ import { SessionStore, type SessionStoreOptions } from "./session";
 import { CommandRouter, type CommandHandler, type RouteRule } from "./router";
 import { broadcastMessage, type BroadcastContent, type BroadcastOptions, type BroadcastReport, type BroadcastTarget } from "./broadcast";
 import { MessageScheduler, type ScheduledJob, type ScheduleInput } from "../reliability/scheduler";
+import { FlowManager, type FlowDefinition } from "./flow";
+import { DeadLetterStore } from "../reliability/dead-letter-store";
+import type { DeadLetterItem as DeadLetterItemType } from "../reliability/dlq";
+import { MessageJournal } from "../insights/journal";
+import { ConnectionWatchdog, type WatchdogOptions } from "../reliability/watchdog";
 
 export type MessageHandler = (ctx: MessageContext) => Promise<void> | void;
 
@@ -34,6 +39,12 @@ export interface ChannelHubOptions {
   sessionOptions?: SessionStoreOptions;
   /** Scheduler tick interval in ms for scheduled messages. Default: 250 */
   schedulerTickMs?: number;
+  /** Persist failed messages in a DeadLetterStore (in addition to onDeadLetter). true = defaults, or pass { maxEntries }. */
+  deadLetterStore?: boolean | { maxEntries?: number };
+  /** Max entries kept in the message journal. Default: 1000 */
+  journalMaxEntries?: number;
+  /** Connection watchdog options. The watchdog is created lazily; call hub.startWatchdog() to run it. */
+  watchdog?: WatchdogOptions;
 }
 
 export class ChannelHub {
@@ -50,6 +61,11 @@ export class ChannelHub {
   private _sessionStore: SessionStore;
   private _router: CommandRouter;
   private _scheduler: MessageScheduler;
+  private _flows: FlowManager;
+  private _deadLetterStore?: DeadLetterStore;
+  private _journal: MessageJournal;
+  private _watchdogOptions?: WatchdogOptions;
+  private _watchdog?: ConnectionWatchdog;
   private _stats: StatsCollector | null;
   private _instrumented = new WeakSet<IChannelAdapter>();
 
@@ -73,6 +89,14 @@ export class ChannelHub {
       if (!ch) throw new Error(`Scheduled message: channel '${job.channel}' is not registered.`);
       await ch.sendText(job.chatId, job.text);
     }, { tickMs: options.schedulerTickMs });
+    this._flows = new FlowManager();
+    if (options.deadLetterStore) {
+      this._deadLetterStore = new DeadLetterStore(
+        typeof options.deadLetterStore === "object" ? options.deadLetterStore : {},
+      );
+    }
+    this._journal = new MessageJournal({ maxEntries: options.journalMaxEntries });
+    this._watchdogOptions = options.watchdog;
     this._stats = options.stats ?? null;
   }
 
@@ -139,6 +163,90 @@ export class ChannelHub {
     return this._scheduler.cancel(id);
   }
 
+  /** Multi-step conversation (wizard) flow manager. Define flows with hub.defineFlow(). */
+  get flows(): FlowManager {
+    return this._flows;
+  }
+
+  /** Defines a conversation flow. While a flow is active in a chat, it claims inbound messages before commands/routes/handlers. */
+  defineFlow(def: FlowDefinition): this {
+    this._flows.define(def);
+    return this;
+  }
+
+  /** Bounded message journal (inbound / outbound / errors). Always recording. */
+  get journal(): MessageJournal {
+    return this._journal;
+  }
+
+  /** Dead letter store, when enabled via the `deadLetterStore` hub option. */
+  get deadLetterStore(): DeadLetterStore | undefined {
+    return this._deadLetterStore;
+  }
+
+  /** Failed messages captured in the dead letter store (oldest → newest). Empty when the store is disabled. */
+  deadLetters(): DeadLetterItemType[] {
+    return this._deadLetterStore?.list() ?? [];
+  }
+
+  /**
+   * Replays stored dead letters through the generic message handlers (router and
+   * middlewares are skipped). Successfully handled items are removed from the store;
+   * failures stay with an incremented retryCount.
+   */
+  async replayDeadLetters(): Promise<{ replayed: number; failed: number }> {
+    if (!this._deadLetterStore) return { replayed: 0, failed: 0 };
+    return this._deadLetterStore.replay(async (item) => {
+      const ch = this.getChannel(item.channel);
+      if (!ch) throw new Error(`Channel '${item.channel}' is not registered.`);
+      const ctx = createMessageContext(item.message, ch, undefined, this._handoffManager, this._sessionStore);
+      for (const handler of this._messageHandlers) {
+        await handler(ctx);
+      }
+    });
+  }
+
+  /** Connection watchdog (created lazily from the `watchdog` hub option). */
+  get watchdog(): ConnectionWatchdog {
+    if (!this._watchdog) {
+      this._watchdog = new ConnectionWatchdog(
+        () => Array.from(new Set(this._channels.values())) as any,
+        this._watchdogOptions,
+      );
+    }
+    return this._watchdog;
+  }
+
+  /** Starts periodic auto-reconnect monitoring for registered channels. */
+  startWatchdog(): this {
+    this.watchdog.start();
+    return this;
+  }
+
+  /** Stops the connection watchdog if it was started. */
+  stopWatchdog(): this {
+    this._watchdog?.stop();
+    return this;
+  }
+
+  /** Point-in-time health snapshot: channels, scheduled jobs, dead letters, journal. */
+  health(): {
+    channels: Array<{ key: string; connected: boolean }>;
+    scheduledJobs: number;
+    deadLetters: number;
+    journal: ReturnType<MessageJournal["summary"]>;
+  } {
+    return {
+      channels: this.listChannels().map((key) => ({
+        key,
+        connected: this.getChannel(key)?.isConnected() ?? false,
+      })),
+      scheduledJobs: this._scheduler.size,
+      deadLetters: this._deadLetterStore?.size ?? 0,
+      journal: this._journal.summary(),
+    };
+  }
+
   /** Live traffic collector, when one is attached. */
   get stats(): StatsCollector | null {
     return this._stats;
@@ -195,6 +303,12 @@ export class ChannelHub {
 
       // Record traffic stats after dedup so webhook retries are not double-counted
       this._stats?.recordInbound(msg);
+      this._journal.inbound({
+        channel: channel.name,
+        chatId: msg.chat.id,
+        senderId: msg.sender.id,
+        text: msg.content?.text,
+      });
 
       this._bus.emitMessage(msg);
 
@@ -243,9 +357,17 @@ export class ChannelHub {
 
         // Only invoke automated bot handlers if the conversation is not paused for human takeover
         if (!ctx.isHandedOff) {
-          // Commands & routes get first claim on the message; generic handlers
-          // run only when the router did not handle it.
-          const handled = this._router.hasEntries ? await this._router.dispatch(ctx) : false;
+          // Active conversation flows claim first, then commands & routes;
+          // generic handlers run only when neither handled the message.
+          // The flow check is synchronous when no flow is active in this chat,
+          // preserving v1's synchronous dispatch for plain hubs.
+          let handled = false;
+          if (ctx.session?.state?.["__flow"]) {
+            handled = await this._flows.handle(ctx);
+          }
+          if (!handled && this._router.hasEntries) {
+            handled = await this._router.dispatch(ctx);
+          }
           if (!handled) {
             for (const handler of this._messageHandlers) {
               await handler(ctx);
@@ -259,18 +381,22 @@ export class ChannelHub {
       } catch (err: any) {
         const errorObj = err instanceof Error ? err : new Error(String(err));
         this._stats?.recordError(channel.name);
+        this._journal.error(channel.name, errorObj, msg.chat.id);
         this._bus.emitError(errorObj);
 
-        // 3. Dead Letter Queue handling
+        // 3. Dead Letter Queue handling: persist to the store (when enabled)
+        // and/or invoke the callback handler.
+        const dlqItem: DeadLetterItemType = {
+          message: msg,
+          error: errorObj,
+          timestamp: Date.now(),
+          retryCount: 0,
+          channel: channel.name,
+        };
+        this._deadLetterStore?.add(dlqItem);
         if (this._dlqHandler) {
           try {
-            await this._dlqHandler({
-              message: msg,
-              error: errorObj,
-              timestamp: Date.now(),
-              retryCount: 0,
-              channel: channel.name,
-            });
+            await this._dlqHandler(dlqItem);
           } catch (dlqErr: any) {
             this._bus.emitError(dlqErr instanceof Error ? dlqErr : new Error(String(dlqErr)));
           }
@@ -293,13 +419,20 @@ export class ChannelHub {
    * replaced after channels are registered.
    */
   private _instrumentOutbound(channel: IChannelAdapter): void {
-    if (!this._stats || this._instrumented.has(channel)) return;
+    if (this._instrumented.has(channel)) return;
     this._instrumented.add(channel);
     const hub = this;
     const wrap = <A extends unknown[], R>(fn: (...args: A) => Promise<R>) =>
       async (...args: A): Promise<R> => {
         const result = await fn(...args);
         hub._stats?.recordOutbound(channel.name);
+        const first = args[0] as string | undefined;
+        const second: any = args[1];
+        hub._journal.outbound({
+          channel: channel.name,
+          chatId: first,
+          text: typeof second === "string" ? second : second?.caption,
+        });
         return result;
       };
     const target = channel as unknown as Record<string, unknown>;
@@ -420,6 +553,7 @@ export class ChannelHub {
   }
 
   async stop(signal?: AbortSignal): Promise<void> {
+    this._watchdog?.stop();
     this._scheduler.stop();
     this._isClosed = true;
     for (const waiter of this._waiters) {

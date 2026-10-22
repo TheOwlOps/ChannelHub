@@ -390,6 +390,32 @@ export async function handleChannelHubMcpCall(
         };
       }
 
+      case "channelhub_dead_letters": {
+        const items = hub.deadLetters().map((i) => ({
+          channel: i.channel,
+          error: i.error.message,
+          timestamp: i.timestamp,
+          retryCount: i.retryCount,
+          text: i.message.content?.text,
+          chatId: i.message.chat?.id,
+        }));
+        return { content: [{ type: "text", text: JSON.stringify(items, null, 2) }] };
+      }
+
+      case "channelhub_replay_dead_letters": {
+        const result = await hub.replayDeadLetters();
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
+
+      case "channelhub_journal_recent": {
+        const entries = hub.journal.query({ limit: args.limit ?? 20, channel: args.channel });
+        return { content: [{ type: "text", text: JSON.stringify(entries, null, 2) }] };
+      }
+
+      case "channelhub_health": {
+        return { content: [{ type: "text", text: JSON.stringify(hub.health(), null, 2) }] };
+      }
+
       default:
         throw new Error(`Unknown tool: ${toolName}`);
     }

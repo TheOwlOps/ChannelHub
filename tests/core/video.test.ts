@@ -115,9 +115,9 @@ describe("VideoEngine & AI Shorts Generator", () => {
     }
   });
 
-  test("MCP Registry exposes 38 total MCP tools including video editing tools", () => {
+  test("MCP Registry exposes 42 total MCP tools including video editing tools", () => {
     const tools = getChannelHubMcpTools();
-    expect(tools.length).toBe(38);
+    expect(tools.length).toBe(42);
     const names = tools.map((t) => t.name);
     expect(names).toContain("channelhub_video_create_short");
     expect(names).toContain("channelhub_video_burn_subtitles");

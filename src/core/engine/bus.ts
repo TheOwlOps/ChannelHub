@@ -13,6 +13,10 @@ export class ChannelEventBus extends EventEmitter {
   }
 
   emitError(err: Error): boolean {
+    // Node's EventEmitter throws when "error" is emitted with no listeners.
+    // Error reporting must never crash the pipeline it is reporting on (it
+    // previously prevented the hub's dead-letter handling from running).
+    if (this.listenerCount("error") === 0) return false;
     return this.emit("error", err);
   }
 

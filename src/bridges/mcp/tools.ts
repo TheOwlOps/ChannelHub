@@ -599,5 +599,31 @@ export function getChannelHubMcpTools(): McpToolDefinition[] {
         },
       },
     },
+    {
+      name: "channelhub_dead_letters",
+      description: "List messages that failed processing and were captured in the dead letter store (requires the hub deadLetterStore option).",
+      parameters: { type: "object", properties: {} },
+    },
+    {
+      name: "channelhub_replay_dead_letters",
+      description: "Replay stored dead letters through the hub's message handlers. Returns { replayed, failed }.",
+      parameters: { type: "object", properties: {} },
+    },
+    {
+      name: "channelhub_journal_recent",
+      description: "Read recent entries from the hub message journal (inbound / outbound / errors), newest first.",
+      parameters: {
+        type: "object",
+        properties: {
+          limit: { type: "number", description: "Max entries to return (default 20)" },
+          channel: { type: "string", description: "Only entries for this channel" },
+        },
+      },
+    },
+    {
+      name: "channelhub_health",
+      description: "Hub health snapshot: per-channel connection state, scheduled job count, dead letter count, and journal summary.",
+      parameters: { type: "object", properties: {} },
+    },
   ];
 }
